@@ -1,0 +1,11 @@
+machine:
+    services:
+        - docker
+
+dependencies:
+    override:
+        - echo ""
+
+test:
+    override:
+        - make image
