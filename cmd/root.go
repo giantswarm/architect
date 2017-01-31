@@ -24,15 +24,18 @@ var (
 )
 
 func init() {
+	// Get the current working directory, to use as a default.
 	defaultWorkingDirectory, err := os.Getwd()
 	if err != nil {
 		log.Fatalf("could not get working directory: %v\n", err)
 	}
 
+	// We can also infer the organisation and project from the path, for the defaults.
 	path := strings.Split(defaultWorkingDirectory, string(os.PathSeparator))
 	defaultOrganisation := path[len(path)-2]
 	defaultProject := path[len(path)-1]
 
+	// We also use the git HEAD commit sha as well.
 	out, err := exec.Command("git", "rev-parse", "HEAD").Output()
 	if err != nil {
 		log.Fatalf("could not get git sha: %v\n", err)

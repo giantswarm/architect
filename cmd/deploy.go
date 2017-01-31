@@ -2,13 +2,12 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"strings"
 
+	"github.com/giantswarm/architect/commands"
+	"github.com/giantswarm/architect/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -57,132 +56,82 @@ func init() {
 }
 
 func runDeploy(cmd *cobra.Command, args []string) {
-	if dockerEmail == "" {
-		log.Fatalf("specify docker email\n")
-	}
-	if dockerUsername == "" {
-		log.Fatalf("specify docker username\n")
-	}
-	if dockerPassword == "" {
-		log.Fatalf("specify docker password\n")
+	if err := utils.TemplateKubernetesResources(kubernetesResourcesDirectoryPath, templatedResourcesDirectoryPath, sha); err != nil {
+		log.Fatalf("could not template kubernetes resources: %v\n", err)
 	}
 
-	dockerLoginCommandArgs := []string{
-		"login",
-		fmt.Sprintf("--email=%v", dockerEmail),
-		fmt.Sprintf("--username=%v", dockerUsername),
-		fmt.Sprintf("--password=%v", dockerPassword),
-		registry,
+	dockerLogin := commands.Command{
+		Name: "docker-login",
+		Args: []string{
+			"docker",
+			"login",
+			fmt.Sprintf("--email=%v", dockerEmail),
+			fmt.Sprintf("--username=%v", dockerUsername),
+			fmt.Sprintf("--password=%v", dockerPassword),
+			registry,
+		},
 	}
 
-	dockerLoginCommand := exec.Command("docker", dockerLoginCommandArgs...)
-
-	dockerLoginCommand.Stdout = os.Stdout
-	dockerLoginCommand.Stderr = os.Stderr
-
-	log.Printf("running %v\n", dockerLoginCommand.Args)
-	if err := dockerLoginCommand.Run(); err != nil {
-		log.Fatalf("could not run docker login command: %v\n", err)
+	dockerPush := commands.Command{
+		Name: "docker-push",
+		Args: []string{
+			"docker",
+			"push",
+			fmt.Sprintf("%v/%v/%v:%v", registry, organisation, project, sha),
+		},
 	}
 
-	dockerPushCommandArgs := []string{
-		"push",
-		fmt.Sprintf("%v/%v/%v:%v", registry, organisation, project, sha),
-	}
-
-	dockerPushCommand := exec.Command("docker", dockerPushCommandArgs...)
-
-	dockerPushCommand.Stdout = os.Stdout
-	dockerPushCommand.Stderr = os.Stderr
-
-	log.Printf("running %v\n", dockerPushCommand.Args)
-	if err := dockerPushCommand.Run(); err != nil {
-		log.Fatalf("could not run docker push command: %v\n", err)
-	}
-
-	kubectlClusterInfoCommandArgs := []string{
-		"run",
-		"--rm",
-		"-v", fmt.Sprintf("%v:/ca.pem", kubernetesCaPath),
-		"-v", fmt.Sprintf("%v:/crt.pem", kubernetesCrtPath),
-		"-v", fmt.Sprintf("%v:/key.pem", kubernetesKeyPath),
-		fmt.Sprintf("giantswarm/kubectl:%v", kubectlVersion),
-		fmt.Sprintf("--server=%v", kubernetesApiServer),
-		"--certificate-authority=/ca.pem",
-		"--client-certificate=/crt.pem",
-		"--client-key=/key.pem",
-		"cluster-info",
-	}
-
-	kubectlClusterInfoCommand := exec.Command("docker", kubectlClusterInfoCommandArgs...)
-
-	kubectlClusterInfoCommand.Stdout = os.Stdout
-	kubectlClusterInfoCommand.Stderr = os.Stderr
-
-	log.Printf("running %v\n", kubectlClusterInfoCommand.Args)
-	if err := kubectlClusterInfoCommand.Run(); err != nil {
-		log.Fatalf("could not run kubectl cluster info command: %v\n", err)
-	}
-
-	log.Printf("templating kubernetes resources")
-
-	if _, err := os.Stat(templatedResourcesDirectoryPath); os.IsNotExist(err) {
-		if err := os.Mkdir(templatedResourcesDirectoryPath, 0755); err != nil {
-			log.Fatalf("could not create templated resources directory: %v\n", err)
-		}
-	}
-
-	files, err := ioutil.ReadDir(kubernetesResourcesDirectoryPath)
-	if err != nil {
-		log.Fatalf("could not read kubernetes resources directory: %v\n", err)
-	}
-
-	for _, file := range files {
-		contents, err := ioutil.ReadFile(filepath.Join(kubernetesResourcesDirectoryPath, file.Name()))
-		if err != nil {
-			log.Fatalf("could not read file: %v\n", err)
-		}
-
-		templatedContents := strings.Replace(string(contents), "%%DOCKER_TAG%%", sha, -1)
-
-		if err := ioutil.WriteFile(filepath.Join(templatedResourcesDirectoryPath, file.Name()), []byte(templatedContents), 0755); err != nil {
-			log.Fatalf("could not write file: %v\n", err)
-		}
-	}
-
-	if removeResourceFilesAfterUse {
-		if err := os.RemoveAll(templatedResourcesDirectoryPath); err != nil {
-			log.Fatalf("could not remove templated resources directory: %v\n", err)
-		}
+	kubectlClusterInfo := commands.Command{
+		Name: "kubectl-cluster-info",
+		Args: []string{
+			"docker",
+			"run",
+			"--rm",
+			"-v", fmt.Sprintf("%v:/ca.pem", kubernetesCaPath),
+			"-v", fmt.Sprintf("%v:/crt.pem", kubernetesCrtPath),
+			"-v", fmt.Sprintf("%v:/key.pem", kubernetesKeyPath),
+			fmt.Sprintf("giantswarm/kubectl:%v", kubectlVersion),
+			fmt.Sprintf("--server=%v", kubernetesApiServer),
+			"--certificate-authority=/ca.pem",
+			"--client-certificate=/crt.pem",
+			"--client-key=/key.pem",
+			"cluster-info",
+		},
 	}
 
 	templatedResourcesDirectoryAbsolutePath, err := filepath.Abs(templatedResourcesDirectoryPath)
 	if err != nil {
 		log.Fatalf("could not get absolute path for templated resources directory: %v\n", err)
 	}
-
-	kubectlApplyCommandArgs := []string{
-		"run",
-		"--rm",
-		"-v", fmt.Sprintf("%v:/ca.pem", kubernetesCaPath),
-		"-v", fmt.Sprintf("%v:/crt.pem", kubernetesCrtPath),
-		"-v", fmt.Sprintf("%v:/key.pem", kubernetesKeyPath),
-		"-v", fmt.Sprintf("%v:/kubernetes", templatedResourcesDirectoryAbsolutePath),
-		fmt.Sprintf("giantswarm/kubectl:%v", kubectlVersion),
-		fmt.Sprintf("--server=%v", kubernetesApiServer),
-		"--certificate-authority=/ca.pem",
-		"--client-certificate=/crt.pem",
-		"--client-key=/key.pem",
-		"apply", "-f", "/kubernetes",
+	kubectlApply := commands.Command{
+		Name: "kubectl-apply",
+		Args: []string{
+			"docker",
+			"run",
+			"--rm",
+			"-v", fmt.Sprintf("%v:/ca.pem", kubernetesCaPath),
+			"-v", fmt.Sprintf("%v:/crt.pem", kubernetesCrtPath),
+			"-v", fmt.Sprintf("%v:/key.pem", kubernetesKeyPath),
+			"-v", fmt.Sprintf("%v:/kubernetes", templatedResourcesDirectoryAbsolutePath),
+			fmt.Sprintf("giantswarm/kubectl:%v", kubectlVersion),
+			fmt.Sprintf("--server=%v", kubernetesApiServer),
+			"--certificate-authority=/ca.pem",
+			"--client-certificate=/crt.pem",
+			"--client-key=/key.pem",
+			"apply", "-f", "/kubernetes",
+		},
 	}
 
-	kubectlApplyCommand := exec.Command("docker", kubectlApplyCommandArgs...)
+	commands.RunCommands([]commands.Command{
+		dockerLogin,
+		dockerPush,
+		kubectlClusterInfo,
+		kubectlApply,
+	})
 
-	kubectlApplyCommand.Stdout = os.Stdout
-	kubectlApplyCommand.Stderr = os.Stderr
-
-	log.Printf("running %v\n", kubectlApplyCommand.Args)
-	if err := kubectlApplyCommand.Run(); err != nil {
-		log.Fatalf("could not run kubectl apply command: %v\n", err)
+	if removeResourceFilesAfterUse {
+		if err := os.RemoveAll(templatedResourcesDirectoryPath); err != nil {
+			log.Fatalf("could not remove templated resources directory: %v\n", err)
+		}
 	}
 }
