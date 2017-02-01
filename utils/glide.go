@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 	"io/ioutil"
-	"strings"
+	"path/filepath"
 )
 
 // NoVendor replicates glide's novendor command, so we don't have to
@@ -31,7 +31,7 @@ func NoVendor(workingDirectory string) ([]string, error) {
 		}
 
 		for _, file := range files {
-			if strings.HasSuffix(file.Name(), ".go") {
+			if filepath.Ext(file.Name()) == ".go" {
 				testPackages = append(testPackages, directory.Name())
 				break
 			}
