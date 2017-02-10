@@ -45,7 +45,7 @@ RELEASE_ID=$(echo $release_output | jq '.id')
 
 echo "Upload binary to GitHub Release"
 upload_output=$(curl \
-    --header "Authorization: token 31bdc24da0ec8e06c130797f0cec12d8343ccc9a" \
+    --header "Authorization: token ${PERSONAL_ACCESS_TOKEN}" \
     --header "Content-Type: application/octet-stream" \
     --data-binary @architect \
     https://uploads.github.com/repos/giantswarm/architect/releases/${RELEASE_ID}/assets?name=architect
