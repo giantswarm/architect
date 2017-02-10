@@ -22,3 +22,9 @@ test:
         - cd $GS_WD && go build -a -v -tags netgo
         - cd $GS_WD && ./architect --help
         - cd $GS_WD && ./github-release.sh $CIRCLE_SHA1 $PERSONAL_ACCESS_TOKEN
+
+deployment:
+    master:
+        branch: master
+        commands:
+            - cd $GS_WD && ./github-release.sh $CIRCLE_SHA1 $PERSONAL_ACCESS_TOKEN
