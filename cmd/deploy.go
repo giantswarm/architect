@@ -126,6 +126,7 @@ func runDeploy(cmd *cobra.Command, args []string) {
 			},
 			Image: fmt.Sprintf("giantswarm/kubectl:%v", kubectlVersion),
 			Args: []string{
+				fmt.Sprintf("--server=%v", kubernetesApiServer),
 				"--certificate-authority=/ca.pem",
 				"--client-certificate=/crt.pem",
 				"--client-key=/key.pem",
