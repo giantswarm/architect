@@ -38,9 +38,19 @@ var (
 func init() {
 	RootCmd.AddCommand(deployCmd)
 
-	deployCmd.Flags().StringVar(&dockerEmail, "docker-email", "", "email to use to login to docker registry")
-	deployCmd.Flags().StringVar(&dockerUsername, "docker-username", "", "username to use to login to docker registry")
-	deployCmd.Flags().StringVar(&dockerPassword, "docker-password", "", "password to use to login to docker registry")
+	var defaultDockerEmail string
+	var defaultDockerUsername string
+	var defaultDockerPassword string
+
+	if os.Getenv("CIRCLECI") == "true" {
+		defaultDockerEmail = os.Getenv("DOCKER_EMAIL")
+		defaultDockerUsername = os.Getenv("DOCKER_USERNAME")
+		defaultDockerPassword = os.Getenv("DOCKER_PASSWORD")
+	}
+
+	deployCmd.Flags().StringVar(&dockerEmail, "docker-email", defaultDockerEmail, "email to use to login to docker registry")
+	deployCmd.Flags().StringVar(&dockerUsername, "docker-username", defaultDockerUsername, "username to use to login to docker registry")
+	deployCmd.Flags().StringVar(&dockerPassword, "docker-password", defaultDockerPassword, "password to use to login to docker registry")
 
 	deployCmd.Flags().StringVar(&kubernetesApiServer, "kubernetes-api-server", "https://api.g8s.fra-1.giantswarm.io", "kubernetes api to deploy to")
 
