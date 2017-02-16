@@ -39,40 +39,42 @@ func runBuild(cmd *cobra.Command, args []string) {
 		log.Fatalf("could not determine test packages: %v", err)
 	}
 
-	goTest := commands.Command{
-		Name: "go-test",
-		Args: []string{
-			"docker",
-			"run",
-			"--rm",
-			"-v", fmt.Sprintf("%v:/go/src/github.com/%v/%v", workingDirectory, organisation, project),
-			"-e", fmt.Sprintf("GOOS=%v", goos),
-			"-e", fmt.Sprintf("GOARCH=%v", goarch),
-			"-e", "GOPATH=/go",
-			"-e", "CGOENABLED=0",
-			"-w", fmt.Sprintf("/go/src/github.com/%v/%v", organisation, project),
-			fmt.Sprintf("%v:%v", golangImage, golangVersion),
-			"go", "test", "-v",
+	goTest := commands.NewDockerCommand(
+		"go-test",
+		commands.DockerCommandConfig{
+			Volumes: []string{
+				fmt.Sprintf("%v:/go/src/github.com/%v/%v", workingDirectory, organisation, project),
+			},
+			Env: []string{
+				fmt.Sprintf("GOOS=%v", goos),
+				fmt.Sprintf("GOARCH=%v", goarch),
+				"GOPATH=/go",
+				"CGOENABLED=0",
+			},
+			WorkingDirectory: fmt.Sprintf("/go/src/github.com/%v/%v", organisation, project),
+			Image:            fmt.Sprintf("%v:%v", golangImage, golangVersion),
+			Args:             []string{"go", "test", "-v"},
 		},
-	}
+	)
 	goTest.Args = append(goTest.Args, testPackageArguments...)
 
-	goBuild := commands.Command{
-		Name: "go-build",
-		Args: []string{
-			"docker",
-			"run",
-			"--rm",
-			"-v", fmt.Sprintf("%v:/go/src/github.com/%v/%v", workingDirectory, organisation, project),
-			"-e", fmt.Sprintf("GOOS=%v", goos),
-			"-e", fmt.Sprintf("GOARCH=%v", goarch),
-			"-e", "GOPATH=/go",
-			"-e", "CGOENABLED=0",
-			"-w", fmt.Sprintf("/go/src/github.com/%v/%v", organisation, project),
-			fmt.Sprintf("%v:%v", golangImage, golangVersion),
-			"go", "build", "-v", "-a", "-tags", "netgo",
+	goBuild := commands.NewDockerCommand(
+		"go-build",
+		commands.DockerCommandConfig{
+			Volumes: []string{
+				fmt.Sprintf("%v:/go/src/github.com/%v/%v", workingDirectory, organisation, project),
+			},
+			Env: []string{
+				fmt.Sprintf("GOOS=%v", goos),
+				fmt.Sprintf("GOARCH=%v", goarch),
+				"GOPATH=/go",
+				"CGOENABLED=0",
+			},
+			WorkingDirectory: fmt.Sprintf("/go/src/github.com/%v/%v", organisation, project),
+			Image:            fmt.Sprintf("%v:%v", golangImage, golangVersion),
+			Args:             []string{"go", "build", "-v", "-a", "-tags", "netgo"},
 		},
-	}
+	)
 
 	dockerBuild := commands.Command{
 		Name: "docker-build",
@@ -85,15 +87,13 @@ func runBuild(cmd *cobra.Command, args []string) {
 		},
 	}
 
-	dockerRun := commands.Command{
-		Name: "docker-run",
-		Args: []string{
-			"docker",
-			"run",
-			fmt.Sprintf("%v/%v/%v:%v", registry, organisation, project, sha),
-			"--help",
+	dockerRun := commands.NewDockerCommand(
+		"docker-run",
+		commands.DockerCommandConfig{
+			Image: fmt.Sprintf("%v/%v/%v:%v", registry, organisation, project, sha),
+			Args:  []string{"--help"},
 		},
-	}
+	)
 
 	commands.RunCommands([]commands.Command{
 		goTest,

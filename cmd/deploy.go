@@ -91,46 +91,48 @@ func runDeploy(cmd *cobra.Command, args []string) {
 		},
 	}
 
-	kubectlClusterInfo := commands.Command{
-		Name: "kubectl-cluster-info",
-		Args: []string{
-			"docker",
-			"run",
-			"--rm",
-			"-v", fmt.Sprintf("%v:/ca.pem", kubernetesCaPath),
-			"-v", fmt.Sprintf("%v:/crt.pem", kubernetesCrtPath),
-			"-v", fmt.Sprintf("%v:/key.pem", kubernetesKeyPath),
-			fmt.Sprintf("giantswarm/kubectl:%v", kubectlVersion),
-			fmt.Sprintf("--server=%v", kubernetesApiServer),
-			"--certificate-authority=/ca.pem",
-			"--client-certificate=/crt.pem",
-			"--client-key=/key.pem",
-			"cluster-info",
+	kubectlClusterInfo := commands.NewDockerCommand(
+		"kubectl-cluster-info",
+		commands.DockerCommandConfig{
+			Volumes: []string{
+				fmt.Sprintf("%v:/ca.pem", kubernetesCaPath),
+				fmt.Sprintf("%v:/crt.pem", kubernetesCrtPath),
+				fmt.Sprintf("%v:/key.pem", kubernetesKeyPath),
+			},
+			Image: fmt.Sprintf("giantswarm/kubectl:%v", kubectlVersion),
+			Args: []string{
+				fmt.Sprintf("--server=%v", kubernetesApiServer),
+				"--certificate-authority=/ca.pem",
+				"--client-certificate=/crt.pem",
+				"--client-key=/key.pem",
+				"cluster-info",
+			},
 		},
-	}
+	)
 
 	templatedResourcesDirectoryAbsolutePath, err := filepath.Abs(templatedResourcesDirectoryPath)
 	if err != nil {
 		log.Fatalf("could not get absolute path for templated resources directory: %v\n", err)
 	}
-	kubectlApply := commands.Command{
-		Name: "kubectl-apply",
-		Args: []string{
-			"docker",
-			"run",
-			"--rm",
-			"-v", fmt.Sprintf("%v:/ca.pem", kubernetesCaPath),
-			"-v", fmt.Sprintf("%v:/crt.pem", kubernetesCrtPath),
-			"-v", fmt.Sprintf("%v:/key.pem", kubernetesKeyPath),
-			"-v", fmt.Sprintf("%v:/kubernetes", templatedResourcesDirectoryAbsolutePath),
-			fmt.Sprintf("giantswarm/kubectl:%v", kubectlVersion),
-			fmt.Sprintf("--server=%v", kubernetesApiServer),
-			"--certificate-authority=/ca.pem",
-			"--client-certificate=/crt.pem",
-			"--client-key=/key.pem",
-			"apply", "-f", "/kubernetes",
+
+	kubectlApply := commands.NewDockerCommand(
+		"kubectl-apply",
+		commands.DockerCommandConfig{
+			Volumes: []string{
+				fmt.Sprintf("%v:/ca.pem", kubernetesCaPath),
+				fmt.Sprintf("%v:/crt.pem", kubernetesCrtPath),
+				fmt.Sprintf("%v:/key.pem", kubernetesKeyPath),
+				fmt.Sprintf("%v:/kubernetes", templatedResourcesDirectoryAbsolutePath),
+			},
+			Image: fmt.Sprintf("giantswarm/kubectl:%v", kubectlVersion),
+			Args: []string{
+				"--certificate-authority=/ca.pem",
+				"--client-certificate=/crt.pem",
+				"--client-key=/key.pem",
+				"apply", "-f", "/kubernetes",
+			},
 		},
-	}
+	)
 
 	commands.RunCommands([]commands.Command{
 		dockerLogin,
