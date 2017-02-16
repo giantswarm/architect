@@ -7,9 +7,51 @@ import (
 	"strings"
 )
 
+type DockerCommandConfig struct {
+	Volumes          []string
+	Env              []string
+	WorkingDirectory string
+	Image            string
+	Args             []string
+}
+
 type Command struct {
 	Name string
 	Args []string
+}
+
+func NewDockerCommand(name string, config DockerCommandConfig) Command {
+	args := []string{
+		"docker", "run",
+	}
+
+	if os.Getenv("CIRCLECI") == "true" {
+		args = append(args, "--rm=false")
+	} else {
+		args = append(args, "--rm")
+	}
+
+	for _, volume := range config.Volumes {
+		args = append(args, "-v", volume)
+	}
+
+	for _, env := range config.Env {
+		args = append(args, "-e", env)
+	}
+
+	args = append(args, "-w", config.WorkingDirectory)
+	args = append(args, config.Image)
+
+	for _, arg := range config.Args {
+		args = append(args, arg)
+	}
+
+	newDockerCommand := Command{
+		Name: name,
+		Args: args,
+	}
+
+	return newDockerCommand
 }
 
 func Run(command Command) error {
