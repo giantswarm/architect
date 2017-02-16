@@ -30,10 +30,18 @@ func init() {
 		log.Fatalf("could not get working directory: %v\n", err)
 	}
 
-	// We can also infer the organisation and project from the path, for the defaults.
-	path := strings.Split(defaultWorkingDirectory, string(os.PathSeparator))
-	defaultOrganisation := path[len(path)-2]
-	defaultProject := path[len(path)-1]
+	var defaultOrganisation string
+	var defaultProject string
+	if os.Getenv("CIRCLECI") == "true" {
+		// If we're running on CircleCI, we can be smart with the organisation and project values.
+		defaultOrganisation = os.Getenv("CIRCLE_PROJECT_USERNAME")
+		defaultProject = os.Getenv("CIRCLE_PROJECT_REPONAME")
+	} else {
+		// If running elsewhere, we can attempt to infer the organisation and project value from the path.
+		path := strings.Split(defaultWorkingDirectory, string(os.PathSeparator))
+		defaultOrganisation = path[len(path)-2]
+		defaultProject = path[len(path)-1]
+	}
 
 	// We also use the git HEAD commit sha as well.
 	out, err := exec.Command("git", "rev-parse", "HEAD").Output()
