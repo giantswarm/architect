@@ -25,6 +25,8 @@ func NewDockerCommand(name string, config DockerCommandConfig) Command {
 		"docker", "run",
 	}
 
+	// CircleCI struggles with intermediate images, this helps to deal with that.
+	// See https://circleci.com/docs/docker/#deployment-to-a-docker-registry
 	if os.Getenv("CIRCLECI") == "true" {
 		args = append(args, "--rm=false")
 	} else {
