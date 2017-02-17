@@ -87,8 +87,16 @@ func runBuild(cmd *cobra.Command, args []string) {
 		},
 	}
 
-	dockerRun := commands.NewDockerCommand(
-		"docker-run",
+	dockerRunVersion := commands.NewDockerCommand(
+		"docker-run-version",
+		commands.DockerCommandConfig{
+			Image: fmt.Sprintf("%v/%v/%v:%v", registry, organisation, project, sha),
+			Args:  []string{"version"},
+		},
+	)
+
+	dockerRunHelp := commands.NewDockerCommand(
+		"docker-run-help",
 		commands.DockerCommandConfig{
 			Image: fmt.Sprintf("%v/%v/%v:%v", registry, organisation, project, sha),
 			Args:  []string{"--help"},
@@ -99,6 +107,7 @@ func runBuild(cmd *cobra.Command, args []string) {
 		goTest,
 		goBuild,
 		dockerBuild,
-		dockerRun,
+		dockerRunVersion,
+		dockerRunHelp,
 	})
 }
