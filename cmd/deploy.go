@@ -58,7 +58,7 @@ func init() {
 	deployCmd.Flags().StringVar(&kubernetesCrtPath, "kubernetes-crt-path", "", "path to kubernetes certificate file")
 	deployCmd.Flags().StringVar(&kubernetesKeyPath, "kubernetes-key-path", "", "path to kubernetes key file")
 
-	deployCmd.Flags().StringVar(&kubectlVersion, "kubectl-version", "1.5.2", "kubectl version")
+	deployCmd.Flags().StringVar(&kubectlVersion, "kubectl-version", "1.4.7", "kubectl version")
 
 	deployCmd.Flags().StringVar(&kubernetesResourcesDirectoryPath, "kubernetes-resources-directory-path", "./kubernetes", "directory holding kubernetes resources")
 	deployCmd.Flags().StringVar(&templatedResourcesDirectoryPath, "templated-resources-directory-path", "./kubernetes-templated", "directory holding templated kubernetes resources")
