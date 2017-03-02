@@ -70,6 +70,15 @@ func runDeploy(cmd *cobra.Command, args []string) {
 		log.Fatalf("could not template kubernetes resources: %v\n", err)
 	}
 
+	// When running in CircleCI, we can attempt to grab kubernetes certificates from the environment
+	if kubernetesCaPath == "" && kubernetesCrtPath == "" && kubernetesKeyPath == "" && os.Getenv("CIRCLECI") == "true" {
+		var err error
+		kubernetesCaPath, kubernetesCrtPath, kubernetesKeyPath, err = utils.FetchKubernetesCertsFromEnvironment(workingDirectory)
+		if err != nil {
+			log.Printf("could not load kubernetes certificates from env: %v\n", err)
+		}
+	}
+
 	dockerLogin := commands.Command{
 		Name: "docker-login",
 		Args: []string{
