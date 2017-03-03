@@ -72,7 +72,7 @@ func runBuild(cmd *cobra.Command, args []string) {
 			},
 			WorkingDirectory: fmt.Sprintf("/go/src/github.com/%v/%v", organisation, project),
 			Image:            fmt.Sprintf("%v:%v", golangImage, golangVersion),
-			Args:             []string{"go", "build", "-v", "-a", "-tags", "netgo"},
+			Args:             []string{"go", "build", "-v", "-a", "-tags", "netgo", "-ldflags", "-linkmode 'external' -extldflags '-static'"},
 		},
 	)
 
