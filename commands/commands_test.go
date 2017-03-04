@@ -1,10 +1,53 @@
 package commands
 
 import (
+	"fmt"
 	"os"
 	"reflect"
 	"testing"
 )
+
+func TestCommandString(t *testing.T) {
+	tests := []struct {
+		command        Command
+		expectedString string
+	}{
+		{
+			command: Command{
+				Name: "docker-run",
+				Args: []string{"docker", "run"},
+			},
+			expectedString: "docker-run: 'docker run'",
+		},
+		{
+			command: Command{
+				Name: "docker-login",
+				Args: []string{"docker", "login", "--email=foo", "--password=bar"},
+			},
+			expectedString: "docker-login: 'docker login --email=foo --password=[REDACTED]'",
+		},
+		{
+			command: Command{
+				Name: "many-pass",
+				Args: []string{"foo", "--first-password=bar", "--second-password=baz"},
+			},
+			expectedString: "many-pass: 'foo --first-password=[REDACTED] --second-password=[REDACTED]'",
+		},
+	}
+
+	for index, test := range tests {
+		returnedString := fmt.Sprintf("%s", test.command)
+
+		if returnedString != test.expectedString {
+			t.Fatalf(
+				"%v: expected string did not match returned\nexpected:\n%s\nreturned: \n%s\n",
+				index,
+				test.expectedString,
+				returnedString,
+			)
+		}
+	}
+}
 
 func TestNewDockerCommand(t *testing.T) {
 	tests := []struct {
