@@ -18,6 +18,7 @@ var (
 		Run:   runDeploy,
 	}
 
+	dockerEmail    string
 	dockerUsername string
 	dockerPassword string
 
@@ -37,14 +38,17 @@ var (
 func init() {
 	RootCmd.AddCommand(deployCmd)
 
+	var defaultDockerEmail string
 	var defaultDockerUsername string
 	var defaultDockerPassword string
 
 	if os.Getenv("CIRCLECI") == "true" {
+		defaultDockerEmail = os.Getenv("DOCKER_EMAIL")
 		defaultDockerUsername = os.Getenv("DOCKER_USERNAME")
 		defaultDockerPassword = os.Getenv("DOCKER_PASSWORD")
 	}
 
+	deployCmd.Flags().StringVar(&dockerEmail, "docker-email", defaultDockerEmail, "email to use to login to docker registry")
 	deployCmd.Flags().StringVar(&dockerUsername, "docker-username", defaultDockerUsername, "username to use to login to docker registry")
 	deployCmd.Flags().StringVar(&dockerPassword, "docker-password", defaultDockerPassword, "password to use to login to docker registry")
 
@@ -80,6 +84,7 @@ func runDeploy(cmd *cobra.Command, args []string) {
 		Args: []string{
 			"docker",
 			"login",
+			fmt.Sprintf("--email=%v", dockerEmail),
 			fmt.Sprintf("--username=%v", dockerUsername),
 			fmt.Sprintf("--password=%v", dockerPassword),
 			registry,
