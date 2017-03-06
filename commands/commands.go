@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -18,6 +19,35 @@ type DockerCommandConfig struct {
 type Command struct {
 	Name string
 	Args []string
+}
+
+func (c Command) String() string {
+	redactionPhrases := []string{
+		"password",
+	}
+
+	redactedArgs := []string{}
+	for _, arg := range c.Args {
+		requiresRedaction := false
+
+		for _, redactionPhrase := range redactionPhrases {
+			if strings.Contains(arg, redactionPhrase) {
+				requiresRedaction = true
+			}
+		}
+
+		if requiresRedaction {
+			parts := strings.Split(arg, "=")
+			if len(parts) == 2 {
+				parts[1] = "[REDACTED]"
+				arg = parts[0] + "=" + parts[1]
+			}
+		}
+
+		redactedArgs = append(redactedArgs, arg)
+	}
+
+	return fmt.Sprintf("%s: '%s'", c.Name, strings.Join(redactedArgs, " "))
 }
 
 func NewDockerCommand(name string, config DockerCommandConfig) Command {
@@ -59,8 +89,7 @@ func NewDockerCommand(name string, config DockerCommandConfig) Command {
 func Run(command Command) error {
 	cmd := exec.Command(command.Args[0], command.Args[1:]...)
 
-	log.Printf("running command: %v\n", command.Name)
-	log.Printf("%v\n", strings.Join(cmd.Args, " "))
+	log.Printf("running command: %s\n", command)
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
