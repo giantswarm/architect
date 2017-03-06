@@ -38,8 +38,10 @@ func (c Command) String() string {
 
 		if requiresRedaction {
 			parts := strings.Split(arg, "=")
-			parts[1] = "[REDACTED]"
-			arg = parts[0] + "=" + parts[1]
+			if len(parts) == 2 {
+				parts[1] = "[REDACTED]"
+				arg = parts[0] + "=" + parts[1]
+			}
 		}
 
 		redactedArgs = append(redactedArgs, arg)

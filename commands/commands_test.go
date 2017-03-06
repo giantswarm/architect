@@ -33,6 +33,13 @@ func TestCommandString(t *testing.T) {
 			},
 			expectedString: "many-pass: 'foo --first-password=[REDACTED] --second-password=[REDACTED]'",
 		},
+		{
+			command: Command{
+				Name: "boolean-flag",
+				Args: []string{"foo", "-password"},
+			},
+			expectedString: "boolean-flag: 'foo -password'",
+		},
 	}
 
 	for index, test := range tests {
