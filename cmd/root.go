@@ -21,6 +21,8 @@ var (
 	organisation string
 	project      string
 	sha          string
+
+	dryRun bool
 )
 
 func init() {
@@ -56,4 +58,6 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&organisation, "organisation", defaultOrganisation, "organisation who owns the project")
 	RootCmd.PersistentFlags().StringVar(&project, "project", defaultProject, "name of the project")
 	RootCmd.PersistentFlags().StringVar(&sha, "sha", defaultSha, "git SHA1 to build")
+
+	RootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", dryRun, "show what would be executed, but take no action")
 }

@@ -1,11 +1,12 @@
 package cmd
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/giantswarm/architect/commands"
-	"github.com/giantswarm/architect/utils"
+	"github.com/giantswarm/architect/workflow"
+
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
 
@@ -34,80 +35,33 @@ func init() {
 }
 
 func runBuild(cmd *cobra.Command, args []string) {
-	testPackageArguments, err := utils.NoVendor(workingDirectory)
+	projectInfo := workflow.ProjectInfo{
+		WorkingDirectory: workingDirectory,
+		Organisation:     organisation,
+		Project:          project,
+		Sha:              sha,
+
+		Registry: registry,
+
+		Goos:          goos,
+		Goarch:        goarch,
+		GolangImage:   golangImage,
+		GolangVersion: golangVersion,
+	}
+
+	fs := afero.NewOsFs()
+
+	workflow, err := workflow.GetBuildWorkflow(projectInfo, fs)
 	if err != nil {
-		log.Fatalf("could not determine test packages: %v", err)
+		log.Fatalf("could not fetch workflow: %v", err)
 	}
 
-	goTest := commands.NewDockerCommand(
-		"go-test",
-		commands.DockerCommandConfig{
-			Volumes: []string{
-				fmt.Sprintf("%v:/go/src/github.com/%v/%v", workingDirectory, organisation, project),
-			},
-			Env: []string{
-				fmt.Sprintf("GOOS=%v", goos),
-				fmt.Sprintf("GOARCH=%v", goarch),
-				"GOPATH=/go",
-				"CGOENABLED=0",
-			},
-			WorkingDirectory: fmt.Sprintf("/go/src/github.com/%v/%v", organisation, project),
-			Image:            fmt.Sprintf("%v:%v", golangImage, golangVersion),
-			Args:             []string{"go", "test", "-v"},
-		},
-	)
-	goTest.Args = append(goTest.Args, testPackageArguments...)
+	log.Printf("running workflow: %s\n", workflow)
 
-	goBuild := commands.NewDockerCommand(
-		"go-build",
-		commands.DockerCommandConfig{
-			Volumes: []string{
-				fmt.Sprintf("%v:/go/src/github.com/%v/%v", workingDirectory, organisation, project),
-			},
-			Env: []string{
-				fmt.Sprintf("GOOS=%v", goos),
-				fmt.Sprintf("GOARCH=%v", goarch),
-				"GOPATH=/go",
-				"CGOENABLED=0",
-			},
-			WorkingDirectory: fmt.Sprintf("/go/src/github.com/%v/%v", organisation, project),
-			Image:            fmt.Sprintf("%v:%v", golangImage, golangVersion),
-			Args:             []string{"go", "build", "-v", "-a", "-tags", "netgo", "-ldflags", "-linkmode 'external' -extldflags '-static'"},
-		},
-	)
-
-	dockerBuild := commands.Command{
-		Name: "docker-build",
-		Args: []string{
-			"docker",
-			"build",
-			"-t",
-			fmt.Sprintf("%v/%v/%v:%v", registry, organisation, project, sha),
-			workingDirectory,
-		},
+	if dryRun {
+		log.Printf("dry run, not actually running workflow")
+		return
 	}
 
-	dockerRunVersion := commands.NewDockerCommand(
-		"docker-run-version",
-		commands.DockerCommandConfig{
-			Image: fmt.Sprintf("%v/%v/%v:%v", registry, organisation, project, sha),
-			Args:  []string{"version"},
-		},
-	)
-
-	dockerRunHelp := commands.NewDockerCommand(
-		"docker-run-help",
-		commands.DockerCommandConfig{
-			Image: fmt.Sprintf("%v/%v/%v:%v", registry, organisation, project, sha),
-			Args:  []string{"--help"},
-		},
-	)
-
-	commands.RunCommands([]commands.Command{
-		goTest,
-		goBuild,
-		dockerBuild,
-		dockerRunVersion,
-		dockerRunHelp,
-	})
+	commands.RunCommands(workflow)
 }

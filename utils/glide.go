@@ -2,14 +2,15 @@ package utils
 
 import (
 	"fmt"
-	"io/ioutil"
 	"path/filepath"
+
+	"github.com/spf13/afero"
 )
 
 // NoVendor replicates glide's novendor command, so we don't have to
 // package it at all.
-func NoVendor(workingDirectory string) ([]string, error) {
-	directories, err := ioutil.ReadDir(workingDirectory)
+func NoVendor(workingDirectory string, fs afero.Fs) ([]string, error) {
+	directories, err := afero.ReadDir(fs, workingDirectory)
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +26,7 @@ func NoVendor(workingDirectory string) ([]string, error) {
 			continue
 		}
 
-		files, err := ioutil.ReadDir(directory.Name())
+		files, err := afero.ReadDir(fs, directory.Name())
 		if err != nil {
 			return nil, err
 		}
