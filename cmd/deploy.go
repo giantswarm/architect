@@ -73,7 +73,7 @@ func runDeploy(cmd *cobra.Command, args []string) {
 	// When running in CircleCI, we can attempt to grab kubernetes certificates from the environment
 	if kubernetesCaPath == "" && kubernetesCrtPath == "" && kubernetesKeyPath == "" && os.Getenv("CIRCLECI") == "true" {
 		var err error
-		kubernetesCaPath, kubernetesCrtPath, kubernetesKeyPath, err = utils.FetchKubernetesCertsFromEnvironment(fs, workingDirectory)
+		kubernetesCaPath, kubernetesCrtPath, kubernetesKeyPath, err = utils.K8SCertsFromEnv(fs, workingDirectory)
 		if err != nil {
 			log.Printf("could not load kubernetes certificates from env: %v\n", err)
 		}
@@ -108,7 +108,7 @@ func runDeploy(cmd *cobra.Command, args []string) {
 		KubernetesTemplatedResourcesDirectoryPath: templatedResourcesDirectoryAbsolutePath,
 	}
 
-	workflow, err := workflow.GetDeployWorkflow(projectInfo, fs)
+	workflow, err := workflow.NewDeploy(projectInfo, fs)
 	if err != nil {
 		log.Fatalf("could not get workflow: %v", err)
 	}

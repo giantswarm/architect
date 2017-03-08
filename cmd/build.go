@@ -51,7 +51,7 @@ func runBuild(cmd *cobra.Command, args []string) {
 
 	fs := afero.NewOsFs()
 
-	workflow, err := workflow.GetBuildWorkflow(projectInfo, fs)
+	workflow, err := workflow.NewBuild(projectInfo, fs)
 	if err != nil {
 		log.Fatalf("could not fetch workflow: %v", err)
 	}

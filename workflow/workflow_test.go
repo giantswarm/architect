@@ -46,8 +46,8 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedCommandNames: map[int]string{
-				0: "go-test",
-				1: "go-build",
+				0: GoTestCommandName,
+				1: GoBuildCommandName,
 			},
 		},
 
@@ -61,9 +61,9 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedCommandNames: map[int]string{
-				0: "docker-build",
-				1: "docker-run-version",
-				2: "docker-run-help",
+				0: DockerBuildCommandName,
+				1: DockerRunVersionCommandName,
+				2: DockerRunHelpCommandName,
 			},
 		},
 
@@ -80,11 +80,11 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedCommandNames: map[int]string{
-				0: "go-test",
-				1: "go-build",
-				2: "docker-build",
-				3: "docker-run-version",
-				4: "docker-run-help",
+				0: GoTestCommandName,
+				1: GoBuildCommandName,
+				2: DockerBuildCommandName,
+				3: DockerRunVersionCommandName,
+				4: DockerRunHelpCommandName,
 			},
 		},
 	}
@@ -95,7 +95,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 			t.Fatalf("received unexpected error during setup: %v", err)
 		}
 
-		workflow, err := GetBuildWorkflow(projectInfo, fs)
+		workflow, err := NewBuild(projectInfo, fs)
 		if err != nil {
 			t.Fatalf("received unexpected error getting build workflow: %v", err)
 		}
@@ -162,8 +162,8 @@ func TestGetDeployWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedCommandNames: map[int]string{
-				0: "docker-login",
-				1: "docker-push",
+				0: DockerLoginCommandName,
+				1: DockerPushCommandName,
 			},
 		},
 
@@ -177,8 +177,8 @@ func TestGetDeployWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedCommandNames: map[int]string{
-				0: "kubectl-cluster-info",
-				1: "kubectl-apply",
+				0: KubectlClusterInfoCommandName,
+				1: KubectlApplyCommandName,
 			},
 		},
 
@@ -195,10 +195,10 @@ func TestGetDeployWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedCommandNames: map[int]string{
-				0: "docker-login",
-				1: "docker-push",
-				2: "kubectl-cluster-info",
-				3: "kubectl-apply",
+				0: DockerLoginCommandName,
+				1: DockerPushCommandName,
+				2: KubectlClusterInfoCommandName,
+				3: KubectlApplyCommandName,
 			},
 		},
 	}
@@ -209,7 +209,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 			t.Fatalf("received unexpected error during setup: %v", err)
 		}
 
-		workflow, err := GetDeployWorkflow(projectInfo, fs)
+		workflow, err := NewDeploy(projectInfo, fs)
 		if err != nil {
 			t.Fatalf("received unexpected error getting build workflow: %v", err)
 		}

@@ -38,8 +38,8 @@ func TemplateKubernetesResources(fs afero.Fs, kubernetesResourcesDirectoryPath, 
 	return nil
 }
 
-// FetchKubernetesCertsFromEnvironment attempts to load certificates from the environment
-func FetchKubernetesCertsFromEnvironment(fs afero.Fs, workingDirectory string) (string, string, string, error) {
+// K8SCertsFromEnv attempts to load certificates from the environment
+func K8SCertsFromEnv(fs afero.Fs, workingDirectory string) (string, string, string, error) {
 	caName := "ca.pem"
 	crtName := "crt.pem"
 	keyName := "key.pem"

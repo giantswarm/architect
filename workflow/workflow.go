@@ -11,6 +11,21 @@ import (
 	"github.com/spf13/afero"
 )
 
+var (
+	GoTestCommandName  = "go-test"
+	GoBuildCommandName = "go-build"
+
+	DockerBuildCommandName      = "docker-build"
+	DockerRunVersionCommandName = "docker-run-version"
+	DockerRunHelpCommandName    = "docker-run-help"
+
+	DockerLoginCommandName = "docker-login"
+	DockerPushCommandName  = "docker-push"
+
+	KubectlClusterInfoCommandName = "kubectl-cluster-info"
+	KubectlApplyCommandName       = "kubectl-apply"
+)
+
 type Workflow []commands.Command
 
 func (w Workflow) String() string {
@@ -46,7 +61,7 @@ type ProjectInfo struct {
 	GolangVersion string
 }
 
-func GetBuildWorkflow(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
+func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 	w := Workflow{}
 
 	if projectInfo.WorkingDirectory == "" {
@@ -83,7 +98,7 @@ func GetBuildWorkflow(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 
 		goTest := commands.NewDockerCommand(
-			"go-test",
+			GoTestCommandName,
 			commands.DockerCommandConfig{
 				Volumes: []string{
 					fmt.Sprintf(
@@ -112,7 +127,7 @@ func GetBuildWorkflow(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		w = append(w, goTest)
 
 		goBuild := commands.NewDockerCommand(
-			"go-build",
+			GoBuildCommandName,
 			commands.DockerCommandConfig{
 				Volumes: []string{
 					fmt.Sprintf(
@@ -153,7 +168,7 @@ func GetBuildWorkflow(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 
 		dockerBuild := commands.Command{
-			Name: "docker-build",
+			Name: DockerBuildCommandName,
 			Args: []string{
 				"docker",
 				"build",
@@ -165,7 +180,7 @@ func GetBuildWorkflow(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		w = append(w, dockerBuild)
 
 		dockerRunVersion := commands.NewDockerCommand(
-			"docker-run-version",
+			DockerRunVersionCommandName,
 			commands.DockerCommandConfig{
 				Image: fmt.Sprintf("%v/%v/%v:%v", projectInfo.Registry, projectInfo.Organisation, projectInfo.Project, projectInfo.Sha),
 				Args:  []string{"version"},
@@ -174,7 +189,7 @@ func GetBuildWorkflow(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		w = append(w, dockerRunVersion)
 
 		dockerRunHelp := commands.NewDockerCommand(
-			"docker-run-help",
+			DockerRunHelpCommandName,
 			commands.DockerCommandConfig{
 				Image: fmt.Sprintf("%v/%v/%v:%v", projectInfo.Registry, projectInfo.Organisation, projectInfo.Project, projectInfo.Sha),
 				Args:  []string{"--help"},
@@ -186,7 +201,7 @@ func GetBuildWorkflow(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 	return w, nil
 }
 
-func GetDeployWorkflow(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
+func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 	w := Workflow{}
 
 	if projectInfo.WorkingDirectory == "" {
@@ -218,7 +233,7 @@ func GetDeployWorkflow(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 
 		dockerLogin := commands.Command{
-			Name: "docker-login",
+			Name: DockerLoginCommandName,
 			Args: []string{
 				"docker",
 				"login",
@@ -231,7 +246,7 @@ func GetDeployWorkflow(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		w = append(w, dockerLogin)
 
 		dockerPush := commands.Command{
-			Name: "docker-push",
+			Name: DockerPushCommandName,
 			Args: []string{
 				"docker",
 				"push",
@@ -266,7 +281,7 @@ func GetDeployWorkflow(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 
 		kubectlClusterInfo := commands.NewDockerCommand(
-			"kubectl-cluster-info",
+			KubectlClusterInfoCommandName,
 			commands.DockerCommandConfig{
 				Volumes: []string{
 					fmt.Sprintf("%v:/ca.pem", projectInfo.KubernetesCaPath),
@@ -286,7 +301,7 @@ func GetDeployWorkflow(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		w = append(w, kubectlClusterInfo)
 
 		kubectlApply := commands.NewDockerCommand(
-			"kubectl-apply",
+			KubectlApplyCommandName,
 			commands.DockerCommandConfig{
 				Volumes: []string{
 					fmt.Sprintf("%v:/ca.pem", projectInfo.KubernetesCaPath),
