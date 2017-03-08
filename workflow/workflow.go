@@ -315,7 +315,7 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 					"--certificate-authority=/ca.pem",
 					"--client-certificate=/crt.pem",
 					"--client-key=/key.pem",
-					"apply", "-r", "-f", "/kubernetes",
+					"apply", "-R", "-f", "/kubernetes",
 				},
 			},
 		)
