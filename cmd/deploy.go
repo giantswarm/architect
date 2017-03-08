@@ -1,13 +1,15 @@
 package cmd
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/giantswarm/architect/commands"
 	"github.com/giantswarm/architect/utils"
+	"github.com/giantswarm/architect/workflow"
+
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 )
 
@@ -66,93 +68,62 @@ func init() {
 }
 
 func runDeploy(cmd *cobra.Command, args []string) {
-	if err := utils.TemplateKubernetesResources(kubernetesResourcesDirectoryPath, templatedResourcesDirectoryPath, sha); err != nil {
-		log.Fatalf("could not template kubernetes resources: %v\n", err)
-	}
+	fs := afero.NewOsFs()
 
 	// When running in CircleCI, we can attempt to grab kubernetes certificates from the environment
 	if kubernetesCaPath == "" && kubernetesCrtPath == "" && kubernetesKeyPath == "" && os.Getenv("CIRCLECI") == "true" {
 		var err error
-		kubernetesCaPath, kubernetesCrtPath, kubernetesKeyPath, err = utils.FetchKubernetesCertsFromEnvironment(workingDirectory)
+		kubernetesCaPath, kubernetesCrtPath, kubernetesKeyPath, err = utils.K8SCertsFromEnv(fs, workingDirectory)
 		if err != nil {
 			log.Printf("could not load kubernetes certificates from env: %v\n", err)
 		}
 	}
 
-	dockerLogin := commands.Command{
-		Name: "docker-login",
-		Args: []string{
-			"docker",
-			"login",
-			fmt.Sprintf("--email=%v", dockerEmail),
-			fmt.Sprintf("--username=%v", dockerUsername),
-			fmt.Sprintf("--password=%v", dockerPassword),
-			registry,
-		},
+	// Manage kubernetes resource templating
+	if err := utils.TemplateKubernetesResources(fs, kubernetesResourcesDirectoryPath, templatedResourcesDirectoryPath, sha); err != nil {
+		log.Fatalf("could not template kubernetes resources: %v\n", err)
 	}
-
-	dockerPush := commands.Command{
-		Name: "docker-push",
-		Args: []string{
-			"docker",
-			"push",
-			fmt.Sprintf("%v/%v/%v:%v", registry, organisation, project, sha),
-		},
-	}
-
-	kubectlClusterInfo := commands.NewDockerCommand(
-		"kubectl-cluster-info",
-		commands.DockerCommandConfig{
-			Volumes: []string{
-				fmt.Sprintf("%v:/ca.pem", kubernetesCaPath),
-				fmt.Sprintf("%v:/crt.pem", kubernetesCrtPath),
-				fmt.Sprintf("%v:/key.pem", kubernetesKeyPath),
-			},
-			Image: fmt.Sprintf("giantswarm/kubectl:%v", kubectlVersion),
-			Args: []string{
-				fmt.Sprintf("--server=%v", kubernetesApiServer),
-				"--certificate-authority=/ca.pem",
-				"--client-certificate=/crt.pem",
-				"--client-key=/key.pem",
-				"cluster-info",
-			},
-		},
-	)
 
 	templatedResourcesDirectoryAbsolutePath, err := filepath.Abs(templatedResourcesDirectoryPath)
 	if err != nil {
 		log.Fatalf("could not get absolute path for templated resources directory: %v\n", err)
 	}
 
-	kubectlApply := commands.NewDockerCommand(
-		"kubectl-apply",
-		commands.DockerCommandConfig{
-			Volumes: []string{
-				fmt.Sprintf("%v:/ca.pem", kubernetesCaPath),
-				fmt.Sprintf("%v:/crt.pem", kubernetesCrtPath),
-				fmt.Sprintf("%v:/key.pem", kubernetesKeyPath),
-				fmt.Sprintf("%v:/kubernetes", templatedResourcesDirectoryAbsolutePath),
-			},
-			Image: fmt.Sprintf("giantswarm/kubectl:%v", kubectlVersion),
-			Args: []string{
-				fmt.Sprintf("--server=%v", kubernetesApiServer),
-				"--certificate-authority=/ca.pem",
-				"--client-certificate=/crt.pem",
-				"--client-key=/key.pem",
-				"apply", "-f", "/kubernetes",
-			},
-		},
-	)
+	projectInfo := workflow.ProjectInfo{
+		WorkingDirectory: workingDirectory,
+		Organisation:     organisation,
+		Project:          project,
+		Sha:              sha,
 
-	commands.RunCommands([]commands.Command{
-		dockerLogin,
-		dockerPush,
-		kubectlClusterInfo,
-		kubectlApply,
-	})
+		Registry:       registry,
+		DockerEmail:    dockerEmail,
+		DockerUsername: dockerUsername,
+		DockerPassword: dockerPassword,
+
+		KubernetesApiServer:                       kubernetesApiServer,
+		KubernetesCaPath:                          kubernetesCaPath,
+		KubernetesCrtPath:                         kubernetesCrtPath,
+		KubernetesKeyPath:                         kubernetesKeyPath,
+		KubectlVersion:                            kubectlVersion,
+		KubernetesTemplatedResourcesDirectoryPath: templatedResourcesDirectoryAbsolutePath,
+	}
+
+	workflow, err := workflow.NewDeploy(projectInfo, fs)
+	if err != nil {
+		log.Fatalf("could not get workflow: %v", err)
+	}
+
+	log.Printf("running workflow: %s\n", workflow)
+
+	if dryRun {
+		log.Printf("dry run, not actually running workflow")
+		return
+	}
+
+	commands.RunCommands(workflow)
 
 	if removeResourceFilesAfterUse {
-		if err := os.RemoveAll(templatedResourcesDirectoryPath); err != nil {
+		if err := os.RemoveAll(templatedResourcesDirectoryAbsolutePath); err != nil {
 			log.Fatalf("could not remove templated resources directory: %v\n", err)
 		}
 	}

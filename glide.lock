@@ -1,10 +1,19 @@
 hash: 4a54e8a576378319a8d6f325a0e647c8d6a4b452e922f7657c8cd3f3e84e7a73
-updated: 2017-01-27T16:25:51.48067441Z
+updated: 2017-03-07T11:08:31.279299172Z
 imports:
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/spf13/cobra
-  version: dc208f4211e7f6df7ec8cb62640f57d3e154910d
+  version: fcd0c5a1df88f5d6784cb4feead962c3f3d0b66c
 - name: github.com/spf13/pflag
-  version: 5ccb023bc27df288a957c5e994cd44fd19619465
-testImports: []
+  version: 9ff6c6923cfffbcd502984b8e0c80539a94968b7
+testImports:
+- name: github.com/spf13/afero
+  version: 9be650865eab0c12963d8753212f4f9c66cdcf12
+  subpackages:
+  - mem
+- name: golang.org/x/text
+  version: f28f36722d5ef2f9655ad3de1f248e3e52ad5ebd
+  subpackages:
+  - transform
+  - unicode/norm

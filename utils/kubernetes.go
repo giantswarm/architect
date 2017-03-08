@@ -3,33 +3,34 @@ package utils
 import (
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/spf13/afero"
 )
 
-func TemplateKubernetesResources(kubernetesResourcesDirectoryPath, templatedResourcesDirectoryPath, sha string) error {
-	if _, err := os.Stat(templatedResourcesDirectoryPath); os.IsNotExist(err) {
-		if err := os.Mkdir(templatedResourcesDirectoryPath, 0755); err != nil {
+func TemplateKubernetesResources(fs afero.Fs, kubernetesResourcesDirectoryPath, templatedResourcesDirectoryPath, sha string) error {
+	if _, err := fs.Stat(templatedResourcesDirectoryPath); os.IsNotExist(err) {
+		if err := fs.Mkdir(templatedResourcesDirectoryPath, 0755); err != nil {
 			return err
 		}
 	}
 
-	files, err := ioutil.ReadDir(kubernetesResourcesDirectoryPath)
+	files, err := afero.ReadDir(fs, kubernetesResourcesDirectoryPath)
 	if err != nil {
 		return err
 	}
 
 	for _, file := range files {
-		contents, err := ioutil.ReadFile(filepath.Join(kubernetesResourcesDirectoryPath, file.Name()))
+		contents, err := afero.ReadFile(fs, filepath.Join(kubernetesResourcesDirectoryPath, file.Name()))
 		if err != nil {
 			return err
 		}
 
 		templatedContents := strings.Replace(string(contents), "%%DOCKER_TAG%%", sha, -1)
 
-		if err := ioutil.WriteFile(filepath.Join(templatedResourcesDirectoryPath, file.Name()), []byte(templatedContents), 0755); err != nil {
+		if err := afero.WriteFile(fs, filepath.Join(templatedResourcesDirectoryPath, file.Name()), []byte(templatedContents), 0755); err != nil {
 			return err
 		}
 	}
@@ -37,8 +38,8 @@ func TemplateKubernetesResources(kubernetesResourcesDirectoryPath, templatedReso
 	return nil
 }
 
-// FetchKubernetesCertsFromEnvironment attempts to load certificates from the environment
-func FetchKubernetesCertsFromEnvironment(workingDirectory string) (string, string, string, error) {
+// K8SCertsFromEnv attempts to load certificates from the environment
+func K8SCertsFromEnv(fs afero.Fs, workingDirectory string) (string, string, string, error) {
 	caName := "ca.pem"
 	crtName := "crt.pem"
 	keyName := "key.pem"
@@ -63,7 +64,7 @@ func FetchKubernetesCertsFromEnvironment(workingDirectory string) (string, strin
 			return "", "", "", err
 		}
 
-		if err := ioutil.WriteFile(asset.name, data, 0644); err != nil {
+		if err := afero.WriteFile(fs, asset.name, data, 0644); err != nil {
 			return "", "", "", err
 		}
 	}
