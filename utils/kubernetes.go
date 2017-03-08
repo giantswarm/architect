@@ -10,27 +10,79 @@ import (
 	"github.com/spf13/afero"
 )
 
-func TemplateKubernetesResources(fs afero.Fs, kubernetesResourcesDirectoryPath, templatedResourcesDirectoryPath, sha string) error {
-	if _, err := fs.Stat(templatedResourcesDirectoryPath); os.IsNotExist(err) {
-		if err := fs.Mkdir(templatedResourcesDirectoryPath, 0755); err != nil {
-			return err
-		}
-	}
-
-	files, err := afero.ReadDir(fs, kubernetesResourcesDirectoryPath)
+func TemplateFile(fs afero.Fs, path, templatedPath, sha string) error {
+	contents, err := afero.ReadFile(fs, path)
 	if err != nil {
 		return err
 	}
 
-	for _, file := range files {
-		contents, err := afero.ReadFile(fs, filepath.Join(kubernetesResourcesDirectoryPath, file.Name()))
-		if err != nil {
+	templatedContents := strings.Replace(string(contents), "%%DOCKER_TAG%%", sha, -1)
+
+	if err := afero.WriteFile(fs, templatedPath, []byte(templatedContents), 0644); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func TemplateKubernetesResources(fs afero.Fs, resourcesDir, templatesDir, sha string) error {
+	// Generate a list of files to template
+	type FileToTemplate struct {
+		path               string
+		templatedDirectory string
+		templatedPath      string
+	}
+
+	filesToTemplate := []FileToTemplate{}
+
+	fileInfos, err := afero.ReadDir(fs, resourcesDir)
+	if err != nil {
+		return err
+	}
+
+	for _, fileInfo := range fileInfos {
+		if fileInfo.IsDir() {
+			subFileInfos, err := afero.ReadDir(fs, filepath.Join(resourcesDir, fileInfo.Name()))
+			if err != nil {
+				return err
+			}
+
+			for _, subFileInfo := range subFileInfos {
+				if !subFileInfo.IsDir() {
+					filesToTemplate = append(filesToTemplate, FileToTemplate{
+						path:               filepath.Join(resourcesDir, fileInfo.Name(), subFileInfo.Name()),
+						templatedDirectory: filepath.Join(templatesDir, fileInfo.Name()),
+						templatedPath:      filepath.Join(templatesDir, fileInfo.Name(), subFileInfo.Name()),
+					})
+				}
+			}
+		} else {
+			filesToTemplate = append(filesToTemplate, FileToTemplate{
+				path:          filepath.Join(resourcesDir, fileInfo.Name()),
+				templatedPath: filepath.Join(templatesDir, fileInfo.Name()),
+			})
+		}
+	}
+
+	// Create the templated resources directory, if it does not exist
+	if _, err := fs.Stat(templatesDir); os.IsNotExist(err) {
+		if err := fs.Mkdir(templatesDir, 0644); err != nil {
 			return err
 		}
+	}
 
-		templatedContents := strings.Replace(string(contents), "%%DOCKER_TAG%%", sha, -1)
+	// And template the files
+	for _, fileToTemplate := range filesToTemplate {
+		// Create the directory, if it does not exist
+		if fileToTemplate.templatedDirectory != "" {
+			if _, err := fs.Stat(fileToTemplate.templatedDirectory); os.IsNotExist(err) {
+				if err := fs.Mkdir(fileToTemplate.templatedDirectory, 0644); err != nil {
+					return err
+				}
+			}
+		}
 
-		if err := afero.WriteFile(fs, filepath.Join(templatedResourcesDirectoryPath, file.Name()), []byte(templatedContents), 0755); err != nil {
+		if err := TemplateFile(fs, fileToTemplate.path, fileToTemplate.templatedPath, sha); err != nil {
 			return err
 		}
 	}
