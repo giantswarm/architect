@@ -41,6 +41,14 @@ func (w Workflow) String() string {
 	return fmt.Sprintf("{\n%v}", strings.Join(cmdStrings, ""))
 }
 
+type KubernetesCluster struct {
+	ApiServer      string
+	CaPath         string
+	CrtPath        string
+	KeyPath        string
+	KubectlVersion string
+}
+
 type ProjectInfo struct {
 	WorkingDirectory string
 	Organisation     string
@@ -52,12 +60,8 @@ type ProjectInfo struct {
 	DockerUsername string
 	DockerPassword string
 
-	KubernetesApiServer                       string
-	KubernetesCaPath                          string
-	KubernetesCrtPath                         string
-	KubernetesKeyPath                         string
-	KubectlVersion                            string
 	KubernetesTemplatedResourcesDirectoryPath string
+	KubernetesClusters                        []KubernetesCluster
 
 	Goos          string
 	Goarch        string
@@ -223,6 +227,12 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		return nil, err
 	}
 	if dockerFileExists {
+		if projectInfo.Sha == "" {
+			return nil, fmt.Errorf("sha cannot be empty")
+		}
+		if projectInfo.Registry == "" {
+			return nil, fmt.Errorf("registry cannot be empty")
+		}
 		if projectInfo.DockerEmail == "" {
 			return nil, fmt.Errorf("docker email cannot be empty")
 		}
@@ -231,9 +241,6 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 		if projectInfo.DockerPassword == "" {
 			return nil, fmt.Errorf("docker password cannot be empty")
-		}
-		if projectInfo.Registry == "" {
-			return nil, fmt.Errorf("registry cannot be empty")
 		}
 
 		dockerLogin := commands.Command{
@@ -265,65 +272,68 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		return nil, err
 	}
 	if kubernetesDirectoryExists {
-		if projectInfo.KubernetesApiServer == "" {
-			return nil, fmt.Errorf("kubernetes api server cannot be empty")
-		}
-		if projectInfo.KubernetesCaPath == "" {
-			return nil, fmt.Errorf("kubernetes ca path cannot be empty")
-		}
-		if projectInfo.KubernetesCrtPath == "" {
-			return nil, fmt.Errorf("kubernetes crt path cannot be empty")
-		}
-		if projectInfo.KubernetesKeyPath == "" {
-			return nil, fmt.Errorf("kubernetes key path cannot be empty")
-		}
-		if projectInfo.KubectlVersion == "" {
-			return nil, fmt.Errorf("kubectl version cannot be empty")
-		}
 		if projectInfo.KubernetesTemplatedResourcesDirectoryPath == "" {
 			return nil, fmt.Errorf("kubernetes templated resources directory path cannot be empty")
 		}
 
-		kubectlClusterInfo := commands.NewDockerCommand(
-			KubectlClusterInfoCommandName,
-			commands.DockerCommandConfig{
-				Volumes: []string{
-					fmt.Sprintf("%v:/ca.pem", projectInfo.KubernetesCaPath),
-					fmt.Sprintf("%v:/crt.pem", projectInfo.KubernetesCrtPath),
-					fmt.Sprintf("%v:/key.pem", projectInfo.KubernetesKeyPath),
-				},
-				Image: fmt.Sprintf("giantswarm/kubectl:%v", projectInfo.KubectlVersion),
-				Args: []string{
-					fmt.Sprintf("--server=%v", projectInfo.KubernetesApiServer),
-					"--certificate-authority=/ca.pem",
-					"--client-certificate=/crt.pem",
-					"--client-key=/key.pem",
-					"cluster-info",
-				},
-			},
-		)
-		w = append(w, kubectlClusterInfo)
+		for _, cluster := range projectInfo.KubernetesClusters {
+			if cluster.ApiServer == "" {
+				return nil, fmt.Errorf("kubernetes api server cannot be empty")
+			}
+			if cluster.CaPath == "" {
+				return nil, fmt.Errorf("kubernetes ca path cannot be empty")
+			}
+			if cluster.CrtPath == "" {
+				return nil, fmt.Errorf("kubernetes crt path cannot be empty")
+			}
+			if cluster.KeyPath == "" {
+				return nil, fmt.Errorf("kubernetes key path cannot be empty")
+			}
+			if cluster.KubectlVersion == "" {
+				return nil, fmt.Errorf("kubectl version cannot be empty")
+			}
 
-		kubectlApply := commands.NewDockerCommand(
-			KubectlApplyCommandName,
-			commands.DockerCommandConfig{
-				Volumes: []string{
-					fmt.Sprintf("%v:/ca.pem", projectInfo.KubernetesCaPath),
-					fmt.Sprintf("%v:/crt.pem", projectInfo.KubernetesCrtPath),
-					fmt.Sprintf("%v:/key.pem", projectInfo.KubernetesKeyPath),
-					fmt.Sprintf("%v:/kubernetes", projectInfo.KubernetesTemplatedResourcesDirectoryPath),
+			kubectlClusterInfo := commands.NewDockerCommand(
+				KubectlClusterInfoCommandName,
+				commands.DockerCommandConfig{
+					Volumes: []string{
+						fmt.Sprintf("%v:/ca.pem", cluster.CaPath),
+						fmt.Sprintf("%v:/crt.pem", cluster.CrtPath),
+						fmt.Sprintf("%v:/key.pem", cluster.KeyPath),
+					},
+					Image: fmt.Sprintf("giantswarm/kubectl:%v", cluster.KubectlVersion),
+					Args: []string{
+						fmt.Sprintf("--server=%v", cluster.ApiServer),
+						"--certificate-authority=/ca.pem",
+						"--client-certificate=/crt.pem",
+						"--client-key=/key.pem",
+						"cluster-info",
+					},
 				},
-				Image: fmt.Sprintf("giantswarm/kubectl:%v", projectInfo.KubectlVersion),
-				Args: []string{
-					fmt.Sprintf("--server=%v", projectInfo.KubernetesApiServer),
-					"--certificate-authority=/ca.pem",
-					"--client-certificate=/crt.pem",
-					"--client-key=/key.pem",
-					"apply", "-R", "-f", "/kubernetes",
+			)
+			w = append(w, kubectlClusterInfo)
+
+			kubectlApply := commands.NewDockerCommand(
+				KubectlApplyCommandName,
+				commands.DockerCommandConfig{
+					Volumes: []string{
+						fmt.Sprintf("%v:/ca.pem", cluster.CaPath),
+						fmt.Sprintf("%v:/crt.pem", cluster.CrtPath),
+						fmt.Sprintf("%v:/key.pem", cluster.KeyPath),
+						fmt.Sprintf("%v:/kubernetes", projectInfo.KubernetesTemplatedResourcesDirectoryPath),
+					},
+					Image: fmt.Sprintf("giantswarm/kubectl:%v", cluster.KubectlVersion),
+					Args: []string{
+						fmt.Sprintf("--server=%v", cluster.ApiServer),
+						"--certificate-authority=/ca.pem",
+						"--client-certificate=/crt.pem",
+						"--client-key=/key.pem",
+						"apply", "-R", "-f", "/kubernetes",
+					},
 				},
-			},
-		)
-		w = append(w, kubectlApply)
+			)
+			w = append(w, kubectlApply)
+		}
 	}
 
 	return w, nil

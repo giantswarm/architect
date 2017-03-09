@@ -96,12 +96,16 @@ func runDeploy(cmd *cobra.Command, args []string) {
 		DockerUsername: dockerUsername,
 		DockerPassword: dockerPassword,
 
-		KubernetesApiServer:                       kubernetesApiServer,
-		KubernetesCaPath:                          kubernetesCaPath,
-		KubernetesCrtPath:                         kubernetesCrtPath,
-		KubernetesKeyPath:                         kubernetesKeyPath,
-		KubectlVersion:                            kubectlVersion,
 		KubernetesTemplatedResourcesDirectoryPath: templatedResourcesDirectoryAbsolutePath,
+		KubernetesClusters: []workflow.KubernetesCluster{
+			workflow.KubernetesCluster{
+				ApiServer:      kubernetesApiServer,
+				CaPath:         kubernetesCaPath,
+				CrtPath:        kubernetesCrtPath,
+				KeyPath:        kubernetesKeyPath,
+				KubectlVersion: kubectlVersion,
+			},
+		},
 	}
 
 	workflow, err := workflow.NewDeploy(projectInfo, fs)

@@ -176,29 +176,20 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 // TestGetDeployWorkflow tests that deploy workflows are correctly created
 func TestGetDeployWorkflow(t *testing.T) {
-	projectInfo := ProjectInfo{
-		WorkingDirectory:                          "/test/",
-		Organisation:                              "giantswarm",
-		Project:                                   "test",
-		Sha:                                       "jfkejhfkejfkejfef",
-		Registry:                                  "registry.giantswarm.io",
-		DockerEmail:                               "test@giantswarm.io",
-		DockerUsername:                            "test",
-		DockerPassword:                            "ekfnkfne",
-		KubernetesApiServer:                       "kubernetes.giantswarm.io",
-		KubernetesCaPath:                          "/ca.pem",
-		KubernetesCrtPath:                         "/crt.pem",
-		KubernetesKeyPath:                         "/key.pem",
-		KubectlVersion:                            "1.5.2",
-		KubernetesTemplatedResourcesDirectoryPath: "/kubernetes-templated/",
-	}
+	workingDirectory := "/test/"
 
 	tests := []struct {
+		projectInfo          ProjectInfo
 		setUp                func(afero.Fs) error
 		expectedCommandNames map[int]string
 	}{
 		// Test a project with no files produces an empty workflow
 		{
+			projectInfo: ProjectInfo{
+				WorkingDirectory: workingDirectory,
+				Organisation:     "giantswarm",
+				Project:          "test",
+			},
 			setUp: func(fs afero.Fs) error {
 				return nil
 			},
@@ -207,8 +198,18 @@ func TestGetDeployWorkflow(t *testing.T) {
 
 		// Test a project with only a Dockerfile productes a workflow containg docker push
 		{
+			projectInfo: ProjectInfo{
+				WorkingDirectory: workingDirectory,
+				Organisation:     "giantswarm",
+				Project:          "test",
+				Sha:              "1cd72a25e16e93da14f08d95bd98662f8827028e",
+				Registry:         "registry.giantswarm.io",
+				DockerEmail:      "test@giantswarm.io",
+				DockerUsername:   "test",
+				DockerPassword:   "test",
+			},
 			setUp: func(fs afero.Fs) error {
-				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
+				if _, err := fs.Create(filepath.Join(workingDirectory, "Dockerfile")); err != nil {
 					return err
 				}
 
@@ -222,8 +223,23 @@ func TestGetDeployWorkflow(t *testing.T) {
 
 		// Test a project with only a kubernetes directory produces a workflow containg kubernetes apply
 		{
+			projectInfo: ProjectInfo{
+				WorkingDirectory: workingDirectory,
+				Organisation:     "giantswarm",
+				Project:          "test",
+				KubernetesTemplatedResourcesDirectoryPath: "/kubernetes/",
+				KubernetesClusters: []KubernetesCluster{
+					KubernetesCluster{
+						ApiServer:      "kubernetes.giantswarm.io",
+						CaPath:         "/ca.pem",
+						CrtPath:        "/crt.pem",
+						KeyPath:        "/key.pem",
+						KubectlVersion: "1.5.2",
+					},
+				},
+			},
 			setUp: func(fs afero.Fs) error {
-				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "kubernetes/"), 0644); err != nil {
+				if err := fs.Mkdir(filepath.Join(workingDirectory, "kubernetes/"), 0644); err != nil {
 					return err
 				}
 
@@ -237,11 +253,31 @@ func TestGetDeployWorkflow(t *testing.T) {
 
 		// Test a project with a Dockerfile and a kubernetes directory contains both docker and kubernetes commands
 		{
+			projectInfo: ProjectInfo{
+				WorkingDirectory:                          workingDirectory,
+				Organisation:                              "giantswarm",
+				Project:                                   "test",
+				Sha:                                       "1cd72a25e16e93da14f08d95bd98662f8827028e",
+				Registry:                                  "registry.giantswarm.io",
+				DockerEmail:                               "test@giantswarm.io",
+				DockerUsername:                            "test",
+				DockerPassword:                            "test",
+				KubernetesTemplatedResourcesDirectoryPath: "/kubernetes/",
+				KubernetesClusters: []KubernetesCluster{
+					KubernetesCluster{
+						ApiServer:      "kubernetes.giantswarm.io",
+						CaPath:         "/ca.pem",
+						CrtPath:        "/crt.pem",
+						KeyPath:        "/key.pem",
+						KubectlVersion: "1.5.2",
+					},
+				},
+			},
 			setUp: func(fs afero.Fs) error {
-				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
+				if _, err := fs.Create(filepath.Join(workingDirectory, "Dockerfile")); err != nil {
 					return err
 				}
-				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "kubernetes/"), 0644); err != nil {
+				if err := fs.Mkdir(filepath.Join(workingDirectory, "kubernetes/"), 0644); err != nil {
 					return err
 				}
 
@@ -254,22 +290,62 @@ func TestGetDeployWorkflow(t *testing.T) {
 				3: KubectlApplyCommandName,
 			},
 		},
+
+		// Test that a project with two clusters configured returns two sets of kubectl commands
+		{
+			projectInfo: ProjectInfo{
+				WorkingDirectory: workingDirectory,
+				Organisation:     "giantswarm",
+				Project:          "test",
+				KubernetesTemplatedResourcesDirectoryPath: "/kubernetes/",
+				KubernetesClusters: []KubernetesCluster{
+					KubernetesCluster{
+						ApiServer:      "kubernetes-1.giantswarm.io",
+						CaPath:         "/1-ca.pem",
+						CrtPath:        "/1-crt.pem",
+						KeyPath:        "/1-key.pem",
+						KubectlVersion: "1.5.2",
+					},
+					KubernetesCluster{
+						ApiServer:      "kubernetes-2.giantswarm.io",
+						CaPath:         "/2-ca.pem",
+						CrtPath:        "/2-crt.pem",
+						KeyPath:        "/2-key.pem",
+						KubectlVersion: "1.5.2",
+					},
+				},
+			},
+			setUp: func(fs afero.Fs) error {
+				if err := fs.Mkdir(filepath.Join(workingDirectory, "kubernetes/"), 0644); err != nil {
+					return err
+				}
+
+				return nil
+			},
+			expectedCommandNames: map[int]string{
+				0: KubectlClusterInfoCommandName,
+				1: KubectlApplyCommandName,
+				2: KubectlClusterInfoCommandName,
+				3: KubectlApplyCommandName,
+			},
+		},
 	}
 
 	for index, test := range tests {
 		fs := afero.NewMemMapFs()
 		if err := test.setUp(fs); err != nil {
-			t.Fatalf("received unexpected error during setup: %v", err)
+			t.Fatalf("%v: received unexpected error during setup: %v", index, err)
 		}
 
-		workflow, err := NewDeploy(projectInfo, fs)
+		workflow, err := NewDeploy(test.projectInfo, fs)
 		if err != nil {
-			t.Fatalf("received unexpected error getting build workflow: %v", err)
+			t.Fatalf("%v: received unexpected error getting build workflow: %v", index, err)
 		}
 
 		if len(workflow) != len(test.expectedCommandNames) {
 			t.Fatalf(
-				"expected %v commands, received %v",
+				"%v: expected %v commands, received %v",
+				index,
 				len(test.expectedCommandNames),
 				len(workflow),
 			)
@@ -278,8 +354,9 @@ func TestGetDeployWorkflow(t *testing.T) {
 		for testIndex, expectedCommandName := range test.expectedCommandNames {
 			if workflow[testIndex].Name != expectedCommandName {
 				t.Fatalf(
-					"command: %v, expected name: %v, received name: %v",
+					"%v: command: %v, expected name: %v, received name: %v",
 					index,
+					testIndex,
 					expectedCommandName,
 					workflow[index].Name,
 				)
