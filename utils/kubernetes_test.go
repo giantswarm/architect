@@ -15,7 +15,6 @@ func TestTemplateKubernetesResources(t *testing.T) {
 	var directoryPermission os.FileMode = 0644
 
 	resourcesPath := "./kubernetes/"
-	templatedResourcesPath := "./kubernetes-templated/"
 
 	sha := "1cd72a25e16e93da14f08d95bd98662f8827028e" // random, no specific meaning
 	testData := []byte("this is some test data")
@@ -34,13 +33,13 @@ func TestTemplateKubernetesResources(t *testing.T) {
 				return nil
 			},
 			check: func(fs afero.Fs) error {
-				fileInfos, err := afero.ReadDir(fs, templatedResourcesPath)
+				fileInfos, err := afero.ReadDir(fs, resourcesPath)
 				if err != nil {
 					return err
 				}
 
 				if len(fileInfos) != 0 {
-					return fmt.Errorf("multiple files found in templated resources directory")
+					return fmt.Errorf("multiple files found in resources directory")
 				}
 
 				return nil
@@ -54,19 +53,15 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					return err
 				}
 
-				if err := afero.WriteFile(
-					fs,
-					filepath.Join(resourcesPath, "deployment.yml"),
-					[]byte(`%%DOCKER_TAG%%`),
-					filePermission,
-				); err != nil {
+				resourcePath := filepath.Join(resourcesPath, "deployment.yml")
+				if err := afero.WriteFile(fs, resourcePath, []byte(`%%DOCKER_TAG%%`), filePermission); err != nil {
 					return err
 				}
 
 				return nil
 			},
 			check: func(fs afero.Fs) error {
-				fileInfos, err := afero.ReadDir(fs, templatedResourcesPath)
+				fileInfos, err := afero.ReadDir(fs, resourcesPath)
 				if err != nil {
 					return err
 				}
@@ -79,7 +74,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					return fmt.Errorf("deployment not found in templates resources directory")
 				}
 
-				bytes, err := afero.ReadFile(fs, filepath.Join(templatedResourcesPath, "deployment.yml"))
+				bytes, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "deployment.yml"))
 				if err != nil {
 					return err
 				}
@@ -102,12 +97,8 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					return err
 				}
 
-				if err := afero.WriteFile(
-					fs,
-					filepath.Join(resourcesPath, "foo/", "deployment.yml"),
-					testData,
-					filePermission,
-				); err != nil {
+				fooResourcePath := filepath.Join(resourcesPath, "foo/", "deployment.yml")
+				if err := afero.WriteFile(fs, fooResourcePath, testData, filePermission); err != nil {
 					return err
 				}
 
@@ -115,19 +106,15 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					return err
 				}
 
-				if err := afero.WriteFile(
-					fs,
-					filepath.Join(resourcesPath, "bar/", "deployment.yml"),
-					testData,
-					filePermission,
-				); err != nil {
+				barResourcePath := filepath.Join(resourcesPath, "bar/", "deployment.yml")
+				if err := afero.WriteFile(fs, barResourcePath, testData, filePermission); err != nil {
 					return err
 				}
 
 				return nil
 			},
 			check: func(fs afero.Fs) error {
-				fileInfos, err := afero.ReadDir(fs, templatedResourcesPath)
+				fileInfos, err := afero.ReadDir(fs, resourcesPath)
 				if err != nil {
 					return err
 				}
@@ -136,18 +123,12 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					return fmt.Errorf("did not find two directories in template resources directory")
 				}
 
-				fooContents, err := afero.ReadFile(
-					fs,
-					filepath.Join(resourcesPath, "foo", "deployment.yml"),
-				)
+				fooContents, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "foo", "deployment.yml"))
 				if string(fooContents) != string(testData) {
 					return fmt.Errorf("foo file data did not match test data")
 				}
 
-				barContents, err := afero.ReadFile(
-					fs,
-					filepath.Join(resourcesPath, "bar", "deployment.yml"),
-				)
+				barContents, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "bar", "deployment.yml"))
 				if string(barContents) != string(testData) {
 					return fmt.Errorf("bar file data did not match test data")
 				}
@@ -164,7 +145,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			t.Fatalf("%v: unexpected error during setup: %v\n", index, err)
 		}
 
-		if err := TemplateKubernetesResources(fs, resourcesPath, templatedResourcesPath, sha); err != nil {
+		if err := TemplateKubernetesResources(fs, resourcesPath, sha); err != nil {
 			t.Fatalf("%v: unexpected error during templating: %v\n", index, err)
 		}
 
