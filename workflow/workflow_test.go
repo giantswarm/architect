@@ -1,11 +1,64 @@
 package workflow
 
 import (
+	"fmt"
 	"path/filepath"
 	"testing"
 
+	"github.com/giantswarm/architect/commands"
 	"github.com/spf13/afero"
 )
+
+func TestWorkflowString(t *testing.T) {
+	tests := []struct {
+		workflow       Workflow
+		expectedString string
+	}{
+		// Test the empty workflow
+		{
+			workflow:       Workflow{},
+			expectedString: "{}",
+		},
+
+		// Test one command
+		{
+			workflow: Workflow{
+				commands.Command{
+					Name: "foo",
+					Args: []string{"apple", "banana"},
+				},
+			},
+			expectedString: "{\n\tfoo:\t'apple banana'\n}",
+		},
+
+		// Test multiple commands
+		{
+			workflow: Workflow{
+				commands.Command{
+					Name: "foo",
+					Args: []string{"apple", "banana"},
+				},
+				commands.Command{
+					Name: "bar",
+					Args: []string{"cherry", "durian"},
+				},
+			},
+			expectedString: "{\n\tfoo:\t'apple banana'\n\tbar:\t'cherry durian'\n}",
+		},
+	}
+
+	for index, test := range tests {
+		returnedString := fmt.Sprintf("%s", test.workflow)
+		if returnedString != test.expectedString {
+			t.Fatalf(
+				"%v: returned string did not match expected string.\nexpected: %v\nreturned: %v\n",
+				index,
+				test.expectedString,
+				returnedString,
+			)
+		}
+	}
+}
 
 // TestGetBuildWorkflow tests that build workflows are correctly created for builds
 func TestGetBuildWorkflow(t *testing.T) {

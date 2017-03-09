@@ -29,12 +29,16 @@ var (
 type Workflow []commands.Command
 
 func (w Workflow) String() string {
-	cmdStrings := []string{}
-	for _, cmd := range w {
-		cmdStrings = append(cmdStrings, "\t"+cmd.String())
+	if len(w) == 0 {
+		return "{}"
 	}
 
-	return "{\n" + strings.Join(cmdStrings, "\n") + "\n}"
+	cmdStrings := []string{}
+	for _, cmd := range w {
+		cmdStrings = append(cmdStrings, "\t"+cmd.String()+"\n")
+	}
+
+	return fmt.Sprintf("{\n%v}", strings.Join(cmdStrings, ""))
 }
 
 type ProjectInfo struct {

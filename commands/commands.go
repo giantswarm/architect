@@ -47,7 +47,7 @@ func (c Command) String() string {
 		redactedArgs = append(redactedArgs, arg)
 	}
 
-	return fmt.Sprintf("%s: '%s'", c.Name, strings.Join(redactedArgs, " "))
+	return fmt.Sprintf("%s:\t'%s'", c.Name, strings.Join(redactedArgs, " "))
 }
 
 func NewDockerCommand(name string, config DockerCommandConfig) Command {

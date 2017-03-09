@@ -17,28 +17,28 @@ func TestCommandString(t *testing.T) {
 				Name: "docker-run",
 				Args: []string{"docker", "run"},
 			},
-			expectedString: "docker-run: 'docker run'",
+			expectedString: "docker-run:\t'docker run'",
 		},
 		{
 			command: Command{
 				Name: "docker-login",
 				Args: []string{"docker", "login", "--email=foo", "--password=bar"},
 			},
-			expectedString: "docker-login: 'docker login --email=foo --password=[REDACTED]'",
+			expectedString: "docker-login:\t'docker login --email=foo --password=[REDACTED]'",
 		},
 		{
 			command: Command{
 				Name: "many-pass",
 				Args: []string{"foo", "--first-password=bar", "--second-password=baz"},
 			},
-			expectedString: "many-pass: 'foo --first-password=[REDACTED] --second-password=[REDACTED]'",
+			expectedString: "many-pass:\t'foo --first-password=[REDACTED] --second-password=[REDACTED]'",
 		},
 		{
 			command: Command{
 				Name: "boolean-flag",
 				Args: []string{"foo", "-password"},
 			},
-			expectedString: "boolean-flag: 'foo -password'",
+			expectedString: "boolean-flag:\t'foo -password'",
 		},
 	}
 
