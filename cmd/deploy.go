@@ -32,9 +32,7 @@ var (
 
 	kubectlVersion string
 
-	kubernetesResourcesDirectoryPath string
-	templatedResourcesDirectoryPath  string
-	removeResourceFilesAfterUse      bool
+	resourcesDirectoryPath string
 )
 
 func init() {
@@ -62,9 +60,7 @@ func init() {
 
 	deployCmd.Flags().StringVar(&kubectlVersion, "kubectl-version", "1.4.7", "kubectl version")
 
-	deployCmd.Flags().StringVar(&kubernetesResourcesDirectoryPath, "kubernetes-resources-directory-path", "./kubernetes", "directory holding kubernetes resources")
-	deployCmd.Flags().StringVar(&templatedResourcesDirectoryPath, "templated-resources-directory-path", "./kubernetes-templated", "directory holding templated kubernetes resources")
-	deployCmd.Flags().BoolVar(&removeResourceFilesAfterUse, "remove-resource-files-after-use", true, "whether to remove templated kubernetes resource files after use")
+	deployCmd.Flags().StringVar(&resourcesDirectoryPath, "resources-directory-path", "./kubernetes", "directory holding kubernetes resources")
 }
 
 func runDeploy(cmd *cobra.Command, args []string) {
@@ -80,11 +76,11 @@ func runDeploy(cmd *cobra.Command, args []string) {
 	}
 
 	// Manage kubernetes resource templating
-	if err := utils.TemplateKubernetesResources(fs, kubernetesResourcesDirectoryPath, templatedResourcesDirectoryPath, sha); err != nil {
+	if err := utils.TemplateKubernetesResources(fs, resourcesDirectoryPath, sha); err != nil {
 		log.Fatalf("could not template kubernetes resources: %v\n", err)
 	}
 
-	templatedResourcesDirectoryAbsolutePath, err := filepath.Abs(templatedResourcesDirectoryPath)
+	templatedResourcesDirectoryAbsolutePath, err := filepath.Abs(resourcesDirectoryPath)
 	if err != nil {
 		log.Fatalf("could not get absolute path for templated resources directory: %v\n", err)
 	}
@@ -121,10 +117,4 @@ func runDeploy(cmd *cobra.Command, args []string) {
 	}
 
 	commands.RunCommands(workflow)
-
-	if removeResourceFilesAfterUse {
-		if err := os.RemoveAll(templatedResourcesDirectoryAbsolutePath); err != nil {
-			log.Fatalf("could not remove templated resources directory: %v\n", err)
-		}
-	}
 }

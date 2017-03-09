@@ -10,29 +10,40 @@ import (
 	"github.com/spf13/afero"
 )
 
-func TemplateKubernetesResources(fs afero.Fs, kubernetesResourcesDirectoryPath, templatedResourcesDirectoryPath, sha string) error {
-	if _, err := fs.Stat(templatedResourcesDirectoryPath); os.IsNotExist(err) {
-		if err := fs.Mkdir(templatedResourcesDirectoryPath, 0755); err != nil {
-			return err
-		}
-	}
-
-	files, err := afero.ReadDir(fs, kubernetesResourcesDirectoryPath)
+func TemplateFile(fs afero.Fs, path, sha string) error {
+	contents, err := afero.ReadFile(fs, path)
 	if err != nil {
 		return err
 	}
 
-	for _, file := range files {
-		contents, err := afero.ReadFile(fs, filepath.Join(kubernetesResourcesDirectoryPath, file.Name()))
+	templatedContents := strings.Replace(string(contents), "%%DOCKER_TAG%%", sha, -1)
+
+	if err := afero.WriteFile(fs, path, []byte(templatedContents), 0644); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func TemplateKubernetesResources(fs afero.Fs, resourcesDir, sha string) error {
+	walkFunc := func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 
-		templatedContents := strings.Replace(string(contents), "%%DOCKER_TAG%%", sha, -1)
+		if info.IsDir() {
+			return nil
+		}
 
-		if err := afero.WriteFile(fs, filepath.Join(templatedResourcesDirectoryPath, file.Name()), []byte(templatedContents), 0755); err != nil {
+		if err := TemplateFile(fs, path, sha); err != nil {
 			return err
 		}
+
+		return nil
+	}
+
+	if err := afero.Walk(fs, resourcesDir, walkFunc); err != nil {
+		return err
 	}
 
 	return nil
