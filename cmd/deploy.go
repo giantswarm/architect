@@ -52,27 +52,15 @@ func init() {
 	deployCmd.Flags().StringVar(&dockerUsername, "docker-username", defaultDockerUsername, "username to use to login to docker registry")
 	deployCmd.Flags().StringVar(&dockerPassword, "docker-password", defaultDockerPassword, "password to use to login to docker registry")
 
-	deployCmd.Flags().StringVar(&kubernetesApiServer, "kubernetes-api-server", "https://api.g8s.fra-1.giantswarm.io", "kubernetes api to deploy to")
-
-	deployCmd.Flags().StringVar(&kubernetesCaPath, "kubernetes-ca-path", "", "path to kubernetes ca file")
-	deployCmd.Flags().StringVar(&kubernetesCrtPath, "kubernetes-crt-path", "", "path to kubernetes certificate file")
-	deployCmd.Flags().StringVar(&kubernetesKeyPath, "kubernetes-key-path", "", "path to kubernetes key file")
-
-	deployCmd.Flags().StringVar(&kubectlVersion, "kubectl-version", "1.4.7", "kubectl version")
-
 	deployCmd.Flags().StringVar(&resourcesDirectoryPath, "resources-directory-path", "./kubernetes", "directory holding kubernetes resources")
 }
 
 func runDeploy(cmd *cobra.Command, args []string) {
 	fs := afero.NewOsFs()
 
-	// When running in CircleCI, we can attempt to grab kubernetes certificates from the environment
-	if kubernetesCaPath == "" && kubernetesCrtPath == "" && kubernetesKeyPath == "" && os.Getenv("CIRCLECI") == "true" {
-		var err error
-		kubernetesCaPath, kubernetesCrtPath, kubernetesKeyPath, err = utils.K8SCertsFromEnv(fs, workingDirectory)
-		if err != nil {
-			log.Printf("could not load kubernetes certificates from env: %v\n", err)
-		}
+	clusters, err := workflow.ClustersFromEnv(fs, workingDirectory)
+	if err != nil {
+		log.Fatalf("could not get clusters from env: %v\n", err)
 	}
 
 	// Manage kubernetes resource templating
@@ -97,15 +85,7 @@ func runDeploy(cmd *cobra.Command, args []string) {
 		DockerPassword: dockerPassword,
 
 		KubernetesTemplatedResourcesDirectoryPath: templatedResourcesDirectoryAbsolutePath,
-		KubernetesClusters: []workflow.KubernetesCluster{
-			workflow.KubernetesCluster{
-				ApiServer:      kubernetesApiServer,
-				CaPath:         kubernetesCaPath,
-				CrtPath:        kubernetesCrtPath,
-				KeyPath:        kubernetesKeyPath,
-				KubectlVersion: kubectlVersion,
-			},
-		},
+		KubernetesClusters:                        clusters,
 	}
 
 	workflow, err := workflow.NewDeploy(projectInfo, fs)
