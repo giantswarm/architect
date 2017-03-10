@@ -100,7 +100,7 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			return nil, fmt.Errorf("golang version cannot be empty")
 		}
 
-		testPackageArguments, err := utils.NoVendor(projectInfo.WorkingDirectory, fs)
+		testPackageArguments, err := utils.NoVendor(fs, projectInfo.WorkingDirectory)
 		if err != nil {
 			return nil, err
 		}
