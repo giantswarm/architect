@@ -2,47 +2,62 @@ package utils
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
+	"sort"
+	"strings"
 
 	"github.com/spf13/afero"
 )
 
 // NoVendor replicates glide's novendor command, so we don't have to
 // package it at all.
-func NoVendor(workingDirectory string, fs afero.Fs) ([]string, error) {
-	directories, err := afero.ReadDir(fs, workingDirectory)
-	if err != nil {
+func NoVendor(fs afero.Fs, workingDirectory string) ([]string, error) {
+	packages := map[string]struct{}{}
+
+	walkFunc := func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if info.IsDir() {
+			return nil
+		}
+
+		if filepath.Ext(path) == ".go" {
+			shortPath := strings.TrimPrefix(path, workingDirectory)
+			parts := strings.FieldsFunc(shortPath, func(r rune) bool {
+				return r == filepath.Separator
+			})
+
+			var packageName string
+			if len(parts) <= 1 { // e.g: main.go
+				packageName = "."
+			} else {
+				if parts[0] == "vendor" {
+					return nil
+				}
+				packageName = fmt.Sprintf("./%v/...", parts[0])
+			}
+
+			if _, exists := packages[packageName]; !exists {
+				packages[packageName] = struct{}{}
+			}
+		}
+
+		return nil
+	}
+
+	if err := afero.Walk(fs, workingDirectory, walkFunc); err != nil && err != filepath.SkipDir {
 		return nil, err
 	}
 
-	testPackages := []string{}
-
-	for _, directory := range directories {
-		if !directory.IsDir() {
-			continue
-		}
-
-		if directory.Name() == "vendor" {
-			continue
-		}
-
-		files, err := afero.ReadDir(fs, directory.Name())
-		if err != nil {
-			return nil, err
-		}
-
-		for _, file := range files {
-			if filepath.Ext(file.Name()) == ".go" {
-				testPackages = append(testPackages, directory.Name())
-				break
-			}
-		}
+	packageNames := []string{}
+	for packageName, _ := range packages {
+		packageNames = append(packageNames, packageName)
 	}
 
-	testPackageArguments := []string{"."}
-	for _, testPackage := range testPackages {
-		testPackageArguments = append(testPackageArguments, fmt.Sprintf("./%v/...", testPackage))
-	}
+	sort.Strings(packageNames)
 
-	return testPackageArguments, nil
+	return packageNames, nil
 }
