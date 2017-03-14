@@ -397,7 +397,7 @@ func ClustersFromEnv(fs afero.Fs, workingDirectory string) ([]KubernetesCluster,
 			KubectlVersion: "1.4.7",
 		},
 		Cluster{
-			ApiServer:      "https://amazon-cluster", // TODO: Update this with actual value
+			ApiServer:      "https://api.g8s.eu-west-1.aws.adidas.private.giantswarm.io:6443",
 			EnvVarPrefix:   "AWS",
 			KubectlVersion: "1.4.7",
 		},

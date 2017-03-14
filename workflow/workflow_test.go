@@ -434,7 +434,7 @@ func TestClustersFromEnv(t *testing.T) {
 			},
 			clusters: []KubernetesCluster{
 				KubernetesCluster{
-					ApiServer:      "https://amazon-cluster",
+					ApiServer:      "https://api.g8s.eu-west-1.aws.adidas.private.giantswarm.io:6443",
 					CaPath:         "/test/aws-ca.pem",
 					CrtPath:        "/test/aws-crt.pem",
 					KeyPath:        "/test/aws-key.pem",
@@ -469,7 +469,7 @@ func TestClustersFromEnv(t *testing.T) {
 					KubectlVersion: "1.4.7",
 				},
 				KubernetesCluster{
-					ApiServer:      "https://amazon-cluster",
+					ApiServer:      "https://api.g8s.eu-west-1.aws.adidas.private.giantswarm.io:6443",
 					CaPath:         "/test/aws-ca.pem",
 					CrtPath:        "/test/aws-crt.pem",
 					KeyPath:        "/test/aws-key.pem",
