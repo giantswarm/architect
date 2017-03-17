@@ -14,8 +14,10 @@ import (
 )
 
 var (
-	GoTestCommandName  = "go-test"
-	GoBuildCommandName = "go-build"
+	GoGetCommandName      = "go-get"
+	GoGenerateCommandName = "go-generate"
+	GoTestCommandName     = "go-test"
+	GoBuildCommandName    = "go-build"
 
 	DockerBuildCommandName      = "docker-build"
 	DockerRunVersionCommandName = "docker-run-version"
@@ -69,6 +71,8 @@ type ProjectInfo struct {
 	Goarch        string
 	GolangImage   string
 	GolangVersion string
+
+	Dependencies string
 }
 
 func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
@@ -102,10 +106,56 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			return nil, fmt.Errorf("golang version cannot be empty")
 		}
 
-		testPackageArguments, err := utils.NoVendor(fs, projectInfo.WorkingDirectory)
+		novendorPackageArguments, err := utils.NoVendor(fs, projectInfo.WorkingDirectory)
 		if err != nil {
 			return nil, err
 		}
+
+		if projectInfo.Dependencies != "" {
+			goGetDependencies := commands.NewDockerCommand(
+				GoGetCommandName,
+				commands.DockerCommandConfig{
+					Env: []string{
+						fmt.Sprintf("GOOS=%v", projectInfo.Goos),
+						fmt.Sprintf("GOARCH=%v", projectInfo.Goarch),
+						"GOPATH=/go",
+						"CGOENABLED=0",
+					},
+					Image: fmt.Sprintf("%v:%v", projectInfo.GolangImage, projectInfo.GolangVersion),
+					Args:  []string{"go", "get", projectInfo.Dependencies},
+				},
+			)
+			w = append(w, goGetDependencies)
+		}
+
+		goGenerate := commands.NewDockerCommand(
+			GoGenerateCommandName,
+			commands.DockerCommandConfig{
+				Volumes: []string{
+					fmt.Sprintf(
+						"%v:/go/src/github.com/%v/%v",
+						projectInfo.WorkingDirectory,
+						projectInfo.Organisation,
+						projectInfo.Project,
+					),
+				},
+				Env: []string{
+					fmt.Sprintf("GOOS=%v", projectInfo.Goos),
+					fmt.Sprintf("GOARCH=%v", projectInfo.Goarch),
+					"GOPATH=/go",
+					"CGOENABLED=0",
+				},
+				WorkingDirectory: fmt.Sprintf(
+					"/go/src/github.com/%v/%v",
+					projectInfo.Organisation,
+					projectInfo.Project,
+				),
+				Image: fmt.Sprintf("%v:%v", projectInfo.GolangImage, projectInfo.GolangVersion),
+				Args:  []string{"go", "generate"},
+			},
+		)
+		goGenerate.Args = append(goGenerate.Args, novendorPackageArguments...)
+		w = append(w, goGenerate)
 
 		goTest := commands.NewDockerCommand(
 			GoTestCommandName,
@@ -133,7 +183,7 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 				Args:  []string{"go", "test", "-v"},
 			},
 		)
-		goTest.Args = append(goTest.Args, testPackageArguments...)
+		goTest.Args = append(goTest.Args, novendorPackageArguments...)
 		w = append(w, goTest)
 
 		goBuild := commands.NewDockerCommand(
