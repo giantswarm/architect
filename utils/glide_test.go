@@ -220,6 +220,23 @@ func TestNoVendor(t *testing.T) {
 			expectedDirectories: []string{},
 		},
 
+		// Test a directory starting with an underscore is ingored
+		{
+			workingDirectory: "/",
+			setUp: func(fs afero.Fs, wd string) error {
+				if err := fs.Mkdir(filepath.Join(wd, "_tests"), directoryPermission); err != nil {
+					return err
+				}
+
+				if _, err := fs.Create(filepath.Join(wd, "_tests", "test.go")); err != nil {
+					return err
+				}
+
+				return nil
+			},
+			expectedDirectories: []string{},
+		},
+
 		// Test two directories, containing golang files, a golang file in the root dir,
 		// and an alternative working directory
 		{

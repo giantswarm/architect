@@ -34,7 +34,7 @@ func NoVendor(fs afero.Fs, workingDirectory string) ([]string, error) {
 			if len(parts) <= 1 { // e.g: main.go
 				packageName = "."
 			} else {
-				if parts[0] == "vendor" {
+				if parts[0] == "vendor" || strings.HasPrefix(parts[0], "_") {
 					return nil
 				}
 				packageName = fmt.Sprintf("./%v/...", parts[0])
