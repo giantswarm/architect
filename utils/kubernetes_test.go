@@ -17,6 +17,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 	resourcesPath := "./kubernetes/"
 
 	sha := "1cd72a25e16e93da14f08d95bd98662f8827028e" // random, no specific meaning
+	ingressTag := "g8s"
 	testData := []byte("this is some test data")
 
 	tests := []struct {
@@ -86,6 +87,46 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			},
 		},
 
+		// Test a resources directory with an ingress is templated correctly
+		{
+			setUp: func(fs afero.Fs) error {
+				if err := fs.Mkdir(resourcesPath, directoryPermission); err != nil {
+					return err
+				}
+
+				resourcePath := filepath.Join(resourcesPath, "ingress.yml")
+				if err := afero.WriteFile(fs, resourcePath, []byte(`api-%%INGRESS_TAG%%.giantswarm.io`), filePermission); err != nil {
+					return err
+				}
+
+				return nil
+			},
+			check: func(fs afero.Fs) error {
+				fileInfos, err := afero.ReadDir(fs, resourcesPath)
+				if err != nil {
+					return err
+				}
+
+				if len(fileInfos) != 1 {
+					return fmt.Errorf("did not find only one file in templated resources directory")
+				}
+
+				if fileInfos[0].Name() != "ingress.yml" {
+					return fmt.Errorf("ingress not found in templates resources directory")
+				}
+
+				bytes, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "ingress.yml"))
+				if err != nil {
+					return err
+				}
+				if !strings.Contains(string(bytes), ingressTag) {
+					return fmt.Errorf("ingress tag not found in ingress")
+				}
+
+				return nil
+			},
+		},
+
 		// Test a nested resources directory is handled correctly
 		{
 			setUp: func(fs afero.Fs) error {
@@ -145,7 +186,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			t.Fatalf("%v: unexpected error during setup: %v\n", index, err)
 		}
 
-		if err := TemplateKubernetesResources(fs, resourcesPath, sha); err != nil {
+		if err := TemplateKubernetesResources(fs, resourcesPath, sha, ingressTag); err != nil {
 			t.Fatalf("%v: unexpected error during templating: %v\n", index, err)
 		}
 

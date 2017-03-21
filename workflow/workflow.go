@@ -45,6 +45,7 @@ func (w Workflow) String() string {
 
 type KubernetesCluster struct {
 	ApiServer      string
+	IngressTag     string
 	CaPath         string
 	CrtPath        string
 	KeyPath        string
@@ -62,8 +63,8 @@ type ProjectInfo struct {
 	DockerUsername string
 	DockerPassword string
 
-	KubernetesTemplatedResourcesDirectoryPath string
-	KubernetesClusters                        []KubernetesCluster
+	KubernetesResourcesDirectoryPath string
+	KubernetesClusters               []KubernetesCluster
 
 	Goos          string
 	Goarch        string
@@ -274,11 +275,31 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		return nil, err
 	}
 	if kubernetesDirectoryExists {
-		if projectInfo.KubernetesTemplatedResourcesDirectoryPath == "" {
+		if projectInfo.KubernetesResourcesDirectoryPath == "" {
 			return nil, fmt.Errorf("kubernetes templated resources directory path cannot be empty")
 		}
 
 		for _, cluster := range projectInfo.KubernetesClusters {
+			if cluster.IngressTag == "" {
+				return nil, fmt.Errorf("ingress tag cannot be empty")
+			}
+
+			// Copy /kubernetes to a per-cluster directory, and template it
+			dir, subdir := filepath.Split(projectInfo.KubernetesResourcesDirectoryPath)
+			templatedResourcesDirectory := filepath.Join(dir, subdir+"-"+cluster.IngressTag)
+
+			if err := utils.CopyDir(
+				fs,
+				projectInfo.KubernetesResourcesDirectoryPath,
+				templatedResourcesDirectory,
+			); err != nil {
+				return nil, err
+			}
+
+			if err := utils.TemplateKubernetesResources(fs, templatedResourcesDirectory, projectInfo.Sha, cluster.IngressTag); err != nil {
+				return nil, err
+			}
+
 			if cluster.ApiServer == "" {
 				return nil, fmt.Errorf("kubernetes api server cannot be empty")
 			}
@@ -322,7 +343,7 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 						fmt.Sprintf("%v:/ca.pem", cluster.CaPath),
 						fmt.Sprintf("%v:/crt.pem", cluster.CrtPath),
 						fmt.Sprintf("%v:/key.pem", cluster.KeyPath),
-						fmt.Sprintf("%v:/kubernetes", projectInfo.KubernetesTemplatedResourcesDirectoryPath),
+						fmt.Sprintf("%v:/kubernetes", templatedResourcesDirectory),
 					},
 					Image: fmt.Sprintf("giantswarm/kubectl:%v", cluster.KubectlVersion),
 					Args: []string{
@@ -387,17 +408,20 @@ func getCertsFromEnv(fs afero.Fs, workingDirectory, envVarPrefix string) (string
 func ClustersFromEnv(fs afero.Fs, workingDirectory string) ([]KubernetesCluster, error) {
 	type Cluster struct {
 		ApiServer      string
+		IngressTag     string
 		EnvVarPrefix   string
 		KubectlVersion string
 	}
 	configuredClusters := []Cluster{
 		Cluster{
 			ApiServer:      "https://api.g8s.fra-1.giantswarm.io",
+			IngressTag:     "g8s",
 			EnvVarPrefix:   "G8S",
 			KubectlVersion: "1.4.7",
 		},
 		Cluster{
 			ApiServer:      "https://api.g8s.eu-west-1.aws.adidas.private.giantswarm.io:6443",
+			IngressTag:     "aws",
 			EnvVarPrefix:   "AWS",
 			KubectlVersion: "1.4.7",
 		},
@@ -413,6 +437,7 @@ func ClustersFromEnv(fs afero.Fs, workingDirectory string) ([]KubernetesCluster,
 
 		newCluster := KubernetesCluster{
 			ApiServer:      configuredCluster.ApiServer,
+			IngressTag:     configuredCluster.IngressTag,
 			CaPath:         caPath,
 			CrtPath:        crtPath,
 			KeyPath:        keyPath,

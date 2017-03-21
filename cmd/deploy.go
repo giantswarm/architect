@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	"github.com/giantswarm/architect/commands"
-	"github.com/giantswarm/architect/utils"
 	"github.com/giantswarm/architect/workflow"
 
 	"github.com/spf13/afero"
@@ -63,14 +62,9 @@ func runDeploy(cmd *cobra.Command, args []string) {
 		log.Fatalf("could not get clusters from env: %v\n", err)
 	}
 
-	// Manage kubernetes resource templating
-	if err := utils.TemplateKubernetesResources(fs, resourcesDirectoryPath, sha); err != nil {
-		log.Fatalf("could not template kubernetes resources: %v\n", err)
-	}
-
-	templatedResourcesDirectoryAbsolutePath, err := filepath.Abs(resourcesDirectoryPath)
+	resourcesDirectoryAbsolutePath, err := filepath.Abs(resourcesDirectoryPath)
 	if err != nil {
-		log.Fatalf("could not get absolute path for templated resources directory: %v\n", err)
+		log.Fatalf("could not get absolute path for resources directory: %v\n", err)
 	}
 
 	projectInfo := workflow.ProjectInfo{
@@ -84,8 +78,8 @@ func runDeploy(cmd *cobra.Command, args []string) {
 		DockerUsername: dockerUsername,
 		DockerPassword: dockerPassword,
 
-		KubernetesTemplatedResourcesDirectoryPath: templatedResourcesDirectoryAbsolutePath,
-		KubernetesClusters:                        clusters,
+		KubernetesResourcesDirectoryPath: resourcesDirectoryAbsolutePath,
+		KubernetesClusters:               clusters,
 	}
 
 	workflow, err := workflow.NewDeploy(projectInfo, fs)
