@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/giantswarm/architect/commands"
@@ -77,10 +78,12 @@ func TestGetBuildWorkflow(t *testing.T) {
 		Goarch:           "amd64",
 		GolangImage:      "golang",
 		GolangVersion:    "1.7.5",
+		Dependencies:     "",
 	}
 
 	tests := []struct {
 		setUp                func(afero.Fs) error
+		dependencies         []string
 		expectedCommandNames map[int]string
 	}{
 		// Test a project with no files produces an empty workflow
@@ -101,8 +104,29 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedCommandNames: map[int]string{
-				0: GoTestCommandName,
-				1: GoBuildCommandName,
+				0: GoGenerateCommandName,
+				1: GoTestCommandName,
+				2: GoBuildCommandName,
+			},
+		},
+
+		// Test a project with dependencies and with only golang files produces a correct workflow
+		{
+			setUp: func(fs afero.Fs) error {
+				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "main.go")); err != nil {
+					return err
+				}
+
+				return nil
+			},
+			dependencies: []string{
+				"github.com/example/go-package",
+			},
+			expectedCommandNames: map[int]string{
+				0: GoGetCommandName,
+				1: GoGenerateCommandName,
+				2: GoTestCommandName,
+				3: GoBuildCommandName,
 			},
 		},
 
@@ -135,11 +159,12 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedCommandNames: map[int]string{
-				0: GoTestCommandName,
-				1: GoBuildCommandName,
-				2: DockerBuildCommandName,
-				3: DockerRunVersionCommandName,
-				4: DockerRunHelpCommandName,
+				0: GoGenerateCommandName,
+				1: GoTestCommandName,
+				2: GoBuildCommandName,
+				3: DockerBuildCommandName,
+				4: DockerRunVersionCommandName,
+				5: DockerRunHelpCommandName,
 			},
 		},
 	}
@@ -150,7 +175,12 @@ func TestGetBuildWorkflow(t *testing.T) {
 			t.Fatalf("received unexpected error during setup: %v", err)
 		}
 
-		workflow, err := NewBuild(projectInfo, fs)
+		pInfo := projectInfo
+		if test.dependencies != nil {
+			pInfo.Dependencies = strings.Join(test.dependencies, " ")
+		}
+
+		workflow, err := NewBuild(pInfo, fs)
 		if err != nil {
 			t.Fatalf("received unexpected error getting build workflow: %v", err)
 		}

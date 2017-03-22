@@ -22,6 +22,8 @@ var (
 
 	golangImage   string
 	golangVersion string
+
+	dependencies string
 )
 
 func init() {
@@ -32,6 +34,8 @@ func init() {
 
 	buildCmd.Flags().StringVar(&golangImage, "golang-image", "golang", "golang image")
 	buildCmd.Flags().StringVar(&golangVersion, "golang-version", "1.7.5", "golang version")
+
+	buildCmd.Flags().StringVar(&dependencies, "dependencies", "", "space-separated build-time dependencies of your project")
 }
 
 func runBuild(cmd *cobra.Command, args []string) {
@@ -40,6 +44,8 @@ func runBuild(cmd *cobra.Command, args []string) {
 		Organisation:     organisation,
 		Project:          project,
 		Sha:              sha,
+
+		Dependencies: dependencies,
 
 		Registry: registry,
 

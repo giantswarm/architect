@@ -6,15 +6,15 @@ machine:
         GOOS: "linux"
         GOARCH: "amd64"
         GOPATH: "$HOME/go"
-        GS_WD: "$HOME/go/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
+        GS_WD: "$HOME/go/src/github.com/giantswarm/$CIRCLE_PROJECT_REPONAME"
 
 dependencies:
     override:
         - sudo add-apt-repository ppa:masterminds/glide -y
         - sudo apt-get update
         - sudo apt-get install glide -y
-        - mkdir -p $HOME/go/src/github.com/$CIRCLE_PROJECT_USERNAME
-        - cp -rf $HOME/$CIRCLE_PROJECT_REPONAME $HOME/go/src/github.com/$CIRCLE_PROJECT_USERNAME
+        - mkdir -p $HOME/go/src/github.com/giantswarm
+        - cp -rf $HOME/$CIRCLE_PROJECT_REPONAME $HOME/go/src/github.com/giantswarm
 
 test:
     override:
