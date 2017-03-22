@@ -229,10 +229,11 @@ func TestGetDeployWorkflow(t *testing.T) {
 				WorkingDirectory: workingDirectory,
 				Organisation:     "giantswarm",
 				Project:          "test",
-				KubernetesTemplatedResourcesDirectoryPath: "/kubernetes/",
+				KubernetesResourcesDirectoryPath: filepath.Join(workingDirectory, "/kubernetes/"),
 				KubernetesClusters: []KubernetesCluster{
 					KubernetesCluster{
 						ApiServer:      "kubernetes.giantswarm.io",
+						IngressTag:     "g8s",
 						CaPath:         "/ca.pem",
 						CrtPath:        "/crt.pem",
 						KeyPath:        "/key.pem",
@@ -256,18 +257,19 @@ func TestGetDeployWorkflow(t *testing.T) {
 		// Test a project with a Dockerfile and a kubernetes directory contains both docker and kubernetes commands
 		{
 			projectInfo: ProjectInfo{
-				WorkingDirectory:                          workingDirectory,
-				Organisation:                              "giantswarm",
-				Project:                                   "test",
-				Sha:                                       "1cd72a25e16e93da14f08d95bd98662f8827028e",
-				Registry:                                  "registry.giantswarm.io",
-				DockerEmail:                               "test@giantswarm.io",
-				DockerUsername:                            "test",
-				DockerPassword:                            "test",
-				KubernetesTemplatedResourcesDirectoryPath: "/kubernetes/",
+				WorkingDirectory:                 workingDirectory,
+				Organisation:                     "giantswarm",
+				Project:                          "test",
+				Sha:                              "1cd72a25e16e93da14f08d95bd98662f8827028e",
+				Registry:                         "registry.giantswarm.io",
+				DockerEmail:                      "test@giantswarm.io",
+				DockerUsername:                   "test",
+				DockerPassword:                   "test",
+				KubernetesResourcesDirectoryPath: filepath.Join(workingDirectory, "/kubernetes/"),
 				KubernetesClusters: []KubernetesCluster{
 					KubernetesCluster{
 						ApiServer:      "kubernetes.giantswarm.io",
+						IngressTag:     "g8s",
 						CaPath:         "/ca.pem",
 						CrtPath:        "/crt.pem",
 						KeyPath:        "/key.pem",
@@ -299,10 +301,11 @@ func TestGetDeployWorkflow(t *testing.T) {
 				WorkingDirectory: workingDirectory,
 				Organisation:     "giantswarm",
 				Project:          "test",
-				KubernetesTemplatedResourcesDirectoryPath: "/kubernetes/",
+				KubernetesResourcesDirectoryPath: filepath.Join(workingDirectory, "/kubernetes/"),
 				KubernetesClusters: []KubernetesCluster{
 					KubernetesCluster{
 						ApiServer:      "kubernetes-1.giantswarm.io",
+						IngressTag:     "g8s",
 						CaPath:         "/1-ca.pem",
 						CrtPath:        "/1-crt.pem",
 						KeyPath:        "/1-key.pem",
@@ -310,6 +313,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 					},
 					KubernetesCluster{
 						ApiServer:      "kubernetes-2.giantswarm.io",
+						IngressTag:     "aws",
 						CaPath:         "/2-ca.pem",
 						CrtPath:        "/2-crt.pem",
 						KeyPath:        "/2-key.pem",
@@ -411,6 +415,7 @@ func TestClustersFromEnv(t *testing.T) {
 			clusters: []KubernetesCluster{
 				KubernetesCluster{
 					ApiServer:      "https://api.g8s.fra-1.giantswarm.io",
+					IngressTag:     "g8s",
 					CaPath:         "/test/g8s-ca.pem",
 					CrtPath:        "/test/g8s-crt.pem",
 					KeyPath:        "/test/g8s-key.pem",
@@ -435,6 +440,7 @@ func TestClustersFromEnv(t *testing.T) {
 			clusters: []KubernetesCluster{
 				KubernetesCluster{
 					ApiServer:      "https://api.g8s.eu-west-1.aws.adidas.private.giantswarm.io:6443",
+					IngressTag:     "aws",
 					CaPath:         "/test/aws-ca.pem",
 					CrtPath:        "/test/aws-crt.pem",
 					KeyPath:        "/test/aws-key.pem",
@@ -463,6 +469,7 @@ func TestClustersFromEnv(t *testing.T) {
 			clusters: []KubernetesCluster{
 				KubernetesCluster{
 					ApiServer:      "https://api.g8s.fra-1.giantswarm.io",
+					IngressTag:     "g8s",
 					CaPath:         "/test/g8s-ca.pem",
 					CrtPath:        "/test/g8s-crt.pem",
 					KeyPath:        "/test/g8s-key.pem",
@@ -470,6 +477,7 @@ func TestClustersFromEnv(t *testing.T) {
 				},
 				KubernetesCluster{
 					ApiServer:      "https://api.g8s.eu-west-1.aws.adidas.private.giantswarm.io:6443",
+					IngressTag:     "aws",
 					CaPath:         "/test/aws-ca.pem",
 					CrtPath:        "/test/aws-crt.pem",
 					KeyPath:        "/test/aws-key.pem",
