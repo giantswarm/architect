@@ -3,6 +3,7 @@ package auth
 
 import (
 	"net/url"
+	"time"
 )
 
 // Auth holds configuration for authentication/authorization services.
@@ -18,9 +19,9 @@ type Vault struct {
 
 	// CaTTL is the TTL for CAs.
 	// e.g: `86400h`
-	CaTTL string
+	CaTTL time.Duration
 
 	// TokenTTL is the TTL for tokens.
 	// e.g: '720h'
-	TokenTTL string
+	TokenTTL time.Duration
 }

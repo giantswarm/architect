@@ -2,6 +2,7 @@ package installation
 
 import (
 	"net/url"
+	"time"
 
 	"github.com/giantswarm/architect/configuration"
 	"github.com/giantswarm/architect/configuration/apiservices"
@@ -26,8 +27,8 @@ var Leaseweb = configuration.Installation{
 					Scheme: "https",
 					Host:   "leaseweb-vault-private.giantswarm.io:8200",
 				},
-				CaTTL:    "86400h",
-				TokenTTL: "720h",
+				CaTTL:    10 * 365 * 24 * time.Hour,
+				TokenTTL: 30 * 24 * time.Hour,
 			},
 		},
 		GuestClusters: guestclusters.GuestClusters{
@@ -40,10 +41,10 @@ var Leaseweb = configuration.Installation{
 					Scheme: "https",
 					Host:   "prometheus-g8s.giantswarm.io",
 				},
-				RetentionPeriod: "336h",
+				RetentionPeriod: 2 * 7 * 24 * time.Hour,
 			},
 			Testbot: monitoring.Testbot{
-				Interval: "5m",
+				Interval: 5 * time.Minute,
 			},
 		},
 	},

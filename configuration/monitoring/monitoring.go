@@ -3,6 +3,7 @@ package monitoring
 
 import (
 	"net/url"
+	"time"
 )
 
 // Monitoring holds configuration for monitoring services.
@@ -19,12 +20,12 @@ type Prometheus struct {
 
 	// RetentionPeriod is how long to keep Prometheus data for.
 	// e.g: '336h'
-	RetentionPeriod string
+	RetentionPeriod time.Duration
 }
 
 // Testbot holds the configuration for the installation's Testbot setup.
 type Testbot struct {
 	// Interval is the time between testbot runs.
 	// e.g: '5m'
-	Interval string
+	Interval time.Duration
 }
