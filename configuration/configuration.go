@@ -1,4 +1,5 @@
 // Package configuration provides structures for configuring a G8S installation.
+//
 // The entire configuration structure is versioned.
 // The versioning contract is that fields can be added to a version,
 // but not removed or changed within a version.

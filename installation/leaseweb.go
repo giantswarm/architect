@@ -6,30 +6,36 @@ import (
 
 	"github.com/giantswarm/architect/configuration"
 	"github.com/giantswarm/architect/configuration/auth"
+	"github.com/giantswarm/architect/configuration/auth/vault"
 	"github.com/giantswarm/architect/configuration/cluster"
+	"github.com/giantswarm/architect/configuration/cluster/hyperkube"
+	"github.com/giantswarm/architect/configuration/cluster/kubernetes"
 	"github.com/giantswarm/architect/configuration/giantswarm"
+	"github.com/giantswarm/architect/configuration/giantswarm/api"
 	"github.com/giantswarm/architect/configuration/monitoring"
+	"github.com/giantswarm/architect/configuration/monitoring/prometheus"
+	"github.com/giantswarm/architect/configuration/monitoring/testbot"
 )
 
 var Leaseweb = configuration.Installation{
 	V1: configuration.V1{
 		Auth: auth.Auth{
-			Vault: auth.Vault{
+			Vault: vault.Vault{
 				Address: url.URL{
 					Scheme: "https",
 					Host:   "leaseweb-vault-private.giantswarm.io:8200",
 				},
-				CA: auth.CA{
+				CA: vault.CA{
 					TTL: 10 * 365 * 24 * time.Hour,
 				},
-				Token: auth.Token{
+				Token: vault.Token{
 					TTL: 30 * 24 * time.Hour,
 				},
 			},
 		},
 
 		GiantSwarm: giantswarm.GiantSwarm{
-			API: giantswarm.API{
+			API: api.API{
 				Address: url.URL{
 					Scheme: "https",
 					Host:   "api-g8s.giantswarm.io",
@@ -38,25 +44,25 @@ var Leaseweb = configuration.Installation{
 		},
 
 		Guest: cluster.Guest{
-			Hyperkube: cluster.Hyperkube{
+			Hyperkube: hyperkube.Hyperkube{
 				Version: "v1.5.2_coreos.0",
 			},
-			Kubernetes: cluster.Kubernetes{
-				API: cluster.API{
+			Kubernetes: kubernetes.Kubernetes{
+				API: kubernetes.API{
 					EndpointBase: "g8s.fra-1.giantswarm.io",
 				},
 			},
 		},
 
 		Monitoring: monitoring.Monitoring{
-			Prometheus: monitoring.Prometheus{
+			Prometheus: prometheus.Prometheus{
 				Address: url.URL{
 					Scheme: "https",
 					Host:   "prometheus-g8s.giantswarm.io",
 				},
 				RetentionPeriod: 2 * 7 * 24 * time.Hour,
 			},
-			Testbot: monitoring.Testbot{
+			Testbot: testbot.Testbot{
 				Interval: 5 * time.Minute,
 			},
 		},
