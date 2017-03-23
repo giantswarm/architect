@@ -115,11 +115,11 @@ func TestNewDockerCommand(t *testing.T) {
 		// Configure circle env vars if needed
 		if test.inCircle {
 			if err := os.Setenv("CIRCLECI", "true"); err != nil {
-				t.Fatalf("could not set circle env var: %v")
+				t.Fatalf("could not set circle env var: %v", err)
 			}
 		} else {
 			if err := os.Setenv("CIRCLECI", ""); err != nil {
-				t.Fatalf("could not unset circle env var: %v")
+				t.Fatalf("could not unset circle env var: %v", err)
 			}
 		}
 
