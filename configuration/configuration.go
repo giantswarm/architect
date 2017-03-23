@@ -13,13 +13,21 @@ import (
 
 // Installation holds all the configuration for a G8S installation.
 type Installation struct {
+	// V1 is the version 1 of the configuration structure.
 	V1
 }
 
 // V1 is the version 1 of the configuration structure.
 type V1 struct {
+	// APIServices holds configuration for API services.
 	apiservices.APIServices
+
+	// Auth holds configuration for authentication/authorization services.
 	auth.Auth
+
+	// GuestClusters holds configuration for guest clusters.
 	guestclusters.GuestClusters
+
+	// Monitoring holds configuration for monitoring services.
 	monitoring.Monitoring
 }

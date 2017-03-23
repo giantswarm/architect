@@ -17,11 +17,21 @@ type Vault struct {
 	// e.g: 'https://leaseweb-vault-private.giantswarm.io:8200'
 	Address url.URL
 
-	// CaTTL is the TTL for CAs.
-	// e.g: `86400h`
-	CaTTL time.Duration
+	// CA is the configuration for Vault CAs.
+	CA
 
-	// TokenTTL is the TTL for tokens.
-	// e.g: '720h'
-	TokenTTL time.Duration
+	// Token is the configuration for Vault tokens.
+	Token
+}
+
+// CA holds configuration for a certificate authority.
+type CA struct {
+	// TTL is the TTL for the CA.
+	TTL time.Duration
+}
+
+// Token holds configuration for a Vault token.
+type Token struct {
+	// TTL is the TTL for the Token.
+	TTL time.Duration
 }

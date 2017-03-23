@@ -27,8 +27,12 @@ var Leaseweb = configuration.Installation{
 					Scheme: "https",
 					Host:   "leaseweb-vault-private.giantswarm.io:8200",
 				},
-				CaTTL:    10 * 365 * 24 * time.Hour,
-				TokenTTL: 30 * 24 * time.Hour,
+				CA: auth.CA{
+					TTL: 10 * 365 * 24 * time.Hour,
+				},
+				Token: auth.Token{
+					TTL: 30 * 24 * time.Hour,
+				},
 			},
 		},
 		GuestClusters: guestclusters.GuestClusters{
