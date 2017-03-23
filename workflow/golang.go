@@ -14,7 +14,7 @@ var (
 	GoBuildCommandName = "go-build"
 )
 
-func checkGolangRequirmeents(projectInfo ProjectInfo) error {
+func checkGolangRequirements(projectInfo ProjectInfo) error {
 	if projectInfo.WorkingDirectory == "" {
 		return fmt.Errorf("working directory cannot be empty")
 	}
@@ -42,7 +42,7 @@ func checkGolangRequirmeents(projectInfo ProjectInfo) error {
 }
 
 func NewGoTestCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
-	if err := checkGolangRequirmeents(projectInfo); err != nil {
+	if err := checkGolangRequirements(projectInfo); err != nil {
 		return commands.Command{}, err
 	}
 
@@ -83,7 +83,7 @@ func NewGoTestCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, e
 }
 
 func NewGoBuildCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
-	if err := checkGolangRequirmeents(projectInfo); err != nil {
+	if err := checkGolangRequirements(projectInfo); err != nil {
 		return commands.Command{}, err
 	}
 

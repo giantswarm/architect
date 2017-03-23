@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/afero"
 )
 
-func getCertsFromEnv(fs afero.Fs, workingDirectory, envVarPrefix string) (string, string, string, error) {
+func CertsFromEnv(fs afero.Fs, workingDirectory, envVarPrefix string) (string, string, string, error) {
 	certDetails := []struct {
 		envVarSuffix   string
 		fileNameSuffix string

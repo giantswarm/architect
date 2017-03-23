@@ -27,7 +27,7 @@ func ClustersFromEnv(fs afero.Fs, workingDirectory string) ([]KubernetesCluster,
 	clusters := []KubernetesCluster{}
 
 	for _, configuredCluster := range configuredClusters {
-		caPath, crtPath, keyPath, err := getCertsFromEnv(fs, workingDirectory, configuredCluster.EnvVarPrefix)
+		caPath, crtPath, keyPath, err := CertsFromEnv(fs, workingDirectory, configuredCluster.EnvVarPrefix)
 		if err != nil {
 			continue
 		}

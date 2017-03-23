@@ -16,7 +16,7 @@ var (
 	DockerPushCommandName  = "docker-push"
 )
 
-func checkDockerRequirmeents(projectInfo ProjectInfo) error {
+func checkDockerRequirements(projectInfo ProjectInfo) error {
 	if projectInfo.WorkingDirectory == "" {
 		return fmt.Errorf("working directory cannot be empty")
 	}
@@ -38,7 +38,7 @@ func checkDockerRequirmeents(projectInfo ProjectInfo) error {
 }
 
 func NewDockerBuildCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
-	if err := checkDockerRequirmeents(projectInfo); err != nil {
+	if err := checkDockerRequirements(projectInfo); err != nil {
 		return commands.Command{}, err
 	}
 
@@ -63,7 +63,7 @@ func NewDockerBuildCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Comma
 }
 
 func NewDockerRunVersionCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
-	if err := checkDockerRequirmeents(projectInfo); err != nil {
+	if err := checkDockerRequirements(projectInfo); err != nil {
 		return commands.Command{}, err
 	}
 
@@ -85,7 +85,7 @@ func NewDockerRunVersionCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.
 }
 
 func NewDockerRunHelpCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
-	if err := checkDockerRequirmeents(projectInfo); err != nil {
+	if err := checkDockerRequirements(projectInfo); err != nil {
 		return commands.Command{}, err
 	}
 
@@ -107,7 +107,7 @@ func NewDockerRunHelpCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Com
 }
 
 func NewDockerLoginCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
-	if err := checkDockerRequirmeents(projectInfo); err != nil {
+	if err := checkDockerRequirements(projectInfo); err != nil {
 		return commands.Command{}, err
 	}
 
@@ -137,7 +137,7 @@ func NewDockerLoginCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Comma
 }
 
 func NewDockerPushCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
-	if err := checkDockerRequirmeents(projectInfo); err != nil {
+	if err := checkDockerRequirements(projectInfo); err != nil {
 		return commands.Command{}, err
 	}
 
