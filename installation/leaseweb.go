@@ -5,9 +5,9 @@ import (
 
 	"github.com/giantswarm/architect/configuration"
 	"github.com/giantswarm/architect/configuration/apiservices"
+	"github.com/giantswarm/architect/configuration/auth"
 	"github.com/giantswarm/architect/configuration/guestclusters"
 	"github.com/giantswarm/architect/configuration/monitoring"
-	"github.com/giantswarm/architect/configuration/vault"
 )
 
 var Leaseweb = configuration.Installation{
@@ -18,6 +18,16 @@ var Leaseweb = configuration.Installation{
 					Scheme: "https",
 					Host:   "api-g8s.giantswarm.io",
 				},
+			},
+		},
+		Auth: auth.Auth{
+			Vault: auth.Vault{
+				Address: url.URL{
+					Scheme: "https",
+					Host:   "leaseweb-vault-private.giantswarm.io:8200",
+				},
+				CaTTL:    "86400h",
+				TokenTTL: "720h",
 			},
 		},
 		GuestClusters: guestclusters.GuestClusters{
@@ -35,14 +45,6 @@ var Leaseweb = configuration.Installation{
 			Testbot: monitoring.Testbot{
 				Interval: "5m",
 			},
-		},
-		Vault: vault.Vault{
-			Address: url.URL{
-				Scheme: "https",
-				Host:   "leaseweb-vault-private.giantswarm.io:8200",
-			},
-			CaTTL:    "86400h",
-			TokenTTL: "720h",
 		},
 	},
 }

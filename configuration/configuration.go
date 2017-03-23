@@ -6,9 +6,9 @@ package configuration
 
 import (
 	"github.com/giantswarm/architect/configuration/apiservices"
+	"github.com/giantswarm/architect/configuration/auth"
 	"github.com/giantswarm/architect/configuration/guestclusters"
 	"github.com/giantswarm/architect/configuration/monitoring"
-	"github.com/giantswarm/architect/configuration/vault"
 )
 
 // Installation holds all the configuration for a G8S installation.
@@ -19,7 +19,7 @@ type Installation struct {
 // V1 is the version 1 of the configuration structure.
 type V1 struct {
 	apiservices.APIServices
+	auth.Auth
 	guestclusters.GuestClusters
 	monitoring.Monitoring
-	vault.Vault
 }

@@ -1,9 +1,14 @@
-// Package vault provides configuration structures for vault.
-package vault
+// Package auth provides configuration structures for authentication/authorization services.
+package auth
 
 import (
 	"net/url"
 )
+
+// Auth holds configuration for authentication/authorization services.
+type Auth struct {
+	Vault
+}
 
 // Vault holds the configuration for the installation's Vault setup
 type Vault struct {
