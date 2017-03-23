@@ -1,4 +1,5 @@
-package configuration
+// Package vault provides configuration structures for vault.
+package vault
 
 import (
 	"net/url"

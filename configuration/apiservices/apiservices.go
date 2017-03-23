@@ -1,4 +1,5 @@
-package configuration
+// Package apiservices provides configuration structures for API services.
+package apiservices
 
 import (
 	"net/url"

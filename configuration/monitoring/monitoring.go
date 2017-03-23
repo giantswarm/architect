@@ -1,4 +1,5 @@
-package configuration
+// Package monitoring provides configuration structures for monitoring services.
+package monitoring
 
 import (
 	"net/url"

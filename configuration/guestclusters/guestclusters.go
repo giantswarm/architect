@@ -1,4 +1,5 @@
-package configuration
+// Package guestclusters provides configuration structures for guest clusters.
+package guestclusters
 
 // GuestClusters holds the configuration for the installation's
 // guest clusters.
