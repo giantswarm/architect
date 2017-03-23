@@ -5,9 +5,9 @@
 package configuration
 
 import (
-	"github.com/giantswarm/architect/configuration/apiservices"
 	"github.com/giantswarm/architect/configuration/auth"
-	"github.com/giantswarm/architect/configuration/guestclusters"
+	"github.com/giantswarm/architect/configuration/cluster"
+	"github.com/giantswarm/architect/configuration/giantswarm"
 	"github.com/giantswarm/architect/configuration/monitoring"
 )
 
@@ -19,14 +19,14 @@ type Installation struct {
 
 // V1 is the version 1 of the configuration structure.
 type V1 struct {
-	// APIServices holds configuration for API services.
-	apiservices.APIServices
-
 	// Auth holds configuration for authentication/authorization services.
 	auth.Auth
 
-	// GuestClusters holds configuration for guest clusters.
-	guestclusters.GuestClusters
+	// GiantSwarm holds configuration for GiantSwarm services.
+	giantswarm.GiantSwarm
+
+	// Guest holds configuration for guest clusters.
+	cluster.Guest
 
 	// Monitoring holds configuration for monitoring services.
 	monitoring.Monitoring

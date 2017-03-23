@@ -8,6 +8,7 @@ import (
 
 // Auth holds configuration for authentication/authorization services.
 type Auth struct {
+	// Vault holds the configuration for the Vault setup.
 	Vault
 }
 

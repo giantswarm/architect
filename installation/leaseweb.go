@@ -5,22 +5,14 @@ import (
 	"time"
 
 	"github.com/giantswarm/architect/configuration"
-	"github.com/giantswarm/architect/configuration/apiservices"
 	"github.com/giantswarm/architect/configuration/auth"
-	"github.com/giantswarm/architect/configuration/guestclusters"
+	"github.com/giantswarm/architect/configuration/cluster"
+	"github.com/giantswarm/architect/configuration/giantswarm"
 	"github.com/giantswarm/architect/configuration/monitoring"
 )
 
 var Leaseweb = configuration.Installation{
 	V1: configuration.V1{
-		APIServices: apiservices.APIServices{
-			GSAPI: apiservices.GSAPI{
-				Address: url.URL{
-					Scheme: "https",
-					Host:   "api-g8s.giantswarm.io",
-				},
-			},
-		},
 		Auth: auth.Auth{
 			Vault: auth.Vault{
 				Address: url.URL{
@@ -35,10 +27,27 @@ var Leaseweb = configuration.Installation{
 				},
 			},
 		},
-		GuestClusters: guestclusters.GuestClusters{
-			APIEndpointBase:  "g8s.fra-1.giantswarm.io",
-			HyperkubeVersion: "v1.5.2_coreos.0",
+
+		GiantSwarm: giantswarm.GiantSwarm{
+			API: giantswarm.API{
+				Address: url.URL{
+					Scheme: "https",
+					Host:   "api-g8s.giantswarm.io",
+				},
+			},
 		},
+
+		Guest: cluster.Guest{
+			Hyperkube: cluster.Hyperkube{
+				Version: "v1.5.2_coreos.0",
+			},
+			Kubernetes: cluster.Kubernetes{
+				API: cluster.API{
+					EndpointBase: "g8s.fra-1.giantswarm.io",
+				},
+			},
+		},
+
 		Monitoring: monitoring.Monitoring{
 			Prometheus: monitoring.Prometheus{
 				Address: url.URL{
