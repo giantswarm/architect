@@ -194,7 +194,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 				if err := afero.WriteFile(
 					fs,
 					path,
-					[]byte("interval: '@every {{ .Installation.V1.Monitoring.Testbot.Interval | ShortDuration }}'"),
+					[]byte("interval: '@every {{ .Installation.V1.Monitoring.Testbot.Interval | shortDuration }}'"),
 					permission,
 				); err != nil {
 					return err

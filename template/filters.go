@@ -3,7 +3,16 @@ package template
 import (
 	"net/url"
 	"strings"
+	"text/template"
 	"time"
+)
+
+var (
+	// filters defines functions that can be used in the templates.
+	filters = template.FuncMap{
+		"shortDuration": shortDuration,
+		"urlString":     urlString,
+	}
 )
 
 // shortDuration takes a duration, and provides a shorter string version.
