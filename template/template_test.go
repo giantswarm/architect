@@ -19,7 +19,7 @@ import (
 func TestTemplateKubernetesResources(t *testing.T) {
 	tests := []struct {
 		resourcesPath string
-		config        configuration.Installation
+		config        TemplateConfiguration
 		setUp         func(afero.Fs, string) error
 		check         func(afero.Fs, string) error
 	}{
@@ -27,7 +27,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 		// produces an empty directory.
 		{
 			resourcesPath: "/kubernetes",
-			config:        configuration.Installation{},
+			config:        TemplateConfiguration{},
 			setUp: func(fs afero.Fs, resourcesPath string) error {
 				if err := fs.Mkdir(resourcesPath, permission); err != nil {
 					return err
@@ -51,13 +51,15 @@ func TestTemplateKubernetesResources(t *testing.T) {
 		// Test that a resources directory with an api ingress is templated correctly.
 		{
 			resourcesPath: "/kubernetes",
-			config: configuration.Installation{
-				V1: configuration.V1{
-					GiantSwarm: giantswarm.GiantSwarm{
-						API: api.API{
-							Address: url.URL{
-								Scheme: "https",
-								Host:   "api-g8s.giantswarm.io",
+			config: TemplateConfiguration{
+				Installation: configuration.Installation{
+					V1: configuration.V1{
+						GiantSwarm: giantswarm.GiantSwarm{
+							API: api.API{
+								Address: url.URL{
+									Scheme: "https",
+									Host:   "api-g8s.giantswarm.io",
+								},
 							},
 						},
 					},
@@ -68,11 +70,11 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					return err
 				}
 
-				ingressPath := filepath.Join(resourcesPath, "ingress.yml")
+				path := filepath.Join(resourcesPath, "ingress.yml")
 				if err := afero.WriteFile(
 					fs,
-					ingressPath,
-					[]byte("{{ .V1.GiantSwarm.API.Address.Host }}"),
+					path,
+					[]byte("{{ .Installation.V1.GiantSwarm.API.Address.Host }}"),
 					permission,
 				); err != nil {
 					return err
@@ -110,11 +112,13 @@ func TestTemplateKubernetesResources(t *testing.T) {
 		// Test that a resources directory with a testbot interval is templated correctly.
 		{
 			resourcesPath: "/kubernetes",
-			config: configuration.Installation{
-				V1: configuration.V1{
-					Monitoring: monitoring.Monitoring{
-						Testbot: testbot.Testbot{
-							Interval: 5 * time.Minute,
+			config: TemplateConfiguration{
+				Installation: configuration.Installation{
+					V1: configuration.V1{
+						Monitoring: monitoring.Monitoring{
+							Testbot: testbot.Testbot{
+								Interval: 5 * time.Minute,
+							},
 						},
 					},
 				},
@@ -124,11 +128,11 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					return err
 				}
 
-				ingressPath := filepath.Join(resourcesPath, "configmap.yml")
+				path := filepath.Join(resourcesPath, "configmap.yml")
 				if err := afero.WriteFile(
 					fs,
-					ingressPath,
-					[]byte("interval: '@every {{ .V1.Monitoring.Testbot.Interval | ShortDuration }}'"),
+					path,
+					[]byte("interval: '@every {{ .Installation.V1.Monitoring.Testbot.Interval | ShortDuration }}'"),
 					permission,
 				); err != nil {
 					return err
@@ -157,6 +161,59 @@ func TestTemplateKubernetesResources(t *testing.T) {
 
 				if string(bytes) != "interval: '@every 5m'" {
 					return fmt.Errorf("correct interval string not found, found: '%v'", string(bytes))
+				}
+
+				return nil
+			},
+		},
+
+		// Test that a resources directory with a docker tag is templated correctly.
+		{
+			resourcesPath: "/kubernetes",
+			config: TemplateConfiguration{
+				BuildInfo: BuildInfo{
+					SHA: "12345",
+				},
+				Installation: configuration.Installation{},
+			},
+			setUp: func(fs afero.Fs, resourcesPath string) error {
+				if err := fs.Mkdir(resourcesPath, permission); err != nil {
+					return err
+				}
+
+				path := filepath.Join(resourcesPath, "deployment.yml")
+				if err := afero.WriteFile(
+					fs,
+					path,
+					[]byte("image: foo/bar:{{ .BuildInfo.SHA }}"),
+					permission,
+				); err != nil {
+					return err
+				}
+
+				return nil
+			},
+			check: func(fs afero.Fs, resourcesPath string) error {
+				fileInfos, err := afero.ReadDir(fs, resourcesPath)
+				if err != nil {
+					return err
+				}
+
+				if len(fileInfos) != 1 {
+					return fmt.Errorf("did not find only one file in resources path")
+				}
+
+				if fileInfos[0].Name() != "deployment.yml" {
+					return fmt.Errorf("deployment not found in resources path")
+				}
+
+				bytes, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "deployment.yml"))
+				if err != nil {
+					return err
+				}
+
+				if string(bytes) != "image: foo/bar:12345" {
+					return fmt.Errorf("correct sha not found, found: '%v'", string(bytes))
 				}
 
 				return nil
