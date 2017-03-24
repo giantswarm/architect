@@ -40,6 +40,7 @@ type TemplateConfiguration struct {
 func TemplateKubernetesResources(fs afero.Fs, resourcesPath string, config TemplateConfiguration) error {
 	funcMap := template.FuncMap{
 		"ShortDuration": shortDuration,
+		"urlString":     urlString,
 	}
 
 	walkFunc := func(path string, info os.FileInfo, err error) error {

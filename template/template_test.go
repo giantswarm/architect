@@ -11,6 +11,7 @@ import (
 	"github.com/giantswarm/architect/configuration/giantswarm"
 	"github.com/giantswarm/architect/configuration/giantswarm/api"
 	"github.com/giantswarm/architect/configuration/monitoring"
+	"github.com/giantswarm/architect/configuration/monitoring/prometheus"
 	"github.com/giantswarm/architect/configuration/monitoring/testbot"
 	"github.com/spf13/afero"
 )
@@ -102,6 +103,67 @@ func TestTemplateKubernetesResources(t *testing.T) {
 				}
 
 				if string(bytes) != "api-g8s.giantswarm.io" {
+					return fmt.Errorf("ingress address not found, found: '%v'", string(bytes))
+				}
+
+				return nil
+			},
+		},
+
+		// Test that a resources directory with a prometheus address is templated correctly.
+		{
+			resourcesPath: "/kubernetes",
+			config: TemplateConfiguration{
+				Installation: configuration.Installation{
+					V1: configuration.V1{
+						Monitoring: monitoring.Monitoring{
+							Prometheus: prometheus.Prometheus{
+								Address: url.URL{
+									Scheme: "https",
+									Host:   "prometheus-g8s.giantswarm.io",
+								},
+							},
+						},
+					},
+				},
+			},
+			setUp: func(fs afero.Fs, resourcesPath string) error {
+				if err := fs.Mkdir(resourcesPath, permission); err != nil {
+					return err
+				}
+
+				path := filepath.Join(resourcesPath, "ingress.yml")
+				if err := afero.WriteFile(
+					fs,
+					path,
+					[]byte(`{{ .Installation.V1.Monitoring.Prometheus.Address | urlString }}`),
+					permission,
+				); err != nil {
+					return err
+				}
+
+				return nil
+			},
+			check: func(fs afero.Fs, resourcesPath string) error {
+				fileInfos, err := afero.ReadDir(fs, resourcesPath)
+				if err != nil {
+					return err
+				}
+
+				if len(fileInfos) != 1 {
+					return fmt.Errorf("did not find only one file in resources path")
+				}
+
+				if fileInfos[0].Name() != "ingress.yml" {
+					return fmt.Errorf("ingress not found in resources path")
+				}
+
+				bytes, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "ingress.yml"))
+				if err != nil {
+					return err
+				}
+
+				if string(bytes) != "https://prometheus-g8s.giantswarm.io" {
 					return fmt.Errorf("ingress address not found, found: '%v'", string(bytes))
 				}
 

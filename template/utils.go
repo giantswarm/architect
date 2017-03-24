@@ -1,6 +1,7 @@
 package template
 
 import (
+	"net/url"
 	"strings"
 	"time"
 )
@@ -16,4 +17,10 @@ func shortDuration(d time.Duration) string {
 		s = s[:len(s)-2]
 	}
 	return s
+}
+
+// urlString takes a URL, and provides a format URL.
+// Useful in templates where String is not available
+func urlString(u url.URL) string {
+	return u.String()
 }

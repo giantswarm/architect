@@ -1,11 +1,12 @@
 package template
 
 import (
+	"net/url"
 	"testing"
 	"time"
 )
 
-// TestShortDuration tests the shortDuration function
+// TestShortDuration tests the shortDuration function.
 func TestShortDuration(t *testing.T) {
 	tests := []struct {
 		duration       time.Duration
@@ -50,6 +51,45 @@ func TestShortDuration(t *testing.T) {
 
 	for _, test := range tests {
 		returnedString := shortDuration(test.duration)
+		if returnedString != test.expectedString {
+			t.Fatalf("expected '%s', returned '%s'", test.expectedString, returnedString)
+		}
+	}
+}
+
+// TestURLString tests the urlString function.
+func TestURLString(t *testing.T) {
+	tests := []struct {
+		URL            url.URL
+		expectedString string
+	}{
+		// Test the empty URL
+		{
+			URL:            url.URL{},
+			expectedString: "",
+		},
+
+		// Test a http URL
+		{
+			URL: url.URL{
+				Scheme: "http",
+				Host:   "giantswarm.io",
+			},
+			expectedString: "http://giantswarm.io",
+		},
+
+		// Test a https URL
+		{
+			URL: url.URL{
+				Scheme: "https",
+				Host:   "giantswarm.io",
+			},
+			expectedString: "https://giantswarm.io",
+		},
+	}
+
+	for _, test := range tests {
+		returnedString := urlString(test.URL)
 		if returnedString != test.expectedString {
 			t.Fatalf("expected '%s', returned '%s'", test.expectedString, returnedString)
 		}
