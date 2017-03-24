@@ -2,9 +2,7 @@ package workflow
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
-	"reflect"
 	"testing"
 
 	"github.com/giantswarm/architect/commands"
@@ -233,7 +231,6 @@ func TestGetDeployWorkflow(t *testing.T) {
 				KubernetesClusters: []KubernetesCluster{
 					KubernetesCluster{
 						ApiServer:      "kubernetes.giantswarm.io",
-						IngressTag:     "g8s",
 						CaPath:         "/ca.pem",
 						CrtPath:        "/crt.pem",
 						KeyPath:        "/key.pem",
@@ -269,7 +266,6 @@ func TestGetDeployWorkflow(t *testing.T) {
 				KubernetesClusters: []KubernetesCluster{
 					KubernetesCluster{
 						ApiServer:      "kubernetes.giantswarm.io",
-						IngressTag:     "g8s",
 						CaPath:         "/ca.pem",
 						CrtPath:        "/crt.pem",
 						KeyPath:        "/key.pem",
@@ -305,7 +301,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 				KubernetesClusters: []KubernetesCluster{
 					KubernetesCluster{
 						ApiServer:      "kubernetes-1.giantswarm.io",
-						IngressTag:     "g8s",
+						Prefix:         "1",
 						CaPath:         "/1-ca.pem",
 						CrtPath:        "/1-crt.pem",
 						KeyPath:        "/1-key.pem",
@@ -313,7 +309,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 					},
 					KubernetesCluster{
 						ApiServer:      "kubernetes-2.giantswarm.io",
-						IngressTag:     "aws",
+						Prefix:         "2",
 						CaPath:         "/2-ca.pem",
 						CrtPath:        "/2-crt.pem",
 						KeyPath:        "/2-key.pem",
@@ -366,178 +362,6 @@ func TestGetDeployWorkflow(t *testing.T) {
 					expectedCommandName,
 					workflow[index].Name,
 				)
-			}
-		}
-	}
-}
-
-func TestClustersFromEnv(t *testing.T) {
-	type envVar struct {
-		key   string
-		value string
-	}
-
-	certTestData := "test"
-	certEncodedTestData := "dGVzdA=="
-
-	tests := []struct {
-		workingDirectory string
-		envVars          []envVar
-		clusters         []KubernetesCluster
-		expectedFiles    []string
-	}{
-		// Test that an empty env var set returns no clusters.
-		{
-			workingDirectory: "/test/",
-			envVars:          []envVar{},
-			clusters:         []KubernetesCluster{},
-			expectedFiles:    []string{},
-		},
-
-		// Test that a few G8S env vars returns no clusters.
-		{
-			workingDirectory: "/test/",
-			envVars: []envVar{
-				envVar{key: "G8S_CA", value: "test"},
-			},
-			clusters:      []KubernetesCluster{},
-			expectedFiles: []string{},
-		},
-
-		// Test that G8S env vars returns the LW cluster
-		{
-			workingDirectory: "/test/",
-			envVars: []envVar{
-				envVar{key: "G8S_CA", value: certEncodedTestData},
-				envVar{key: "G8S_CRT", value: certEncodedTestData},
-				envVar{key: "G8S_KEY", value: certEncodedTestData},
-			},
-			clusters: []KubernetesCluster{
-				KubernetesCluster{
-					ApiServer:      "https://api.g8s.fra-1.giantswarm.io",
-					IngressTag:     "g8s",
-					CaPath:         "/test/g8s-ca.pem",
-					CrtPath:        "/test/g8s-crt.pem",
-					KeyPath:        "/test/g8s-key.pem",
-					KubectlVersion: "1.4.7",
-				},
-			},
-			expectedFiles: []string{
-				"/test/g8s-ca.pem",
-				"/test/g8s-crt.pem",
-				"/test/g8s-key.pem",
-			},
-		},
-
-		// Test that AWS env vars returns the AWS cluster
-		{
-			workingDirectory: "/test",
-			envVars: []envVar{
-				envVar{key: "AWS_CA", value: certEncodedTestData},
-				envVar{key: "AWS_CRT", value: certEncodedTestData},
-				envVar{key: "AWS_KEY", value: certEncodedTestData},
-			},
-			clusters: []KubernetesCluster{
-				KubernetesCluster{
-					ApiServer:      "https://api.g8s.eu-west-1.aws.adidas.private.giantswarm.io:6443",
-					IngressTag:     "aws",
-					CaPath:         "/test/aws-ca.pem",
-					CrtPath:        "/test/aws-crt.pem",
-					KeyPath:        "/test/aws-key.pem",
-					KubectlVersion: "1.4.7",
-				},
-			},
-			expectedFiles: []string{
-				"/test/aws-ca.pem",
-				"/test/aws-crt.pem",
-				"/test/aws-key.pem",
-			},
-		},
-
-		// Test that G8S and AWS env vars return both clusters
-		{
-			workingDirectory: "/test",
-			envVars: []envVar{
-				envVar{key: "G8S_CA", value: certEncodedTestData},
-				envVar{key: "G8S_CRT", value: certEncodedTestData},
-				envVar{key: "G8S_KEY", value: certEncodedTestData},
-
-				envVar{key: "AWS_CA", value: certEncodedTestData},
-				envVar{key: "AWS_CRT", value: certEncodedTestData},
-				envVar{key: "AWS_KEY", value: certEncodedTestData},
-			},
-			clusters: []KubernetesCluster{
-				KubernetesCluster{
-					ApiServer:      "https://api.g8s.fra-1.giantswarm.io",
-					IngressTag:     "g8s",
-					CaPath:         "/test/g8s-ca.pem",
-					CrtPath:        "/test/g8s-crt.pem",
-					KeyPath:        "/test/g8s-key.pem",
-					KubectlVersion: "1.4.7",
-				},
-				KubernetesCluster{
-					ApiServer:      "https://api.g8s.eu-west-1.aws.adidas.private.giantswarm.io:6443",
-					IngressTag:     "aws",
-					CaPath:         "/test/aws-ca.pem",
-					CrtPath:        "/test/aws-crt.pem",
-					KeyPath:        "/test/aws-key.pem",
-					KubectlVersion: "1.4.7",
-				},
-			},
-			expectedFiles: []string{
-				"/test/g8s-ca.pem",
-				"/test/g8s-crt.pem",
-				"/test/g8s-key.pem",
-
-				"/test/aws-ca.pem",
-				"/test/aws-crt.pem",
-				"/test/aws-key.pem",
-			},
-		},
-	}
-
-	for index, test := range tests {
-		for _, envVar := range test.envVars {
-			if err := os.Setenv(envVar.key, envVar.value); err != nil {
-				t.Fatalf("%v: unexpected error setting env var: %v", index, err)
-			}
-		}
-
-		fs := afero.NewMemMapFs()
-
-		clusters, err := ClustersFromEnv(fs, test.workingDirectory)
-
-		for _, envVar := range test.envVars {
-			if err := os.Setenv(envVar.key, ""); err != nil {
-				t.Fatalf("%v: unexpected error unsetting env var: %v", index, err)
-			}
-		}
-
-		if err != nil {
-			t.Fatalf("%v: unexpected error getting clusters from env: %v", index, err)
-		}
-
-		if !reflect.DeepEqual(clusters, test.clusters) {
-			t.Fatalf(
-				"%v: expected clusters did not match returned clusters.\nexpected: %#v\nreturned: %#v\n",
-				index,
-				test.clusters,
-				clusters,
-			)
-		}
-
-		for _, expectedFile := range test.expectedFiles {
-			_, err := fs.Stat(expectedFile)
-			if err != nil {
-				t.Fatalf("%v: unexpected error checking certificate: %v", index, err)
-			}
-
-			contents, err := afero.ReadFile(fs, expectedFile)
-			if err != nil {
-				t.Fatalf("%v: unexpected error checking certificate contents: %v", index, err)
-			}
-			if string(contents) != certTestData {
-				t.Fatalf("%v: certificate did not match expected contents: %v", index, string(contents))
 			}
 		}
 	}

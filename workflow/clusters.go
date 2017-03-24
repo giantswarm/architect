@@ -1,26 +1,44 @@
 package workflow
 
-import "github.com/spf13/afero"
+import (
+	"github.com/giantswarm/architect/configuration"
+	"github.com/giantswarm/architect/installation"
+	"github.com/spf13/afero"
+)
+
+type KubernetesCluster struct {
+	ApiServer      string
+	Prefix         string
+	CaPath         string
+	CrtPath        string
+	KeyPath        string
+	KubectlVersion string
+
+	Installation configuration.Installation
+}
 
 func ClustersFromEnv(fs afero.Fs, workingDirectory string) ([]KubernetesCluster, error) {
 	type Cluster struct {
 		ApiServer      string
-		IngressTag     string
 		EnvVarPrefix   string
 		KubectlVersion string
+
+		Installation configuration.Installation
 	}
 	configuredClusters := []Cluster{
 		Cluster{
 			ApiServer:      "https://api.g8s.fra-1.giantswarm.io",
-			IngressTag:     "g8s",
 			EnvVarPrefix:   "G8S",
 			KubectlVersion: "1.4.7",
+
+			Installation: installation.Leaseweb,
 		},
 		Cluster{
 			ApiServer:      "https://api.g8s.eu-west-1.aws.adidas.private.giantswarm.io:6443",
-			IngressTag:     "aws",
 			EnvVarPrefix:   "AWS",
 			KubectlVersion: "1.4.7",
+
+			Installation: installation.AWS,
 		},
 	}
 
@@ -34,11 +52,13 @@ func ClustersFromEnv(fs afero.Fs, workingDirectory string) ([]KubernetesCluster,
 
 		newCluster := KubernetesCluster{
 			ApiServer:      configuredCluster.ApiServer,
-			IngressTag:     configuredCluster.IngressTag,
+			Prefix:         configuredCluster.EnvVarPrefix,
 			CaPath:         caPath,
 			CrtPath:        crtPath,
 			KeyPath:        keyPath,
 			KubectlVersion: configuredCluster.KubectlVersion,
+
+			Installation: configuredCluster.Installation,
 		}
 		clusters = append(clusters, newCluster)
 	}
