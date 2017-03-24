@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/giantswarm/architect/commands"
+	"github.com/giantswarm/architect/template"
 	"github.com/giantswarm/architect/utils"
 
 	"github.com/spf13/afero"
@@ -24,15 +25,6 @@ func (w Workflow) String() string {
 	}
 
 	return fmt.Sprintf("{\n%v}", strings.Join(cmdStrings, ""))
-}
-
-type KubernetesCluster struct {
-	ApiServer      string
-	IngressTag     string
-	CaPath         string
-	CrtPath        string
-	KeyPath        string
-	KubectlVersion string
 }
 
 type ProjectInfo struct {
@@ -134,13 +126,9 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 				return nil, fmt.Errorf("kubernetes templated resources directory path cannot be empty")
 			}
 
-			if cluster.IngressTag == "" {
-				return nil, fmt.Errorf("ingress tag cannot be empty")
-			}
-
 			// Copy /kubernetes to a per-cluster directory, and template it
 			dir, subdir := filepath.Split(projectInfo.KubernetesResourcesDirectoryPath)
-			templatedResourcesDirectory := filepath.Join(dir, subdir+"-"+cluster.IngressTag)
+			templatedResourcesDirectory := filepath.Join(dir, subdir+"-"+cluster.Prefix)
 
 			if err := utils.CopyDir(
 				fs,
@@ -150,7 +138,14 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 				return nil, err
 			}
 
-			if err := utils.TemplateKubernetesResources(fs, templatedResourcesDirectory, projectInfo.Sha, cluster.IngressTag); err != nil {
+			config := template.TemplateConfiguration{
+				BuildInfo: template.BuildInfo{
+					SHA: projectInfo.Sha,
+				},
+				Installation: cluster.Installation,
+			}
+
+			if err := template.TemplateKubernetesResources(fs, templatedResourcesDirectory, config); err != nil {
 				return nil, err
 			}
 
