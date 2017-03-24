@@ -5,10 +5,13 @@ import (
 	"net/url"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/giantswarm/architect/configuration"
 	"github.com/giantswarm/architect/configuration/giantswarm"
 	"github.com/giantswarm/architect/configuration/giantswarm/api"
+	"github.com/giantswarm/architect/configuration/monitoring"
+	"github.com/giantswarm/architect/configuration/monitoring/testbot"
 	"github.com/spf13/afero"
 )
 
@@ -98,6 +101,62 @@ func TestTemplateKubernetesResources(t *testing.T) {
 
 				if string(bytes) != "api-g8s.giantswarm.io" {
 					return fmt.Errorf("ingress address not found, found: '%v'", string(bytes))
+				}
+
+				return nil
+			},
+		},
+
+		// Test that a resources directory with a testbot interval is templated correctly.
+		{
+			resourcesPath: "/kubernetes",
+			config: configuration.Installation{
+				V1: configuration.V1{
+					Monitoring: monitoring.Monitoring{
+						Testbot: testbot.Testbot{
+							Interval: 5 * time.Minute,
+						},
+					},
+				},
+			},
+			setUp: func(fs afero.Fs, resourcesPath string) error {
+				if err := fs.Mkdir(resourcesPath, permission); err != nil {
+					return err
+				}
+
+				ingressPath := filepath.Join(resourcesPath, "configmap.yml")
+				if err := afero.WriteFile(
+					fs,
+					ingressPath,
+					[]byte("interval: '@every {{ .V1.Monitoring.Testbot.Interval | ShortDuration }}'"),
+					permission,
+				); err != nil {
+					return err
+				}
+
+				return nil
+			},
+			check: func(fs afero.Fs, resourcesPath string) error {
+				fileInfos, err := afero.ReadDir(fs, resourcesPath)
+				if err != nil {
+					return err
+				}
+
+				if len(fileInfos) != 1 {
+					return fmt.Errorf("did not find only one file in resources path")
+				}
+
+				if fileInfos[0].Name() != "configmap.yml" {
+					return fmt.Errorf("configmap not found in resources path")
+				}
+
+				bytes, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "configmap.yml"))
+				if err != nil {
+					return err
+				}
+
+				if string(bytes) != "interval: '@every 5m'" {
+					return fmt.Errorf("correct interval string not found, found: '%v'", string(bytes))
 				}
 
 				return nil

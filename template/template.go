@@ -22,6 +22,10 @@ var (
 // It templates the given resources, with data from the configuration,
 // writing changes to the files.
 func TemplateKubernetesResources(fs afero.Fs, resourcesPath string, config configuration.Installation) error {
+	funcMap := template.FuncMap{
+		"ShortDuration": shortDuration,
+	}
+
 	walkFunc := func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -36,7 +40,7 @@ func TemplateKubernetesResources(fs afero.Fs, resourcesPath string, config confi
 			return err
 		}
 
-		t := template.Must(template.New(path).Parse(string(contents)))
+		t := template.Must(template.New(path).Funcs(funcMap).Parse(string(contents)))
 		if err != nil {
 			return err
 		}
