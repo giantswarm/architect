@@ -5,6 +5,7 @@ package template
 import (
 	"bytes"
 	"os"
+	"strings"
 	"text/template"
 
 	"github.com/spf13/afero"
@@ -62,12 +63,17 @@ func TemplateKubernetesResources(fs afero.Fs, resourcesPath string, config Templ
 			return err
 		}
 
-		var templatedContents bytes.Buffer
-		if err := t.Execute(&templatedContents, config); err != nil {
+		var buf bytes.Buffer
+		if err := t.Execute(&buf, config); err != nil {
 			return err
 		}
 
-		if err := afero.WriteFile(fs, path, templatedContents.Bytes(), permission); err != nil {
+		templatedContents := buf.String()
+
+		// This add backwards compatability for `%%DOCKER_TAG%%`. Deprecated.
+		templatedContents = strings.Replace(templatedContents, "%%DOCKER_TAG%%", config.BuildInfo.SHA, -1)
+
+		if err := afero.WriteFile(fs, path, []byte(templatedContents), permission); err != nil {
 			return err
 		}
 

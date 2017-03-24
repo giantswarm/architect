@@ -281,6 +281,59 @@ func TestTemplateKubernetesResources(t *testing.T) {
 				return nil
 			},
 		},
+
+		// Test that the older docker tag format is templated correctly.
+		{
+			resourcesPath: "/kubernetes",
+			config: TemplateConfiguration{
+				BuildInfo: BuildInfo{
+					SHA: "12345",
+				},
+				Installation: configuration.Installation{},
+			},
+			setUp: func(fs afero.Fs, resourcesPath string) error {
+				if err := fs.Mkdir(resourcesPath, permission); err != nil {
+					return err
+				}
+
+				path := filepath.Join(resourcesPath, "deployment.yml")
+				if err := afero.WriteFile(
+					fs,
+					path,
+					[]byte("image: registry.giantswarm.io/giantswarm/api:%%DOCKER_TAG%%"),
+					permission,
+				); err != nil {
+					return err
+				}
+
+				return nil
+			},
+			check: func(fs afero.Fs, resourcesPath string) error {
+				fileInfos, err := afero.ReadDir(fs, resourcesPath)
+				if err != nil {
+					return err
+				}
+
+				if len(fileInfos) != 1 {
+					return fmt.Errorf("did not find only one file in resources path")
+				}
+
+				if fileInfos[0].Name() != "deployment.yml" {
+					return fmt.Errorf("deployment not found in resources path")
+				}
+
+				bytes, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "deployment.yml"))
+				if err != nil {
+					return err
+				}
+
+				if string(bytes) != "image: registry.giantswarm.io/giantswarm/api:12345" {
+					return fmt.Errorf("correct sha not found, found: '%v'", string(bytes))
+				}
+
+				return nil
+			},
+		},
 	}
 
 	for index, test := range tests {
