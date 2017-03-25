@@ -99,8 +99,10 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedCommandNames: map[int]string{
-				0: GoTestCommandName,
-				1: GoBuildCommandName,
+				0: GoFmtCommandName,
+				1: GoVetCommandName,
+				2: GoTestCommandName,
+				3: GoBuildCommandName,
 			},
 		},
 
@@ -133,11 +135,13 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedCommandNames: map[int]string{
-				0: GoTestCommandName,
-				1: GoBuildCommandName,
-				2: DockerBuildCommandName,
-				3: DockerRunVersionCommandName,
-				4: DockerRunHelpCommandName,
+				0: GoFmtCommandName,
+				1: GoVetCommandName,
+				2: GoTestCommandName,
+				3: GoBuildCommandName,
+				4: DockerBuildCommandName,
+				5: DockerRunVersionCommandName,
+				6: DockerRunHelpCommandName,
 			},
 		},
 	}

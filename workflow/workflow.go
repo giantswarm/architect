@@ -55,6 +55,18 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		return nil, err
 	}
 	if mainGoExists {
+		goFmt, err := NewGoFmtCommand(fs, projectInfo)
+		if err != nil {
+			return nil, err
+		}
+		w = append(w, goFmt)
+
+		goVet, err := NewGoVetCommand(fs, projectInfo)
+		if err != nil {
+			return nil, err
+		}
+		w = append(w, goVet)
+
 		goTest, err := NewGoTestCommand(fs, projectInfo)
 		if err != nil {
 			return nil, err

@@ -10,6 +10,8 @@ import (
 )
 
 var (
+	GoFmtCommandName   = "go-fmt"
+	GoVetCommandName   = "go-vet"
 	GoTestCommandName  = "go-test"
 	GoBuildCommandName = "go-build"
 )
@@ -41,12 +43,88 @@ func checkGolangRequirements(projectInfo ProjectInfo) error {
 	return nil
 }
 
+func NewGoFmtCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+	if err := checkGolangRequirements(projectInfo); err != nil {
+		return commands.Command{}, err
+	}
+
+	packageArguments, err := utils.NoVendor(fs, projectInfo.WorkingDirectory)
+	if err != nil {
+		return commands.Command{}, err
+	}
+
+	goFmt := commands.NewDockerCommand(
+		GoFmtCommandName,
+		commands.DockerCommandConfig{
+			Volumes: []string{
+				fmt.Sprintf(
+					"%v:/go/src/github.com/%v/%v",
+					projectInfo.WorkingDirectory,
+					projectInfo.Organisation,
+					projectInfo.Project,
+				),
+			},
+			Env: []string{
+				"GOPATH=/go",
+			},
+			WorkingDirectory: fmt.Sprintf(
+				"/go/src/github.com/%v/%v",
+				projectInfo.Organisation,
+				projectInfo.Project,
+			),
+			Image: fmt.Sprintf("%v:%v", projectInfo.GolangImage, projectInfo.GolangVersion),
+			Args:  []string{"go", "fmt"},
+		},
+	)
+	goFmt.Args = append(goFmt.Args, packageArguments...)
+
+	return goFmt, nil
+}
+
+func NewGoVetCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+	if err := checkGolangRequirements(projectInfo); err != nil {
+		return commands.Command{}, err
+	}
+
+	packageArguments, err := utils.NoVendor(fs, projectInfo.WorkingDirectory)
+	if err != nil {
+		return commands.Command{}, err
+	}
+
+	goVet := commands.NewDockerCommand(
+		GoVetCommandName,
+		commands.DockerCommandConfig{
+			Volumes: []string{
+				fmt.Sprintf(
+					"%v:/go/src/github.com/%v/%v",
+					projectInfo.WorkingDirectory,
+					projectInfo.Organisation,
+					projectInfo.Project,
+				),
+			},
+			Env: []string{
+				"GOPATH=/go",
+			},
+			WorkingDirectory: fmt.Sprintf(
+				"/go/src/github.com/%v/%v",
+				projectInfo.Organisation,
+				projectInfo.Project,
+			),
+			Image: fmt.Sprintf("%v:%v", projectInfo.GolangImage, projectInfo.GolangVersion),
+			Args:  []string{"go", "vet"},
+		},
+	)
+	goVet.Args = append(goVet.Args, packageArguments...)
+
+	return goVet, nil
+}
+
 func NewGoTestCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
 	if err := checkGolangRequirements(projectInfo); err != nil {
 		return commands.Command{}, err
 	}
 
-	testPackageArguments, err := utils.NoVendor(fs, projectInfo.WorkingDirectory)
+	packageArguments, err := utils.NoVendor(fs, projectInfo.WorkingDirectory)
 	if err != nil {
 		return commands.Command{}, err
 	}
@@ -77,7 +155,7 @@ func NewGoTestCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, e
 			Args:  []string{"go", "test", "-v"},
 		},
 	)
-	goTest.Args = append(goTest.Args, testPackageArguments...)
+	goTest.Args = append(goTest.Args, packageArguments...)
 
 	return goTest, nil
 }
