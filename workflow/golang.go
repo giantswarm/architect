@@ -48,11 +48,6 @@ func NewGoFmtCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, er
 		return commands.Command{}, err
 	}
 
-	packageArguments, err := utils.NoVendor(fs, projectInfo.WorkingDirectory)
-	if err != nil {
-		return commands.Command{}, err
-	}
-
 	goFmt := commands.NewDockerCommand(
 		GoFmtCommandName,
 		commands.DockerCommandConfig{
@@ -73,10 +68,11 @@ func NewGoFmtCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, er
 				projectInfo.Project,
 			),
 			Image: fmt.Sprintf("%v:%v", projectInfo.GolangImage, projectInfo.GolangVersion),
-			Args:  []string{"go", "fmt"},
+			// gofmt always exits with code 0. Use grep matching everything to determine if any diff is outputed.
+			// gofmt also requires specific files, so we use find to provide a list of all files.
+			Args: []string{"bash", "-c", "! gofmt -d $(find . -type f -name '*.go' -not -path \"./vendor/*\") 2>&1 | grep -e '.'"},
 		},
 	)
-	goFmt.Args = append(goFmt.Args, packageArguments...)
 
 	return goFmt, nil
 }
