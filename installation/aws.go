@@ -23,7 +23,7 @@ var AWS = configuration.Installation{
 			Vault: vault.Vault{
 				Address: url.URL{
 					Scheme: "https",
-					Host:   "vault.eu-west-1.aws.private.giantswarm.io:8200",
+					Host:   "vault.eu-west-1.aws.private.giantswarm.io",
 				},
 				CA: vault.CA{
 					TTL: 10 * 365 * 24 * time.Hour,
