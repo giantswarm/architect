@@ -2,9 +2,15 @@
 package giantswarm
 
 import "github.com/giantswarm/architect/configuration/giantswarm/api"
+import "github.com/giantswarm/architect/configuration/giantswarm/passage"
+import "github.com/giantswarm/architect/configuration/giantswarm/desmotes"
 
 // GiantSwarm holds configuration for GiantSwarm services.
 type GiantSwarm struct {
 	// API holds configuration for the GiantSwarm API.
 	api.API
+	// Passage holds configuration for Passage.
+	passage.Passage
+	// Desmotes holds configuration for Desmotes.
+	desmotes.Desmotes
 }
