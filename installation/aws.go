@@ -13,6 +13,7 @@ import (
 	"github.com/giantswarm/architect/configuration/giantswarm"
 	"github.com/giantswarm/architect/configuration/giantswarm/api"
 	"github.com/giantswarm/architect/configuration/giantswarm/desmotes"
+	"github.com/giantswarm/architect/configuration/giantswarm/happa"
 	"github.com/giantswarm/architect/configuration/giantswarm/passage"
 	"github.com/giantswarm/architect/configuration/monitoring"
 	"github.com/giantswarm/architect/configuration/monitoring/prometheus"
@@ -54,6 +55,13 @@ var AWS = configuration.Installation{
 					Scheme: "https",
 					Host:   "desmotes-aws.giantswarm.io",
 				},
+			},
+			Happa: happa.Happa{
+				Address: url.URL{
+					Scheme: "https",
+					Host:   "happa-aws.giantswarm.io",
+				},
+				CreateClusterWorkerType: "aws",
 			},
 		},
 
