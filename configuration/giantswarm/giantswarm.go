@@ -9,6 +9,8 @@ import "github.com/giantswarm/architect/configuration/giantswarm/desmotes"
 type GiantSwarm struct {
 	// API holds configuration for the GiantSwarm API.
 	api.API
+	// Passage holds configuration for Passage.
 	passage.Passage
+	// Desmotes holds configuration for Desmotes.
 	desmotes.Desmotes
 }
