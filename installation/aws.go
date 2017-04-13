@@ -12,6 +12,9 @@ import (
 	"github.com/giantswarm/architect/configuration/cluster/kubernetes"
 	"github.com/giantswarm/architect/configuration/giantswarm"
 	"github.com/giantswarm/architect/configuration/giantswarm/api"
+	"github.com/giantswarm/architect/configuration/giantswarm/desmotes"
+	"github.com/giantswarm/architect/configuration/giantswarm/happa"
+	"github.com/giantswarm/architect/configuration/giantswarm/passage"
 	"github.com/giantswarm/architect/configuration/monitoring"
 	"github.com/giantswarm/architect/configuration/monitoring/prometheus"
 	"github.com/giantswarm/architect/configuration/monitoring/testbot"
@@ -40,6 +43,25 @@ var AWS = configuration.Installation{
 					Scheme: "https",
 					Host:   "api-aws.giantswarm.io",
 				},
+			},
+			Passage: passage.Passage{
+				Address: url.URL{
+					Scheme: "https",
+					Host:   "passage-aws.giantswarm.io",
+				},
+			},
+			Desmotes: desmotes.Desmotes{
+				Address: url.URL{
+					Scheme: "https",
+					Host:   "desmotes-aws.giantswarm.io",
+				},
+			},
+			Happa: happa.Happa{
+				Address: url.URL{
+					Scheme: "https",
+					Host:   "happa-aws.giantswarm.io",
+				},
+				CreateClusterWorkerType: "aws",
 			},
 		},
 
