@@ -71,7 +71,7 @@ var AWS = configuration.Installation{
 			},
 			Kubernetes: kubernetes.Kubernetes{
 				API: kubernetes.API{
-					EndpointBase: "g8s.eu-west-1.aws.adidas.private.giantswarm.io",
+					EndpointBase: "g8s.eu-west-1.adidas.aws.giantswarm.io",
 				},
 			},
 		},
