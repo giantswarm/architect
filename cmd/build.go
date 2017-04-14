@@ -31,7 +31,7 @@ func init() {
 	buildCmd.Flags().StringVar(&goarch, "goarch", "amd64", "value for $GOARCH")
 
 	buildCmd.Flags().StringVar(&golangImage, "golang-image", "golang", "golang image")
-	buildCmd.Flags().StringVar(&golangVersion, "golang-version", "1.8.0", "golang version")
+	buildCmd.Flags().StringVar(&golangVersion, "golang-version", "1.8.1", "golang version")
 }
 
 func runBuild(cmd *cobra.Command, args []string) {
