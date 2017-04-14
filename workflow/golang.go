@@ -184,7 +184,16 @@ func NewGoBuildCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, 
 				projectInfo.Project,
 			),
 			Image: fmt.Sprintf("%v:%v", projectInfo.GolangImage, projectInfo.GolangVersion),
-			Args:  []string{"go", "build", "-v", "-a", "-tags", "netgo", "-ldflags", "-linkmode 'external' -extldflags '-static'"},
+			Args: []string{
+				"go", "build",
+				"-v",
+				"-a",
+				"-tags", "netgo",
+				"-ldflags", fmt.Sprintf(
+					"-X main.gitCommit=%s -linkmode 'external' -extldflags '-static'",
+					projectInfo.Sha,
+				),
+			},
 		},
 	)
 
