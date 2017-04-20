@@ -85,7 +85,7 @@ var AWS = configuration.Installation{
 				RetentionPeriod: 2 * 7 * 24 * time.Hour,
 			},
 			Testbot: testbot.Testbot{
-				Interval: 5 * time.Minute,
+				Interval: 30 * time.Minute,
 			},
 		},
 	},
