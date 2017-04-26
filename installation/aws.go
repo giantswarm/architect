@@ -89,6 +89,6 @@ var AWS = configuration.Installation{
 			},
 		},
 
-		Provider: "aws",
+		Provider: configuration.ProviderAWS,
 	},
 }

@@ -89,6 +89,6 @@ var Leaseweb = configuration.Installation{
 			},
 		},
 
-		Provider: "kvm",
+		Provider: configuration.ProviderKVM,
 	},
 }
