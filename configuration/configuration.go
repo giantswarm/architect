@@ -10,6 +10,7 @@ import (
 	"github.com/giantswarm/architect/configuration/cluster"
 	"github.com/giantswarm/architect/configuration/giantswarm"
 	"github.com/giantswarm/architect/configuration/monitoring"
+	"github.com/giantswarm/architect/configuration/provider"
 )
 
 // Installation holds all the configuration for a G8S installation.
@@ -34,5 +35,5 @@ type V1 struct {
 
 	// Provider is the underlying virtualization technology G8S is currently
 	// deployed for. E.g. this might be aws or kvm.
-	Provider provider
+	provider.Provider
 }

@@ -18,6 +18,7 @@ import (
 	"github.com/giantswarm/architect/configuration/monitoring"
 	"github.com/giantswarm/architect/configuration/monitoring/prometheus"
 	"github.com/giantswarm/architect/configuration/monitoring/testbot"
+	"github.com/giantswarm/architect/configuration/provider"
 )
 
 var Leaseweb = configuration.Installation{
@@ -89,6 +90,8 @@ var Leaseweb = configuration.Installation{
 			},
 		},
 
-		Provider: configuration.ProviderKVM,
+		Provider: provider.Provider{
+			Kind: provider.KVM,
+		},
 	},
 }

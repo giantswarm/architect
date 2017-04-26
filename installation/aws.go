@@ -18,6 +18,7 @@ import (
 	"github.com/giantswarm/architect/configuration/monitoring"
 	"github.com/giantswarm/architect/configuration/monitoring/prometheus"
 	"github.com/giantswarm/architect/configuration/monitoring/testbot"
+	"github.com/giantswarm/architect/configuration/provider"
 )
 
 var AWS = configuration.Installation{
@@ -89,6 +90,8 @@ var AWS = configuration.Installation{
 			},
 		},
 
-		Provider: configuration.ProviderAWS,
+		Provider: provider.Provider{
+			Kind: provider.AWS,
+		},
 	},
 }
