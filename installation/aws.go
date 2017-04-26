@@ -88,5 +88,7 @@ var AWS = configuration.Installation{
 				Interval: 30 * time.Minute,
 			},
 		},
+
+		Provider: "aws",
 	},
 }

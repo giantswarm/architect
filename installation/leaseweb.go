@@ -88,5 +88,7 @@ var Leaseweb = configuration.Installation{
 				Interval: 5 * time.Minute,
 			},
 		},
+
+		Provider: "kvm",
 	},
 }

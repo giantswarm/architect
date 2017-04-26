@@ -23,6 +23,10 @@ type V1 struct {
 	// Auth holds configuration for authentication/authorization services.
 	auth.Auth
 
+	// Provider is the underlying virtualization technology G8S is currently
+	// deployed for. E.g. this might be aws or kvm.
+	Provider string
+
 	// GiantSwarm holds configuration for GiantSwarm services.
 	giantswarm.GiantSwarm
 
