@@ -19,6 +19,9 @@ import (
 	"github.com/giantswarm/architect/configuration/monitoring/prometheus"
 	"github.com/giantswarm/architect/configuration/monitoring/testbot"
 	"github.com/giantswarm/architect/configuration/provider"
+	"github.com/giantswarm/architect/configuration/provider/aws"
+	"github.com/giantswarm/architect/configuration/provider/aws/ec2"
+	"github.com/giantswarm/architect/configuration/provider/aws/ec2/instance"
 )
 
 var AWS = configuration.Installation{
@@ -91,6 +94,16 @@ var AWS = configuration.Installation{
 		},
 
 		Provider: provider.Provider{
+			AWS: aws.AWS{
+				EC2: ec2.EC2{
+					Instance: instance.Instance{
+						Allowed: instance.Allowed(
+							instance.TypeM3Large,
+						),
+						Available: instance.Available(),
+					},
+				},
+			},
 			Kind: provider.AWS,
 		},
 	},
