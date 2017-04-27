@@ -19,6 +19,8 @@ import (
 	"github.com/giantswarm/architect/configuration/monitoring/prometheus"
 	"github.com/giantswarm/architect/configuration/monitoring/testbot"
 	"github.com/giantswarm/architect/configuration/provider"
+	"github.com/giantswarm/awstpr/aws"
+	"github.com/giantswarm/clustertpr/customer"
 )
 
 var AWS = configuration.Installation{
@@ -91,6 +93,16 @@ var AWS = configuration.Installation{
 		},
 
 		Provider: provider.Provider{
+			AWS: aws.AWS{
+				Customer: customer.Customer{
+					InstanceTypes: []string{
+						"m3.xlarge",
+					},
+				},
+				EC2: ec2.EC2{
+					InstanceTypes: ec2.InstanceTypes,
+				},
+			},
 			Kind: provider.AWS,
 		},
 	},
