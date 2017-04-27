@@ -6,6 +6,58 @@ import (
 	"time"
 )
 
+// Test_listToString tests the listToString filter.
+func Test_listToString(t *testing.T) {
+	tests := []struct {
+		list     []string
+		expected string
+	}{
+		{
+			list:     []string{},
+			expected: "",
+		},
+		{
+			list: []string{
+				"1",
+				"2",
+				"3",
+			},
+			expected: "1,2,3",
+		},
+		{
+			list: []string{
+				"a",
+				"b",
+				"c",
+			},
+			expected: "a,b,c",
+		},
+		{
+			list: []string{
+				"foo",
+				"b ar",
+				"baz",
+			},
+			expected: "foo,b ar,baz",
+		},
+		{
+			list: []string{
+				"",
+				" ",
+				"",
+			},
+			expected: ", ,",
+		},
+	}
+
+	for _, test := range tests {
+		e := listToString(test.list)
+		if e != test.expected {
+			t.Fatalf("expected '%s', got '%s'", test.expected, e)
+		}
+	}
+}
+
 // TestShortDuration tests the shortDuration function.
 func TestShortDuration(t *testing.T) {
 	tests := []struct {
