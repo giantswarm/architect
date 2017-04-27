@@ -68,7 +68,7 @@ var Leaseweb = configuration.Installation{
 
 		Guest: cluster.Guest{
 			Hyperkube: hyperkube.Hyperkube{
-				Version: "v1.5.2_coreos.0",
+				Version: hyperkube.Version,
 			},
 			Kubernetes: kubernetes.Kubernetes{
 				API: kubernetes.API{

@@ -7,8 +7,8 @@ package configuration
 
 import (
 	"github.com/giantswarm/architect/configuration/auth"
-	"github.com/giantswarm/architect/configuration/cluster"
 	"github.com/giantswarm/architect/configuration/giantswarm"
+	"github.com/giantswarm/architect/configuration/guest"
 	"github.com/giantswarm/architect/configuration/monitoring"
 	"github.com/giantswarm/architect/configuration/provider"
 )
@@ -28,7 +28,7 @@ type V1 struct {
 	giantswarm.GiantSwarm
 
 	// Guest holds configuration for guest clusters.
-	cluster.Guest
+	guest.Guest
 
 	// Monitoring holds configuration for monitoring services.
 	monitoring.Monitoring
