@@ -7,6 +7,6 @@ import (
 
 // EC2 holds configuration for the EC2 specific settings.
 type EC2 struct {
-	// Instance holds configuration for the allowed settings on EC2.
+	// Instance holds configuration for the instance type settings on EC2.
 	instance.Instance
 }
