@@ -2,6 +2,10 @@
 // specific settings.
 package instance
 
+import (
+	"strings"
+)
+
 // kind is a private type to ensure only instance types defined in this package
 // can be applied to installation configurations. That prevents other packages
 // screwing around with instance type configurations.
@@ -193,4 +197,16 @@ func Available() []kind {
 		TypeF12XLarge,
 		TypeF116XLarge,
 	}
+}
+
+// ListToString creates a comma separated list using the provided list of
+// instance types.
+func ListToString(list []kind) string {
+	var stringList []string
+
+	for _, l := range list {
+		stringList = append(stringList, string(l))
+	}
+
+	return strings.Join(stringList, ",")
 }

@@ -5,14 +5,17 @@ import (
 	"strings"
 	"text/template"
 	"time"
+
+	"github.com/giantswarm/architect/configuration/provider/aws/ec2/instance"
 )
 
 var (
 	// filters defines functions that can be used in the templates.
 	filters = template.FuncMap{
-		"listToString":  listToString,
-		"shortDuration": shortDuration,
-		"urlString":     urlString,
+		"ec2InstanceListToString": instance.ListToString,
+		"listToString":            listToString,
+		"shortDuration":           shortDuration,
+		"urlString":               urlString,
 	}
 )
 
