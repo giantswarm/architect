@@ -7,14 +7,14 @@ import (
 	"github.com/giantswarm/architect/configuration"
 	"github.com/giantswarm/architect/configuration/auth"
 	"github.com/giantswarm/architect/configuration/auth/vault"
-	"github.com/giantswarm/architect/configuration/cluster"
-	"github.com/giantswarm/architect/configuration/cluster/hyperkube"
-	"github.com/giantswarm/architect/configuration/cluster/kubernetes"
 	"github.com/giantswarm/architect/configuration/giantswarm"
 	"github.com/giantswarm/architect/configuration/giantswarm/api"
 	"github.com/giantswarm/architect/configuration/giantswarm/desmotes"
 	"github.com/giantswarm/architect/configuration/giantswarm/happa"
 	"github.com/giantswarm/architect/configuration/giantswarm/passage"
+	"github.com/giantswarm/architect/configuration/guest"
+	"github.com/giantswarm/architect/configuration/guest/hyperkube"
+	"github.com/giantswarm/architect/configuration/guest/kubernetes"
 	"github.com/giantswarm/architect/configuration/monitoring"
 	"github.com/giantswarm/architect/configuration/monitoring/prometheus"
 	"github.com/giantswarm/architect/configuration/monitoring/testbot"
@@ -69,7 +69,7 @@ var AWS = configuration.Installation{
 			},
 		},
 
-		Guest: cluster.Guest{
+		Guest: guest.Guest{
 			Hyperkube: hyperkube.Hyperkube{
 				Version: hyperkube.Version,
 			},
