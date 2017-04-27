@@ -10,10 +10,17 @@ import (
 var (
 	// filters defines functions that can be used in the templates.
 	filters = template.FuncMap{
+		"listToString":  listToString,
 		"shortDuration": shortDuration,
 		"urlString":     urlString,
 	}
 )
+
+// listToString takes a string slice and returns a string containing all of its
+// items being joined together using a comma.
+func listToString(list []string) string {
+	return strings.Join(list, ",")
+}
 
 // shortDuration takes a duration, and provides a shorter string version.
 // e.g: Instead of 5m0s, 5m
