@@ -1,6 +1,7 @@
 package template
 
 import (
+	"encoding/json"
 	"net/url"
 	"strings"
 	"text/template"
@@ -13,6 +14,7 @@ var (
 	// filters defines functions that can be used in the templates.
 	filters = template.FuncMap{
 		"ec2InstanceListToString": instance.ListToString,
+		"jsonMarshal":             jsonMarshal,
 		"listToString":            listToString,
 		"shortDuration":           shortDuration,
 		"urlString":               urlString,
@@ -23,6 +25,16 @@ var (
 // items being joined together using a comma.
 func listToString(list []string) string {
 	return strings.Join(list, ",")
+}
+
+// jsonMarshal takes some arbitrary value and applies json.Marshal on it.
+func jsonMarshal(v interface{}) (string, error) {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return "", err
+	}
+
+	return string(b), nil
 }
 
 // shortDuration takes a duration, and provides a shorter string version.

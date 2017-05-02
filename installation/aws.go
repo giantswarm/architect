@@ -99,7 +99,8 @@ var AWS = configuration.Installation{
 						Allowed: instance.Allowed(
 							instance.TypeM3Large,
 						),
-						Available: instance.Available(),
+						Available:    instance.Available(),
+						Capabilities: instance.Capabilities(),
 					},
 				},
 			},
