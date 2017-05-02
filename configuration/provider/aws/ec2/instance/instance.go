@@ -104,7 +104,7 @@ type capabilities struct {
 }
 
 // Capabilities returns the full list of capabilities of all available instance
-// types as defined by the constants of this package. Using this medthod ensures
+// types as defined by the constants of this package. Using this method ensures
 // that always the same immutable list will be used when referencing
 // capabilities of all available instance types EC2 provides. Note that this
 // method was generated using the following script.
