@@ -65,7 +65,6 @@ var AWS = configuration.Installation{
 					Scheme: "https",
 					Host:   "happa-aws.giantswarm.io",
 				},
-				CreateClusterWorkerType: "aws",
 			},
 		},
 

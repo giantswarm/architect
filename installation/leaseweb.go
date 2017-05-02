@@ -62,7 +62,6 @@ var Leaseweb = configuration.Installation{
 					Scheme: "https",
 					Host:   "happa-g8s.giantswarm.io",
 				},
-				CreateClusterWorkerType: "kvm",
 			},
 		},
 
