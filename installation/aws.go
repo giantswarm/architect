@@ -101,6 +101,7 @@ var AWS = configuration.Installation{
 						),
 						Available:    instance.Available(),
 						Capabilities: instance.Capabilities(),
+						Default:      instance.Default,
 					},
 				},
 			},
