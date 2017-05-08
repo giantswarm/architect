@@ -1,19 +1,41 @@
 package template
 
 import (
+	"encoding/json"
 	"net/url"
 	"strings"
 	"text/template"
 	"time"
+
+	"github.com/giantswarm/architect/configuration/provider/aws/ec2/instance"
 )
 
 var (
 	// filters defines functions that can be used in the templates.
 	filters = template.FuncMap{
-		"shortDuration": shortDuration,
-		"urlString":     urlString,
+		"ec2InstanceListToString": instance.ListToString,
+		"jsonMarshal":             jsonMarshal,
+		"listToString":            listToString,
+		"shortDuration":           shortDuration,
+		"urlString":               urlString,
 	}
 )
+
+// listToString takes a string slice and returns a string containing all of its
+// items being joined together using a comma.
+func listToString(list []string) string {
+	return strings.Join(list, ",")
+}
+
+// jsonMarshal takes some arbitrary value and applies json.Marshal on it.
+func jsonMarshal(v interface{}) (string, error) {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return "", err
+	}
+
+	return string(b), nil
+}
 
 // shortDuration takes a duration, and provides a shorter string version.
 // e.g: Instead of 5m0s, 5m

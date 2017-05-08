@@ -7,17 +7,21 @@ import (
 	"github.com/giantswarm/architect/configuration"
 	"github.com/giantswarm/architect/configuration/auth"
 	"github.com/giantswarm/architect/configuration/auth/vault"
-	"github.com/giantswarm/architect/configuration/cluster"
-	"github.com/giantswarm/architect/configuration/cluster/hyperkube"
-	"github.com/giantswarm/architect/configuration/cluster/kubernetes"
 	"github.com/giantswarm/architect/configuration/giantswarm"
 	"github.com/giantswarm/architect/configuration/giantswarm/api"
 	"github.com/giantswarm/architect/configuration/giantswarm/desmotes"
 	"github.com/giantswarm/architect/configuration/giantswarm/happa"
 	"github.com/giantswarm/architect/configuration/giantswarm/passage"
+	"github.com/giantswarm/architect/configuration/guest"
+	"github.com/giantswarm/architect/configuration/guest/hyperkube"
+	"github.com/giantswarm/architect/configuration/guest/kubernetes"
 	"github.com/giantswarm/architect/configuration/monitoring"
 	"github.com/giantswarm/architect/configuration/monitoring/prometheus"
 	"github.com/giantswarm/architect/configuration/monitoring/testbot"
+	"github.com/giantswarm/architect/configuration/provider"
+	"github.com/giantswarm/architect/configuration/provider/aws"
+	"github.com/giantswarm/architect/configuration/provider/aws/ec2"
+	"github.com/giantswarm/architect/configuration/provider/aws/ec2/instance"
 )
 
 var AWS = configuration.Installation{
@@ -61,13 +65,12 @@ var AWS = configuration.Installation{
 					Scheme: "https",
 					Host:   "happa-aws.giantswarm.io",
 				},
-				CreateClusterWorkerType: "aws",
 			},
 		},
 
-		Guest: cluster.Guest{
+		Guest: guest.Guest{
 			Hyperkube: hyperkube.Hyperkube{
-				Version: "v1.5.2_coreos.0",
+				Version: hyperkube.Version,
 			},
 			Kubernetes: kubernetes.Kubernetes{
 				API: kubernetes.API{
@@ -87,6 +90,22 @@ var AWS = configuration.Installation{
 			Testbot: testbot.Testbot{
 				Interval: 30 * time.Minute,
 			},
+		},
+
+		Provider: provider.Provider{
+			AWS: aws.AWS{
+				EC2: ec2.EC2{
+					Instance: instance.Instance{
+						Allowed: instance.Allowed(
+							instance.TypeM3Large,
+						),
+						Available:    instance.Available(),
+						Capabilities: instance.Capabilities(),
+						Default:      instance.Default,
+					},
+				},
+			},
+			Kind: provider.AWS,
 		},
 	},
 }
