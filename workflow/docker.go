@@ -111,9 +111,6 @@ func NewDockerLoginCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Comma
 		return commands.Command{}, err
 	}
 
-	if projectInfo.DockerEmail == "" {
-		return commands.Command{}, fmt.Errorf("docker email cannot be empty")
-	}
 	if projectInfo.DockerUsername == "" {
 		return commands.Command{}, fmt.Errorf("docker username cannot be empty")
 	}

@@ -42,9 +42,15 @@ func init() {
 	var defaultDockerPassword string
 
 	if os.Getenv("CIRCLECI") == "true" {
-		defaultDockerEmail = os.Getenv("DOCKER_EMAIL")
-		defaultDockerUsername = os.Getenv("DOCKER_USERNAME")
-		defaultDockerPassword = os.Getenv("DOCKER_PASSWORD")
+		if os.Getenv("QUAY_USERNAME") != "" {
+			defaultDockerEmail = ""
+			defaultDockerUsername = os.Getenv("QUAY_USERNAME")
+			defaultDockerPassword = os.Getenv("QUAY_PASSWORD")
+		} else {
+			defaultDockerEmail = os.Getenv("DOCKER_EMAIL")
+			defaultDockerUsername = os.Getenv("DOCKER_USERNAME")
+			defaultDockerPassword = os.Getenv("DOCKER_PASSWORD")
+		}
 	}
 
 	deployCmd.Flags().StringVar(&dockerEmail, "docker-email", defaultDockerEmail, "email to use to login to docker registry")
@@ -65,6 +71,10 @@ func runDeploy(cmd *cobra.Command, args []string) {
 	resourcesDirectoryAbsolutePath, err := filepath.Abs(resourcesDirectoryPath)
 	if err != nil {
 		log.Fatalf("could not get absolute path for resources directory: %v\n", err)
+	}
+
+	if os.Getenv("QUAY_USERNAME") != "" {
+		registry = "quay.io"
 	}
 
 	projectInfo := workflow.ProjectInfo{
