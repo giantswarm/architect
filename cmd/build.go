@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"log"
+	"os"
 
 	"github.com/giantswarm/architect/commands"
 	"github.com/giantswarm/architect/workflow"
@@ -35,6 +36,10 @@ func init() {
 }
 
 func runBuild(cmd *cobra.Command, args []string) {
+	if os.Getenv("QUAY_USERNAME") != "" {
+		registry = "quay.io"
+	}
+
 	projectInfo := workflow.ProjectInfo{
 		WorkingDirectory: workingDirectory,
 		Organisation:     organisation,
