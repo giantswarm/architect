@@ -118,6 +118,13 @@ func NewDockerLoginCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Comma
 		return commands.Command{}, fmt.Errorf("docker password cannot be empty")
 	}
 
+	// CircleCI's Docker version still expects to be given an email,
+	// even though it is not used by quay.
+	// If we don't specify one, use the empty string.
+	if projectInfo.DockerEmail == "" {
+		projectInfo.DockerEmail = `" "`
+	}
+
 	dockerLogin := commands.Command{
 		Name: DockerLoginCommandName,
 		Args: []string{
