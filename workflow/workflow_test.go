@@ -117,8 +117,6 @@ func TestGetBuildWorkflow(t *testing.T) {
 			},
 			expectedCommandNames: map[int]string{
 				0: DockerBuildCommandName,
-				1: DockerRunVersionCommandName,
-				2: DockerRunHelpCommandName,
 			},
 		},
 

@@ -90,7 +90,9 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			return nil, err
 		}
 		w = append(w, dockerBuild)
+	}
 
+	if mainGoExists && dockerFileExists {
 		dockerRunVersion, err := NewDockerRunVersionCommand(fs, projectInfo)
 		if err != nil {
 			return nil, err
