@@ -27,7 +27,7 @@ var Leaseweb = configuration.Installation{
 			Vault: vault.Vault{
 				Address: url.URL{
 					Scheme: "https",
-					Host:   "leaseweb-vault-private.giantswarm.io:8200",
+					Host:   "vault.g8s.fra-1.giantswarm.io:8200",
 				},
 				CA: vault.CA{
 					TTL: 10 * 365 * 24 * time.Hour,
