@@ -130,10 +130,11 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		w = append(w, dockerPush)
 	}
 
-	kubernetesDirectoryExists, err := afero.Exists(fs, filepath.Join(projectInfo.WorkingDirectory, "kubernetes/"))
+	kubernetesDirectoryExists, err := afero.Exists(fs, projectInfo.KubernetesResourcesDirectoryPath)
 	if err != nil {
 		return nil, err
 	}
+
 	if kubernetesDirectoryExists {
 		for _, cluster := range projectInfo.KubernetesClusters {
 			if projectInfo.KubernetesResourcesDirectoryPath == "" {

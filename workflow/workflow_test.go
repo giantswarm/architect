@@ -333,6 +333,37 @@ func TestGetDeployWorkflow(t *testing.T) {
 				3: KubectlApplyCommandName,
 			},
 		},
+
+		// Test a project with a non-standard kubernetes resources directory
+		{
+			projectInfo: ProjectInfo{
+				WorkingDirectory: workingDirectory,
+				Organisation:     "giantswarm",
+				Project:          "test",
+				KubernetesResourcesDirectoryPath: filepath.Join(workingDirectory, "/something-different"),
+				KubernetesClusters: []KubernetesCluster{
+					KubernetesCluster{
+						ApiServer:      "kubernetes-1.giantswarm.io",
+						Prefix:         "1",
+						CaPath:         "/1-ca.pem",
+						CrtPath:        "/1-crt.pem",
+						KeyPath:        "/1-key.pem",
+						KubectlVersion: "1.5.2",
+					},
+				},
+			},
+			setUp: func(fs afero.Fs) error {
+				if err := fs.Mkdir(filepath.Join(workingDirectory, "something-different"), 0644); err != nil {
+					return err
+				}
+
+				return nil
+			},
+			expectedCommandNames: map[int]string{
+				0: KubectlClusterInfoCommandName,
+				1: KubectlApplyCommandName,
+			},
+		},
 	}
 
 	for index, test := range tests {
