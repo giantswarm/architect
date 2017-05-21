@@ -106,6 +106,23 @@ func TestGetBuildWorkflow(t *testing.T) {
 			},
 		},
 
+		// Test that a project with a golang file not named `main.go` produces a golang build workflow
+		{
+			setUp: func(fs afero.Fs) error {
+				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "other.go")); err != nil {
+					return err
+				}
+
+				return nil
+			},
+			expectedCommandNames: map[int]string{
+				0: GoFmtCommandName,
+				1: GoVetCommandName,
+				2: GoTestCommandName,
+				3: GoBuildCommandName,
+			},
+		},
+
 		// Test a project with only a dockerfile produces a correct workflow
 		{
 			setUp: func(fs afero.Fs) error {
