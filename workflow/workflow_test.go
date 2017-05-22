@@ -240,6 +240,26 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 		},
 
+		// Test that a project with a helm directory produces a workflow containing helm push
+		{
+			projectInfo: ProjectInfo{
+				WorkingDirectory: workingDirectory,
+				Organisation:     "giantswarm",
+				Project:          "test",
+			},
+			setUp: func(fs afero.Fs) error {
+				if err := fs.Mkdir(filepath.Join(workingDirectory, "helm/"), 0644); err != nil {
+					return err
+				}
+
+				return nil
+			},
+			expectedCommandNames: map[int]string{
+				0: HelmLoginCommandName,
+				1: HelmPushCommandName,
+			},
+		},
+
 		// Test a project with only a kubernetes directory produces a workflow containg kubernetes apply
 		{
 			projectInfo: ProjectInfo{
@@ -410,7 +430,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 					index,
 					testIndex,
 					expectedCommandName,
-					workflow[index].Name,
+					workflow[testIndex].Name,
 				)
 			}
 		}
