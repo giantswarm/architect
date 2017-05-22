@@ -45,7 +45,7 @@ func NewKubectlClusterInfoCommand(fs afero.Fs, cluster KubernetesCluster) (comma
 				fmt.Sprintf("%v:/crt.pem", cluster.CrtPath),
 				fmt.Sprintf("%v:/key.pem", cluster.KeyPath),
 			},
-			Image: fmt.Sprintf("giantswarm/kubectl:%v", cluster.KubectlVersion),
+			Image: fmt.Sprintf("quay.io/giantswarm/docker-kubectl:%v", cluster.KubectlVersion),
 			Args: []string{
 				fmt.Sprintf("--server=%v", cluster.ApiServer),
 				"--certificate-authority=/ca.pem",
@@ -73,7 +73,7 @@ func NewKubectlApplyCommand(fs afero.Fs, cluster KubernetesCluster, templatedRes
 				fmt.Sprintf("%v:/key.pem", cluster.KeyPath),
 				fmt.Sprintf("%v:/kubernetes", templatedResourcesDirectory),
 			},
-			Image: fmt.Sprintf("giantswarm/kubectl:%v", cluster.KubectlVersion),
+			Image: fmt.Sprintf("quay.io/giantswarm/docker-kubectl:%v", cluster.KubectlVersion),
 			Args: []string{
 				fmt.Sprintf("--server=%v", cluster.ApiServer),
 				"--certificate-authority=/ca.pem",
