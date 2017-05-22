@@ -50,11 +50,26 @@ type ProjectInfo struct {
 func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 	w := Workflow{}
 
-	mainGoExists, err := afero.Exists(fs, filepath.Join(projectInfo.WorkingDirectory, "main.go"))
+	workingDirectoryExists, err := afero.Exists(fs, projectInfo.WorkingDirectory)
 	if err != nil {
 		return nil, err
 	}
-	if mainGoExists {
+
+	goLangFilesExist := false
+	if workingDirectoryExists {
+		fileInfos, err := afero.ReadDir(fs, projectInfo.WorkingDirectory)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, fileInfo := range fileInfos {
+			if filepath.Ext(fileInfo.Name()) == ".go" {
+				goLangFilesExist = true
+				break
+			}
+		}
+	}
+	if goLangFilesExist {
 		goFmt, err := NewGoFmtCommand(fs, projectInfo)
 		if err != nil {
 			return nil, err
@@ -92,7 +107,7 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		w = append(w, dockerBuild)
 	}
 
-	if mainGoExists && dockerFileExists {
+	if goLangFilesExist && dockerFileExists {
 		dockerRunVersion, err := NewDockerRunVersionCommand(fs, projectInfo)
 		if err != nil {
 			return nil, err
