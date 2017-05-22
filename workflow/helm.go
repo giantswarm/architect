@@ -1,6 +1,10 @@
 package workflow
 
 import (
+	"fmt"
+	"os/user"
+	"path/filepath"
+
 	"github.com/giantswarm/architect/commands"
 	"github.com/spf13/afero"
 )
@@ -14,11 +18,35 @@ var (
 	HelmPushCommandName  = "helm-push"
 )
 
+func cnrDirectory() (string, error) {
+	user, err := user.Current()
+	if err != nil {
+		return "", err
+	}
+
+	return filepath.Join(user.HomeDir, ".cnr"), nil
+}
+
 func NewHelmLoginCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+	cndDir, err := cnrDirectory()
+	if err != nil {
+		return commands.Command{}, err
+	}
+
 	helmLogin := commands.NewDockerCommand(
 		HelmLoginCommandName,
 		commands.DockerCommandConfig{
 			Image: HelmImage,
+			Volumes: []string{
+				fmt.Sprintf("%v:/root/.cnr/", cndDir),
+			},
+			Args: []string{
+				"registry",
+				"login",
+				fmt.Sprintf("--user=%v", projectInfo.DockerUsername),
+				fmt.Sprintf("--password=%v", projectInfo.DockerPassword),
+				projectInfo.Registry,
+			},
 		},
 	)
 
@@ -26,10 +54,36 @@ func NewHelmLoginCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command
 }
 
 func NewHelmPushCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+	helmDirExists, err := afero.DirExists(fs, filepath.Join(projectInfo.WorkingDirectory, "helm"))
+	if err != nil {
+		return commands.Command{}, err
+	}
+	if !helmDirExists {
+		return commands.Command{}, fmt.Errorf("could not find helm directory")
+	}
+
+	cndDir, err := cnrDirectory()
+	if err != nil {
+		return commands.Command{}, err
+	}
+
+	chartDir := filepath.Join(projectInfo.WorkingDirectory, "helm", fmt.Sprintf("%v-chart", projectInfo.Project))
+
 	helmPush := commands.NewDockerCommand(
 		HelmPushCommandName,
 		commands.DockerCommandConfig{
-			Image: HelmImage,
+			WorkingDirectory: chartDir,
+			Image:            HelmImage,
+			Volumes: []string{
+				fmt.Sprintf("%v:/root/.cnr/", cndDir),
+				fmt.Sprintf("%v:%v", chartDir, chartDir),
+			},
+			Args: []string{
+				"registry",
+				"push",
+				fmt.Sprintf("--namespace=%v", projectInfo.Organisation),
+				projectInfo.Registry,
+			},
 		},
 	)
 
