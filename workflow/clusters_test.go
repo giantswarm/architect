@@ -55,7 +55,7 @@ func TestClustersFromEnv(t *testing.T) {
 					CaPath:         "/test/g8s-ca.pem",
 					CrtPath:        "/test/g8s-crt.pem",
 					KeyPath:        "/test/g8s-key.pem",
-					KubectlVersion: "f9a5a46a94cd951d631a9d8fc0e95c6c73a46fb2",
+					KubectlVersion: "a121f8d14cd14567abc2ec20a7258be9d70ecb45",
 				},
 			},
 			expectedFiles: []string{
@@ -80,7 +80,7 @@ func TestClustersFromEnv(t *testing.T) {
 					CaPath:         "/test/aws-ca.pem",
 					CrtPath:        "/test/aws-crt.pem",
 					KeyPath:        "/test/aws-key.pem",
-					KubectlVersion: "f9a5a46a94cd951d631a9d8fc0e95c6c73a46fb2",
+					KubectlVersion: "a121f8d14cd14567abc2ec20a7258be9d70ecb45",
 				},
 			},
 			expectedFiles: []string{
@@ -109,7 +109,7 @@ func TestClustersFromEnv(t *testing.T) {
 					CaPath:         "/test/g8s-ca.pem",
 					CrtPath:        "/test/g8s-crt.pem",
 					KeyPath:        "/test/g8s-key.pem",
-					KubectlVersion: "f9a5a46a94cd951d631a9d8fc0e95c6c73a46fb2",
+					KubectlVersion: "a121f8d14cd14567abc2ec20a7258be9d70ecb45",
 				},
 				KubernetesCluster{
 					ApiServer:      "https://api.g8s.eu-west-1.aws.adidas.private.giantswarm.io:6443",
@@ -117,7 +117,7 @@ func TestClustersFromEnv(t *testing.T) {
 					CaPath:         "/test/aws-ca.pem",
 					CrtPath:        "/test/aws-crt.pem",
 					KeyPath:        "/test/aws-key.pem",
-					KubectlVersion: "f9a5a46a94cd951d631a9d8fc0e95c6c73a46fb2",
+					KubectlVersion: "a121f8d14cd14567abc2ec20a7258be9d70ecb45",
 				},
 			},
 			expectedFiles: []string{

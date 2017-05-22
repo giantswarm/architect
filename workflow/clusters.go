@@ -29,14 +29,14 @@ func ClustersFromEnv(fs afero.Fs, workingDirectory string) ([]KubernetesCluster,
 		Cluster{
 			ApiServer:      "https://api.g8s.fra-1.giantswarm.io",
 			EnvVarPrefix:   "G8S",
-			KubectlVersion: "f9a5a46a94cd951d631a9d8fc0e95c6c73a46fb2",
+			KubectlVersion: "a121f8d14cd14567abc2ec20a7258be9d70ecb45",
 
 			Installation: installation.Leaseweb,
 		},
 		Cluster{
 			ApiServer:      "https://api.g8s.eu-west-1.aws.adidas.private.giantswarm.io:6443",
 			EnvVarPrefix:   "AWS",
-			KubectlVersion: "f9a5a46a94cd951d631a9d8fc0e95c6c73a46fb2",
+			KubectlVersion: "a121f8d14cd14567abc2ec20a7258be9d70ecb45",
 
 			Installation: installation.AWS,
 		},
