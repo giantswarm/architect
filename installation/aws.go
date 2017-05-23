@@ -98,6 +98,13 @@ var AWS = configuration.Installation{
 					Instance: instance.Instance{
 						Allowed: instance.Allowed(
 							instance.TypeM3Large,
+							instance.TypeM3XLarge,
+							instance.TypeM32XLarge,
+							instance.TypeR3Large,
+							instance.TypeR3XLarge,
+							instance.TypeR32XLarge,
+							instance.TypeR34XLarge,
+							instance.TypeR38XLarge,
 						),
 						Available:    instance.Available(),
 						Capabilities: instance.Capabilities(),
