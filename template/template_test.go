@@ -16,6 +16,139 @@ import (
 	"github.com/spf13/afero"
 )
 
+// TestTemplateHelmChart tests the TestTemplateHelmChart function.
+func TestTemplateHelmChart(t *testing.T) {
+	tests := []struct {
+		helmPath  string
+		buildInfo BuildInfo
+		setUp     func(afero.Fs, string) error
+		check     func(afero.Fs, string) error
+	}{
+		// Test that an empty helm directory does nothing.
+		{
+			helmPath:  "/helm",
+			buildInfo: BuildInfo{},
+			setUp: func(fs afero.Fs, helmPath string) error {
+				if err := fs.Mkdir(helmPath, permission); err != nil {
+					return err
+				}
+
+				return nil
+			},
+			check: func(fs afero.Fs, helmPath string) error {
+				fileInfos, err := afero.ReadDir(fs, helmPath)
+				if err != nil {
+					return err
+				}
+				if len(fileInfos) != 0 {
+					return fmt.Errorf("multiple files found in helm directory")
+				}
+
+				return nil
+			},
+		},
+
+		// Test that a chart is templated correctly.
+		{
+			helmPath: "/helm",
+			buildInfo: BuildInfo{
+				SHA: "jabberwocky",
+			},
+			setUp: func(fs afero.Fs, helmPath string) error {
+				if err := fs.Mkdir(helmPath, permission); err != nil {
+					return err
+				}
+
+				if err := fs.Mkdir(filepath.Join(helmPath, "test-chart"), permission); err != nil {
+					return err
+				}
+
+				chartPath := filepath.Join(helmPath, "test-chart", "Chart.yaml")
+				if err := afero.WriteFile(
+					fs,
+					chartPath,
+					[]byte("version: 1.0.0-{{ .SHA }}"),
+					permission,
+				); err != nil {
+					return err
+				}
+
+				if err := fs.Mkdir(filepath.Join(helmPath, "test-chart", "templates"), permission); err != nil {
+					return err
+				}
+
+				deploymentPath := filepath.Join(helmPath, "test-chart", "templates", "deployment.yaml")
+				if err := afero.WriteFile(
+					fs,
+					deploymentPath,
+					[]byte("image: {{ .SHA }}"),
+					permission,
+				); err != nil {
+					return err
+				}
+
+				ingressPath := filepath.Join(helmPath, "test-chart", "templates", "ingress.yaml")
+				if err := afero.WriteFile(
+					fs,
+					ingressPath,
+					[]byte("host: {{ .Values.Installation.etc }}"),
+					permission,
+				); err != nil {
+					return err
+				}
+
+				return nil
+			},
+			check: func(fs afero.Fs, helmPath string) error {
+				chartPath := filepath.Join(helmPath, "test-chart", "Chart.yaml")
+				chartBytes, err := afero.ReadFile(fs, chartPath)
+				if err != nil {
+					return err
+				}
+				if string(chartBytes) != "version: 1.0.0-jabberwocky" {
+					return fmt.Errorf("correct sha not found in chart, found '%v'", string(chartBytes))
+				}
+
+				deploymentPath := filepath.Join(helmPath, "test-chart", "templates", "deployment.yaml")
+				deploymentBytes, err := afero.ReadFile(fs, deploymentPath)
+				if err != nil {
+					return err
+				}
+				if string(deploymentBytes) != "image: jabberwocky" {
+					return fmt.Errorf("correct sha not found in deployment, found '%v'", string(deploymentBytes))
+				}
+
+				ingressPath := filepath.Join(helmPath, "test-chart", "templates", "ingress.yaml")
+				ingressBytes, err := afero.ReadFile(fs, ingressPath)
+				if err != nil {
+					return err
+				}
+				if string(ingressBytes) != "host: {{ .Values.Installation.etc }}" {
+					return fmt.Errorf("values not found in ingress, found: '%v'", string(ingressBytes))
+				}
+
+				return nil
+			},
+		},
+	}
+
+	for index, test := range tests {
+		fs := afero.NewMemMapFs()
+
+		if err := test.setUp(fs, test.helmPath); err != nil {
+			t.Fatalf("%v: unexpected error during setup: %v\n", index, err)
+		}
+
+		if err := TemplateHelmChart(fs, test.helmPath, test.buildInfo); err != nil {
+			t.Fatalf("%v: unexpected error during templating: %v\n", index, err)
+		}
+
+		if err := test.check(fs, test.helmPath); err != nil {
+			t.Fatalf("%v: unexpected error during check: %v\n", index, err)
+		}
+	}
+}
+
 // TestTemplateKubernetesResources tests the TemplateKubernetesResources function.
 func TestTemplateKubernetesResources(t *testing.T) {
 	tests := []struct {
