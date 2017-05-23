@@ -31,6 +31,7 @@ var (
 
 	kubectlVersion string
 
+	helmDirectoryPath      string
 	resourcesDirectoryPath string
 )
 
@@ -57,6 +58,7 @@ func init() {
 	deployCmd.Flags().StringVar(&dockerUsername, "docker-username", defaultDockerUsername, "username to use to login to docker registry")
 	deployCmd.Flags().StringVar(&dockerPassword, "docker-password", defaultDockerPassword, "password to use to login to docker registry")
 
+	deployCmd.Flags().StringVar(&helmDirectoryPath, "helm-directory-path", "./helm", "directory holding helm chart")
 	deployCmd.Flags().StringVar(&resourcesDirectoryPath, "resources-directory-path", "./kubernetes", "directory holding kubernetes resources")
 }
 
@@ -88,6 +90,7 @@ func runDeploy(cmd *cobra.Command, args []string) {
 		DockerUsername: dockerUsername,
 		DockerPassword: dockerPassword,
 
+		HelmDirectoryPath:                helmDirectoryPath,
 		KubernetesResourcesDirectoryPath: resourcesDirectoryAbsolutePath,
 		KubernetesClusters:               clusters,
 	}

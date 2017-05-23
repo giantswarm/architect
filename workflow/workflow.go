@@ -38,6 +38,7 @@ type ProjectInfo struct {
 	DockerUsername string
 	DockerPassword string
 
+	HelmDirectoryPath                string
 	KubernetesResourcesDirectoryPath string
 	KubernetesClusters               []KubernetesCluster
 
@@ -150,6 +151,14 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		return nil, err
 	}
 	if helmDirectoryExists {
+		if err := template.TemplateHelmChart(
+			fs,
+			projectInfo.HelmDirectoryPath,
+			template.BuildInfo{SHA: projectInfo.Sha},
+		); err != nil {
+			return nil, err
+		}
+
 		helmLogin, err := NewHelmLoginCommand(fs, projectInfo)
 		if err != nil {
 			return nil, err
