@@ -15,6 +15,17 @@ import (
 	"github.com/giantswarm/architect/configuration"
 )
 
+const (
+	// HelmChartYamlName is the name of Helm's chart yaml.
+	HelmChartYamlName = "Chart.yaml"
+	// HelmTemplateDirectoryName is the name of the directory that stores
+	// Kubernetes resources inside a chart.
+	HelmTemplateDirectoryName = "templates"
+	// HelmDeploymentYamlName is the name of the file we template inside the
+	// Helm template directory.
+	HelmDeploymentYamlName = "deployment.yaml"
+)
+
 var (
 	// permission is a default permission to use for templated files
 	permission os.FileMode = 0644
@@ -35,7 +46,7 @@ type TemplateConfiguration struct {
 	configuration.Installation
 }
 
-// TemplateHelmChart takea a filesystem, a path to a directory containing a
+// TemplateHelmChart takes a filesystem, a path to a directory containing a
 // helm chart, and a BuildInfo struct.
 // It templates the chart's Chart.yaml and templates/deployment.yaml
 // with this information.
@@ -56,8 +67,8 @@ func TemplateHelmChart(fs afero.Fs, helmPath string, buildInfo BuildInfo) error 
 
 	chartDirectory := fileInfos[0].Name()
 
-	chartsYamlPath := filepath.Join(helmPath, chartDirectory, "Chart.yaml")
-	deploymentPath := filepath.Join(helmPath, chartDirectory, "templates", "deployment.yaml")
+	chartsYamlPath := filepath.Join(helmPath, chartDirectory, HelmChartYamlName)
+	deploymentPath := filepath.Join(helmPath, chartDirectory, HelmTemplateDirectoryName, HelmDeploymentYamlName)
 
 	paths := []string{chartsYamlPath, deploymentPath}
 

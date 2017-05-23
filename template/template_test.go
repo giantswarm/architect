@@ -26,8 +26,10 @@ func TestTemplateHelmChart(t *testing.T) {
 	}{
 		// Test that an empty helm directory does nothing.
 		{
-			helmPath:  "/helm",
-			buildInfo: BuildInfo{},
+			helmPath: "/helm",
+			buildInfo: BuildInfo{
+				SHA: "jabberwocky",
+			},
 			setUp: func(fs afero.Fs, helmPath string) error {
 				if err := fs.Mkdir(helmPath, permission); err != nil {
 					return err
@@ -63,7 +65,7 @@ func TestTemplateHelmChart(t *testing.T) {
 					return err
 				}
 
-				chartPath := filepath.Join(helmPath, "test-chart", "Chart.yaml")
+				chartPath := filepath.Join(helmPath, "test-chart", HelmChartYamlName)
 				if err := afero.WriteFile(
 					fs,
 					chartPath,
@@ -73,11 +75,11 @@ func TestTemplateHelmChart(t *testing.T) {
 					return err
 				}
 
-				if err := fs.Mkdir(filepath.Join(helmPath, "test-chart", "templates"), permission); err != nil {
+				if err := fs.Mkdir(filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName), permission); err != nil {
 					return err
 				}
 
-				deploymentPath := filepath.Join(helmPath, "test-chart", "templates", "deployment.yaml")
+				deploymentPath := filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName)
 				if err := afero.WriteFile(
 					fs,
 					deploymentPath,
@@ -87,7 +89,7 @@ func TestTemplateHelmChart(t *testing.T) {
 					return err
 				}
 
-				ingressPath := filepath.Join(helmPath, "test-chart", "templates", "ingress.yaml")
+				ingressPath := filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "ingress.yaml")
 				if err := afero.WriteFile(
 					fs,
 					ingressPath,
@@ -100,7 +102,7 @@ func TestTemplateHelmChart(t *testing.T) {
 				return nil
 			},
 			check: func(fs afero.Fs, helmPath string) error {
-				chartPath := filepath.Join(helmPath, "test-chart", "Chart.yaml")
+				chartPath := filepath.Join(helmPath, "test-chart", HelmChartYamlName)
 				chartBytes, err := afero.ReadFile(fs, chartPath)
 				if err != nil {
 					return err
@@ -109,7 +111,7 @@ func TestTemplateHelmChart(t *testing.T) {
 					return fmt.Errorf("correct sha not found in chart, found '%v'", string(chartBytes))
 				}
 
-				deploymentPath := filepath.Join(helmPath, "test-chart", "templates", "deployment.yaml")
+				deploymentPath := filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName)
 				deploymentBytes, err := afero.ReadFile(fs, deploymentPath)
 				if err != nil {
 					return err
@@ -118,7 +120,7 @@ func TestTemplateHelmChart(t *testing.T) {
 					return fmt.Errorf("correct sha not found in deployment, found '%v'", string(deploymentBytes))
 				}
 
-				ingressPath := filepath.Join(helmPath, "test-chart", "templates", "ingress.yaml")
+				ingressPath := filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "ingress.yaml")
 				ingressBytes, err := afero.ReadFile(fs, ingressPath)
 				if err != nil {
 					return err
