@@ -18,26 +18,26 @@ var (
 
 func checkGolangRequirements(projectInfo ProjectInfo) error {
 	if projectInfo.WorkingDirectory == "" {
-		return fmt.Errorf("working directory cannot be empty")
+		return emptyWorkingDirectoryError
 	}
 	if projectInfo.Organisation == "" {
-		return fmt.Errorf("organisation cannot be empty")
+		return emptyOrganisationError
 	}
 	if projectInfo.Project == "" {
-		return fmt.Errorf("project cannot be empty")
+		return emptyProjectError
 	}
 
 	if projectInfo.Goos == "" {
-		return fmt.Errorf("goos cannot be empty")
+		return emptyGoosError
 	}
 	if projectInfo.Goarch == "" {
-		return fmt.Errorf("goarch cannot be empty")
+		return emptyGoarchError
 	}
 	if projectInfo.GolangImage == "" {
-		return fmt.Errorf("golang image cannot be empty")
+		return emptyGolangImageError
 	}
 	if projectInfo.GolangVersion == "" {
-		return fmt.Errorf("golang version cannot be empty")
+		return emptyGolangVersionError
 	}
 
 	return nil

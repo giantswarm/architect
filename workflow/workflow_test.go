@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/giantswarm/architect/commands"
+	microerror "github.com/giantswarm/microkit/error"
 	"github.com/spf13/afero"
 )
 
@@ -93,7 +94,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 		{
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "main.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -110,7 +111,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 		{
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "other.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -127,7 +128,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 		{
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -141,10 +142,10 @@ func TestGetBuildWorkflow(t *testing.T) {
 		{
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "main.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -229,7 +230,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(workingDirectory, "Dockerfile")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -249,7 +250,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs) error {
 				if err := fs.Mkdir(filepath.Join(workingDirectory, "helm/"), 0644); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -279,7 +280,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs) error {
 				if err := fs.Mkdir(filepath.Join(workingDirectory, "kubernetes/"), 0644); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -314,10 +315,10 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(workingDirectory, "Dockerfile")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 				if err := fs.Mkdir(filepath.Join(workingDirectory, "kubernetes/"), 0644); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -358,7 +359,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs) error {
 				if err := fs.Mkdir(filepath.Join(workingDirectory, "kubernetes/"), 0644); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -391,7 +392,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs) error {
 				if err := fs.Mkdir(filepath.Join(workingDirectory, "something-different"), 0644); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil

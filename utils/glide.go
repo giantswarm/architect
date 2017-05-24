@@ -7,6 +7,7 @@ import (
 	"sort"
 	"strings"
 
+	microerror "github.com/giantswarm/microkit/error"
 	"github.com/spf13/afero"
 )
 
@@ -17,7 +18,7 @@ func NoVendor(fs afero.Fs, workingDirectory string) ([]string, error) {
 
 	walkFunc := func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			return err
+			return microerror.MaskAny(err)
 		}
 
 		if info.IsDir() {

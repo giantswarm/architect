@@ -14,19 +14,19 @@ var (
 
 func checkKubectlRequirements(cluster KubernetesCluster) error {
 	if cluster.ApiServer == "" {
-		return fmt.Errorf("kubernetes api server cannot be empty")
+		return emptyKubernetesAPIServerError
 	}
 	if cluster.CaPath == "" {
-		return fmt.Errorf("kubernetes ca path cannot be empty")
+		return emptyKubernetesCaPathError
 	}
 	if cluster.CrtPath == "" {
-		return fmt.Errorf("kubernetes crt path cannot be empty")
+		return emptyKubernetesCrtPathError
 	}
 	if cluster.KeyPath == "" {
-		return fmt.Errorf("kubernetes key path cannot be empty")
+		return emptyKubernetesKeyPathError
 	}
 	if cluster.KubectlVersion == "" {
-		return fmt.Errorf("kubectl version cannot be empty")
+		return emptyKubectlVersionError
 	}
 
 	return nil

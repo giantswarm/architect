@@ -4,7 +4,6 @@ package template
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -13,6 +12,7 @@ import (
 	"github.com/spf13/afero"
 
 	"github.com/giantswarm/architect/configuration"
+	microerror "github.com/giantswarm/microkit/error"
 )
 
 const (
@@ -54,7 +54,7 @@ type TemplateConfiguration struct {
 func TemplateHelmChart(fs afero.Fs, helmPath string, buildInfo BuildInfo) error {
 	fileInfos, err := afero.ReadDir(fs, helmPath)
 	if err != nil {
-		return err
+		return microerror.MaskAny(err)
 	}
 
 	if len(fileInfos) == 0 {
@@ -62,7 +62,7 @@ func TemplateHelmChart(fs afero.Fs, helmPath string, buildInfo BuildInfo) error 
 	}
 
 	if len(fileInfos) > 1 {
-		return fmt.Errorf("Multiple charts found in helm path")
+		return multipleHelmChartsError
 	}
 
 	chartDirectory := fileInfos[0].Name()
@@ -75,28 +75,28 @@ func TemplateHelmChart(fs afero.Fs, helmPath string, buildInfo BuildInfo) error 
 	for _, path := range paths {
 		exists, err := afero.Exists(fs, path)
 		if err != nil {
-			return err
+			microerror.MaskAny(err)
 		}
 
 		if exists {
 			contents, err := afero.ReadFile(fs, path)
 			if err != nil {
-				return err
+				microerror.MaskAny(err)
 			}
 
 			t := template.Must(template.New(path).Funcs(filters).Parse(string(contents)))
 			if err != nil {
-				return err
+				microerror.MaskAny(err)
 			}
 
 			var buf bytes.Buffer
 			if err := t.Execute(&buf, buildInfo); err != nil {
-				return err
+				microerror.MaskAny(err)
 			}
 
 			templatedContents := buf.String()
 			if err := afero.WriteFile(fs, path, []byte(templatedContents), permission); err != nil {
-				return err
+				microerror.MaskAny(err)
 			}
 		}
 	}
@@ -112,7 +112,7 @@ func TemplateHelmChart(fs afero.Fs, helmPath string, buildInfo BuildInfo) error 
 func TemplateKubernetesResources(fs afero.Fs, resourcesPath string, config TemplateConfiguration) error {
 	walkFunc := func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			return err
+			microerror.MaskAny(err)
 		}
 
 		if info.IsDir() {
@@ -121,17 +121,17 @@ func TemplateKubernetesResources(fs afero.Fs, resourcesPath string, config Templ
 
 		contents, err := afero.ReadFile(fs, path)
 		if err != nil {
-			return err
+			microerror.MaskAny(err)
 		}
 
 		t := template.Must(template.New(path).Funcs(filters).Parse(string(contents)))
 		if err != nil {
-			return err
+			microerror.MaskAny(err)
 		}
 
 		var buf bytes.Buffer
 		if err := t.Execute(&buf, config); err != nil {
-			return err
+			microerror.MaskAny(err)
 		}
 
 		templatedContents := buf.String()
@@ -140,14 +140,14 @@ func TemplateKubernetesResources(fs afero.Fs, resourcesPath string, config Templ
 		templatedContents = strings.Replace(templatedContents, "%%DOCKER_TAG%%", config.BuildInfo.SHA, -1)
 
 		if err := afero.WriteFile(fs, path, []byte(templatedContents), permission); err != nil {
-			return err
+			microerror.MaskAny(err)
 		}
 
 		return nil
 	}
 
 	if err := afero.Walk(fs, resourcesPath, walkFunc); err != nil {
-		return err
+		microerror.MaskAny(err)
 	}
 
 	return nil
