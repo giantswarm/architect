@@ -4,13 +4,26 @@ package template
 
 import (
 	"bytes"
+	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
 
 	"github.com/spf13/afero"
 
 	"github.com/giantswarm/architect/configuration"
+)
+
+const (
+	// HelmChartYamlName is the name of Helm's chart yaml.
+	HelmChartYamlName = "Chart.yaml"
+	// HelmTemplateDirectoryName is the name of the directory that stores
+	// Kubernetes resources inside a chart.
+	HelmTemplateDirectoryName = "templates"
+	// HelmDeploymentYamlName is the name of the file we template inside the
+	// Helm template directory.
+	HelmDeploymentYamlName = "deployment.yaml"
 )
 
 var (
@@ -31,6 +44,64 @@ type TemplateConfiguration struct {
 
 	// Installation is the configuration for the installation
 	configuration.Installation
+}
+
+// TemplateHelmChart takes a filesystem, a path to a directory containing a
+// helm chart, and a BuildInfo struct.
+// It templates the chart's Chart.yaml and templates/deployment.yaml
+// with this information.
+// It is an error if there are multiple charts in the helm directory.
+func TemplateHelmChart(fs afero.Fs, helmPath string, buildInfo BuildInfo) error {
+	fileInfos, err := afero.ReadDir(fs, helmPath)
+	if err != nil {
+		return err
+	}
+
+	if len(fileInfos) == 0 {
+		return nil
+	}
+
+	if len(fileInfos) > 1 {
+		return fmt.Errorf("Multiple charts found in helm path")
+	}
+
+	chartDirectory := fileInfos[0].Name()
+
+	chartsYamlPath := filepath.Join(helmPath, chartDirectory, HelmChartYamlName)
+	deploymentPath := filepath.Join(helmPath, chartDirectory, HelmTemplateDirectoryName, HelmDeploymentYamlName)
+
+	paths := []string{chartsYamlPath, deploymentPath}
+
+	for _, path := range paths {
+		exists, err := afero.Exists(fs, path)
+		if err != nil {
+			return err
+		}
+
+		if exists {
+			contents, err := afero.ReadFile(fs, path)
+			if err != nil {
+				return err
+			}
+
+			t := template.Must(template.New(path).Funcs(filters).Parse(string(contents)))
+			if err != nil {
+				return err
+			}
+
+			var buf bytes.Buffer
+			if err := t.Execute(&buf, buildInfo); err != nil {
+				return err
+			}
+
+			templatedContents := buf.String()
+			if err := afero.WriteFile(fs, path, []byte(templatedContents), permission); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
 
 // TemplateKubernetesResources takes a filesystem,
