@@ -2,11 +2,11 @@ package workflow
 
 import (
 	"encoding/base64"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
+	microerror "github.com/giantswarm/microkit/error"
 	"github.com/spf13/afero"
 )
 
@@ -27,12 +27,12 @@ func CertsFromEnv(fs afero.Fs, workingDirectory, envVarPrefix string) (string, s
 
 		certData := os.Getenv(envVarName)
 		if certData == "" {
-			return "", "", "", fmt.Errorf("could not find cert var: %v", envVarName)
+			return "", "", "", microerror.MaskAnyf(noCertEnvVarError, envVarName)
 		}
 
 		certFileData, err := base64.StdEncoding.DecodeString(certData)
 		if err != nil {
-			return "", "", "", fmt.Errorf("could not decode cert: %v", err)
+			return "", "", "", microerror.MaskAnyf(decodeCertError, err.Error())
 		}
 
 		filePath := filepath.Join(
@@ -40,14 +40,14 @@ func CertsFromEnv(fs afero.Fs, workingDirectory, envVarPrefix string) (string, s
 			strings.ToLower(envVarPrefix)+certDetail.fileNameSuffix,
 		)
 		if err := afero.WriteFile(fs, filePath, certFileData, 0644); err != nil {
-			return "", "", "", fmt.Errorf("could not write cert: %v", err)
+			return "", "", "", microerror.MaskAnyf(writeCertError, err.Error())
 		}
 
 		filePaths = append(filePaths, filePath)
 	}
 
 	if len(filePaths) != 3 {
-		return "", "", "", fmt.Errorf("incorrect number of certs found")
+		return "", "", "", microerror.MaskAnyf(incorrectNumberCertsError, string(len(filePaths)))
 	}
 
 	return filePaths[0], filePaths[1], filePaths[2], nil

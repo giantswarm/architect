@@ -7,6 +7,8 @@ import (
 	"testing"
 
 	"github.com/spf13/afero"
+
+	microerror "github.com/giantswarm/microkit/error"
 )
 
 func TestNoVendor(t *testing.T) {
@@ -31,7 +33,7 @@ func TestNoVendor(t *testing.T) {
 			workingDirectory: "/",
 			setUp: func(fs afero.Fs, wd string) error {
 				if err := fs.Mkdir(filepath.Join(wd, "pkg"), directoryPermission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -44,7 +46,7 @@ func TestNoVendor(t *testing.T) {
 			workingDirectory: "/",
 			setUp: func(fs afero.Fs, wd string) error {
 				if _, err := fs.Create(filepath.Join(wd, "main.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -57,11 +59,11 @@ func TestNoVendor(t *testing.T) {
 			workingDirectory: "/",
 			setUp: func(fs afero.Fs, wd string) error {
 				if err := fs.Mkdir(filepath.Join(wd, "pkg"), directoryPermission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if _, err := fs.Create(filepath.Join(wd, "pkg", "main.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -74,19 +76,19 @@ func TestNoVendor(t *testing.T) {
 			workingDirectory: "/",
 			setUp: func(fs afero.Fs, wd string) error {
 				if err := fs.Mkdir(filepath.Join(wd, "bar"), directoryPermission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if _, err := fs.Create(filepath.Join(wd, "bar", "main.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if err := fs.Mkdir(filepath.Join(wd, "foo"), directoryPermission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if _, err := fs.Create(filepath.Join(wd, "foo", "main.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -99,15 +101,15 @@ func TestNoVendor(t *testing.T) {
 			workingDirectory: "/",
 			setUp: func(fs afero.Fs, wd string) error {
 				if err := fs.Mkdir(filepath.Join(wd, "pkg"), directoryPermission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if _, err := fs.Create(filepath.Join(wd, "pkg", "main.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if _, err := fs.Create(filepath.Join(wd, "pkg", "error.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -120,11 +122,11 @@ func TestNoVendor(t *testing.T) {
 			workingDirectory: "/home/ubuntu/api",
 			setUp: func(fs afero.Fs, wd string) error {
 				if err := fs.Mkdir(filepath.Join(wd, "pkg"), directoryPermission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if _, err := fs.Create(filepath.Join(wd, "pkg", "main.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -137,15 +139,15 @@ func TestNoVendor(t *testing.T) {
 			workingDirectory: "/",
 			setUp: func(fs afero.Fs, wd string) error {
 				if err := fs.Mkdir(filepath.Join(wd, "pkg"), directoryPermission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if err := fs.Mkdir(filepath.Join(wd, "pkg", "subpkg"), directoryPermission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if _, err := fs.Create(filepath.Join(wd, "pkg", "subpkg", "main.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -158,23 +160,23 @@ func TestNoVendor(t *testing.T) {
 			workingDirectory: "/",
 			setUp: func(fs afero.Fs, wd string) error {
 				if err := fs.Mkdir(filepath.Join(wd, "pkg"), directoryPermission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if err := fs.Mkdir(filepath.Join(wd, "pkg", "subpkg1"), directoryPermission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if _, err := fs.Create(filepath.Join(wd, "pkg", "subpkg1", "main.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if err := fs.Mkdir(filepath.Join(wd, "pkg", "subpkg2"), directoryPermission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if _, err := fs.Create(filepath.Join(wd, "pkg", "subpkg2", "main.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -187,15 +189,15 @@ func TestNoVendor(t *testing.T) {
 			workingDirectory: "/",
 			setUp: func(fs afero.Fs, wd string) error {
 				if _, err := fs.Create(filepath.Join(wd, "main.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if err := fs.Mkdir(filepath.Join(wd, "zzz"), directoryPermission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if _, err := fs.Create(filepath.Join(wd, "zzz", "sleep.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -208,11 +210,11 @@ func TestNoVendor(t *testing.T) {
 			workingDirectory: "/",
 			setUp: func(fs afero.Fs, wd string) error {
 				if err := fs.Mkdir(filepath.Join(wd, "vendor"), directoryPermission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if _, err := fs.Create(filepath.Join(wd, "vendor", "vendor.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -225,11 +227,11 @@ func TestNoVendor(t *testing.T) {
 			workingDirectory: "/",
 			setUp: func(fs afero.Fs, wd string) error {
 				if err := fs.Mkdir(filepath.Join(wd, "_tests"), directoryPermission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if _, err := fs.Create(filepath.Join(wd, "_tests", "test.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -243,23 +245,23 @@ func TestNoVendor(t *testing.T) {
 			workingDirectory: "/home/ubuntu/api/",
 			setUp: func(fs afero.Fs, wd string) error {
 				if err := fs.Mkdir(filepath.Join(wd, "foo"), directoryPermission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if err := fs.Mkdir(filepath.Join(wd, "bar"), directoryPermission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if _, err := fs.Create(filepath.Join(wd, "main.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if _, err := fs.Create(filepath.Join(wd, "foo", "foo.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if _, err := fs.Create(filepath.Join(wd, "bar", "bar.go")); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil

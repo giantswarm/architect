@@ -1,7 +1,6 @@
 package template
 
 import (
-	"fmt"
 	"net/url"
 	"path/filepath"
 	"testing"
@@ -13,6 +12,7 @@ import (
 	"github.com/giantswarm/architect/configuration/monitoring"
 	"github.com/giantswarm/architect/configuration/monitoring/prometheus"
 	"github.com/giantswarm/architect/configuration/monitoring/testbot"
+	microerror "github.com/giantswarm/microkit/error"
 	"github.com/spf13/afero"
 )
 
@@ -32,7 +32,7 @@ func TestTemplateHelmChart(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs, helmPath string) error {
 				if err := fs.Mkdir(helmPath, permission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -40,10 +40,10 @@ func TestTemplateHelmChart(t *testing.T) {
 			check: func(fs afero.Fs, helmPath string) error {
 				fileInfos, err := afero.ReadDir(fs, helmPath)
 				if err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 				if len(fileInfos) != 0 {
-					return fmt.Errorf("multiple files found in helm directory")
+					return microerror.MaskAny(multipleHelmChartsError)
 				}
 
 				return nil
@@ -58,11 +58,11 @@ func TestTemplateHelmChart(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs, helmPath string) error {
 				if err := fs.Mkdir(helmPath, permission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if err := fs.Mkdir(filepath.Join(helmPath, "test-chart"), permission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				chartPath := filepath.Join(helmPath, "test-chart", HelmChartYamlName)
@@ -72,11 +72,11 @@ func TestTemplateHelmChart(t *testing.T) {
 					[]byte("version: 1.0.0-{{ .SHA }}"),
 					permission,
 				); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if err := fs.Mkdir(filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName), permission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				deploymentPath := filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName)
@@ -86,7 +86,7 @@ func TestTemplateHelmChart(t *testing.T) {
 					[]byte("image: {{ .SHA }}"),
 					permission,
 				); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				ingressPath := filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "ingress.yaml")
@@ -96,7 +96,7 @@ func TestTemplateHelmChart(t *testing.T) {
 					[]byte("host: {{ .Values.Installation.etc }}"),
 					permission,
 				); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -105,28 +105,28 @@ func TestTemplateHelmChart(t *testing.T) {
 				chartPath := filepath.Join(helmPath, "test-chart", HelmChartYamlName)
 				chartBytes, err := afero.ReadFile(fs, chartPath)
 				if err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 				if string(chartBytes) != "version: 1.0.0-jabberwocky" {
-					return fmt.Errorf("correct sha not found in chart, found '%v'", string(chartBytes))
+					return microerror.MaskAnyf(incorrectShaError, "in chart, found '%v'", string(chartBytes))
 				}
 
 				deploymentPath := filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName)
 				deploymentBytes, err := afero.ReadFile(fs, deploymentPath)
 				if err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 				if string(deploymentBytes) != "image: jabberwocky" {
-					return fmt.Errorf("correct sha not found in deployment, found '%v'", string(deploymentBytes))
+					return microerror.MaskAnyf(incorrectShaError, "in deployment, found '%v'", string(deploymentBytes))
 				}
 
 				ingressPath := filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "ingress.yaml")
 				ingressBytes, err := afero.ReadFile(fs, ingressPath)
 				if err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 				if string(ingressBytes) != "host: {{ .Values.Installation.etc }}" {
-					return fmt.Errorf("values not found in ingress, found: '%v'", string(ingressBytes))
+					return microerror.MaskAnyf(incorrectValueError, "in ingress, found: '%v'", string(ingressBytes))
 				}
 
 				return nil
@@ -166,7 +166,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			config:        TemplateConfiguration{},
 			setUp: func(fs afero.Fs, resourcesPath string) error {
 				if err := fs.Mkdir(resourcesPath, permission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -174,10 +174,10 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			check: func(fs afero.Fs, resourcesPath string) error {
 				fileInfos, err := afero.ReadDir(fs, resourcesPath)
 				if err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 				if len(fileInfos) != 0 {
-					return fmt.Errorf("multiple files found in resources directory")
+					return multipleHelmChartsError
 				}
 
 				return nil
@@ -203,7 +203,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs, resourcesPath string) error {
 				if err := fs.Mkdir(resourcesPath, permission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				path := filepath.Join(resourcesPath, "ingress.yml")
@@ -213,7 +213,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					[]byte("{{ .Installation.V1.GiantSwarm.API.Address.Host }}"),
 					permission,
 				); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -221,24 +221,24 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			check: func(fs afero.Fs, resourcesPath string) error {
 				fileInfos, err := afero.ReadDir(fs, resourcesPath)
 				if err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if len(fileInfos) != 1 {
-					return fmt.Errorf("did not find only one file in resources path")
+					return multipleFilesFoundInResourcesError
 				}
 
 				if fileInfos[0].Name() != "ingress.yml" {
-					return fmt.Errorf("ingress not found in resources path")
+					return microerror.MaskAnyf(resourceNotFoundError, "ingress.yml")
 				}
 
 				bytes, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "ingress.yml"))
 				if err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if string(bytes) != "api-g8s.giantswarm.io" {
-					return fmt.Errorf("ingress address not found, found: '%v'", string(bytes))
+					return microerror.MaskAnyf(incorrectTemplatingError, "ingress address not found, found: '%v'", string(bytes))
 				}
 
 				return nil
@@ -264,7 +264,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs, resourcesPath string) error {
 				if err := fs.Mkdir(resourcesPath, permission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				path := filepath.Join(resourcesPath, "ingress.yml")
@@ -274,7 +274,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					[]byte(`{{ .Installation.V1.Monitoring.Prometheus.Address | urlString }}`),
 					permission,
 				); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -282,24 +282,24 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			check: func(fs afero.Fs, resourcesPath string) error {
 				fileInfos, err := afero.ReadDir(fs, resourcesPath)
 				if err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if len(fileInfos) != 1 {
-					return fmt.Errorf("did not find only one file in resources path")
+					return multipleFilesFoundInResourcesError
 				}
 
 				if fileInfos[0].Name() != "ingress.yml" {
-					return fmt.Errorf("ingress not found in resources path")
+					return microerror.MaskAnyf(resourceNotFoundError, "ingress.yml")
 				}
 
 				bytes, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "ingress.yml"))
 				if err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if string(bytes) != "https://prometheus-g8s.giantswarm.io" {
-					return fmt.Errorf("ingress address not found, found: '%v'", string(bytes))
+					return microerror.MaskAnyf(incorrectTemplatingError, "ingress address not found, found: '%v'", string(bytes))
 				}
 
 				return nil
@@ -322,7 +322,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs, resourcesPath string) error {
 				if err := fs.Mkdir(resourcesPath, permission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				path := filepath.Join(resourcesPath, "configmap.yml")
@@ -332,7 +332,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					[]byte("interval: '@every {{ .Installation.V1.Monitoring.Testbot.Interval | shortDuration }}'"),
 					permission,
 				); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -340,24 +340,24 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			check: func(fs afero.Fs, resourcesPath string) error {
 				fileInfos, err := afero.ReadDir(fs, resourcesPath)
 				if err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if len(fileInfos) != 1 {
-					return fmt.Errorf("did not find only one file in resources path")
+					return multipleFilesFoundInResourcesError
 				}
 
 				if fileInfos[0].Name() != "configmap.yml" {
-					return fmt.Errorf("configmap not found in resources path")
+					return microerror.MaskAnyf(resourceNotFoundError, "configmap.yml")
 				}
 
 				bytes, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "configmap.yml"))
 				if err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if string(bytes) != "interval: '@every 5m'" {
-					return fmt.Errorf("correct interval string not found, found: '%v'", string(bytes))
+					return microerror.MaskAnyf(incorrectTemplatingError, "correct interval string not found, found: '%v'", string(bytes))
 				}
 
 				return nil
@@ -375,7 +375,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs, resourcesPath string) error {
 				if err := fs.Mkdir(resourcesPath, permission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				path := filepath.Join(resourcesPath, "deployment.yml")
@@ -385,7 +385,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					[]byte("image: foo/bar:{{ .BuildInfo.SHA }}"),
 					permission,
 				); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -393,24 +393,24 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			check: func(fs afero.Fs, resourcesPath string) error {
 				fileInfos, err := afero.ReadDir(fs, resourcesPath)
 				if err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if len(fileInfos) != 1 {
-					return fmt.Errorf("did not find only one file in resources path")
+					return multipleFilesFoundInResourcesError
 				}
 
 				if fileInfos[0].Name() != "deployment.yml" {
-					return fmt.Errorf("deployment not found in resources path")
+					return microerror.MaskAnyf(resourceNotFoundError, "deployment.yml")
 				}
 
 				bytes, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "deployment.yml"))
 				if err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if string(bytes) != "image: foo/bar:12345" {
-					return fmt.Errorf("correct sha not found, found: '%v'", string(bytes))
+					return microerror.MaskAnyf(incorrectShaError, "in deployment, found: '%v'", string(bytes))
 				}
 
 				return nil
@@ -428,7 +428,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs, resourcesPath string) error {
 				if err := fs.Mkdir(resourcesPath, permission); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				path := filepath.Join(resourcesPath, "deployment.yml")
@@ -438,7 +438,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					[]byte("image: registry.giantswarm.io/giantswarm/api:%%DOCKER_TAG%%"),
 					permission,
 				); err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				return nil
@@ -446,24 +446,24 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			check: func(fs afero.Fs, resourcesPath string) error {
 				fileInfos, err := afero.ReadDir(fs, resourcesPath)
 				if err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if len(fileInfos) != 1 {
-					return fmt.Errorf("did not find only one file in resources path")
+					return multipleFilesFoundInResourcesError
 				}
 
 				if fileInfos[0].Name() != "deployment.yml" {
-					return fmt.Errorf("deployment not found in resources path")
+					return microerror.MaskAnyf(resourceNotFoundError, "deployment.yml")
 				}
 
 				bytes, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "deployment.yml"))
 				if err != nil {
-					return err
+					return microerror.MaskAny(err)
 				}
 
 				if string(bytes) != "image: registry.giantswarm.io/giantswarm/api:12345" {
-					return fmt.Errorf("correct sha not found, found: '%v'", string(bytes))
+					return microerror.MaskAnyf(incorrectShaError, "in deployment, found: '%v'", string(bytes))
 				}
 
 				return nil

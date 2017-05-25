@@ -1,11 +1,11 @@
 package utils
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 
+	microerror "github.com/giantswarm/microkit/error"
 	"github.com/spf13/afero"
 )
 
@@ -64,10 +64,10 @@ func CopyDir(fs afero.Fs, src, dst string) (err error) {
 
 	si, err := fs.Stat(src)
 	if err != nil {
-		return err
+		return microerror.MaskAny(err)
 	}
 	if !si.IsDir() {
-		return fmt.Errorf("source is not a directory")
+		return microerror.MaskAny(sourceNotDirectoryError)
 	}
 
 	_, err = fs.Stat(dst)
@@ -75,7 +75,7 @@ func CopyDir(fs afero.Fs, src, dst string) (err error) {
 		return
 	}
 	if err == nil {
-		return fmt.Errorf("destination already exists")
+		return microerror.MaskAny(destinationExistsError)
 	}
 
 	err = fs.MkdirAll(dst, si.Mode())

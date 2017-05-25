@@ -180,7 +180,7 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 	if kubernetesDirectoryExists {
 		for _, cluster := range projectInfo.KubernetesClusters {
 			if projectInfo.KubernetesResourcesDirectoryPath == "" {
-				return nil, fmt.Errorf("kubernetes templated resources directory path cannot be empty")
+				return nil, emptyKubernetesResourcesDirectoryPath
 			}
 
 			// Copy /kubernetes to a per-cluster directory, and template it

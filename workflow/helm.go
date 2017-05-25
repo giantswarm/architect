@@ -59,7 +59,7 @@ func NewHelmPushCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command,
 		return commands.Command{}, err
 	}
 	if !helmDirExists {
-		return commands.Command{}, fmt.Errorf("could not find helm directory")
+		return commands.Command{}, noHelmDirectoryError
 	}
 
 	cndDir, err := cnrDirectory()
