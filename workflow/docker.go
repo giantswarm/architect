@@ -18,20 +18,20 @@ var (
 
 func checkDockerRequirements(projectInfo ProjectInfo) error {
 	if projectInfo.WorkingDirectory == "" {
-		return fmt.Errorf("working directory cannot be empty")
+		return emptyWorkingDirectoryError
 	}
 	if projectInfo.Organisation == "" {
-		return fmt.Errorf("organisation cannot be empty")
+		return emptyOrganisationError
 	}
 	if projectInfo.Project == "" {
-		return fmt.Errorf("project cannot be empty")
+		return emptyProjectError
 	}
 
 	if projectInfo.Sha == "" {
-		return fmt.Errorf("sha cannot be empty")
+		return emptyShaError
 	}
 	if projectInfo.Registry == "" {
-		return fmt.Errorf("registry cannot be empty")
+		return emptyRegistryError
 	}
 
 	return nil
@@ -112,10 +112,10 @@ func NewDockerLoginCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Comma
 	}
 
 	if projectInfo.DockerUsername == "" {
-		return commands.Command{}, fmt.Errorf("docker username cannot be empty")
+		return commands.Command{}, emptyDockerUsernameError
 	}
 	if projectInfo.DockerPassword == "" {
-		return commands.Command{}, fmt.Errorf("docker password cannot be empty")
+		return commands.Command{}, emptyDockerPasswordError
 	}
 
 	// CircleCI's Docker version still expects to be given an email,
