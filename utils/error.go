@@ -4,14 +4,14 @@ import (
 	"github.com/juju/errgo"
 )
 
-var sourceIsNotDirectoryError = errgo.New("source is not a directory")
+var sourceNotDirectoryError = errgo.New("source not directory")
 
-// IsSourceIsNotDirectory asserts sourceIsNotDirectoryError.
-func IsSourceIsNotDirectory(err error) bool {
-	return errgo.Cause(err) == sourceIsNotDirectoryError
+// IsSourceNotDirectory asserts sourceNotDirectoryError
+func IsSourceNotDirectory(err error) bool {
+	return errgo.Cause(err) == sourceNotDirectoryError
 }
 
-var destinationExistsError = errgo.New("destination already exists")
+var destinationExistsError = errgo.New("destination exists")
 
 // IsDestinationExists asserts destinationExistsError.
 func IsDestinationExists(err error) bool {

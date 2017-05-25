@@ -43,7 +43,7 @@ func TestTemplateHelmChart(t *testing.T) {
 					return microerror.MaskAny(err)
 				}
 				if len(fileInfos) != 0 {
-					return multipleHelmChartsError
+					return microerror.MaskAny(multipleHelmChartsError)
 				}
 
 				return nil

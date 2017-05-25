@@ -67,7 +67,7 @@ func CopyDir(fs afero.Fs, src, dst string) (err error) {
 		return microerror.MaskAny(err)
 	}
 	if !si.IsDir() {
-		return sourceIsNotDirectoryError
+		return microerror.MaskAny(sourceNotDirectoryError)
 	}
 
 	_, err = fs.Stat(dst)
@@ -75,7 +75,7 @@ func CopyDir(fs afero.Fs, src, dst string) (err error) {
 		return
 	}
 	if err == nil {
-		return destinationExistsError
+		return microerror.MaskAny(destinationExistsError)
 	}
 
 	err = fs.MkdirAll(dst, si.Mode())
