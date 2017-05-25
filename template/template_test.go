@@ -1,6 +1,7 @@
 package template
 
 import (
+	"fmt"
 	"net/url"
 	"path/filepath"
 	"testing"
@@ -57,76 +58,71 @@ func TestTemplateHelmChart(t *testing.T) {
 				SHA: "jabberwocky",
 			},
 			setUp: func(fs afero.Fs, helmPath string) error {
-				if err := fs.Mkdir(helmPath, permission); err != nil {
-					return microerror.MaskAny(err)
+				directories := []string{
+					helmPath,
+					filepath.Join(helmPath, "test-chart"),
+					filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName),
 				}
 
-				if err := fs.Mkdir(filepath.Join(helmPath, "test-chart"), permission); err != nil {
-					return microerror.MaskAny(err)
+				for _, directory := range directories {
+					if err := fs.Mkdir(directory, permission); err != nil {
+						return microerror.MaskAny(err)
+					}
 				}
 
-				chartPath := filepath.Join(helmPath, "test-chart", HelmChartYamlName)
-				if err := afero.WriteFile(
-					fs,
-					chartPath,
-					[]byte("version: 1.0.0-{{ .SHA }}"),
-					permission,
-				); err != nil {
-					return microerror.MaskAny(err)
+				files := []struct {
+					path string
+					data string
+				}{
+					{
+						path: filepath.Join(helmPath, "test-chart", HelmChartYamlName),
+						data: "version: 1.0.0-{{ .SHA }}",
+					},
+					{
+						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName),
+						data: "image: {{ .SHA }}",
+					},
+					{
+						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "ingress.yaml"),
+						data: "host: {{ .Values.Installation.etc }}",
+					},
 				}
 
-				if err := fs.Mkdir(filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName), permission); err != nil {
-					return microerror.MaskAny(err)
-				}
-
-				deploymentPath := filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName)
-				if err := afero.WriteFile(
-					fs,
-					deploymentPath,
-					[]byte("image: {{ .SHA }}"),
-					permission,
-				); err != nil {
-					return microerror.MaskAny(err)
-				}
-
-				ingressPath := filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "ingress.yaml")
-				if err := afero.WriteFile(
-					fs,
-					ingressPath,
-					[]byte("host: {{ .Values.Installation.etc }}"),
-					permission,
-				); err != nil {
-					return microerror.MaskAny(err)
+				for _, file := range files {
+					if err := afero.WriteFile(fs, file.path, []byte(file.data), permission); err != nil {
+						return microerror.MaskAny(err)
+					}
 				}
 
 				return nil
 			},
 			check: func(fs afero.Fs, helmPath string) error {
-				chartPath := filepath.Join(helmPath, "test-chart", HelmChartYamlName)
-				chartBytes, err := afero.ReadFile(fs, chartPath)
-				if err != nil {
-					return microerror.MaskAny(err)
-				}
-				if string(chartBytes) != "version: 1.0.0-jabberwocky" {
-					return microerror.MaskAnyf(incorrectShaError, "in chart, found '%v'", string(chartBytes))
+				files := []struct {
+					path string
+					data string
+				}{
+					{
+						path: filepath.Join(helmPath, "test-chart", HelmChartYamlName),
+						data: "version: 1.0.0-jabberwocky",
+					},
+					{
+						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName),
+						data: "image: jabberwocky",
+					},
+					{
+						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "ingress.yaml"),
+						data: "host: {{ .Values.Installation.etc }}",
+					},
 				}
 
-				deploymentPath := filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName)
-				deploymentBytes, err := afero.ReadFile(fs, deploymentPath)
-				if err != nil {
-					return microerror.MaskAny(err)
-				}
-				if string(deploymentBytes) != "image: jabberwocky" {
-					return microerror.MaskAnyf(incorrectShaError, "in deployment, found '%v'", string(deploymentBytes))
-				}
-
-				ingressPath := filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "ingress.yaml")
-				ingressBytes, err := afero.ReadFile(fs, ingressPath)
-				if err != nil {
-					return microerror.MaskAny(err)
-				}
-				if string(ingressBytes) != "host: {{ .Values.Installation.etc }}" {
-					return microerror.MaskAnyf(incorrectValueError, "in ingress, found: '%v'", string(ingressBytes))
+				for _, file := range files {
+					bytes, err := afero.ReadFile(fs, file.path)
+					if err != nil {
+						return microerror.MaskAny(err)
+					}
+					if string(bytes) != file.data {
+						return microerror.MaskAnyf(incorrectValueError, fmt.Sprintf("%v, found: %v, expected: %v", string(bytes), file.data))
+					}
 				}
 
 				return nil
