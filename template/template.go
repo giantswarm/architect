@@ -94,8 +94,7 @@ func TemplateHelmChart(fs afero.Fs, helmPath string, buildInfo BuildInfo) error 
 				microerror.MaskAny(err)
 			}
 
-			templatedContents := buf.String()
-			if err := afero.WriteFile(fs, path, []byte(templatedContents), permission); err != nil {
+			if err := afero.WriteFile(fs, path, buf.Bytes(), permission); err != nil {
 				microerror.MaskAny(err)
 			}
 		}
