@@ -121,7 +121,7 @@ func TestTemplateHelmChart(t *testing.T) {
 						return microerror.MaskAny(err)
 					}
 					if string(bytes) != file.data {
-						return microerror.MaskAnyf(incorrectValueError, fmt.Sprintf("%v, found: %v, expected: %v", string(bytes), file.data))
+						return microerror.MaskAnyf(incorrectValueError, fmt.Sprintf("%v, found: %v, expected: %v", file.path, string(bytes), file.data))
 					}
 				}
 
