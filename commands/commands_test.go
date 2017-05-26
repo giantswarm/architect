@@ -119,7 +119,7 @@ func TestNewDockerCommand(t *testing.T) {
 				Env: []string{
 					"GOOS=linux",
 				},
-				Net:              "host",
+				Network:          "host",
 				WorkingDirectory: "/go/src/github.com/giantswarm/architect",
 				Image:            "golang:1.7.5",
 				Args:             []string{"go", "test", "-v"},
