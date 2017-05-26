@@ -130,7 +130,7 @@ func TestNewDockerCommand(t *testing.T) {
 				"-v", "/home/ubuntu/architect:/go/src/github.com/giantswarm/architect",
 				"-e", "GOOS=linux",
 				"-w", "/go/src/github.com/giantswarm/architect",
-				"--network", "host",
+				"--network=host",
 				"golang:1.7.5",
 				"go", "test", "-v",
 			},

@@ -75,7 +75,7 @@ func NewDockerCommand(name string, config DockerCommandConfig) Command {
 	args = append(args, "-w", config.WorkingDirectory)
 
 	if config.Network != "" {
-		args = append(args, "--network", config.Network)
+		args = append(args, "--network="+config.Network)
 	}
 
 	args = append(args, config.Image)
