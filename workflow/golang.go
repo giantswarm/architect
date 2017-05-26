@@ -147,6 +147,7 @@ func NewGoTestCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, e
 				projectInfo.Organisation,
 				projectInfo.Project,
 			),
+			Net:   "Host",
 			Image: fmt.Sprintf("%v:%v", projectInfo.GolangImage, projectInfo.GolangVersion),
 			Args:  []string{"go", "test", "-v"},
 		},
