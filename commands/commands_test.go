@@ -109,6 +109,32 @@ func TestNewDockerCommand(t *testing.T) {
 				"go", "test", "-v",
 			},
 		},
+
+		// Test a similar config, but running in circle
+		{
+			config: DockerCommandConfig{
+				Volumes: []string{
+					"/home/ubuntu/architect:/go/src/github.com/giantswarm/architect",
+				},
+				Env: []string{
+					"GOOS=linux",
+				},
+				Network:          "host",
+				WorkingDirectory: "/go/src/github.com/giantswarm/architect",
+				Image:            "golang:1.7.5",
+				Args:             []string{"go", "test", "-v"},
+			},
+			inCircle: true,
+			expectedArgs: []string{
+				"docker", "run", "--rm=false",
+				"-v", "/home/ubuntu/architect:/go/src/github.com/giantswarm/architect",
+				"-e", "GOOS=linux",
+				"-w", "/go/src/github.com/giantswarm/architect",
+				"--network", "host",
+				"golang:1.7.5",
+				"go", "test", "-v",
+			},
+		},
 	}
 
 	for index, test := range tests {

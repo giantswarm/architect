@@ -147,8 +147,9 @@ func NewGoTestCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, e
 				projectInfo.Organisation,
 				projectInfo.Project,
 			),
-			Image: fmt.Sprintf("%v:%v", projectInfo.GolangImage, projectInfo.GolangVersion),
-			Args:  []string{"go", "test", "-v"},
+			Network: "Host",
+			Image:   fmt.Sprintf("%v:%v", projectInfo.GolangImage, projectInfo.GolangVersion),
+			Args:    []string{"go", "test", "-v"},
 		},
 	)
 	goTest.Args = append(goTest.Args, packageArguments...)
