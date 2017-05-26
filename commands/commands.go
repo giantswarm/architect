@@ -13,7 +13,6 @@ type DockerCommandConfig struct {
 	Env              []string
 	WorkingDirectory string
 	Image            string
-	Network          string
 	Args             []string
 }
 
@@ -73,11 +72,6 @@ func NewDockerCommand(name string, config DockerCommandConfig) Command {
 	}
 
 	args = append(args, "-w", config.WorkingDirectory)
-
-	if config.Network != "" {
-		args = append(args, "--network="+config.Network)
-	}
-
 	args = append(args, config.Image)
 
 	for _, arg := range config.Args {
