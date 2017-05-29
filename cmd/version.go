@@ -25,7 +25,7 @@ func init() {
 func runVersion(cmd *cobra.Command, args []string) {
 	if Commit == "" && BuildTimestamp == "" {
 		fmt.Printf("version information not compiled\n")
-		os.Exit(-1)
+		os.Exit(0)
 	}
 
 	fmt.Printf("Git Commit Hash: %s\n", Commit)
