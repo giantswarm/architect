@@ -10,7 +10,7 @@ and affect all builds.
 On master merges, `architect` is also used for the actual deployment.
 This is likely to change in the future, as we cannot push from the build servers to all installations.
 
-`architect` runs all build steps as Docker containers, to allow for portability and reproducability.
+`architect` runs all build steps as Docker containers, to allow for portability and reproducibility.
 
 To download the latest build of `architect`, run:
 ```
