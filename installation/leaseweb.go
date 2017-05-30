@@ -14,6 +14,7 @@ import (
 	"github.com/giantswarm/architect/configuration/giantswarm/passage"
 	"github.com/giantswarm/architect/configuration/guest"
 	"github.com/giantswarm/architect/configuration/guest/hyperkube"
+	"github.com/giantswarm/architect/configuration/guest/kubectl"
 	"github.com/giantswarm/architect/configuration/guest/kubernetes"
 	"github.com/giantswarm/architect/configuration/monitoring"
 	"github.com/giantswarm/architect/configuration/monitoring/prometheus"
@@ -68,6 +69,9 @@ var Leaseweb = configuration.Installation{
 		Guest: guest.Guest{
 			Hyperkube: hyperkube.Hyperkube{
 				Version: hyperkube.Version,
+			},
+			Kubectl: kubectl.Kubectl{
+				Version: kubectl.Version,
 			},
 			Kubernetes: kubernetes.Kubernetes{
 				API: kubernetes.API{
