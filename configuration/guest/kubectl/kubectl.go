@@ -7,8 +7,8 @@ package kubectl
 type kind string
 
 const (
-	// This image is for kubectl v1.4.7.
-	Version kind = "1afa480ffb2912fe3605e84fd392c5bd1c9f48b9"
+	// This image is for kubectl v1.6.4.
+	Version kind = "f51f93c30d27927d2b33122994c0929b3e6f2432"
 )
 
 // Kubectl holds configuration for Kubectl settings.
