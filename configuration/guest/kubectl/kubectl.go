@@ -7,6 +7,7 @@ package kubectl
 type kind string
 
 const (
+	// This image is for kubectl v1.4.7.
 	Version kind = "1afa480ffb2912fe3605e84fd392c5bd1c9f48b9"
 )
 
