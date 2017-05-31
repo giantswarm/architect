@@ -37,10 +37,10 @@ var AWS = configuration.Installation{
 					TTL: 10 * 365 * 24 * time.Hour,
 				},
 				Certificate: vault.Certificate{
-					TTL: 26 * 7 * 24 * time.Hour,
+					TTL: 6 * 30 * 24 * time.Hour,
 				},
 				Token: vault.Token{
-					TTL: 26 * 7 * 24 * time.Hour,
+					TTL: 6 * 30 * 24 * time.Hour,
 				},
 			},
 		},
