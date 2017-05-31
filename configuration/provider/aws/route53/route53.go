@@ -1,7 +1,7 @@
 package route53
 
 import (
-	"github.com/giantswarm/kubernetesd/flag/service/aws/hostedzones"
+	"github.com/giantswarm/architect/configuration/provider/aws/route53/hostedzones"
 )
 
 // Route53 holds configuration for the Route53 specific settings.
