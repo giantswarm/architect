@@ -23,6 +23,8 @@ import (
 	"github.com/giantswarm/architect/configuration/provider/aws"
 	"github.com/giantswarm/architect/configuration/provider/aws/ec2"
 	"github.com/giantswarm/architect/configuration/provider/aws/ec2/instance"
+	"github.com/giantswarm/architect/configuration/provider/aws/route53"
+	"github.com/giantswarm/kubernetesd/flag/service/aws/hostedzones"
 )
 
 var AWS = configuration.Installation{
@@ -116,6 +118,13 @@ var AWS = configuration.Installation{
 						Available:    instance.Available(),
 						Capabilities: instance.Capabilities(),
 						Default:      instance.Default,
+					},
+				},
+				Route53: route53.Route53{
+					HostedZones: hostedzones.HostedZones{
+						API:     "Z1Z5J7V0K6UO20",
+						Etcd:    "Z1Z5J7V0K6UO20",
+						Ingress: "Z33IHCRH5W883L",
 					},
 				},
 			},
