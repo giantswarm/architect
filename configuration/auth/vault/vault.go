@@ -15,6 +15,9 @@ type Vault struct {
 	// CA is the configuration for Vault CAs.
 	CA
 
+	// Certificate is the configuration for certificates issued by Vault.
+	Certificate
+
 	// Token is the configuration for Vault tokens.
 	Token
 }
@@ -22,6 +25,12 @@ type Vault struct {
 // CA holds configuration for a certificate authority.
 type CA struct {
 	// TTL is the TTL for the CA.
+	TTL time.Duration
+}
+
+// Certificate holds configuration for certificates issued by Vault.
+type Certificate struct {
+	// TTL is the TTL for the certificate.
 	TTL time.Duration
 }
 
