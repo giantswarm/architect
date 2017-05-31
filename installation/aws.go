@@ -24,7 +24,7 @@ import (
 	"github.com/giantswarm/architect/configuration/provider/aws/ec2"
 	"github.com/giantswarm/architect/configuration/provider/aws/ec2/instance"
 	"github.com/giantswarm/architect/configuration/provider/aws/route53"
-	"github.com/giantswarm/kubernetesd/flag/service/aws/hostedzones"
+	"github.com/giantswarm/architect/configuration/provider/aws/route53/hostedzones"
 )
 
 var AWS = configuration.Installation{
