@@ -33,8 +33,11 @@ var Leaseweb = configuration.Installation{
 				CA: vault.CA{
 					TTL: 10 * 365 * 24 * time.Hour,
 				},
+				Certificate: vault.Certificate{
+					TTL: 26 * 7 * 24 * time.Hour,
+				},
 				Token: vault.Token{
-					TTL: 30 * 24 * time.Hour,
+					TTL: 26 * 7 * 24 * time.Hour,
 				},
 			},
 		},
