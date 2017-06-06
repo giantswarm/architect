@@ -83,7 +83,7 @@ var Vikings = configuration.Installation{
 			},
 			Kubernetes: kubernetes.Kubernetes{
 				API: kubernetes.API{
-					EndpointBase: "g8s.eu-west-1.vikings.aws.giantswarm.io",
+					EndpointBase: "k8s.eu-west-1.vikings.aws.giantswarm.io",
 				},
 			},
 		},
