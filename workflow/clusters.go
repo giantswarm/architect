@@ -40,6 +40,13 @@ func ClustersFromEnv(fs afero.Fs, workingDirectory string) ([]KubernetesCluster,
 
 			Installation: installation.AWS,
 		},
+		Cluster{
+			ApiServer:      "https://api.g8s.eu-west-1.vikings.aws.giantswarm.io",
+			EnvVarPrefix:   "VIK",
+			KubectlVersion: "a121f8d14cd14567abc2ec20a7258be9d70ecb45",
+
+			Installation: installation.Vikings,
+		},
 	}
 
 	clusters := []KubernetesCluster{}
