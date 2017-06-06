@@ -12,8 +12,10 @@ var (
 	DockerRunVersionCommandName = "docker-run-version"
 	DockerRunHelpCommandName    = "docker-run-help"
 
-	DockerLoginCommandName = "docker-login"
-	DockerPushCommandName  = "docker-push"
+	DockerLoginCommandName      = "docker-login"
+	DockerTagLatestCommandName  = "docker-tag-latest"
+	DockerPushShaCommandName    = "docker-push-sha"
+	DockerPushLatestCommandName = "docker-push-latest"
 )
 
 func checkDockerRequirements(projectInfo ProjectInfo) error {
@@ -140,13 +142,42 @@ func NewDockerLoginCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Comma
 	return dockerLogin, nil
 }
 
-func NewDockerPushCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+func NewDockerTagLatestCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
 		return commands.Command{}, err
 	}
 
 	dockerPush := commands.Command{
-		Name: DockerPushCommandName,
+		Name: DockerTagLatestCommandName,
+		Args: []string{
+			"docker",
+			"tag",
+			fmt.Sprintf(
+				"%v/%v/%v:%v",
+				projectInfo.Registry,
+				projectInfo.Organisation,
+				projectInfo.Project,
+				projectInfo.Sha,
+			),
+			fmt.Sprintf(
+				"%v/%v/%v:latest",
+				projectInfo.Registry,
+				projectInfo.Organisation,
+				projectInfo.Project,
+			),
+		},
+	}
+
+	return dockerPush, nil
+}
+
+func NewDockerPushShaCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+	if err := checkDockerRequirements(projectInfo); err != nil {
+		return commands.Command{}, err
+	}
+
+	dockerPush := commands.Command{
+		Name: DockerPushShaCommandName,
 		Args: []string{
 			"docker",
 			"push",
@@ -156,6 +187,28 @@ func NewDockerPushCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Comman
 				projectInfo.Organisation,
 				projectInfo.Project,
 				projectInfo.Sha,
+			),
+		},
+	}
+
+	return dockerPush, nil
+}
+
+func NewDockerPushLatestCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+	if err := checkDockerRequirements(projectInfo); err != nil {
+		return commands.Command{}, err
+	}
+
+	dockerPush := commands.Command{
+		Name: DockerPushLatestCommandName,
+		Args: []string{
+			"docker",
+			"push",
+			fmt.Sprintf(
+				"%v/%v/%v:latest",
+				projectInfo.Registry,
+				projectInfo.Organisation,
+				projectInfo.Project,
 			),
 		},
 	}

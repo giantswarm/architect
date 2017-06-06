@@ -139,11 +139,23 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 		w = append(w, dockerLogin)
 
-		dockerPush, err := NewDockerPushCommand(fs, projectInfo)
+		dockerTagLatest, err := NewDockerTagLatestCommand(fs, projectInfo)
 		if err != nil {
 			return nil, err
 		}
-		w = append(w, dockerPush)
+		w = append(w, dockerTagLatest)
+
+		dockerPushSha, err := NewDockerPushShaCommand(fs, projectInfo)
+		if err != nil {
+			return nil, err
+		}
+		w = append(w, dockerPushSha)
+
+		dockerPushLatest, err := NewDockerPushLatestCommand(fs, projectInfo)
+		if err != nil {
+			return nil, err
+		}
+		w = append(w, dockerPushLatest)
 	}
 
 	helmDirectoryExists, err := afero.Exists(fs, filepath.Join(projectInfo.WorkingDirectory, "helm"))

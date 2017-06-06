@@ -237,7 +237,9 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 			expectedCommandNames: map[int]string{
 				0: DockerLoginCommandName,
-				1: DockerPushCommandName,
+				1: DockerTagLatestCommandName,
+				2: DockerPushShaCommandName,
+				3: DockerPushLatestCommandName,
 			},
 		},
 
@@ -325,9 +327,11 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 			expectedCommandNames: map[int]string{
 				0: DockerLoginCommandName,
-				1: DockerPushCommandName,
-				2: KubectlClusterInfoCommandName,
-				3: KubectlApplyCommandName,
+				1: DockerTagLatestCommandName,
+				2: DockerPushShaCommandName,
+				3: DockerPushLatestCommandName,
+				4: KubectlClusterInfoCommandName,
+				5: KubectlApplyCommandName,
 			},
 		},
 
