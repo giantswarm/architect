@@ -122,9 +122,9 @@ var Vikings = configuration.Installation{
 				},
 				Route53: route53.Route53{
 					HostedZones: hostedzones.HostedZones{
-						API:     "Z1Z5J7V0K6UO20",
-						Etcd:    "Z1Z5J7V0K6UO20",
-						Ingress: "Z33IHCRH5W883L",
+						API:     "ZTODN4AS32UPA",
+						Etcd:    "ZTODN4AS32UPA",
+						Ingress: "Z3MD9LD0CBO4O",
 					},
 				},
 			},
