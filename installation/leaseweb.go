@@ -20,6 +20,8 @@ import (
 	"github.com/giantswarm/architect/configuration/monitoring/prometheus"
 	"github.com/giantswarm/architect/configuration/monitoring/testbot"
 	"github.com/giantswarm/architect/configuration/provider"
+	"github.com/giantswarm/architect/configuration/provider/kvm"
+	"github.com/giantswarm/architect/configuration/provider/kvm/flannel"
 )
 
 var Leaseweb = configuration.Installation{
@@ -97,6 +99,15 @@ var Leaseweb = configuration.Installation{
 		},
 
 		Provider: provider.Provider{
+			KVM: kvm.KVM{
+				Flannel: flannel.Flannel{
+					VNIRange: flannel.Range{
+						Min: 2,
+						Max: 210,
+					},
+				},
+			},
+
 			Kind: provider.KVM,
 		},
 	},
