@@ -4,6 +4,7 @@ package provider
 
 import (
 	"github.com/giantswarm/architect/configuration/provider/aws"
+	"github.com/giantswarm/architect/configuration/provider/kvm"
 )
 
 // kind is a private type to ensure only providers defined in this package can
@@ -23,7 +24,10 @@ const (
 // Provider holds configuration for monitoring services.
 type Provider struct {
 	// AWS holds configuration for the AWS provider.
-	aws.AWS
+	AWS aws.AWS
+
+	// AWS holds configuration for the KVM provider.
+	KVM kvm.KVM
 
 	// Kind is the provider kind.
 	Kind kind
