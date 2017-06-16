@@ -1,6 +1,7 @@
 package events
 
 import (
+	"context"
 	"log"
 
 	"github.com/google/go-github/github"
@@ -58,6 +59,7 @@ func CreateDeploymentEvent(client *github.Client, environment Environment, organ
 	}
 
 	_, _, err := client.Repositories.CreateDeployment(
+		context.TODO(),
 		organisation,
 		project,
 		&deploymentRequest,
