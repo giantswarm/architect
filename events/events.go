@@ -13,7 +13,7 @@ import (
 type Environment string
 
 var environmentProjects = map[Environment][]string{
-	"jabberwocky2": []string{
+	"centaur": []string{
 		"api",
 		"cert-operator",
 		"cluster-service",
