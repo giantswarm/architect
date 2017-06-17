@@ -56,11 +56,13 @@ func GetEnvironments(project string) []Environment {
 func CreateDeploymentEvent(client *github.Client, environment Environment, organisation, project, sha string) error {
 	falseBool := false
 	environmentString := string(environment)
+	requiredContexts := []string{}
 
 	deploymentRequest := github.DeploymentRequest{
-		Ref:         &sha,
-		AutoMerge:   &falseBool,
-		Environment: &environmentString,
+		Ref:              &sha,
+		AutoMerge:        &falseBool,
+		Environment:      &environmentString,
+		RequiredContexts: &requiredContexts,
 	}
 
 	_, _, err := client.Repositories.CreateDeployment(
