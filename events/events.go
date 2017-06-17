@@ -12,6 +12,9 @@ import (
 // Environment is a name of an installation.
 type Environment string
 
+// environmentProjects is a mapping between Environments,
+// and the projects that should be deployed there.
+// We use codenames for installations to not expose customer information.
 var environmentProjects = map[Environment][]string{
 	"centaur": []string{
 		"api",
