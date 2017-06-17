@@ -1,15 +1,19 @@
 package cmd
 
 import (
+	"context"
 	"log"
 	"os"
 	"path/filepath"
 
-	"github.com/giantswarm/architect/commands"
-	"github.com/giantswarm/architect/workflow"
-
+	"github.com/google/go-github/github"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
+	"golang.org/x/oauth2"
+
+	"github.com/giantswarm/architect/commands"
+	"github.com/giantswarm/architect/events"
+	"github.com/giantswarm/architect/workflow"
 )
 
 var (
@@ -33,6 +37,8 @@ var (
 
 	helmDirectoryPath      string
 	resourcesDirectoryPath string
+
+	deploymentEventsToken string
 )
 
 func init() {
@@ -52,6 +58,8 @@ func init() {
 			defaultDockerUsername = os.Getenv("DOCKER_USERNAME")
 			defaultDockerPassword = os.Getenv("DOCKER_PASSWORD")
 		}
+
+		deploymentEventsToken = os.Getenv("DEPLOYMENT_EVENTS_TOKEN")
 	}
 
 	deployCmd.Flags().StringVar(&dockerEmail, "docker-email", defaultDockerEmail, "email to use to login to docker registry")
@@ -103,9 +111,31 @@ func runDeploy(cmd *cobra.Command, args []string) {
 	log.Printf("running workflow: %s\n", workflow)
 
 	if dryRun {
-		log.Printf("dry run, not actually running workflow")
+		log.Printf("dry run, not actually running workflow or creating events")
 		return
 	}
 
 	commands.RunCommands(workflow)
+
+	if deploymentEventsToken == "" {
+		log.Printf("no deployment events token, not creating deployments event")
+		return
+	}
+
+	ctx := context.Background()
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: deploymentEventsToken},
+	)
+	tc := oauth2.NewClient(ctx, ts)
+	githubClient := github.NewClient(tc)
+
+	log.Printf("creating deployment events")
+	environments := events.GetEnvironments(project)
+
+	log.Printf("creating for environments: %v", environments)
+	for _, environment := range environments {
+		if err := events.CreateDeploymentEvent(githubClient, environment, organisation, project, sha); err != nil {
+			log.Fatalf("could not create deployment event: %v", err)
+		}
+	}
 }
