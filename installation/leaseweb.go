@@ -22,6 +22,7 @@ import (
 	"github.com/giantswarm/architect/configuration/provider"
 	"github.com/giantswarm/architect/configuration/provider/kvm"
 	"github.com/giantswarm/architect/configuration/provider/kvm/flannel"
+	"github.com/giantswarm/architect/configuration/provider/kvm/ingress"
 )
 
 var Leaseweb = configuration.Installation{
@@ -104,6 +105,12 @@ var Leaseweb = configuration.Installation{
 					VNIRange: flannel.Range{
 						Min: 2,
 						Max: 210,
+					},
+				},
+				Ingress: ingress.Ingress{
+					PortRange: ingress.PortRange{
+						Min: 31000,
+						Max: 31060,
 					},
 				},
 			},
