@@ -110,7 +110,7 @@ var Leaseweb = configuration.Installation{
 				Ingress: ingress.Ingress{
 					PortRange: ingress.PortRange{
 						Min: 31000,
-						Max: 31060,
+						Max: 31021,
 					},
 				},
 			},
