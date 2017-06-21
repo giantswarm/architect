@@ -1,6 +1,7 @@
 package installation
 
 import (
+	"net"
 	"net/url"
 	"time"
 
@@ -21,6 +22,7 @@ import (
 	"github.com/giantswarm/architect/configuration/monitoring/testbot"
 	"github.com/giantswarm/architect/configuration/provider"
 	"github.com/giantswarm/architect/configuration/provider/kvm"
+	"github.com/giantswarm/architect/configuration/provider/kvm/dns"
 	"github.com/giantswarm/architect/configuration/provider/kvm/flannel"
 	"github.com/giantswarm/architect/configuration/provider/kvm/ingress"
 )
@@ -101,6 +103,12 @@ var Leaseweb = configuration.Installation{
 
 		Provider: provider.Provider{
 			KVM: kvm.KVM{
+				DNS: dns.DNS{
+					Servers: []net.IP{
+						net.ParseIP("8.8.8.8"),
+						net.ParseIP("8.8.4.4"),
+					},
+				},
 				Flannel: flannel.Flannel{
 					VNIRange: flannel.Range{
 						Min: 2,
