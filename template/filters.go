@@ -2,6 +2,7 @@ package template
 
 import (
 	"encoding/json"
+	"net"
 	"net/url"
 	"strings"
 	"text/template"
@@ -15,6 +16,7 @@ var (
 	filters = template.FuncMap{
 		"ec2InstanceListToString": instance.ListToString,
 		"jsonMarshal":             jsonMarshal,
+		"ipsToString":             ipsToString,
 		"listToString":            listToString,
 		"shortDuration":           shortDuration,
 		"urlString":               urlString,
@@ -24,6 +26,18 @@ var (
 // listToString takes a string slice and returns a string containing all of its
 // items being joined together using a comma.
 func listToString(list []string) string {
+	return strings.Join(list, ",")
+}
+
+// ipsToString takes a net.IP slice and returns a string containing all of its
+// items being joined together using a comma.
+func ipsToString(IPs []net.IP) string {
+	var list []string
+
+	for _, ip := range IPs {
+		list = append(list, ip.String())
+	}
+
 	return strings.Join(list, ",")
 }
 
