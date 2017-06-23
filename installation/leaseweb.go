@@ -25,6 +25,7 @@ import (
 	"github.com/giantswarm/architect/configuration/provider/kvm/dns"
 	"github.com/giantswarm/architect/configuration/provider/kvm/flannel"
 	"github.com/giantswarm/architect/configuration/provider/kvm/ingress"
+	"github.com/giantswarm/architect/configuration/provider/kvm/ntp"
 )
 
 var Leaseweb = configuration.Installation{
@@ -120,6 +121,9 @@ var Leaseweb = configuration.Installation{
 						Min: 31000,
 						Max: 31021,
 					},
+				},
+				NTP: ntp.NTP{
+					Servers: []net.IP{},
 				},
 			},
 
