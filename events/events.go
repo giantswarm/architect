@@ -35,7 +35,7 @@ var environmentProjects = map[Environment][]string{
 		"tokend",
 		"userd",
 	},
-	"vikings": []string{
+	"viking": []string{
 		"api",
 		"cert-operator",
 		"cluster-service",
