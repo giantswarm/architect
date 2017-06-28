@@ -38,6 +38,8 @@ var (
 	helmDirectoryPath      string
 	resourcesDirectoryPath string
 
+	ignorefilePath string
+
 	deploymentEventsToken string
 )
 
@@ -68,6 +70,8 @@ func init() {
 
 	deployCmd.Flags().StringVar(&helmDirectoryPath, "helm-directory-path", "./helm", "directory holding helm chart")
 	deployCmd.Flags().StringVar(&resourcesDirectoryPath, "resources-directory-path", "./kubernetes", "directory holding kubernetes resources")
+
+	deployCmd.Flags().StringVar(&ignorefilePath, "ignorefile-path", ".architect", "file containing a list of files to be ignored in templating")
 }
 
 func runDeploy(cmd *cobra.Command, args []string) {
@@ -101,6 +105,8 @@ func runDeploy(cmd *cobra.Command, args []string) {
 		HelmDirectoryPath:                helmDirectoryPath,
 		KubernetesResourcesDirectoryPath: resourcesDirectoryAbsolutePath,
 		KubernetesClusters:               clusters,
+
+		IgnorefilePath: ignorefilePath,
 	}
 
 	workflow, err := workflow.NewDeploy(projectInfo, fs)

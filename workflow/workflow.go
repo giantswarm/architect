@@ -42,6 +42,9 @@ type ProjectInfo struct {
 	KubernetesResourcesDirectoryPath string
 	KubernetesClusters               []KubernetesCluster
 
+	IgnorefilePath string
+	Ignorefiles    []string
+
 	Goos          string
 	Goarch        string
 	GolangImage   string
@@ -158,6 +161,7 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		w = append(w, dockerPushLatest)
 	}
 
+	projectInfo.Ignorefiles, err = utils.GetIgnorefiles(fs, projectInfo.WorkingDirectory, projectInfo.IgnorefilePath)
 	helmDirectoryExists, err := afero.Exists(fs, filepath.Join(projectInfo.WorkingDirectory, "helm"))
 	if err != nil {
 		return nil, err
@@ -167,6 +171,8 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			fs,
 			projectInfo.HelmDirectoryPath,
 			template.BuildInfo{SHA: projectInfo.Sha},
+			projectInfo.Ignorefiles,
+			projectInfo.WorkingDirectory,
 		); err != nil {
 			return nil, err
 		}
@@ -214,7 +220,13 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 				Installation: cluster.Installation,
 			}
 
-			if err := template.TemplateKubernetesResources(fs, templatedResourcesDirectory, config); err != nil {
+			if err := template.TemplateKubernetesResources(
+				fs,
+				templatedResourcesDirectory,
+				config,
+				projectInfo.Ignorefiles,
+				projectInfo.WorkingDirectory,
+			); err != nil {
 				return nil, err
 			}
 
