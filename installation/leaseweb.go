@@ -86,6 +86,9 @@ var Leaseweb = configuration.Installation{
 				API: kubernetes.API{
 					EndpointBase: "g8s.fra-1.giantswarm.io",
 				},
+				IngressController: kubernetes.IngressController{
+					BaseDomain: "gigantic.io",
+				},
 			},
 		},
 
