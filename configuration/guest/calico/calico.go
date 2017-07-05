@@ -4,6 +4,6 @@ package calico // Package calico provides configuration structures for Calico.
 type Calico struct {
 	// Subnet for calico, eg. 192.168.0.0.
 	Subnet string
-	// Cidr for calico subnets, eg. 16.
+	// CIDR for calico subnets, eg. 16.
 	CIDR string
 }
