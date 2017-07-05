@@ -1,7 +1,10 @@
 package flannel
 
 type Flannel struct {
-	VNIRange Range
+	VNIRange       Range
+	NetworkFormat  string
+	Interface      string
+	PrivateNetwork string
 }
 
 type Range struct {
