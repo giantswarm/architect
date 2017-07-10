@@ -161,7 +161,17 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		w = append(w, dockerPushLatest)
 	}
 
-	architectIgnore, _ := gitignore.NewGitIgnore(projectInfo.ArchitectignorePath)
+	architectIgnoreExists, err := afero.Exists(fs, projectInfo.ArchitectignorePath)
+	if err != nil {
+		return nil, err
+	}
+	architectIgnore := (gitignore.IgnoreMatcher)(nil)
+	if architectIgnoreExists {
+		architectIgnore, err = gitignore.NewGitIgnore(projectInfo.ArchitectignorePath)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	helmDirectoryExists, err := afero.Exists(fs, filepath.Join(projectInfo.WorkingDirectory, "helm"))
 	if err != nil {

@@ -206,9 +206,10 @@ func TestGetDeployWorkflow(t *testing.T) {
 		// Test a project with no files produces an empty workflow
 		{
 			projectInfo: ProjectInfo{
-				WorkingDirectory: workingDirectory,
-				Organisation:     "giantswarm",
-				Project:          "test",
+				WorkingDirectory:    workingDirectory,
+				Organisation:        "giantswarm",
+				Project:             "test",
+				ArchitectignorePath: ".architectignore",
 			},
 			setUp: func(fs afero.Fs) error {
 				return nil
@@ -219,14 +220,15 @@ func TestGetDeployWorkflow(t *testing.T) {
 		// Test a project with only a Dockerfile productes a workflow containg docker push
 		{
 			projectInfo: ProjectInfo{
-				WorkingDirectory: workingDirectory,
-				Organisation:     "giantswarm",
-				Project:          "test",
-				Sha:              "1cd72a25e16e93da14f08d95bd98662f8827028e",
-				Registry:         "registry.giantswarm.io",
-				DockerEmail:      "test@giantswarm.io",
-				DockerUsername:   "test",
-				DockerPassword:   "test",
+				WorkingDirectory:    workingDirectory,
+				Organisation:        "giantswarm",
+				Project:             "test",
+				Sha:                 "1cd72a25e16e93da14f08d95bd98662f8827028e",
+				Registry:            "registry.giantswarm.io",
+				DockerEmail:         "test@giantswarm.io",
+				DockerUsername:      "test",
+				DockerPassword:      "test",
+				ArchitectignorePath: ".architectignore",
 			},
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(workingDirectory, "Dockerfile")); err != nil {
@@ -246,9 +248,10 @@ func TestGetDeployWorkflow(t *testing.T) {
 		// Test that a project with a helm directory produces a workflow containing helm push
 		{
 			projectInfo: ProjectInfo{
-				WorkingDirectory: workingDirectory,
-				Organisation:     "giantswarm",
-				Project:          "test",
+				WorkingDirectory:    workingDirectory,
+				Organisation:        "giantswarm",
+				Project:             "test",
+				ArchitectignorePath: ".architectignore",
 			},
 			setUp: func(fs afero.Fs) error {
 				if err := fs.Mkdir(filepath.Join(workingDirectory, "helm/"), 0644); err != nil {
@@ -279,6 +282,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 						KubectlVersion: "1.5.2",
 					},
 				},
+				ArchitectignorePath: ".architectignore",
 			},
 			setUp: func(fs afero.Fs) error {
 				if err := fs.Mkdir(filepath.Join(workingDirectory, "kubernetes/"), 0644); err != nil {
@@ -314,6 +318,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 						KubectlVersion: "1.5.2",
 					},
 				},
+				ArchitectignorePath: ".architectignore",
 			},
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(workingDirectory, "Dockerfile")); err != nil {
@@ -360,6 +365,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 						KubectlVersion: "1.5.2",
 					},
 				},
+				ArchitectignorePath: ".architectignore",
 			},
 			setUp: func(fs afero.Fs) error {
 				if err := fs.Mkdir(filepath.Join(workingDirectory, "kubernetes/"), 0644); err != nil {
@@ -393,6 +399,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 						KubectlVersion: "1.5.2",
 					},
 				},
+				ArchitectignorePath: ".architectignore",
 			},
 			setUp: func(fs afero.Fs) error {
 				if err := fs.Mkdir(filepath.Join(workingDirectory, "something-different"), 0644); err != nil {

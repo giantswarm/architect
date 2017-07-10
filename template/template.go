@@ -93,26 +93,29 @@ func TemplateHelmChart(fs afero.Fs, helmPath string, buildInfo BuildInfo, archit
 			isIgnored = architectignore.Match(path, isDir)
 		}
 
-		if !isIgnored {
-			contents, err := afero.ReadFile(fs, path)
-			if err != nil {
-				microerror.MaskAny(err)
-			}
-
-			t := template.Must(template.New(path).Funcs(filters).Parse(string(contents)))
-			if err != nil {
-				microerror.MaskAny(err)
-			}
-
-			var buf bytes.Buffer
-			if err := t.Execute(&buf, buildInfo); err != nil {
-				microerror.MaskAny(err)
-			}
-
-			if err := afero.WriteFile(fs, path, buf.Bytes(), permission); err != nil {
-				microerror.MaskAny(err)
-			}
+		if isIgnored {
+			return nil
 		}
+
+		contents, err := afero.ReadFile(fs, path)
+		if err != nil {
+			microerror.MaskAny(err)
+		}
+
+		t := template.Must(template.New(path).Funcs(filters).Parse(string(contents)))
+		if err != nil {
+			microerror.MaskAny(err)
+		}
+
+		var buf bytes.Buffer
+		if err := t.Execute(&buf, buildInfo); err != nil {
+			microerror.MaskAny(err)
+		}
+
+		if err := afero.WriteFile(fs, path, buf.Bytes(), permission); err != nil {
+			microerror.MaskAny(err)
+		}
+
 	}
 
 	return nil
