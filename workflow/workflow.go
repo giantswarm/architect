@@ -172,7 +172,7 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			fs,
 			projectInfo.HelmDirectoryPath,
 			template.BuildInfo{SHA: projectInfo.Sha},
-			architectIgnore
+			architectIgnore,
 		); err != nil {
 			return nil, err
 		}
