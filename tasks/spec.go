@@ -1,6 +1,7 @@
 package tasks
 
 import (
+	"fmt"
 	"log"
 
 	microerror "github.com/giantswarm/microkit/error"
@@ -10,7 +11,8 @@ import (
 type Task interface {
 	Name() string
 	Run() error
-	String() string
+
+	fmt.Stringer
 }
 
 // Run executes a slice of Tasks.
