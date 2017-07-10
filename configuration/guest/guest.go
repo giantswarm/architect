@@ -2,6 +2,7 @@
 package guest
 
 import (
+	"github.com/giantswarm/architect/configuration/guest/calico"
 	"github.com/giantswarm/architect/configuration/guest/hyperkube"
 	"github.com/giantswarm/architect/configuration/guest/kubectl"
 	"github.com/giantswarm/architect/configuration/guest/kubernetes"
@@ -20,4 +21,7 @@ type Guest struct {
 	// Kubernetes holds configuration for the guest guest cluster's Kubernetes
 	// installation.
 	kubernetes.Kubernetes
+
+	// Calico holds configuration for calico in guest cluster.
+	calico.Calico
 }

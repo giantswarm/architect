@@ -85,6 +85,9 @@ var AWS = configuration.Installation{
 				API: kubernetes.API{
 					EndpointBase: "g8s.eu-west-1.adidas.aws.giantswarm.io",
 				},
+				IngressController: kubernetes.IngressController{
+					BaseDomain: "gigantic.io",
+				},
 			},
 		},
 

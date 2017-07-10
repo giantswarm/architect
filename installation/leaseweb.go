@@ -14,6 +14,7 @@ import (
 	"github.com/giantswarm/architect/configuration/giantswarm/happa"
 	"github.com/giantswarm/architect/configuration/giantswarm/passage"
 	"github.com/giantswarm/architect/configuration/guest"
+	"github.com/giantswarm/architect/configuration/guest/calico"
 	"github.com/giantswarm/architect/configuration/guest/hyperkube"
 	"github.com/giantswarm/architect/configuration/guest/kubectl"
 	"github.com/giantswarm/architect/configuration/guest/kubernetes"
@@ -86,6 +87,13 @@ var Leaseweb = configuration.Installation{
 				API: kubernetes.API{
 					EndpointBase: "g8s.fra-1.giantswarm.io",
 				},
+				IngressController: kubernetes.IngressController{
+					BaseDomain: "gigantic.io",
+				},
+			},
+			Calico: calico.Calico{
+				Subnet: "192.168.0.0",
+				CIDR:   "16",
 			},
 		},
 
@@ -115,6 +123,9 @@ var Leaseweb = configuration.Installation{
 						Min: 2,
 						Max: 210,
 					},
+					Interface:      "bond0.3",
+					NetworkFormat:  "10.%d.0.0",
+					PrivateNetwork: "10.0.4.0/24",
 				},
 				Ingress: ingress.Ingress{
 					PortRange: ingress.PortRange{
