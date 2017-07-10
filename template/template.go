@@ -9,6 +9,7 @@ import (
 	"strings"
 	"text/template"
 
+	gitignore "github.com/monochromegane/go-gitignore"
 	"github.com/spf13/afero"
 
 	"github.com/giantswarm/architect/configuration"
@@ -51,7 +52,7 @@ type TemplateConfiguration struct {
 // It templates the chart's Chart.yaml and templates/deployment.yaml
 // with this information.
 // It is an error if there are multiple charts in the helm directory.
-func TemplateHelmChart(fs afero.Fs, helmPath string, buildInfo BuildInfo) error {
+func TemplateHelmChart(fs afero.Fs, helmPath string, buildInfo BuildInfo, architectignore gitignore.IgnoreMatcher) error {
 	fileInfos, err := afero.ReadDir(fs, helmPath)
 	if err != nil {
 		return microerror.MaskAny(err)
@@ -78,26 +79,43 @@ func TemplateHelmChart(fs afero.Fs, helmPath string, buildInfo BuildInfo) error 
 			microerror.MaskAny(err)
 		}
 
-		if exists {
-			contents, err := afero.ReadFile(fs, path)
-			if err != nil {
-				microerror.MaskAny(err)
-			}
-
-			t := template.Must(template.New(path).Funcs(filters).Parse(string(contents)))
-			if err != nil {
-				microerror.MaskAny(err)
-			}
-
-			var buf bytes.Buffer
-			if err := t.Execute(&buf, buildInfo); err != nil {
-				microerror.MaskAny(err)
-			}
-
-			if err := afero.WriteFile(fs, path, buf.Bytes(), permission); err != nil {
-				microerror.MaskAny(err)
-			}
+		if !exists {
+			return nil
 		}
+
+		isDir, err := afero.IsDir(fs, path)
+		if err != nil {
+			microerror.MaskAny(err)
+		}
+
+		isIgnored := false
+		if architectignore != nil {
+			isIgnored = architectignore.Match(path, isDir)
+		}
+
+		if isIgnored {
+			return nil
+		}
+
+		contents, err := afero.ReadFile(fs, path)
+		if err != nil {
+			microerror.MaskAny(err)
+		}
+
+		t := template.Must(template.New(path).Funcs(filters).Parse(string(contents)))
+		if err != nil {
+			microerror.MaskAny(err)
+		}
+
+		var buf bytes.Buffer
+		if err := t.Execute(&buf, buildInfo); err != nil {
+			microerror.MaskAny(err)
+		}
+
+		if err := afero.WriteFile(fs, path, buf.Bytes(), permission); err != nil {
+			microerror.MaskAny(err)
+		}
+
 	}
 
 	return nil
@@ -108,13 +126,18 @@ func TemplateHelmChart(fs afero.Fs, helmPath string, buildInfo BuildInfo) error 
 // and an installation configuration.
 // It templates the given resources, with data from the configuration,
 // writing changes to the files.
-func TemplateKubernetesResources(fs afero.Fs, resourcesPath string, config TemplateConfiguration) error {
+func TemplateKubernetesResources(fs afero.Fs, resourcesPath string, config TemplateConfiguration, architectignore gitignore.IgnoreMatcher) error {
 	walkFunc := func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			microerror.MaskAny(err)
 		}
 
-		if info.IsDir() {
+		isIgnored := false
+		if architectignore != nil {
+			isIgnored = architectignore.Match(path, info.IsDir())
+		}
+
+		if info.IsDir() || isIgnored {
 			return nil
 		}
 

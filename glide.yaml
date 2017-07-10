@@ -1,3 +1,4 @@
 package: github.com/giantswarm/architect
 import:
 - package: github.com/spf13/cobra
+- package: github.com/monochromegane/go-gitignore

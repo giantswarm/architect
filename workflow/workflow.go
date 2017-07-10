@@ -8,6 +8,7 @@ import (
 	"github.com/giantswarm/architect/commands"
 	"github.com/giantswarm/architect/template"
 	"github.com/giantswarm/architect/utils"
+	gitignore "github.com/monochromegane/go-gitignore"
 
 	"github.com/spf13/afero"
 )
@@ -41,6 +42,8 @@ type ProjectInfo struct {
 	HelmDirectoryPath                string
 	KubernetesResourcesDirectoryPath string
 	KubernetesClusters               []KubernetesCluster
+
+	ArchitectignorePath string
 
 	Goos          string
 	Goarch        string
@@ -158,6 +161,18 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		w = append(w, dockerPushLatest)
 	}
 
+	architectIgnoreExists, err := afero.Exists(fs, projectInfo.ArchitectignorePath)
+	if err != nil {
+		return nil, err
+	}
+	architectIgnore := (gitignore.IgnoreMatcher)(nil)
+	if architectIgnoreExists {
+		architectIgnore, err = gitignore.NewGitIgnore(projectInfo.ArchitectignorePath)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	helmDirectoryExists, err := afero.Exists(fs, filepath.Join(projectInfo.WorkingDirectory, "helm"))
 	if err != nil {
 		return nil, err
@@ -167,6 +182,7 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			fs,
 			projectInfo.HelmDirectoryPath,
 			template.BuildInfo{SHA: projectInfo.Sha},
+			architectIgnore,
 		); err != nil {
 			return nil, err
 		}
@@ -214,7 +230,12 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 				Installation: cluster.Installation,
 			}
 
-			if err := template.TemplateKubernetesResources(fs, templatedResourcesDirectory, config); err != nil {
+			if err := template.TemplateKubernetesResources(
+				fs,
+				templatedResourcesDirectory,
+				config,
+				architectIgnore,
+			); err != nil {
 				return nil, err
 			}
 
