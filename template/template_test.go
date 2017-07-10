@@ -137,7 +137,7 @@ func TestTemplateHelmChart(t *testing.T) {
 			t.Fatalf("%v: unexpected error during setup: %v\n", index, err)
 		}
 
-		if err := TemplateHelmChart(fs, test.helmPath, test.buildInfo, nil, ""); err != nil {
+		if err := TemplateHelmChart(fs, test.helmPath, test.buildInfo, nil); err != nil {
 			t.Fatalf("%v: unexpected error during templating: %v\n", index, err)
 		}
 
@@ -474,7 +474,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			t.Fatalf("%v: unexpected error during setup: %v\n", index, err)
 		}
 
-		if err := TemplateKubernetesResources(fs, test.resourcesPath, test.config, nil, ""); err != nil {
+		if err := TemplateKubernetesResources(fs, test.resourcesPath, test.config, nil); err != nil {
 			t.Fatalf("%v: unexpected error during templating: %v\n", index, err)
 		}
 

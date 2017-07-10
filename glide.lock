@@ -1,16 +1,16 @@
-hash: 4a54e8a576378319a8d6f325a0e647c8d6a4b452e922f7657c8cd3f3e84e7a73
-updated: 2017-06-16T13:09:00.11661537+01:00
+hash: 640ef4d342fbbf35900631732abc5b11ee5d8badfa703ddd46c04291153a8450
+updated: 2017-07-10T10:52:37.277425841+02:00
 imports:
 - name: github.com/giantswarm/microkit
-  version: 725ff3a04ac4bad327dc9c149c8cc091048eff9e
+  version: b6bf741b5c34be4fff51d944f973318d8b078284
   subpackages:
   - error
 - name: github.com/golang/protobuf
-  version: 8ee79997227bf9b34611aee7946ae64735e6fd93
+  version: 6a1fa9404c0aebf36c879bc50152edcc953910d2
   subpackages:
   - proto
 - name: github.com/google/go-github
-  version: 7a51fb928f52a196d5f31daefb8a489453ef54ff
+  version: a42aa41e6fc83a95b77ef28bfc437e46beba8770
   subpackages:
   - github
 - name: github.com/google/go-querystring
@@ -21,29 +21,32 @@ imports:
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/juju/errgo
   version: 08cceb5d0b5331634b9826762a8fd53b29b86ad8
+- name: github.com/monochromegane/go-gitignore
+  version: 38717d0a108ca0e5af632cd6845ca77d45b50729
 - name: github.com/spf13/afero
   version: 9be650865eab0c12963d8753212f4f9c66cdcf12
   subpackages:
   - mem
 - name: github.com/spf13/cobra
-  version: 99ff9334bda26384b5ef4a4aaa4d444d29bdde73
+  version: 8c6fa02d2225de0f9bdcb7ca912556f68d172d8c
 - name: github.com/spf13/pflag
   version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
 - name: golang.org/x/net
-  version: e90d6d0afc4c315a0d87a568ae68577cc15149a0
+  version: 054b33e6527139ad5b1ec2f6232c3b175bd9a30c
   subpackages:
   - context
+  - context/ctxhttp
 - name: golang.org/x/oauth2
-  version: f047394b6d14284165300fd82dad67edb3a4d7f6
+  version: cce311a261e6fcf29de72ca96827bdb0b7d9c9e6
   subpackages:
   - internal
 - name: golang.org/x/text
-  version: 2910a502d2bf9e43193af9d68ca516529614eed3
+  version: cfdf022e86b4ecfb646e1efbd7db175dd623a8fa
   subpackages:
   - transform
   - unicode/norm
 - name: google.golang.org/appengine
-  version: a2f4131514e563cedfdb6e7d267df9ad48591e93
+  version: ad2570cd3913654e00c5f0183b39d2f998e54046
   subpackages:
   - internal
   - internal/app_identity
