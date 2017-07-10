@@ -3,19 +3,19 @@ package workflow
 import (
 	"fmt"
 
-	"github.com/giantswarm/architect/commands"
+	"github.com/giantswarm/architect/tasks"
 	"github.com/spf13/afero"
 )
 
 var (
-	DockerBuildCommandName      = "docker-build"
-	DockerRunVersionCommandName = "docker-run-version"
-	DockerRunHelpCommandName    = "docker-run-help"
+	DockerBuildTaskName      = "docker-build"
+	DockerRunVersionTaskName = "docker-run-version"
+	DockerRunHelpTaskName    = "docker-run-help"
 
-	DockerLoginCommandName      = "docker-login"
-	DockerTagLatestCommandName  = "docker-tag-latest"
-	DockerPushShaCommandName    = "docker-push-sha"
-	DockerPushLatestCommandName = "docker-push-latest"
+	DockerLoginTaskName      = "docker-login"
+	DockerTagLatestTaskName  = "docker-tag-latest"
+	DockerPushShaTaskName    = "docker-push-sha"
+	DockerPushLatestTaskName = "docker-push-latest"
 )
 
 func checkDockerRequirements(projectInfo ProjectInfo) error {
@@ -39,14 +39,14 @@ func checkDockerRequirements(projectInfo ProjectInfo) error {
 	return nil
 }
 
-func NewDockerBuildCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+func NewDockerBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
-	dockerBuild := commands.Command{
-		Name: DockerBuildCommandName,
-		Args: []string{
+	dockerBuild := tasks.NewExecTask(
+		DockerBuildTaskName,
+		[]string{
 			"docker",
 			"build",
 			"-t",
@@ -59,19 +59,19 @@ func NewDockerBuildCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Comma
 			),
 			projectInfo.WorkingDirectory,
 		},
-	}
+	)
 
 	return dockerBuild, nil
 }
 
-func NewDockerRunVersionCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+func NewDockerRunVersionTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
-	dockerRunVersion := commands.NewDockerCommand(
-		DockerRunVersionCommandName,
-		commands.DockerCommandConfig{
+	dockerRunVersion := tasks.NewDockerTask(
+		DockerRunVersionTaskName,
+		tasks.DockerTaskConfig{
 			Image: fmt.Sprintf(
 				"%v/%v/%v:%v",
 				projectInfo.Registry,
@@ -86,14 +86,14 @@ func NewDockerRunVersionCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.
 	return dockerRunVersion, nil
 }
 
-func NewDockerRunHelpCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+func NewDockerRunHelpTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
-	dockerRunHelp := commands.NewDockerCommand(
-		DockerRunHelpCommandName,
-		commands.DockerCommandConfig{
+	dockerRunHelp := tasks.NewDockerTask(
+		DockerRunHelpTaskName,
+		tasks.DockerTaskConfig{
 			Image: fmt.Sprintf(
 				"%v/%v/%v:%v",
 				projectInfo.Registry,
@@ -108,16 +108,16 @@ func NewDockerRunHelpCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Com
 	return dockerRunHelp, nil
 }
 
-func NewDockerLoginCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+func NewDockerLoginTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
 	if projectInfo.DockerUsername == "" {
-		return commands.Command{}, emptyDockerUsernameError
+		return nil, emptyDockerUsernameError
 	}
 	if projectInfo.DockerPassword == "" {
-		return commands.Command{}, emptyDockerPasswordError
+		return nil, emptyDockerPasswordError
 	}
 
 	// CircleCI's Docker version still expects to be given an email,
@@ -127,9 +127,9 @@ func NewDockerLoginCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Comma
 		projectInfo.DockerEmail = `" "`
 	}
 
-	dockerLogin := commands.Command{
-		Name: DockerLoginCommandName,
-		Args: []string{
+	dockerLogin := tasks.NewExecTask(
+		DockerLoginTaskName,
+		[]string{
 			"docker",
 			"login",
 			fmt.Sprintf("--email=%v", projectInfo.DockerEmail),
@@ -137,19 +137,19 @@ func NewDockerLoginCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Comma
 			fmt.Sprintf("--password=%v", projectInfo.DockerPassword),
 			projectInfo.Registry,
 		},
-	}
+	)
 
 	return dockerLogin, nil
 }
 
-func NewDockerTagLatestCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+func NewDockerTagLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
-	dockerPush := commands.Command{
-		Name: DockerTagLatestCommandName,
-		Args: []string{
+	dockerPush := tasks.NewExecTask(
+		DockerTagLatestTaskName,
+		[]string{
 			"docker",
 			"tag",
 			fmt.Sprintf(
@@ -166,19 +166,19 @@ func NewDockerTagLatestCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.C
 				projectInfo.Project,
 			),
 		},
-	}
+	)
 
 	return dockerPush, nil
 }
 
-func NewDockerPushShaCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+func NewDockerPushShaTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
-	dockerPush := commands.Command{
-		Name: DockerPushShaCommandName,
-		Args: []string{
+	dockerPush := tasks.NewExecTask(
+		DockerPushShaTaskName,
+		[]string{
 			"docker",
 			"push",
 			fmt.Sprintf(
@@ -189,19 +189,19 @@ func NewDockerPushShaCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Com
 				projectInfo.Sha,
 			),
 		},
-	}
+	)
 
 	return dockerPush, nil
 }
 
-func NewDockerPushLatestCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+func NewDockerPushLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
-	dockerPush := commands.Command{
-		Name: DockerPushLatestCommandName,
-		Args: []string{
+	dockerPush := tasks.NewExecTask(
+		DockerPushLatestTaskName,
+		[]string{
 			"docker",
 			"push",
 			fmt.Sprintf(
@@ -211,7 +211,7 @@ func NewDockerPushLatestCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.
 				projectInfo.Project,
 			),
 		},
-	}
+	)
 
 	return dockerPush, nil
 }

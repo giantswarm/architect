@@ -3,13 +3,13 @@ package workflow
 import (
 	"fmt"
 
-	"github.com/giantswarm/architect/commands"
+	"github.com/giantswarm/architect/tasks"
 	"github.com/spf13/afero"
 )
 
 var (
-	KubectlClusterInfoCommandName = "kubectl-cluster-info"
-	KubectlApplyCommandName       = "kubectl-apply"
+	KubectlClusterInfoTaskName = "kubectl-cluster-info"
+	KubectlApplyTaskName       = "kubectl-apply"
 )
 
 func checkKubectlRequirements(cluster KubernetesCluster) error {
@@ -32,14 +32,14 @@ func checkKubectlRequirements(cluster KubernetesCluster) error {
 	return nil
 }
 
-func NewKubectlClusterInfoCommand(fs afero.Fs, cluster KubernetesCluster) (commands.Command, error) {
+func NewKubectlClusterInfoTask(fs afero.Fs, cluster KubernetesCluster) (tasks.Task, error) {
 	if err := checkKubectlRequirements(cluster); err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
-	kubectlClusterInfo := commands.NewDockerCommand(
-		KubectlClusterInfoCommandName,
-		commands.DockerCommandConfig{
+	kubectlClusterInfo := tasks.NewDockerTask(
+		KubectlClusterInfoTaskName,
+		tasks.DockerTaskConfig{
 			Volumes: []string{
 				fmt.Sprintf("%v:/ca.pem", cluster.CaPath),
 				fmt.Sprintf("%v:/crt.pem", cluster.CrtPath),
@@ -59,14 +59,14 @@ func NewKubectlClusterInfoCommand(fs afero.Fs, cluster KubernetesCluster) (comma
 	return kubectlClusterInfo, nil
 }
 
-func NewKubectlApplyCommand(fs afero.Fs, cluster KubernetesCluster, templatedResourcesDirectory string) (commands.Command, error) {
+func NewKubectlApplyTask(fs afero.Fs, cluster KubernetesCluster, templatedResourcesDirectory string) (tasks.Task, error) {
 	if err := checkKubectlRequirements(cluster); err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
-	kubectlApply := commands.NewDockerCommand(
-		KubectlApplyCommandName,
-		commands.DockerCommandConfig{
+	kubectlApply := tasks.NewDockerTask(
+		KubectlApplyTaskName,
+		tasks.DockerTaskConfig{
 			Volumes: []string{
 				fmt.Sprintf("%v:/ca.pem", cluster.CaPath),
 				fmt.Sprintf("%v:/crt.pem", cluster.CrtPath),

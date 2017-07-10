@@ -5,15 +5,15 @@ import (
 
 	"github.com/spf13/afero"
 
-	"github.com/giantswarm/architect/commands"
+	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/utils"
 )
 
 var (
-	GoFmtCommandName   = "go-fmt"
-	GoVetCommandName   = "go-vet"
-	GoTestCommandName  = "go-test"
-	GoBuildCommandName = "go-build"
+	GoFmtTaskName   = "go-fmt"
+	GoVetTaskName   = "go-vet"
+	GoTestTaskName  = "go-test"
+	GoBuildTaskName = "go-build"
 )
 
 func checkGolangRequirements(projectInfo ProjectInfo) error {
@@ -43,14 +43,14 @@ func checkGolangRequirements(projectInfo ProjectInfo) error {
 	return nil
 }
 
-func NewGoFmtCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+func NewGoFmtTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkGolangRequirements(projectInfo); err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
-	goFmt := commands.NewDockerCommand(
-		GoFmtCommandName,
-		commands.DockerCommandConfig{
+	goFmt := tasks.NewDockerTask(
+		GoFmtTaskName,
+		tasks.DockerTaskConfig{
 			Volumes: []string{
 				fmt.Sprintf(
 					"%v:/go/src/github.com/%v/%v",
@@ -77,19 +77,19 @@ func NewGoFmtCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, er
 	return goFmt, nil
 }
 
-func NewGoVetCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+func NewGoVetTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkGolangRequirements(projectInfo); err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
 	packageArguments, err := utils.NoVendor(fs, projectInfo.WorkingDirectory)
 	if err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
-	goVet := commands.NewDockerCommand(
-		GoVetCommandName,
-		commands.DockerCommandConfig{
+	goVet := tasks.NewDockerTask(
+		GoVetTaskName,
+		tasks.DockerTaskConfig{
 			Volumes: []string{
 				fmt.Sprintf(
 					"%v:/go/src/github.com/%v/%v",
@@ -115,19 +115,19 @@ func NewGoVetCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, er
 	return goVet, nil
 }
 
-func NewGoTestCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+func NewGoTestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkGolangRequirements(projectInfo); err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
 	packageArguments, err := utils.NoVendor(fs, projectInfo.WorkingDirectory)
 	if err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
-	goTest := commands.NewDockerCommand(
-		GoTestCommandName,
-		commands.DockerCommandConfig{
+	goTest := tasks.NewDockerTask(
+		GoTestTaskName,
+		tasks.DockerTaskConfig{
 			Volumes: []string{
 				fmt.Sprintf(
 					"%v:/go/src/github.com/%v/%v",
@@ -156,14 +156,14 @@ func NewGoTestCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, e
 	return goTest, nil
 }
 
-func NewGoBuildCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+func NewGoBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkGolangRequirements(projectInfo); err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
-	goBuild := commands.NewDockerCommand(
-		GoBuildCommandName,
-		commands.DockerCommandConfig{
+	goBuild := tasks.NewDockerTask(
+		GoBuildTaskName,
+		tasks.DockerTaskConfig{
 			Volumes: []string{
 				fmt.Sprintf(
 					"%v:/go/src/github.com/%v/%v",

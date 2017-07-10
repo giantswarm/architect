@@ -11,8 +11,8 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"
 
-	"github.com/giantswarm/architect/commands"
 	"github.com/giantswarm/architect/events"
+	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/workflow"
 )
 
@@ -115,7 +115,9 @@ func runDeploy(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	commands.RunCommands(workflow)
+	if err := tasks.Run(workflow); err != nil {
+		log.Fatalf("could not execute workflow: %v", err)
+	}
 
 	if deploymentEventsToken == "" {
 		log.Printf("no deployment events token, not creating deployments event")

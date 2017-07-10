@@ -5,26 +5,26 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/giantswarm/architect/commands"
+	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/template"
 	"github.com/giantswarm/architect/utils"
 
 	"github.com/spf13/afero"
 )
 
-type Workflow []commands.Command
+type Workflow []tasks.Task
 
 func (w Workflow) String() string {
 	if len(w) == 0 {
 		return "{}"
 	}
 
-	cmdStrings := []string{}
-	for _, cmd := range w {
-		cmdStrings = append(cmdStrings, "\t"+cmd.String()+"\n")
+	taskStrings := []string{}
+	for _, task := range w {
+		taskStrings = append(taskStrings, "\t"+task.String()+"\n")
 	}
 
-	return fmt.Sprintf("{\n%v}", strings.Join(cmdStrings, ""))
+	return fmt.Sprintf("{\n%v}", strings.Join(taskStrings, ""))
 }
 
 type ProjectInfo struct {
@@ -71,25 +71,25 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 	}
 	if goLangFilesExist {
-		goFmt, err := NewGoFmtCommand(fs, projectInfo)
+		goFmt, err := NewGoFmtTask(fs, projectInfo)
 		if err != nil {
 			return nil, err
 		}
 		w = append(w, goFmt)
 
-		goVet, err := NewGoVetCommand(fs, projectInfo)
+		goVet, err := NewGoVetTask(fs, projectInfo)
 		if err != nil {
 			return nil, err
 		}
 		w = append(w, goVet)
 
-		goTest, err := NewGoTestCommand(fs, projectInfo)
+		goTest, err := NewGoTestTask(fs, projectInfo)
 		if err != nil {
 			return nil, err
 		}
 		w = append(w, goTest)
 
-		goBuild, err := NewGoBuildCommand(fs, projectInfo)
+		goBuild, err := NewGoBuildTask(fs, projectInfo)
 		if err != nil {
 			return nil, err
 		}
@@ -101,7 +101,7 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		return nil, err
 	}
 	if dockerFileExists {
-		dockerBuild, err := NewDockerBuildCommand(fs, projectInfo)
+		dockerBuild, err := NewDockerBuildTask(fs, projectInfo)
 		if err != nil {
 			return nil, err
 		}
@@ -109,13 +109,13 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 	}
 
 	if goLangFilesExist && dockerFileExists {
-		dockerRunVersion, err := NewDockerRunVersionCommand(fs, projectInfo)
+		dockerRunVersion, err := NewDockerRunVersionTask(fs, projectInfo)
 		if err != nil {
 			return nil, err
 		}
 		w = append(w, dockerRunVersion)
 
-		dockerRunHelp, err := NewDockerRunHelpCommand(fs, projectInfo)
+		dockerRunHelp, err := NewDockerRunHelpTask(fs, projectInfo)
 		if err != nil {
 			return nil, err
 		}
@@ -133,25 +133,25 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		return nil, err
 	}
 	if dockerFileExists {
-		dockerLogin, err := NewDockerLoginCommand(fs, projectInfo)
+		dockerLogin, err := NewDockerLoginTask(fs, projectInfo)
 		if err != nil {
 			return nil, err
 		}
 		w = append(w, dockerLogin)
 
-		dockerTagLatest, err := NewDockerTagLatestCommand(fs, projectInfo)
+		dockerTagLatest, err := NewDockerTagLatestTask(fs, projectInfo)
 		if err != nil {
 			return nil, err
 		}
 		w = append(w, dockerTagLatest)
 
-		dockerPushSha, err := NewDockerPushShaCommand(fs, projectInfo)
+		dockerPushSha, err := NewDockerPushShaTask(fs, projectInfo)
 		if err != nil {
 			return nil, err
 		}
 		w = append(w, dockerPushSha)
 
-		dockerPushLatest, err := NewDockerPushLatestCommand(fs, projectInfo)
+		dockerPushLatest, err := NewDockerPushLatestTask(fs, projectInfo)
 		if err != nil {
 			return nil, err
 		}
@@ -171,13 +171,13 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			return nil, err
 		}
 
-		helmLogin, err := NewHelmLoginCommand(fs, projectInfo)
+		helmLogin, err := NewHelmLoginTask(fs, projectInfo)
 		if err != nil {
 			return nil, err
 		}
 		w = append(w, helmLogin)
 
-		helmPush, err := NewHelmPushCommand(fs, projectInfo)
+		helmPush, err := NewHelmPushTask(fs, projectInfo)
 		if err != nil {
 			return nil, err
 		}
@@ -218,13 +218,13 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 				return nil, err
 			}
 
-			kubectlClusterInfo, err := NewKubectlClusterInfoCommand(fs, cluster)
+			kubectlClusterInfo, err := NewKubectlClusterInfoTask(fs, cluster)
 			if err != nil {
 				return nil, err
 			}
 			w = append(w, kubectlClusterInfo)
 
-			kubectlApply, err := NewKubectlApplyCommand(fs, cluster, templatedResourcesDirectory)
+			kubectlApply, err := NewKubectlApplyTask(fs, cluster, templatedResourcesDirectory)
 			if err != nil {
 				return nil, err
 			}

@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/giantswarm/architect/commands"
+	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/workflow"
 
 	"github.com/spf13/afero"
@@ -68,5 +68,7 @@ func runBuild(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	commands.RunCommands(workflow)
+	if err := tasks.Run(workflow); err != nil {
+		log.Fatalf("could not execute workflow: %v", err)
+	}
 }
