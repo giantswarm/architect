@@ -118,7 +118,7 @@ func templateKubernetesResources(fs afero.Fs, resourcesPath string, config Templ
 
 		templatedContents := buf.String()
 
-		// This add backwards compatability for `%%DOCKER_TAG%%`. Deprecated.
+		// This adds backwards compatability for `%%DOCKER_TAG%%`. Deprecated.
 		templatedContents = strings.Replace(templatedContents, "%%DOCKER_TAG%%", config.BuildInfo.SHA, -1)
 
 		if err := afero.WriteFile(fs, path, []byte(templatedContents), permission); err != nil {
