@@ -3,15 +3,9 @@
 package template
 
 import (
-	"bytes"
 	"os"
-	"strings"
-	"text/template"
-
-	"github.com/spf13/afero"
 
 	"github.com/giantswarm/architect/configuration"
-	microerror "github.com/giantswarm/microkit/error"
 )
 
 var (
@@ -32,53 +26,4 @@ type TemplateConfiguration struct {
 
 	// Installation is the configuration for the installation
 	configuration.Installation
-}
-
-// TemplateKubernetesResources takes a filesystem,
-// a path to a directory holding kubernetes resources,
-// and an installation configuration.
-// It templates the given resources, with data from the configuration,
-// writing changes to the files.
-func TemplateKubernetesResources(fs afero.Fs, resourcesPath string, config TemplateConfiguration) error {
-	walkFunc := func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			microerror.MaskAny(err)
-		}
-
-		if info.IsDir() {
-			return nil
-		}
-
-		contents, err := afero.ReadFile(fs, path)
-		if err != nil {
-			microerror.MaskAny(err)
-		}
-
-		t := template.Must(template.New(path).Funcs(filters).Parse(string(contents)))
-		if err != nil {
-			microerror.MaskAny(err)
-		}
-
-		var buf bytes.Buffer
-		if err := t.Execute(&buf, config); err != nil {
-			microerror.MaskAny(err)
-		}
-
-		templatedContents := buf.String()
-
-		// This add backwards compatability for `%%DOCKER_TAG%%`. Deprecated.
-		templatedContents = strings.Replace(templatedContents, "%%DOCKER_TAG%%", config.BuildInfo.SHA, -1)
-
-		if err := afero.WriteFile(fs, path, []byte(templatedContents), permission); err != nil {
-			microerror.MaskAny(err)
-		}
-
-		return nil
-	}
-
-	if err := afero.Walk(fs, resourcesPath, walkFunc); err != nil {
-		microerror.MaskAny(err)
-	}
-
-	return nil
 }

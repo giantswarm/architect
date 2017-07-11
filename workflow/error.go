@@ -150,10 +150,3 @@ var emptyKubectlVersionError = errgo.New("empty kubectl version")
 func IsEmptyKubectlVersion(err error) bool {
 	return errgo.Cause(err) == emptyKubectlVersionError
 }
-
-var emptyKubernetesResourcesDirectoryPath = errgo.New("empty kubernetes resources directory path")
-
-// IsEmptyKubernetesResourcesDirectoryPath asserts emptyKubernetesResourcesDirectoryPath
-func IsEmptyKubernetesResourcesDirectoryPath(err error) bool {
-	return errgo.Cause(err) == emptyKubernetesResourcesDirectoryPath
-}

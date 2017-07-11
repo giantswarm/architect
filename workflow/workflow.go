@@ -6,8 +6,6 @@ import (
 	"strings"
 
 	"github.com/giantswarm/architect/tasks"
-	"github.com/giantswarm/architect/template"
-	"github.com/giantswarm/architect/utils"
 
 	"github.com/spf13/afero"
 )
@@ -41,6 +39,9 @@ type ProjectInfo struct {
 	HelmDirectoryPath                string
 	KubernetesResourcesDirectoryPath string
 	KubernetesClusters               []KubernetesCluster
+
+	CurrentCluster              KubernetesCluster
+	TemplatedResourcesDirectory string
 
 	Goos          string
 	Goarch        string
@@ -163,11 +164,11 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		return nil, err
 	}
 	if helmDirectoryExists {
-		helmChartTemplateTask, err := NewTemplateHelmChartTask(fs, projectInfo)
+		helmChartTemplate, err := NewTemplateHelmChartTask(fs, projectInfo)
 		if err != nil {
 			return nil, err
 		}
-		w = append(w, helmChartTemplateTask)
+		w = append(w, helmChartTemplate)
 
 		helmLogin, err := NewHelmLoginTask(fs, projectInfo)
 		if err != nil {
@@ -189,40 +190,25 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 
 	if kubernetesDirectoryExists {
 		for _, cluster := range projectInfo.KubernetesClusters {
-			if projectInfo.KubernetesResourcesDirectoryPath == "" {
-				return nil, emptyKubernetesResourcesDirectoryPath
-			}
-
-			// Copy /kubernetes to a per-cluster directory, and template it
 			dir, subdir := filepath.Split(projectInfo.KubernetesResourcesDirectoryPath)
 			templatedResourcesDirectory := filepath.Join(dir, subdir+"-"+cluster.Prefix)
 
-			if err := utils.CopyDir(
-				fs,
-				projectInfo.KubernetesResourcesDirectoryPath,
-				templatedResourcesDirectory,
-			); err != nil {
+			projectInfo.CurrentCluster = cluster
+			projectInfo.TemplatedResourcesDirectory = templatedResourcesDirectory
+
+			kubernetesResourcesTemplate, err := NewTemplateKubernetesResourcesTask(fs, projectInfo)
+			if err != nil {
 				return nil, err
 			}
+			w = append(w, kubernetesResourcesTemplate)
 
-			config := template.TemplateConfiguration{
-				BuildInfo: template.BuildInfo{
-					SHA: projectInfo.Sha,
-				},
-				Installation: cluster.Installation,
-			}
-
-			if err := template.TemplateKubernetesResources(fs, templatedResourcesDirectory, config); err != nil {
-				return nil, err
-			}
-
-			kubectlClusterInfo, err := NewKubectlClusterInfoTask(fs, cluster)
+			kubectlClusterInfo, err := NewKubectlClusterInfoTask(fs, projectInfo)
 			if err != nil {
 				return nil, err
 			}
 			w = append(w, kubectlClusterInfo)
 
-			kubectlApply, err := NewKubectlApplyTask(fs, cluster, templatedResourcesDirectory)
+			kubectlApply, err := NewKubectlApplyTask(fs, projectInfo)
 			if err != nil {
 				return nil, err
 			}
