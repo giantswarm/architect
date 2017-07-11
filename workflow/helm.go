@@ -5,8 +5,9 @@ import (
 	"os/user"
 	"path/filepath"
 
-	"github.com/giantswarm/architect/commands"
 	"github.com/spf13/afero"
+
+	"github.com/giantswarm/architect/tasks"
 )
 
 const (
@@ -14,8 +15,8 @@ const (
 )
 
 var (
-	HelmLoginCommandName = "helm-login"
-	HelmPushCommandName  = "helm-push"
+	HelmLoginTaskName = "helm-login"
+	HelmPushTaskName  = "helm-push"
 )
 
 func cnrDirectory() (string, error) {
@@ -27,15 +28,15 @@ func cnrDirectory() (string, error) {
 	return filepath.Join(user.HomeDir, ".cnr"), nil
 }
 
-func NewHelmLoginCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+func NewHelmLoginTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	cndDir, err := cnrDirectory()
 	if err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
-	helmLogin := commands.NewDockerCommand(
-		HelmLoginCommandName,
-		commands.DockerCommandConfig{
+	helmLogin := tasks.NewDockerTask(
+		HelmLoginTaskName,
+		tasks.DockerTaskConfig{
 			Image: HelmImage,
 			Volumes: []string{
 				fmt.Sprintf("%v:/root/.cnr/", cndDir),
@@ -53,29 +54,29 @@ func NewHelmLoginCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command
 	return helmLogin, nil
 }
 
-func NewHelmPushCommand(fs afero.Fs, projectInfo ProjectInfo) (commands.Command, error) {
+func NewHelmPushTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	helmDirExists, err := afero.DirExists(fs, filepath.Join(projectInfo.WorkingDirectory, "helm"))
 	if err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 	if !helmDirExists {
-		return commands.Command{}, noHelmDirectoryError
+		return nil, noHelmDirectoryError
 	}
 
-	cndDir, err := cnrDirectory()
+	cnrDir, err := cnrDirectory()
 	if err != nil {
-		return commands.Command{}, err
+		return nil, err
 	}
 
 	chartDir := filepath.Join(projectInfo.WorkingDirectory, "helm", fmt.Sprintf("%v-chart", projectInfo.Project))
 
-	helmPush := commands.NewDockerCommand(
-		HelmPushCommandName,
-		commands.DockerCommandConfig{
+	helmPush := tasks.NewDockerTask(
+		HelmPushTaskName,
+		tasks.DockerTaskConfig{
 			WorkingDirectory: chartDir,
 			Image:            HelmImage,
 			Volumes: []string{
-				fmt.Sprintf("%v:/root/.cnr/", cndDir),
+				fmt.Sprintf("%v:/root/.cnr/", cnrDir),
 				fmt.Sprintf("%v:%v", chartDir, chartDir),
 			},
 			Args: []string{

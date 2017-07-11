@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/giantswarm/architect/commands"
+	"github.com/giantswarm/architect/tasks"
 	microerror "github.com/giantswarm/microkit/error"
 	"github.com/spf13/afero"
 )
@@ -21,28 +21,28 @@ func TestWorkflowString(t *testing.T) {
 			expectedString: "{}",
 		},
 
-		// Test one command
+		// Test one task
 		{
 			workflow: Workflow{
-				commands.Command{
-					Name: "foo",
-					Args: []string{"apple", "banana"},
-				},
+				tasks.NewExecTask(
+					"foo",
+					[]string{"apple", "banana"},
+				),
 			},
 			expectedString: "{\n\tfoo:\t'apple banana'\n}",
 		},
 
-		// Test multiple commands
+		// Test multiple tasks
 		{
 			workflow: Workflow{
-				commands.Command{
-					Name: "foo",
-					Args: []string{"apple", "banana"},
-				},
-				commands.Command{
-					Name: "bar",
-					Args: []string{"cherry", "durian"},
-				},
+				tasks.NewExecTask(
+					"foo",
+					[]string{"apple", "banana"},
+				),
+				tasks.NewExecTask(
+					"bar",
+					[]string{"cherry", "durian"},
+				),
 			},
 			expectedString: "{\n\tfoo:\t'apple banana'\n\tbar:\t'cherry durian'\n}",
 		},
@@ -79,15 +79,15 @@ func TestGetBuildWorkflow(t *testing.T) {
 	}
 
 	tests := []struct {
-		setUp                func(afero.Fs) error
-		expectedCommandNames map[int]string
+		setUp             func(afero.Fs) error
+		expectedTaskNames map[int]string
 	}{
 		// Test a project with no files produces an empty workflow
 		{
 			setUp: func(fs afero.Fs) error {
 				return nil
 			},
-			expectedCommandNames: map[int]string{},
+			expectedTaskNames: map[int]string{},
 		},
 
 		// Test a project with only golang files produces a correct workflow
@@ -99,11 +99,11 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedCommandNames: map[int]string{
-				0: GoFmtCommandName,
-				1: GoVetCommandName,
-				2: GoTestCommandName,
-				3: GoBuildCommandName,
+			expectedTaskNames: map[int]string{
+				0: GoFmtTaskName,
+				1: GoVetTaskName,
+				2: GoTestTaskName,
+				3: GoBuildTaskName,
 			},
 		},
 
@@ -116,11 +116,11 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedCommandNames: map[int]string{
-				0: GoFmtCommandName,
-				1: GoVetCommandName,
-				2: GoTestCommandName,
-				3: GoBuildCommandName,
+			expectedTaskNames: map[int]string{
+				0: GoFmtTaskName,
+				1: GoVetTaskName,
+				2: GoTestTaskName,
+				3: GoBuildTaskName,
 			},
 		},
 
@@ -133,8 +133,8 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedCommandNames: map[int]string{
-				0: DockerBuildCommandName,
+			expectedTaskNames: map[int]string{
+				0: DockerBuildTaskName,
 			},
 		},
 
@@ -150,14 +150,14 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedCommandNames: map[int]string{
-				0: GoFmtCommandName,
-				1: GoVetCommandName,
-				2: GoTestCommandName,
-				3: GoBuildCommandName,
-				4: DockerBuildCommandName,
-				5: DockerRunVersionCommandName,
-				6: DockerRunHelpCommandName,
+			expectedTaskNames: map[int]string{
+				0: GoFmtTaskName,
+				1: GoVetTaskName,
+				2: GoTestTaskName,
+				3: GoBuildTaskName,
+				4: DockerBuildTaskName,
+				5: DockerRunVersionTaskName,
+				6: DockerRunHelpTaskName,
 			},
 		},
 	}
@@ -173,20 +173,20 @@ func TestGetBuildWorkflow(t *testing.T) {
 			t.Fatalf("received unexpected error getting build workflow: %v", err)
 		}
 
-		if len(workflow) != len(test.expectedCommandNames) {
+		if len(workflow) != len(test.expectedTaskNames) {
 			t.Fatalf(
-				"expected %v commands, received %v",
-				len(test.expectedCommandNames),
+				"expected %v taskss, received %v",
+				len(test.expectedTaskNames),
 				len(workflow),
 			)
 		}
 
-		for testIndex, expectedCommandName := range test.expectedCommandNames {
-			if workflow[testIndex].Name != expectedCommandName {
+		for testIndex, expectedTaskName := range test.expectedTaskNames {
+			if workflow[testIndex].Name() != expectedTaskName {
 				t.Fatalf(
-					"command: %v, expected name: %v, received name: %v",
+					"Task: %v, expected name: %v, received name: %v",
 					index,
-					expectedCommandName,
+					expectedTaskName,
 					workflow[index].Name,
 				)
 			}
@@ -199,9 +199,9 @@ func TestGetDeployWorkflow(t *testing.T) {
 	workingDirectory := "/test/"
 
 	tests := []struct {
-		projectInfo          ProjectInfo
-		setUp                func(afero.Fs) error
-		expectedCommandNames map[int]string
+		projectInfo       ProjectInfo
+		setUp             func(afero.Fs) error
+		expectedTaskNames map[int]string
 	}{
 		// Test a project with no files produces an empty workflow
 		{
@@ -213,7 +213,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 			setUp: func(fs afero.Fs) error {
 				return nil
 			},
-			expectedCommandNames: map[int]string{},
+			expectedTaskNames: map[int]string{},
 		},
 
 		// Test a project with only a Dockerfile productes a workflow containg docker push
@@ -235,11 +235,11 @@ func TestGetDeployWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedCommandNames: map[int]string{
-				0: DockerLoginCommandName,
-				1: DockerTagLatestCommandName,
-				2: DockerPushShaCommandName,
-				3: DockerPushLatestCommandName,
+			expectedTaskNames: map[int]string{
+				0: DockerLoginTaskName,
+				1: DockerTagLatestTaskName,
+				2: DockerPushShaTaskName,
+				3: DockerPushLatestTaskName,
 			},
 		},
 
@@ -257,9 +257,9 @@ func TestGetDeployWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedCommandNames: map[int]string{
-				0: HelmLoginCommandName,
-				1: HelmPushCommandName,
+			expectedTaskNames: map[int]string{
+				0: HelmLoginTaskName,
+				1: HelmPushTaskName,
 			},
 		},
 
@@ -287,13 +287,13 @@ func TestGetDeployWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedCommandNames: map[int]string{
-				0: KubectlClusterInfoCommandName,
-				1: KubectlApplyCommandName,
+			expectedTaskNames: map[int]string{
+				0: KubectlClusterInfoTaskName,
+				1: KubectlApplyTaskName,
 			},
 		},
 
-		// Test a project with a Dockerfile and a kubernetes directory contains both docker and kubernetes commands
+		// Test a project with a Dockerfile and a kubernetes directory contains both docker and kubernetes tasks/
 		{
 			projectInfo: ProjectInfo{
 				WorkingDirectory:                 workingDirectory,
@@ -325,17 +325,17 @@ func TestGetDeployWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedCommandNames: map[int]string{
-				0: DockerLoginCommandName,
-				1: DockerTagLatestCommandName,
-				2: DockerPushShaCommandName,
-				3: DockerPushLatestCommandName,
-				4: KubectlClusterInfoCommandName,
-				5: KubectlApplyCommandName,
+			expectedTaskNames: map[int]string{
+				0: DockerLoginTaskName,
+				1: DockerTagLatestTaskName,
+				2: DockerPushShaTaskName,
+				3: DockerPushLatestTaskName,
+				4: KubectlClusterInfoTaskName,
+				5: KubectlApplyTaskName,
 			},
 		},
 
-		// Test that a project with two clusters configured returns two sets of kubectl commands
+		// Test that a project with two clusters configured returns two sets of kubectl tasks.
 		{
 			projectInfo: ProjectInfo{
 				WorkingDirectory: workingDirectory,
@@ -368,11 +368,11 @@ func TestGetDeployWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedCommandNames: map[int]string{
-				0: KubectlClusterInfoCommandName,
-				1: KubectlApplyCommandName,
-				2: KubectlClusterInfoCommandName,
-				3: KubectlApplyCommandName,
+			expectedTaskNames: map[int]string{
+				0: KubectlClusterInfoTaskName,
+				1: KubectlApplyTaskName,
+				2: KubectlClusterInfoTaskName,
+				3: KubectlApplyTaskName,
 			},
 		},
 
@@ -401,9 +401,9 @@ func TestGetDeployWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedCommandNames: map[int]string{
-				0: KubectlClusterInfoCommandName,
-				1: KubectlApplyCommandName,
+			expectedTaskNames: map[int]string{
+				0: KubectlClusterInfoTaskName,
+				1: KubectlApplyTaskName,
 			},
 		},
 	}
@@ -419,22 +419,22 @@ func TestGetDeployWorkflow(t *testing.T) {
 			t.Fatalf("%v: received unexpected error getting build workflow: %v", index, err)
 		}
 
-		if len(workflow) != len(test.expectedCommandNames) {
+		if len(workflow) != len(test.expectedTaskNames) {
 			t.Fatalf(
-				"%v: expected %v commands, received %v",
+				"%v: expected %v taskss, received %v",
 				index,
-				len(test.expectedCommandNames),
+				len(test.expectedTaskNames),
 				len(workflow),
 			)
 		}
 
-		for testIndex, expectedCommandName := range test.expectedCommandNames {
-			if workflow[testIndex].Name != expectedCommandName {
+		for testIndex, expectedTaskName := range test.expectedTaskNames {
+			if workflow[testIndex].Name() != expectedTaskName {
 				t.Fatalf(
-					"%v: command: %v, expected name: %v, received name: %v",
+					"%v: task: %v, expected name: %v, received name: %v",
 					index,
 					testIndex,
-					expectedCommandName,
+					expectedTaskName,
 					workflow[testIndex].Name,
 				)
 			}
