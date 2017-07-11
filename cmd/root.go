@@ -54,7 +54,7 @@ func init() {
 
 	RootCmd.PersistentFlags().StringVar(&workingDirectory, "working-directory", defaultWorkingDirectory, "working directory for architect")
 
-	RootCmd.PersistentFlags().StringVar(&registry, "registry", "registry.giantswarm.io", "docker registry")
+	RootCmd.PersistentFlags().StringVar(&registry, "registry", "quay.io", "docker registry")
 	RootCmd.PersistentFlags().StringVar(&organisation, "organisation", defaultOrganisation, "organisation who owns the project")
 	RootCmd.PersistentFlags().StringVar(&project, "project", defaultProject, "name of the project")
 	RootCmd.PersistentFlags().StringVar(&sha, "sha", defaultSha, "git SHA1 to build")
