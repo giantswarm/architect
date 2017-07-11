@@ -5,9 +5,12 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/giantswarm/architect/tasks"
-	microerror "github.com/giantswarm/microkit/error"
 	"github.com/spf13/afero"
+
+	microerror "github.com/giantswarm/microkit/error"
+
+	"github.com/giantswarm/architect/tasks"
+	"github.com/giantswarm/architect/template"
 )
 
 func TestWorkflowString(t *testing.T) {
@@ -258,8 +261,9 @@ func TestGetDeployWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: map[int]string{
-				0: HelmLoginTaskName,
-				1: HelmPushTaskName,
+				0: template.TemplateHelmChartTaskName,
+				1: HelmLoginTaskName,
+				2: HelmPushTaskName,
 			},
 		},
 
@@ -421,7 +425,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 
 		if len(workflow) != len(test.expectedTaskNames) {
 			t.Fatalf(
-				"%v: expected %v taskss, received %v",
+				"%v: expected %v tasks, received %v",
 				index,
 				len(test.expectedTaskNames),
 				len(workflow),
