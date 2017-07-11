@@ -302,7 +302,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 				if err := afero.WriteFile(
 					fs,
 					path,
-					[]byte("image: registry.giantswarm.io/giantswarm/api:%%DOCKER_TAG%%"),
+					[]byte("image: quay.io/giantswarm/api:%%DOCKER_TAG%%"),
 					permission,
 				); err != nil {
 					return microerror.MaskAny(err)
@@ -329,7 +329,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					return microerror.MaskAny(err)
 				}
 
-				if string(bytes) != "image: registry.giantswarm.io/giantswarm/api:12345" {
+				if string(bytes) != "image: quay.io/giantswarm/api:12345" {
 					return microerror.MaskAnyf(incorrectShaError, "in deployment, found: '%v'", string(bytes))
 				}
 
