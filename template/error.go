@@ -45,3 +45,10 @@ var incorrectTemplatingError = errgo.New("incorrect templating")
 func IsIncorrectTemplating(err error) bool {
 	return errgo.Cause(err) == incorrectTemplatingError
 }
+
+var emptyKubernetesResourcesDirectoryPath = errgo.New("empty kubernetes resources directory path")
+
+// IsEmptyKubernetesResourcesDirectoryPath asserts emptyKubernetesResourcesDirectoryPath
+func IsEmptyKubernetesResourcesDirectoryPath(err error) bool {
+	return errgo.Cause(err) == emptyKubernetesResourcesDirectoryPath
+}

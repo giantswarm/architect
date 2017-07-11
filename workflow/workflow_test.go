@@ -292,8 +292,9 @@ func TestGetDeployWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: map[int]string{
-				0: KubectlClusterInfoTaskName,
-				1: KubectlApplyTaskName,
+				0: template.TemplateKubernetesResourcesTaskName,
+				1: KubectlClusterInfoTaskName,
+				2: KubectlApplyTaskName,
 			},
 		},
 
@@ -334,8 +335,9 @@ func TestGetDeployWorkflow(t *testing.T) {
 				1: DockerTagLatestTaskName,
 				2: DockerPushShaTaskName,
 				3: DockerPushLatestTaskName,
-				4: KubectlClusterInfoTaskName,
-				5: KubectlApplyTaskName,
+				4: template.TemplateKubernetesResourcesTaskName,
+				5: KubectlClusterInfoTaskName,
+				6: KubectlApplyTaskName,
 			},
 		},
 
@@ -373,10 +375,12 @@ func TestGetDeployWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: map[int]string{
-				0: KubectlClusterInfoTaskName,
-				1: KubectlApplyTaskName,
-				2: KubectlClusterInfoTaskName,
-				3: KubectlApplyTaskName,
+				0: template.TemplateKubernetesResourcesTaskName,
+				1: KubectlClusterInfoTaskName,
+				2: KubectlApplyTaskName,
+				3: template.TemplateKubernetesResourcesTaskName,
+				4: KubectlClusterInfoTaskName,
+				5: KubectlApplyTaskName,
 			},
 		},
 
@@ -406,8 +410,9 @@ func TestGetDeployWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: map[int]string{
-				0: KubectlClusterInfoTaskName,
-				1: KubectlApplyTaskName,
+				0: template.TemplateKubernetesResourcesTaskName,
+				1: KubectlClusterInfoTaskName,
+				2: KubectlApplyTaskName,
 			},
 		},
 	}

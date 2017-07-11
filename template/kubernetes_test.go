@@ -6,14 +6,16 @@ import (
 	"testing"
 	"time"
 
+	"github.com/spf13/afero"
+
+	microerror "github.com/giantswarm/microkit/error"
+
 	"github.com/giantswarm/architect/configuration"
 	"github.com/giantswarm/architect/configuration/giantswarm"
 	"github.com/giantswarm/architect/configuration/giantswarm/api"
 	"github.com/giantswarm/architect/configuration/monitoring"
 	"github.com/giantswarm/architect/configuration/monitoring/prometheus"
 	"github.com/giantswarm/architect/configuration/monitoring/testbot"
-	microerror "github.com/giantswarm/microkit/error"
-	"github.com/spf13/afero"
 )
 
 // TestTemplateKubernetesResources tests the TemplateKubernetesResources function.
@@ -343,7 +345,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			t.Fatalf("%v: unexpected error during setup: %v\n", index, err)
 		}
 
-		if err := TemplateKubernetesResources(fs, test.resourcesPath, test.config); err != nil {
+		if err := templateKubernetesResources(fs, test.resourcesPath, test.config); err != nil {
 			t.Fatalf("%v: unexpected error during templating: %v\n", index, err)
 		}
 

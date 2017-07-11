@@ -3,8 +3,10 @@ package workflow
 import (
 	"fmt"
 
-	"github.com/giantswarm/architect/tasks"
 	"github.com/spf13/afero"
+
+	"github.com/giantswarm/architect/tasks"
+	"github.com/giantswarm/architect/template"
 )
 
 var (
@@ -32,7 +34,25 @@ func checkKubectlRequirements(cluster KubernetesCluster) error {
 	return nil
 }
 
-func NewKubectlClusterInfoTask(fs afero.Fs, cluster KubernetesCluster) (tasks.Task, error) {
+func NewTemplateKubernetesResourcesTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+	if err := checkKubectlRequirements(projectInfo.CurrentCluster); err != nil {
+		return nil, err
+	}
+
+	templateKubernetesResources := template.NewTemplateKubernetesResourcesTask(
+		fs,
+		projectInfo.KubernetesResourcesDirectoryPath,
+		projectInfo.TemplatedResourcesDirectory,
+		projectInfo.Sha,
+		projectInfo.CurrentCluster.Installation,
+	)
+
+	return templateKubernetesResources, nil
+}
+
+func NewKubectlClusterInfoTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+	cluster := projectInfo.CurrentCluster
+
 	if err := checkKubectlRequirements(cluster); err != nil {
 		return nil, err
 	}
@@ -59,7 +79,9 @@ func NewKubectlClusterInfoTask(fs afero.Fs, cluster KubernetesCluster) (tasks.Ta
 	return kubectlClusterInfo, nil
 }
 
-func NewKubectlApplyTask(fs afero.Fs, cluster KubernetesCluster, templatedResourcesDirectory string) (tasks.Task, error) {
+func NewKubectlApplyTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+	cluster := projectInfo.CurrentCluster
+
 	if err := checkKubectlRequirements(cluster); err != nil {
 		return nil, err
 	}
@@ -71,7 +93,7 @@ func NewKubectlApplyTask(fs afero.Fs, cluster KubernetesCluster, templatedResour
 				fmt.Sprintf("%v:/ca.pem", cluster.CaPath),
 				fmt.Sprintf("%v:/crt.pem", cluster.CrtPath),
 				fmt.Sprintf("%v:/key.pem", cluster.KeyPath),
-				fmt.Sprintf("%v:/kubernetes", templatedResourcesDirectory),
+				fmt.Sprintf("%v:/kubernetes", projectInfo.TemplatedResourcesDirectory),
 			},
 			Image: fmt.Sprintf("quay.io/giantswarm/docker-kubectl:%v", cluster.KubectlVersion),
 			Args: []string{
