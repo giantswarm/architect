@@ -14,6 +14,11 @@ import (
 const (
 	TemplateHelmChartTaskName = "template-helm-chart"
 
+	// TemplateHelmChartTaskString is the format for printing the
+	// helm chart templating task.
+	// Name of the task, the helm directory path, and the sha.
+	TemplateHelmChartTaskString = "%s:\t%s %s"
+
 	// HelmChartYamlName is the name of Helm's chart yaml.
 	HelmChartYamlName = "Chart.yaml"
 	// HelmTemplateDirectoryName is the name of the directory that stores
@@ -43,7 +48,7 @@ func (t TemplateHelmChartTask) Run() error {
 	}
 
 	if len(fileInfos) > 1 {
-		return multipleHelmChartsError
+		return microerror.MaskAny(multipleHelmChartsError)
 	}
 
 	chartDirectory := fileInfos[0].Name()
@@ -91,7 +96,7 @@ func (t TemplateHelmChartTask) Name() string {
 }
 
 func (t TemplateHelmChartTask) String() string {
-	return fmt.Sprintf("%s:\t%s %s", t.Name(), t.helmPath, t.sha)
+	return fmt.Sprintf(TemplateHelmChartTaskString, t.Name(), t.helmPath, t.sha)
 }
 
 func NewTemplateHelmChartTask(fs afero.Fs, helmPath, sha string) TemplateHelmChartTask {
