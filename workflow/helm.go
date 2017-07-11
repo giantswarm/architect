@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/afero"
 
 	"github.com/giantswarm/architect/tasks"
+	"github.com/giantswarm/architect/template"
 )
 
 const (
@@ -26,6 +27,16 @@ func cnrDirectory() (string, error) {
 	}
 
 	return filepath.Join(user.HomeDir, ".cnr"), nil
+}
+
+func NewTemplateHelmChartTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+	templateHelmChart := template.NewTemplateHelmChartTask(
+		fs,
+		projectInfo.HelmDirectoryPath,
+		projectInfo.Sha,
+	)
+
+	return templateHelmChart, nil
 }
 
 func NewHelmLoginTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {

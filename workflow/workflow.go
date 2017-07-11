@@ -163,13 +163,11 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		return nil, err
 	}
 	if helmDirectoryExists {
-		if err := template.TemplateHelmChart(
-			fs,
-			projectInfo.HelmDirectoryPath,
-			template.BuildInfo{SHA: projectInfo.Sha},
-		); err != nil {
+		helmChartTemplateTask, err := NewTemplateHelmChartTask(fs, projectInfo)
+		if err != nil {
 			return nil, err
 		}
+		w = append(w, helmChartTemplateTask)
 
 		helmLogin, err := NewHelmLoginTask(fs, projectInfo)
 		if err != nil {
