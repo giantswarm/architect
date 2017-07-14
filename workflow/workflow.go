@@ -43,7 +43,8 @@ type ProjectInfo struct {
 	CurrentCluster              KubernetesCluster
 	TemplatedResourcesDirectory string
 
-	Goos          string
+	GoosTest      string
+	GoosBuild     string
 	Goarch        string
 	GolangImage   string
 	GolangVersion string
