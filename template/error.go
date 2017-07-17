@@ -52,3 +52,17 @@ var emptyKubernetesResourcesDirectoryPath = errgo.New("empty kubernetes resource
 func IsEmptyKubernetesResourcesDirectoryPath(err error) bool {
 	return errgo.Cause(err) == emptyKubernetesResourcesDirectoryPath
 }
+
+var nilTemplateStructError = errgo.New("nil template struct")
+
+// IsNilTemplateStruct asserts nilTemplateStruct.
+func IsNilTemplateStruct(err error) bool {
+	return errgo.Cause(err) == nilTemplateStructError
+}
+
+var notStringTypeError = errgo.New("not string type")
+
+// IsNotStringType asserts notStringTypeError.
+func IsNotStringType(err error) bool {
+	return errgo.Cause(err) == notStringTypeError
+}

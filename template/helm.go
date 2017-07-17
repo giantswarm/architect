@@ -1,9 +1,7 @@
 package template
 
 import (
-	"bytes"
 	"fmt"
-	"html/template"
 	"path/filepath"
 
 	"github.com/spf13/afero"
@@ -71,18 +69,9 @@ func (t TemplateHelmChartTask) Run() error {
 			}
 
 			buildInfo := BuildInfo{SHA: t.sha}
+			templatedContents, err := SafeTemplate(buildInfo, contents)
 
-			newTemplate := template.Must(template.New(path).Parse(string(contents)))
-			if err != nil {
-				microerror.MaskAny(err)
-			}
-
-			var buf bytes.Buffer
-			if err := newTemplate.Execute(&buf, buildInfo); err != nil {
-				microerror.MaskAny(err)
-			}
-
-			if err := afero.WriteFile(t.fs, path, buf.Bytes(), permission); err != nil {
+			if err := afero.WriteFile(t.fs, path, templatedContents, permission); err != nil {
 				microerror.MaskAny(err)
 			}
 		}
