@@ -117,6 +117,66 @@ func TestTemplateHelmChartTask(t *testing.T) {
 				return nil
 			},
 		},
+
+		// Test that a deployment.yaml with Helm templating in does not have the Helm templating destroyed.
+		{
+			helmPath: "/helm",
+			sha:      "jabberwocky",
+			setUp: func(fs afero.Fs, helmPath string) error {
+				directories := []string{
+					helmPath,
+					filepath.Join(helmPath, "test-chart"),
+					filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName),
+				}
+
+				for _, directory := range directories {
+					if err := fs.Mkdir(directory, permission); err != nil {
+						return microerror.MaskAny(err)
+					}
+				}
+
+				files := []struct {
+					path string
+					data string
+				}{
+					{
+						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName),
+						data: "image: {{ .SHA }} foo: {{ .Values.Foo }}",
+					},
+				}
+
+				for _, file := range files {
+					if err := afero.WriteFile(fs, file.path, []byte(file.data), permission); err != nil {
+						return microerror.MaskAny(err)
+					}
+				}
+
+				return nil
+			},
+			check: func(fs afero.Fs, helmPath string) error {
+				files := []struct {
+					path string
+					data string
+				}{
+					{
+						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName),
+						data: "image: jabberwocky foo: {{ .Values.Foo }}",
+					},
+				}
+
+				for _, file := range files {
+					bytes, err := afero.ReadFile(fs, file.path)
+					if err != nil {
+						return microerror.MaskAny(err)
+					}
+					if string(bytes) != file.data {
+						return microerror.MaskAnyf(incorrectValueError, fmt.Sprintf("%v, found: %v, expected: %v", file.path, string(bytes), file.data))
+					}
+				}
+
+				return nil
+			},
+		},
 	}
 
 	for index, test := range tests {
