@@ -16,7 +16,7 @@ const (
 	StringTypeName = "string"
 )
 
-// safeTemplate takes a struct and a template byte array, and attempts to
+// SafeTemplate takes a struct and a template byte array, and attempts to
 // safely template the byte array.
 // 'Safely' is defined as only templating fields of the format:
 // `{{ .X }}`, where X is the name of some field in the supplied struct,
