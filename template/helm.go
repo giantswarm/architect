@@ -72,7 +72,7 @@ func (t TemplateHelmChartTask) Run() error {
 
 			buildInfo := BuildInfo{SHA: t.sha}
 
-			newTemplate := template.Must(template.New(path).Parse(string(contents)))
+			newTemplate := template.Must(template.New(path).Delims("[[", "]]").Parse(string(contents)))
 			if err != nil {
 				microerror.MaskAny(err)
 			}
