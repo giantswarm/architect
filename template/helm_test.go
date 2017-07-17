@@ -65,11 +65,11 @@ func TestTemplateHelmChartTask(t *testing.T) {
 				}{
 					{
 						path: filepath.Join(helmPath, "test-chart", HelmChartYamlName),
-						data: "version: 1.0.0-{{ .SHA }}",
+						data: "version: 1.0.0-[[ .SHA ]]",
 					},
 					{
 						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName),
-						data: "image: {{ .SHA }}",
+						data: "image: [[ .SHA ]] foo: {{ .Values.Foo }}",
 					},
 					{
 						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "ingress.yaml"),
@@ -96,7 +96,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 					},
 					{
 						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName),
-						data: "image: jabberwocky",
+						data: "image: jabberwocky foo: {{ .Values.Foo }}",
 					},
 					{
 						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "ingress.yaml"),
