@@ -109,7 +109,7 @@ func TestClustersFromEnv(t *testing.T) {
 					CaPath:         "/test/g8s-ca.pem",
 					CrtPath:        "/test/g8s-crt.pem",
 					KeyPath:        "/test/g8s-key.pem",
-					KubectlVersion: "a121f8d14cd14567abc2ec20a7258be9d70ecb45",
+					KubectlVersion: "f51f93c30d27927d2b33122994c0929b3e6f24",
 				},
 				KubernetesCluster{
 					ApiServer:      "https://api.g8s.eu-west-1.aws.adidas.private.giantswarm.io:6443",
