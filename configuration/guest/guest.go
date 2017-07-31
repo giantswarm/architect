@@ -4,6 +4,7 @@ package guest
 import (
 	"github.com/giantswarm/architect/configuration/guest/calico"
 	"github.com/giantswarm/architect/configuration/guest/hyperkube"
+	"github.com/giantswarm/architect/configuration/guest/ingress"
 	"github.com/giantswarm/architect/configuration/guest/kubectl"
 	"github.com/giantswarm/architect/configuration/guest/kubernetes"
 )
@@ -13,6 +14,10 @@ type Guest struct {
 	// Hyperkube holds configuration for the guest guest cluster's Hyperkube
 	// settings.
 	hyperkube.Hyperkube
+
+	// IngressController holds configuration for the guest guest cluster's
+	// Ingress Controller settings.
+	ingress.IngressController
 
 	// Kubectl holds configuration for the guest guest cluster's Kubectl
 	// settings.
