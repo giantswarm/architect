@@ -23,6 +23,7 @@ var environmentProjects = map[Environment][]string{
 		"companyd",
 		"desmotes",
 		"draughtsman",
+		"etcd-backup",
 		"flannel-operator",
 		"g8s-etcd-operator",
 		"g8s-grafana",
