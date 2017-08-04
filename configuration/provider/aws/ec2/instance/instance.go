@@ -98,10 +98,6 @@ const (
 type Instance struct {
 	// Allowed holds configuration for the allowed instance types on EC2.
 	Allowed []kind
-	// Available holds configuration for the available instance types on EC2.
-	Available []kind
-	// Capabilities holds configuration for the instance capabilities on EC2.
-	Capabilities map[kind]capabilities
 	// Default is the default instance type used when launching guest clusters and
 	// not specified otherwhise.
 	Default kind

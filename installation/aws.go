@@ -118,9 +118,7 @@ var AWS = configuration.Installation{
 							instance.TypeR34XLarge,
 							instance.TypeR38XLarge,
 						),
-						Available:    instance.Available(),
-						Capabilities: instance.Capabilities(),
-						Default:      instance.Default,
+						Default: instance.Default,
 					},
 				},
 				Route53: route53.Route53{
