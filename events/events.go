@@ -144,6 +144,27 @@ var environmentProjects = map[Environment][]string{
 		"userd",
 		"web-assets",
 	},
+	"anubis": []string{
+		"api",
+		"cert-operator",
+		"cluster-service",
+		"companyd",
+		"desmotes",
+		"draughtsman",
+		"etcd-backup",
+		"flannel-operator",
+		"g8s-etcd-operator",
+		"g8s-grafana",
+		"g8s-prometheus",
+		"happa",
+		"ingress-operator",
+		"kubernetesd",
+		"kvm-operator",
+		"passage",
+		"testbot",
+		"tokend",
+		"userd",
+	},
 }
 
 // GetEnvironments takes a project name, and returns a list of environments
