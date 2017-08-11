@@ -1,6 +1,7 @@
 package tasks
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -37,11 +38,11 @@ func (t RetryTask) Run() error {
 }
 
 func (t RetryTask) Name() string {
-	return t.Task.Name()
+	return fmt.Sprintf("retry task '%s'", t.Task.Name())
 }
 
 func (t RetryTask) String() string {
-	return t.Task.String()
+	return fmt.Sprintf("retry task '%s'", t.Task.String())
 }
 
 func NewRetryTask(backOff backoff.BackOff, task Task) RetryTask {
