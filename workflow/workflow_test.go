@@ -188,10 +188,10 @@ func TestGetBuildWorkflow(t *testing.T) {
 		for testIndex, expectedTaskName := range test.expectedTaskNames {
 			if workflow[testIndex].Name() != expectedTaskName {
 				t.Fatalf(
-					"Task: %v, expected name: %v, received name: %v",
+					"Task: %d, expected name: %s, received name: %s",
 					index,
 					expectedTaskName,
-					workflow[index].Name,
+					workflow[index].Name(),
 				)
 			}
 		}
@@ -441,7 +441,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 		for testIndex, expectedTaskName := range test.expectedTaskNames {
 			if !strings.Contains(workflow[testIndex].Name(), expectedTaskName) {
 				t.Fatalf(
-					"%s: task: %s, expected name: %s, received name: %s",
+					"%d: task: %d, expected name: %s, received name: %s",
 					index,
 					testIndex,
 					expectedTaskName,
