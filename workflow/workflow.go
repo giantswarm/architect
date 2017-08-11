@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/cenk/backoff"
 	"github.com/giantswarm/architect/tasks"
 
 	"github.com/spf13/afero"
@@ -146,17 +147,29 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 		w = append(w, dockerTagLatest)
 
-		dockerPushSha, err := NewDockerPushShaTask(fs, projectInfo)
-		if err != nil {
-			return nil, err
+		{
+			dockerPushSha, err := NewDockerPushShaTask(fs, projectInfo)
+			if err != nil {
+				return nil, err
+			}
+			wrappedDockerPushSha := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushSha)
+			if err != nil {
+				return nil, err
+			}
+			w = append(w, wrappedDockerPushSha)
 		}
-		w = append(w, dockerPushSha)
 
-		dockerPushLatest, err := NewDockerPushLatestTask(fs, projectInfo)
-		if err != nil {
-			return nil, err
+		{
+			dockerPushLatest, err := NewDockerPushLatestTask(fs, projectInfo)
+			if err != nil {
+				return nil, err
+			}
+			wrappedDockerPushLatest := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushLatest)
+			if err != nil {
+				return nil, err
+			}
+			w = append(w, wrappedDockerPushLatest)
 		}
-		w = append(w, dockerPushLatest)
 	}
 
 	helmDirectoryExists, err := afero.Exists(fs, filepath.Join(projectInfo.WorkingDirectory, "helm"))
