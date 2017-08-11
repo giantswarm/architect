@@ -3,6 +3,7 @@ package workflow
 import (
 	"fmt"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/spf13/afero"
@@ -187,10 +188,10 @@ func TestGetBuildWorkflow(t *testing.T) {
 		for testIndex, expectedTaskName := range test.expectedTaskNames {
 			if workflow[testIndex].Name() != expectedTaskName {
 				t.Fatalf(
-					"Task: %v, expected name: %v, received name: %v",
+					"Task: %d, expected name: %s, received name: %s",
 					index,
 					expectedTaskName,
-					workflow[index].Name,
+					workflow[index].Name(),
 				)
 			}
 		}
@@ -438,13 +439,13 @@ func TestGetDeployWorkflow(t *testing.T) {
 		}
 
 		for testIndex, expectedTaskName := range test.expectedTaskNames {
-			if workflow[testIndex].Name() != expectedTaskName {
+			if !strings.Contains(workflow[testIndex].Name(), expectedTaskName) {
 				t.Fatalf(
-					"%v: task: %v, expected name: %v, received name: %v",
+					"%d: task: %d, expected name: %s, received name: %s",
 					index,
 					testIndex,
 					expectedTaskName,
-					workflow[testIndex].Name,
+					workflow[testIndex].Name(),
 				)
 			}
 		}
