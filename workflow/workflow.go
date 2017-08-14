@@ -135,11 +135,17 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		return nil, err
 	}
 	if dockerFileExists {
-		dockerLogin, err := NewDockerLoginTask(fs, projectInfo)
-		if err != nil {
-			return nil, err
+		{
+			dockerLogin, err := NewDockerLoginTask(fs, projectInfo)
+			if err != nil {
+				return nil, err
+			}
+			wrappedDockerLogin := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerLogin)
+			if err != nil {
+				return nil, err
+			}
+			w = append(w, wrappedDockerLogin)
 		}
-		w = append(w, dockerLogin)
 
 		dockerTagLatest, err := NewDockerTagLatestTask(fs, projectInfo)
 		if err != nil {
