@@ -10,6 +10,7 @@ import (
 )
 
 var (
+	GoPullTaskName  = "go-pull"
 	GoFmtTaskName   = "go-fmt"
 	GoVetTaskName   = "go-vet"
 	GoTestTaskName  = "go-test"
@@ -41,6 +42,17 @@ func checkGolangRequirements(projectInfo ProjectInfo) error {
 	}
 
 	return nil
+}
+
+func NewGoPullTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+	goPull := tasks.NewExecTask(
+		GoPullTaskName,
+		[]string{
+			"docker", "pull", fmt.Sprintf("%v:%v", projectInfo.GolangImage, projectInfo.GolangVersion),
+		},
+	)
+
+	return goPull, nil
 }
 
 func NewGoFmtTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {

@@ -16,6 +16,7 @@ const (
 )
 
 var (
+	HelmPullTaskName  = "helm-pull"
 	HelmLoginTaskName = "helm-login"
 	HelmPushTaskName  = "helm-push"
 )
@@ -27,6 +28,17 @@ func cnrDirectory() (string, error) {
 	}
 
 	return filepath.Join(user.HomeDir, ".cnr"), nil
+}
+
+func NewHelmPullTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+	helmPull := tasks.NewExecTask(
+		HelmPullTaskName,
+		[]string{
+			"docker", "pull", HelmImage,
+		},
+	)
+
+	return helmPull, nil
 }
 
 func NewTemplateHelmChartTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
