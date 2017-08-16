@@ -104,10 +104,11 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: map[int]string{
-				0: GoFmtTaskName,
-				1: GoVetTaskName,
-				2: GoTestTaskName,
-				3: GoBuildTaskName,
+				0: GoPullTaskName,
+				1: GoFmtTaskName,
+				2: GoVetTaskName,
+				3: GoTestTaskName,
+				4: GoBuildTaskName,
 			},
 		},
 
@@ -121,10 +122,11 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: map[int]string{
-				0: GoFmtTaskName,
-				1: GoVetTaskName,
-				2: GoTestTaskName,
-				3: GoBuildTaskName,
+				0: GoPullTaskName,
+				1: GoFmtTaskName,
+				2: GoVetTaskName,
+				3: GoTestTaskName,
+				4: GoBuildTaskName,
 			},
 		},
 
@@ -155,13 +157,14 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: map[int]string{
-				0: GoFmtTaskName,
-				1: GoVetTaskName,
-				2: GoTestTaskName,
-				3: GoBuildTaskName,
-				4: DockerBuildTaskName,
-				5: DockerRunVersionTaskName,
-				6: DockerRunHelpTaskName,
+				0: GoPullTaskName,
+				1: GoFmtTaskName,
+				2: GoVetTaskName,
+				3: GoTestTaskName,
+				4: GoBuildTaskName,
+				5: DockerBuildTaskName,
+				6: DockerRunVersionTaskName,
+				7: DockerRunHelpTaskName,
 			},
 		},
 	}
@@ -179,19 +182,20 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 		if len(workflow) != len(test.expectedTaskNames) {
 			t.Fatalf(
-				"expected %v taskss, received %v",
+				"expected %v tasks, received %v",
 				len(test.expectedTaskNames),
 				len(workflow),
 			)
 		}
 
 		for testIndex, expectedTaskName := range test.expectedTaskNames {
-			if workflow[testIndex].Name() != expectedTaskName {
+			if !strings.Contains(workflow[testIndex].Name(), expectedTaskName) {
 				t.Fatalf(
-					"Task: %d, expected name: %s, received name: %s",
+					"%v: Task: %d, expected name: %s, received name: %s",
 					index,
+					testIndex,
 					expectedTaskName,
-					workflow[index].Name(),
+					workflow[testIndex].Name(),
 				)
 			}
 		}
@@ -262,9 +266,10 @@ func TestGetDeployWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: map[int]string{
-				0: template.TemplateHelmChartTaskName,
-				1: HelmLoginTaskName,
-				2: HelmPushTaskName,
+				0: HelmPullTaskName,
+				1: template.TemplateHelmChartTaskName,
+				2: HelmLoginTaskName,
+				3: HelmPushTaskName,
 			},
 		},
 

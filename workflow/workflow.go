@@ -73,6 +73,16 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 	}
 	if goLangFilesExist {
+		{
+			golangPull, err := NewGoPullTask(fs, projectInfo)
+			if err != nil {
+				return nil, err
+			}
+			wrappedGolangPull := tasks.NewRetryTask(backoff.NewExponentialBackOff(), golangPull)
+
+			w = append(w, wrappedGolangPull)
+		}
+
 		goFmt, err := NewGoFmtTask(fs, projectInfo)
 		if err != nil {
 			return nil, err
@@ -141,9 +151,6 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 				return nil, err
 			}
 			wrappedDockerLogin := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerLogin)
-			if err != nil {
-				return nil, err
-			}
 			w = append(w, wrappedDockerLogin)
 		}
 
@@ -159,9 +166,6 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 				return nil, err
 			}
 			wrappedDockerPushSha := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushSha)
-			if err != nil {
-				return nil, err
-			}
 			w = append(w, wrappedDockerPushSha)
 		}
 
@@ -171,9 +175,6 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 				return nil, err
 			}
 			wrappedDockerPushLatest := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushLatest)
-			if err != nil {
-				return nil, err
-			}
 			w = append(w, wrappedDockerPushLatest)
 		}
 	}
@@ -183,6 +184,16 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		return nil, err
 	}
 	if helmDirectoryExists {
+		{
+			helmPull, err := NewHelmPullTask(fs, projectInfo)
+			if err != nil {
+				return nil, err
+			}
+			wrappedHelmPull := tasks.NewRetryTask(backoff.NewExponentialBackOff(), helmPull)
+
+			w = append(w, wrappedHelmPull)
+		}
+
 		helmChartTemplate, err := NewTemplateHelmChartTask(fs, projectInfo)
 		if err != nil {
 			return nil, err
