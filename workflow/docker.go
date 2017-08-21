@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/afero"
 )
 
-var (
+const (
 	DockerBuildTaskName      = "docker-build"
 	DockerRunVersionTaskName = "docker-run-version"
 	DockerRunHelpTaskName    = "docker-run-help"
