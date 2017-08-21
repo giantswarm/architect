@@ -12,7 +12,7 @@ import (
 var (
 	RootCmd = &cobra.Command{
 		Use:   "architect",
-		Short: "architect is a tool for managing Giant Swarm release engineering",
+		Short: "Architect is a tool for managing builds within the Giant Swarm releases engineering.",
 	}
 
 	workingDirectory string
