@@ -39,7 +39,9 @@ func runBuild(cmd *cobra.Command, args []string) {
 		WorkingDirectory: workingDirectory,
 		Organisation:     organisation,
 		Project:          project,
-		Sha:              sha,
+
+		Branch: branch,
+		Sha:    sha,
 
 		Registry: registry,
 

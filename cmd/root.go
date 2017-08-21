@@ -20,7 +20,9 @@ var (
 	registry     string
 	organisation string
 	project      string
-	sha          string
+
+	branch string
+	sha    string
 
 	dryRun bool
 )
@@ -46,17 +48,32 @@ func init() {
 	}
 
 	// We also use the git HEAD commit sha as well.
-	out, err := exec.Command("git", "rev-parse", "HEAD").Output()
-	if err != nil {
-		log.Fatalf("could not get git sha: %v\n", err)
+	var defaultSha string
+	{
+		out, err := exec.Command("git", "rev-parse", "HEAD").Output()
+		if err != nil {
+			log.Fatalf("could not get git sha: %#v\n", err)
+		}
+		defaultSha = strings.TrimSpace(string(out))
 	}
-	defaultSha := strings.TrimSpace(string(out))
+
+	// We also use the git HEAD branch as well.
+	var defaultBranch string
+	{
+		out, err := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD").Output()
+		if err != nil {
+			log.Fatalf("could not get git branch: %#v\n", err)
+		}
+		defaultBranch = strings.TrimSpace(string(out))
+	}
 
 	RootCmd.PersistentFlags().StringVar(&workingDirectory, "working-directory", defaultWorkingDirectory, "working directory for architect")
 
 	RootCmd.PersistentFlags().StringVar(&registry, "registry", "quay.io", "docker registry")
 	RootCmd.PersistentFlags().StringVar(&organisation, "organisation", defaultOrganisation, "organisation who owns the project")
 	RootCmd.PersistentFlags().StringVar(&project, "project", defaultProject, "name of the project")
+
+	RootCmd.PersistentFlags().StringVar(&branch, "branch", defaultBranch, "git branch to build")
 	RootCmd.PersistentFlags().StringVar(&sha, "sha", defaultSha, "git SHA1 to build")
 
 	RootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", dryRun, "show what would be executed, but take no action")
