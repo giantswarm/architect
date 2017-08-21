@@ -16,6 +16,14 @@ const (
 	DockerTagLatestTaskName  = "docker-tag-latest"
 	DockerPushShaTaskName    = "docker-push-sha"
 	DockerPushLatestTaskName = "docker-push-latest"
+
+	// DockerImageRefFmt is the format string used to compute the reference of the
+	// Docker image used to build and push. It may look something like this.
+	//
+	//     quay.io/giantswarm/architect:master-e8363ac222255e991c126abe6673cd0f33934ac8
+	//
+	DockerImageRefFmt    = "%s/%s/%s:%s-%s"
+	LatestDockerImageTag = "latest"
 )
 
 func checkDockerRequirements(projectInfo ProjectInfo) error {
@@ -50,13 +58,7 @@ func NewDockerBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error
 			"docker",
 			"build",
 			"-t",
-			fmt.Sprintf(
-				"%v/%v/%v:%v",
-				projectInfo.Registry,
-				projectInfo.Organisation,
-				projectInfo.Project,
-				projectInfo.Sha,
-			),
+			newDockerImageRef(projectInfo, projectInfo.Sha),
 			projectInfo.WorkingDirectory,
 		},
 	)
@@ -72,14 +74,9 @@ func NewDockerRunVersionTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, 
 	dockerRunVersion := tasks.NewDockerTask(
 		DockerRunVersionTaskName,
 		tasks.DockerTaskConfig{
-			Image: fmt.Sprintf(
-				"%v/%v/%v:%v",
-				projectInfo.Registry,
-				projectInfo.Organisation,
-				projectInfo.Project,
-				projectInfo.Sha,
-			),
-			Args: []string{"version"},
+			Args:             []string{"version"},
+			Image:            newDockerImageRef(projectInfo, projectInfo.Sha),
+			WorkingDirectory: projectInfo.WorkingDirectory,
 		},
 	)
 
@@ -94,14 +91,9 @@ func NewDockerRunHelpTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, err
 	dockerRunHelp := tasks.NewDockerTask(
 		DockerRunHelpTaskName,
 		tasks.DockerTaskConfig{
-			Image: fmt.Sprintf(
-				"%v/%v/%v:%v",
-				projectInfo.Registry,
-				projectInfo.Organisation,
-				projectInfo.Project,
-				projectInfo.Sha,
-			),
-			Args: []string{"--help"},
+			Args:             []string{"--help"},
+			Image:            newDockerImageRef(projectInfo, projectInfo.Sha),
+			WorkingDirectory: projectInfo.WorkingDirectory,
 		},
 	)
 
@@ -152,19 +144,8 @@ func NewDockerTagLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, e
 		[]string{
 			"docker",
 			"tag",
-			fmt.Sprintf(
-				"%v/%v/%v:%v",
-				projectInfo.Registry,
-				projectInfo.Organisation,
-				projectInfo.Project,
-				projectInfo.Sha,
-			),
-			fmt.Sprintf(
-				"%v/%v/%v:latest",
-				projectInfo.Registry,
-				projectInfo.Organisation,
-				projectInfo.Project,
-			),
+			newDockerImageRef(projectInfo, projectInfo.Sha),
+			newDockerImageRef(projectInfo, LatestDockerImageTag),
 		},
 	)
 
@@ -181,13 +162,7 @@ func NewDockerPushShaTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, err
 		[]string{
 			"docker",
 			"push",
-			fmt.Sprintf(
-				"%v/%v/%v:%v",
-				projectInfo.Registry,
-				projectInfo.Organisation,
-				projectInfo.Project,
-				projectInfo.Sha,
-			),
+			newDockerImageRef(projectInfo, projectInfo.Sha),
 		},
 	)
 
@@ -204,14 +179,20 @@ func NewDockerPushLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, 
 		[]string{
 			"docker",
 			"push",
-			fmt.Sprintf(
-				"%v/%v/%v:latest",
-				projectInfo.Registry,
-				projectInfo.Organisation,
-				projectInfo.Project,
-			),
+			newDockerImageRef(projectInfo, LatestDockerImageTag),
 		},
 	)
 
 	return dockerPush, nil
+}
+
+func newDockerImageRef(projectInfo ProjectInfo, version string) string {
+	return fmt.Sprintf(
+		DockerImageRefFmt,
+		projectInfo.Registry,
+		projectInfo.Organisation,
+		projectInfo.Project,
+		projectInfo.Branch,
+		version,
+	)
 }
