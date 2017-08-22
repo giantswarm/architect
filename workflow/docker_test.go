@@ -128,6 +128,15 @@ func Test_Workflow_Docker_NewDockerBuildTask(t *testing.T) {
 	}
 }
 
+func Test_Workflow_Docker_newDockerImageRef(t *testing.T) {
+	ref := newDockerImageRef(testNewProjectInfo(), "latest")
+	expected := "quay.io/giantswarm/architect:master-latest"
+
+	if ref != expected {
+		t.Fatalf("expected %s got %s", expected, ref)
+	}
+}
+
 func testNewProjectInfo() ProjectInfo {
 	return ProjectInfo{
 		WorkingDirectory: "/usr/code/",
