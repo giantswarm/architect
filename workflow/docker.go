@@ -20,9 +20,9 @@ const (
 	// DockerImageRefFmt is the format string used to compute the reference of the
 	// Docker image used to build and push. It may look something like this.
 	//
-	//     quay.io/giantswarm/architect:master-e8363ac222255e991c126abe6673cd0f33934ac8
+	//     quay.io/giantswarm/architect:e8363ac222255e991c126abe6673cd0f33934ac8
 	//
-	DockerImageRefFmt    = "%s/%s/%s:%s-%s"
+	DockerImageRefFmt    = "%s/%s/%s:%s"
 	LatestDockerImageTag = "latest"
 )
 
@@ -192,7 +192,6 @@ func newDockerImageRef(projectInfo ProjectInfo, version string) string {
 		projectInfo.Registry,
 		projectInfo.Organisation,
 		projectInfo.Project,
-		projectInfo.Branch,
 		version,
 	)
 }

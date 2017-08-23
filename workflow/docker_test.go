@@ -21,7 +21,7 @@ func Test_Workflow_Docker_NewDockerBuildTask(t *testing.T) {
 				"docker",
 				"build",
 				"-t",
-				"quay.io/giantswarm/architect:master-e8363ac222255e991c126abe6673cd0f33934ac8",
+				"quay.io/giantswarm/architect:e8363ac222255e991c126abe6673cd0f33934ac8",
 				"/usr/code/",
 			},
 		},
@@ -37,7 +37,7 @@ func Test_Workflow_Docker_NewDockerBuildTask(t *testing.T) {
 				"--rm",
 				"-w",
 				"/usr/code/",
-				"quay.io/giantswarm/architect:master-e8363ac222255e991c126abe6673cd0f33934ac8",
+				"quay.io/giantswarm/architect:e8363ac222255e991c126abe6673cd0f33934ac8",
 				"version",
 			},
 		},
@@ -53,7 +53,7 @@ func Test_Workflow_Docker_NewDockerBuildTask(t *testing.T) {
 				"--rm",
 				"-w",
 				"/usr/code/",
-				"quay.io/giantswarm/architect:master-e8363ac222255e991c126abe6673cd0f33934ac8",
+				"quay.io/giantswarm/architect:e8363ac222255e991c126abe6673cd0f33934ac8",
 				"--help",
 			},
 		},
@@ -81,8 +81,8 @@ func Test_Workflow_Docker_NewDockerBuildTask(t *testing.T) {
 			ExpectedArgs: []string{
 				"docker",
 				"tag",
-				"quay.io/giantswarm/architect:master-e8363ac222255e991c126abe6673cd0f33934ac8",
-				"quay.io/giantswarm/architect:master-latest",
+				"quay.io/giantswarm/architect:e8363ac222255e991c126abe6673cd0f33934ac8",
+				"quay.io/giantswarm/architect:latest",
 			},
 		},
 
@@ -94,7 +94,7 @@ func Test_Workflow_Docker_NewDockerBuildTask(t *testing.T) {
 			ExpectedArgs: []string{
 				"docker",
 				"push",
-				"quay.io/giantswarm/architect:master-e8363ac222255e991c126abe6673cd0f33934ac8",
+				"quay.io/giantswarm/architect:e8363ac222255e991c126abe6673cd0f33934ac8",
 			},
 		},
 
@@ -106,7 +106,7 @@ func Test_Workflow_Docker_NewDockerBuildTask(t *testing.T) {
 			ExpectedArgs: []string{
 				"docker",
 				"push",
-				"quay.io/giantswarm/architect:master-latest",
+				"quay.io/giantswarm/architect:latest",
 			},
 		},
 	}
@@ -130,7 +130,7 @@ func Test_Workflow_Docker_NewDockerBuildTask(t *testing.T) {
 
 func Test_Workflow_Docker_newDockerImageRef(t *testing.T) {
 	ref := newDockerImageRef(testNewProjectInfo(), "latest")
-	expected := "quay.io/giantswarm/architect:master-latest"
+	expected := "quay.io/giantswarm/architect:latest"
 
 	if ref != expected {
 		t.Fatalf("expected %s got %s", expected, ref)
