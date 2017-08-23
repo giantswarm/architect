@@ -31,7 +31,9 @@ type ProjectInfo struct {
 	WorkingDirectory string
 	Organisation     string
 	Project          string
-	Sha              string
+
+	Branch string
+	Sha    string
 
 	Registry       string
 	DockerEmail    string
