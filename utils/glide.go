@@ -7,8 +7,9 @@ import (
 	"sort"
 	"strings"
 
-	microerror "github.com/giantswarm/microkit/error"
 	"github.com/spf13/afero"
+
+	"github.com/giantswarm/microerror"
 )
 
 // NoVendor replicates glide's novendor command, so we don't have to
@@ -18,7 +19,7 @@ func NoVendor(fs afero.Fs, workingDirectory string) ([]string, error) {
 
 	walkFunc := func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			return microerror.MaskAny(err)
+			return microerror.Mask(err)
 		}
 
 		if info.IsDir() {
@@ -50,7 +51,7 @@ func NoVendor(fs afero.Fs, workingDirectory string) ([]string, error) {
 	}
 
 	if err := afero.Walk(fs, workingDirectory, walkFunc); err != nil && err != filepath.SkipDir {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	packageNames := []string{}

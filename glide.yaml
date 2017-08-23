@@ -3,3 +3,5 @@ import:
 - package: github.com/spf13/cobra
 - package: github.com/cenkalti/backoff
   version: v1.0.0
+- package: github.com/giantswarm/microerror
+  version: master

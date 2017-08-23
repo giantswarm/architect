@@ -9,7 +9,7 @@ import (
 
 	"github.com/spf13/afero"
 
-	microerror "github.com/giantswarm/microkit/error"
+	"github.com/giantswarm/microerror"
 
 	"github.com/giantswarm/architect/configuration"
 	"github.com/giantswarm/architect/utils"
@@ -36,7 +36,7 @@ type TemplateKubernetesResourcesTask struct {
 
 func (t TemplateKubernetesResourcesTask) Run() error {
 	if t.kubernetesResourcesDirectoryPath == "" {
-		return microerror.MaskAny(emptyKubernetesResourcesDirectoryPath)
+		return microerror.Mask(emptyKubernetesResourcesDirectoryPath)
 	}
 
 	if err := utils.CopyDir(
@@ -44,7 +44,7 @@ func (t TemplateKubernetesResourcesTask) Run() error {
 		t.kubernetesResourcesDirectoryPath,
 		t.templatedResourcesDirectoryPath,
 	); err != nil {
-		return err
+		return microerror.Mask(err)
 	}
 
 	config := TemplateConfiguration{
@@ -55,7 +55,7 @@ func (t TemplateKubernetesResourcesTask) Run() error {
 	}
 
 	if err := templateKubernetesResources(t.fs, t.templatedResourcesDirectoryPath, config); err != nil {
-		return err
+		return microerror.Mask(err)
 	}
 
 	return nil
@@ -94,7 +94,7 @@ func NewTemplateKubernetesResourcesTask(fs afero.Fs, kubernetesResourcesDirector
 func templateKubernetesResources(fs afero.Fs, resourcesPath string, config TemplateConfiguration) error {
 	walkFunc := func(path string, info os.FileInfo, err error) error {
 		if err != nil {
-			microerror.MaskAny(err)
+			microerror.Mask(err)
 		}
 
 		if info.IsDir() {
@@ -103,17 +103,17 @@ func templateKubernetesResources(fs afero.Fs, resourcesPath string, config Templ
 
 		contents, err := afero.ReadFile(fs, path)
 		if err != nil {
-			microerror.MaskAny(err)
+			microerror.Mask(err)
 		}
 
 		t := template.Must(template.New(path).Funcs(filters).Parse(string(contents)))
 		if err != nil {
-			microerror.MaskAny(err)
+			microerror.Mask(err)
 		}
 
 		var buf bytes.Buffer
 		if err := t.Execute(&buf, config); err != nil {
-			microerror.MaskAny(err)
+			microerror.Mask(err)
 		}
 
 		templatedContents := buf.String()
@@ -122,14 +122,14 @@ func templateKubernetesResources(fs afero.Fs, resourcesPath string, config Templ
 		templatedContents = strings.Replace(templatedContents, "%%DOCKER_TAG%%", config.BuildInfo.SHA, -1)
 
 		if err := afero.WriteFile(fs, path, []byte(templatedContents), permission); err != nil {
-			microerror.MaskAny(err)
+			microerror.Mask(err)
 		}
 
 		return nil
 	}
 
 	if err := afero.Walk(fs, resourcesPath, walkFunc); err != nil {
-		microerror.MaskAny(err)
+		microerror.Mask(err)
 	}
 
 	return nil

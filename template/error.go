@@ -1,54 +1,54 @@
 package template
 
 import (
-	"github.com/juju/errgo"
+	"github.com/giantswarm/microerror"
 )
 
-var multipleHelmChartsError = errgo.New("multiple helm charts")
+var multipleHelmChartsError = microerror.New("multiple helm charts")
 
 // IsMultipleHelmCharts asserts multipleHelmChartsError.
 func IsMultipleHelmChart(err error) bool {
-	return errgo.Cause(err) == multipleHelmChartsError
+	return microerror.Cause(err) == multipleHelmChartsError
 }
 
-var incorrectShaError = errgo.New("incorrect sha")
+var incorrectShaError = microerror.New("incorrect sha")
 
 // IsIncorrectSha asserts incorrectShaError.
 func IsIncorrectSha(err error) bool {
-	return errgo.Cause(err) == incorrectShaError
+	return microerror.Cause(err) == incorrectShaError
 }
 
-var incorrectValueError = errgo.New("incorrect value")
+var incorrectValueError = microerror.New("incorrect value")
 
 // IsIncorrectValueError asserts incorrectValueError.
 func IsIncorrectValue(err error) bool {
-	return errgo.Cause(err) == incorrectValueError
+	return microerror.Cause(err) == incorrectValueError
 }
 
-var multipleFilesFoundInResourcesError = errgo.New("multiple files found in resources")
+var multipleFilesFoundInResourcesError = microerror.New("multiple files found in resources")
 
 // IsMultipleFilesFoundInResources asserts multipleFilesFoundInResourcesError.
 func IsMultipleFilesFoundInResources(err error) bool {
-	return errgo.Cause(err) == multipleFilesFoundInResourcesError
+	return microerror.Cause(err) == multipleFilesFoundInResourcesError
 }
 
-var resourceNotFoundError = errgo.New("resource not found")
+var resourceNotFoundError = microerror.New("resource not found")
 
 // IsResourceNotFound asserts resourceNotFoundError.
 func IsResourceNotFound(err error) bool {
-	return errgo.Cause(err) == resourceNotFoundError
+	return microerror.Cause(err) == resourceNotFoundError
 }
 
-var incorrectTemplatingError = errgo.New("incorrect templating")
+var incorrectTemplatingError = microerror.New("incorrect templating")
 
 // IsIncorrectTemplating asserts incorrectTemplatingError.
 func IsIncorrectTemplating(err error) bool {
-	return errgo.Cause(err) == incorrectTemplatingError
+	return microerror.Cause(err) == incorrectTemplatingError
 }
 
-var emptyKubernetesResourcesDirectoryPath = errgo.New("empty kubernetes resources directory path")
+var emptyKubernetesResourcesDirectoryPath = microerror.New("empty kubernetes resources directory path")
 
 // IsEmptyKubernetesResourcesDirectoryPath asserts emptyKubernetesResourcesDirectoryPath
 func IsEmptyKubernetesResourcesDirectoryPath(err error) bool {
-	return errgo.Cause(err) == emptyKubernetesResourcesDirectoryPath
+	return microerror.Cause(err) == emptyKubernetesResourcesDirectoryPath
 }

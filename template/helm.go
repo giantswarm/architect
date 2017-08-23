@@ -8,7 +8,7 @@ import (
 
 	"github.com/spf13/afero"
 
-	microerror "github.com/giantswarm/microkit/error"
+	"github.com/giantswarm/microerror"
 )
 
 const (
@@ -40,7 +40,7 @@ type TemplateHelmChartTask struct {
 func (t TemplateHelmChartTask) Run() error {
 	fileInfos, err := afero.ReadDir(t.fs, t.helmPath)
 	if err != nil {
-		return microerror.MaskAny(err)
+		return microerror.Mask(err)
 	}
 
 	if len(fileInfos) == 0 {
@@ -48,7 +48,7 @@ func (t TemplateHelmChartTask) Run() error {
 	}
 
 	if len(fileInfos) > 1 {
-		return microerror.MaskAny(multipleHelmChartsError)
+		return microerror.Mask(multipleHelmChartsError)
 	}
 
 	chartDirectory := fileInfos[0].Name()
@@ -61,29 +61,29 @@ func (t TemplateHelmChartTask) Run() error {
 	for _, path := range paths {
 		exists, err := afero.Exists(t.fs, path)
 		if err != nil {
-			microerror.MaskAny(err)
+			microerror.Mask(err)
 		}
 
 		if exists {
 			contents, err := afero.ReadFile(t.fs, path)
 			if err != nil {
-				microerror.MaskAny(err)
+				microerror.Mask(err)
 			}
 
 			buildInfo := BuildInfo{SHA: t.sha}
 
 			newTemplate := template.Must(template.New(path).Delims("[[", "]]").Parse(string(contents)))
 			if err != nil {
-				microerror.MaskAny(err)
+				microerror.Mask(err)
 			}
 
 			var buf bytes.Buffer
 			if err := newTemplate.Execute(&buf, buildInfo); err != nil {
-				microerror.MaskAny(err)
+				microerror.Mask(err)
 			}
 
 			if err := afero.WriteFile(t.fs, path, buf.Bytes(), permission); err != nil {
-				microerror.MaskAny(err)
+				microerror.Mask(err)
 			}
 		}
 	}

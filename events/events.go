@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/go-github/github"
 
-	microerror "github.com/giantswarm/microkit/error"
+	"github.com/giantswarm/microerror"
 )
 
 // Environment is a name of an installation.
@@ -240,7 +240,7 @@ func CreateDeploymentEvent(client *github.Client, environment Environment, organ
 		&deploymentRequest,
 	)
 	if err != nil {
-		return microerror.MaskAnyf(err, "could not create deployment event for %v", environment)
+		return microerror.Maskf(err, "could not create deployment event for %v", environment)
 	}
 
 	log.Printf("created deployment event for %v for %v for %v", project, environment, sha)

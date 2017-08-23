@@ -8,6 +8,8 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/giantswarm/microerror"
+
 	"github.com/giantswarm/architect/configuration/provider/aws/ec2/instance"
 )
 
@@ -45,7 +47,7 @@ func ipsToString(IPs []net.IP) string {
 func jsonMarshal(v interface{}) (string, error) {
 	b, err := json.Marshal(v)
 	if err != nil {
-		return "", err
+		return "", microerror.Mask(err)
 	}
 
 	return string(b), nil

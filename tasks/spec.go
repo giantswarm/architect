@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	microerror "github.com/giantswarm/microkit/error"
+	"github.com/giantswarm/microerror"
 )
 
 // Task represents a piece of work to perform.
@@ -21,7 +21,7 @@ func Run(tasks []Task) error {
 		log.Printf("running task: %s\n", task)
 
 		if err := task.Run(); err != nil {
-			return microerror.MaskAny(err)
+			return microerror.Mask(err)
 		}
 	}
 

@@ -5,6 +5,8 @@ import (
 
 	"github.com/spf13/afero"
 
+	"github.com/giantswarm/microerror"
+
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/utils"
 )
@@ -19,26 +21,26 @@ var (
 
 func checkGolangRequirements(projectInfo ProjectInfo) error {
 	if projectInfo.WorkingDirectory == "" {
-		return emptyWorkingDirectoryError
+		return microerror.Mask(emptyWorkingDirectoryError)
 	}
 	if projectInfo.Organisation == "" {
-		return emptyOrganisationError
+		return microerror.Mask(emptyOrganisationError)
 	}
 	if projectInfo.Project == "" {
-		return emptyProjectError
+		return microerror.Mask(emptyProjectError)
 	}
 
 	if projectInfo.Goos == "" {
-		return emptyGoosError
+		return microerror.Mask(emptyGoosError)
 	}
 	if projectInfo.Goarch == "" {
-		return emptyGoarchError
+		return microerror.Mask(emptyGoarchError)
 	}
 	if projectInfo.GolangImage == "" {
-		return emptyGolangImageError
+		return microerror.Mask(emptyGolangImageError)
 	}
 	if projectInfo.GolangVersion == "" {
-		return emptyGolangVersionError
+		return microerror.Mask(emptyGolangVersionError)
 	}
 
 	return nil
@@ -57,7 +59,7 @@ func NewGoPullTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 
 func NewGoFmtTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkGolangRequirements(projectInfo); err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	goFmt := tasks.NewDockerTask(
@@ -91,12 +93,12 @@ func NewGoFmtTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 
 func NewGoVetTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkGolangRequirements(projectInfo); err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	packageArguments, err := utils.NoVendor(fs, projectInfo.WorkingDirectory)
 	if err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	goVet := tasks.NewDockerTask(
@@ -129,12 +131,12 @@ func NewGoVetTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 
 func NewGoTestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkGolangRequirements(projectInfo); err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	packageArguments, err := utils.NoVendor(fs, projectInfo.WorkingDirectory)
 	if err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	goTest := tasks.NewDockerTask(
@@ -170,7 +172,7 @@ func NewGoTestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 
 func NewGoBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkGolangRequirements(projectInfo); err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	goBuild := tasks.NewDockerTask(
