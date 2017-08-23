@@ -28,7 +28,10 @@ func checkGolangRequirements(projectInfo ProjectInfo) error {
 		return emptyProjectError
 	}
 
-	if projectInfo.Goos == "" {
+	if projectInfo.GoosTest == "" {
+		return emptyGoosError
+	}
+	if projectInfo.GoosBuild == "" {
 		return emptyGoosError
 	}
 	if projectInfo.Goarch == "" {
@@ -149,7 +152,7 @@ func NewGoTestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 				),
 			},
 			Env: []string{
-				fmt.Sprintf("GOOS=%v", projectInfo.Goos),
+				fmt.Sprintf("GOOS=%v", projectInfo.GoosTest),
 				fmt.Sprintf("GOARCH=%v", projectInfo.Goarch),
 				"GOPATH=/go",
 				"CGOENABLED=0",
@@ -185,7 +188,7 @@ func NewGoBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 				),
 			},
 			Env: []string{
-				fmt.Sprintf("GOOS=%v", projectInfo.Goos),
+				fmt.Sprintf("GOOS=%v", projectInfo.GoosBuild),
 				fmt.Sprintf("GOARCH=%v", projectInfo.Goarch),
 				"GOPATH=/go",
 				"CGOENABLED=0",
@@ -202,7 +205,7 @@ func NewGoBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 				"-a",
 				"-tags", "netgo",
 				"-ldflags", fmt.Sprintf(
-					"-X main.gitCommit=%s -linkmode 'external' -extldflags '-static'",
+					"-v -X main.gitCommit=%s -linkmode 'external' -extldflags '-static'",
 					projectInfo.Sha,
 				),
 			},
