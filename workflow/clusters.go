@@ -1,9 +1,10 @@
 package workflow
 
 import (
+	"github.com/spf13/afero"
+
 	"github.com/giantswarm/architect/configuration"
 	"github.com/giantswarm/architect/installation"
-	"github.com/spf13/afero"
 )
 
 type KubernetesCluster struct {

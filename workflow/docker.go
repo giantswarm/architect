@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/giantswarm/architect/tasks"
+	"github.com/giantswarm/microerror"
 	"github.com/spf13/afero"
 )
 
@@ -28,20 +29,20 @@ const (
 
 func checkDockerRequirements(projectInfo ProjectInfo) error {
 	if projectInfo.WorkingDirectory == "" {
-		return emptyWorkingDirectoryError
+		return microerror.Mask(emptyWorkingDirectoryError)
 	}
 	if projectInfo.Organisation == "" {
-		return emptyOrganisationError
+		return microerror.Mask(emptyOrganisationError)
 	}
 	if projectInfo.Project == "" {
-		return emptyProjectError
+		return microerror.Mask(emptyProjectError)
 	}
 
 	if projectInfo.Sha == "" {
-		return emptyShaError
+		return microerror.Mask(emptyShaError)
 	}
 	if projectInfo.Registry == "" {
-		return emptyRegistryError
+		return microerror.Mask(emptyRegistryError)
 	}
 
 	return nil
@@ -49,7 +50,7 @@ func checkDockerRequirements(projectInfo ProjectInfo) error {
 
 func NewDockerBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	dockerBuild := tasks.NewExecTask(
@@ -68,7 +69,7 @@ func NewDockerBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error
 
 func NewDockerRunVersionTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	dockerRunVersion := tasks.NewDockerTask(
@@ -85,7 +86,7 @@ func NewDockerRunVersionTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, 
 
 func NewDockerRunHelpTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	dockerRunHelp := tasks.NewDockerTask(
@@ -102,14 +103,14 @@ func NewDockerRunHelpTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, err
 
 func NewDockerLoginTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	if projectInfo.DockerUsername == "" {
-		return nil, emptyDockerUsernameError
+		return nil, microerror.Mask(emptyDockerUsernameError)
 	}
 	if projectInfo.DockerPassword == "" {
-		return nil, emptyDockerPasswordError
+		return nil, microerror.Mask(emptyDockerPasswordError)
 	}
 
 	// CircleCI's Docker version still expects to be given an email,
@@ -136,7 +137,7 @@ func NewDockerLoginTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error
 
 func NewDockerTagLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	dockerPush := tasks.NewExecTask(
@@ -154,7 +155,7 @@ func NewDockerTagLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, e
 
 func NewDockerPushShaTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	dockerPush := tasks.NewExecTask(
@@ -171,7 +172,7 @@ func NewDockerPushShaTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, err
 
 func NewDockerPushLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	dockerPush := tasks.NewExecTask(

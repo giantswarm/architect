@@ -5,6 +5,8 @@ import (
 
 	"github.com/spf13/afero"
 
+	"github.com/giantswarm/microerror"
+
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/template"
 )
@@ -16,19 +18,19 @@ var (
 
 func checkKubectlRequirements(cluster KubernetesCluster) error {
 	if cluster.ApiServer == "" {
-		return emptyKubernetesAPIServerError
+		return microerror.Mask(emptyKubernetesAPIServerError)
 	}
 	if cluster.CaPath == "" {
-		return emptyKubernetesCaPathError
+		return microerror.Mask(emptyKubernetesCaPathError)
 	}
 	if cluster.CrtPath == "" {
-		return emptyKubernetesCrtPathError
+		return microerror.Mask(emptyKubernetesCrtPathError)
 	}
 	if cluster.KeyPath == "" {
-		return emptyKubernetesKeyPathError
+		return microerror.Mask(emptyKubernetesKeyPathError)
 	}
 	if cluster.KubectlVersion == "" {
-		return emptyKubectlVersionError
+		return microerror.Mask(emptyKubectlVersionError)
 	}
 
 	return nil
@@ -36,7 +38,7 @@ func checkKubectlRequirements(cluster KubernetesCluster) error {
 
 func NewTemplateKubernetesResourcesTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkKubectlRequirements(projectInfo.CurrentCluster); err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	templateKubernetesResources := template.NewTemplateKubernetesResourcesTask(
@@ -54,7 +56,7 @@ func NewKubectlClusterInfoTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task
 	cluster := projectInfo.CurrentCluster
 
 	if err := checkKubectlRequirements(cluster); err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	kubectlClusterInfo := tasks.NewDockerTask(
@@ -83,7 +85,7 @@ func NewKubectlApplyTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, erro
 	cluster := projectInfo.CurrentCluster
 
 	if err := checkKubectlRequirements(cluster); err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	kubectlApply := tasks.NewDockerTask(

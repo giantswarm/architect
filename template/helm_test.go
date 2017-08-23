@@ -7,7 +7,7 @@ import (
 
 	"github.com/spf13/afero"
 
-	microerror "github.com/giantswarm/microkit/error"
+	"github.com/giantswarm/microerror"
 )
 
 // TestTemplateHelmChartTask tests the TemplateHelmChartTask.
@@ -24,7 +24,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 			sha:      "jabberwocky",
 			setUp: func(fs afero.Fs, helmPath string) error {
 				if err := fs.Mkdir(helmPath, permission); err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				return nil
@@ -32,10 +32,10 @@ func TestTemplateHelmChartTask(t *testing.T) {
 			check: func(fs afero.Fs, helmPath string) error {
 				fileInfos, err := afero.ReadDir(fs, helmPath)
 				if err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 				if len(fileInfos) != 0 {
-					return microerror.MaskAny(multipleHelmChartsError)
+					return microerror.Mask(multipleHelmChartsError)
 				}
 
 				return nil
@@ -55,7 +55,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 
 				for _, directory := range directories {
 					if err := fs.Mkdir(directory, permission); err != nil {
-						return microerror.MaskAny(err)
+						return microerror.Mask(err)
 					}
 				}
 
@@ -79,7 +79,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 
 				for _, file := range files {
 					if err := afero.WriteFile(fs, file.path, []byte(file.data), permission); err != nil {
-						return microerror.MaskAny(err)
+						return microerror.Mask(err)
 					}
 				}
 
@@ -107,10 +107,10 @@ func TestTemplateHelmChartTask(t *testing.T) {
 				for _, file := range files {
 					bytes, err := afero.ReadFile(fs, file.path)
 					if err != nil {
-						return microerror.MaskAny(err)
+						return microerror.Mask(err)
 					}
 					if string(bytes) != file.data {
-						return microerror.MaskAnyf(incorrectValueError, fmt.Sprintf("%v, found: %v, expected: %v", file.path, string(bytes), file.data))
+						return microerror.Maskf(incorrectValueError, fmt.Sprintf("%v, found: %v, expected: %v", file.path, string(bytes), file.data))
 					}
 				}
 

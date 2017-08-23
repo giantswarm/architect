@@ -9,6 +9,7 @@ import (
 
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/template"
+	"github.com/giantswarm/microerror"
 )
 
 const (
@@ -24,7 +25,7 @@ var (
 func cnrDirectory() (string, error) {
 	user, err := user.Current()
 	if err != nil {
-		return "", err
+		return "", microerror.Mask(err)
 	}
 
 	return filepath.Join(user.HomeDir, ".cnr"), nil
@@ -54,7 +55,7 @@ func NewTemplateHelmChartTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task,
 func NewHelmLoginTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	cndDir, err := cnrDirectory()
 	if err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	helmLogin := tasks.NewDockerTask(
@@ -80,15 +81,15 @@ func NewHelmLoginTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) 
 func NewHelmPushTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	helmDirExists, err := afero.DirExists(fs, filepath.Join(projectInfo.WorkingDirectory, "helm"))
 	if err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 	if !helmDirExists {
-		return nil, noHelmDirectoryError
+		return nil, microerror.Mask(noHelmDirectoryError)
 	}
 
 	cnrDir, err := cnrDirectory()
 	if err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 
 	chartDir := filepath.Join(projectInfo.WorkingDirectory, "helm", fmt.Sprintf("%v-chart", projectInfo.Project))

@@ -8,7 +8,7 @@ import (
 
 	"github.com/spf13/afero"
 
-	microerror "github.com/giantswarm/microkit/error"
+	"github.com/giantswarm/microerror"
 
 	"github.com/giantswarm/architect/configuration"
 	"github.com/giantswarm/architect/configuration/giantswarm"
@@ -33,7 +33,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			config:        TemplateConfiguration{},
 			setUp: func(fs afero.Fs, resourcesPath string) error {
 				if err := fs.Mkdir(resourcesPath, permission); err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				return nil
@@ -41,7 +41,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			check: func(fs afero.Fs, resourcesPath string) error {
 				fileInfos, err := afero.ReadDir(fs, resourcesPath)
 				if err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 				if len(fileInfos) != 0 {
 					return multipleHelmChartsError
@@ -70,7 +70,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs, resourcesPath string) error {
 				if err := fs.Mkdir(resourcesPath, permission); err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				path := filepath.Join(resourcesPath, "ingress.yml")
@@ -80,7 +80,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					[]byte("{{ .Installation.V1.GiantSwarm.API.Address.Host }}"),
 					permission,
 				); err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				return nil
@@ -88,7 +88,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			check: func(fs afero.Fs, resourcesPath string) error {
 				fileInfos, err := afero.ReadDir(fs, resourcesPath)
 				if err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				if len(fileInfos) != 1 {
@@ -96,16 +96,16 @@ func TestTemplateKubernetesResources(t *testing.T) {
 				}
 
 				if fileInfos[0].Name() != "ingress.yml" {
-					return microerror.MaskAnyf(resourceNotFoundError, "ingress.yml")
+					return microerror.Maskf(resourceNotFoundError, "ingress.yml")
 				}
 
 				bytes, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "ingress.yml"))
 				if err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				if string(bytes) != "api-g8s.giantswarm.io" {
-					return microerror.MaskAnyf(incorrectTemplatingError, "ingress address not found, found: '%v'", string(bytes))
+					return microerror.Maskf(incorrectTemplatingError, "ingress address not found, found: '%v'", string(bytes))
 				}
 
 				return nil
@@ -131,7 +131,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs, resourcesPath string) error {
 				if err := fs.Mkdir(resourcesPath, permission); err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				path := filepath.Join(resourcesPath, "ingress.yml")
@@ -141,7 +141,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					[]byte(`{{ .Installation.V1.Monitoring.Prometheus.Address | urlString }}`),
 					permission,
 				); err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				return nil
@@ -149,7 +149,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			check: func(fs afero.Fs, resourcesPath string) error {
 				fileInfos, err := afero.ReadDir(fs, resourcesPath)
 				if err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				if len(fileInfos) != 1 {
@@ -157,16 +157,16 @@ func TestTemplateKubernetesResources(t *testing.T) {
 				}
 
 				if fileInfos[0].Name() != "ingress.yml" {
-					return microerror.MaskAnyf(resourceNotFoundError, "ingress.yml")
+					return microerror.Maskf(resourceNotFoundError, "ingress.yml")
 				}
 
 				bytes, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "ingress.yml"))
 				if err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				if string(bytes) != "https://prometheus-g8s.giantswarm.io" {
-					return microerror.MaskAnyf(incorrectTemplatingError, "ingress address not found, found: '%v'", string(bytes))
+					return microerror.Maskf(incorrectTemplatingError, "ingress address not found, found: '%v'", string(bytes))
 				}
 
 				return nil
@@ -189,7 +189,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs, resourcesPath string) error {
 				if err := fs.Mkdir(resourcesPath, permission); err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				path := filepath.Join(resourcesPath, "configmap.yml")
@@ -199,7 +199,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					[]byte("interval: '@every {{ .Installation.V1.Monitoring.Testbot.Interval | shortDuration }}'"),
 					permission,
 				); err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				return nil
@@ -207,7 +207,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			check: func(fs afero.Fs, resourcesPath string) error {
 				fileInfos, err := afero.ReadDir(fs, resourcesPath)
 				if err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				if len(fileInfos) != 1 {
@@ -215,16 +215,16 @@ func TestTemplateKubernetesResources(t *testing.T) {
 				}
 
 				if fileInfos[0].Name() != "configmap.yml" {
-					return microerror.MaskAnyf(resourceNotFoundError, "configmap.yml")
+					return microerror.Maskf(resourceNotFoundError, "configmap.yml")
 				}
 
 				bytes, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "configmap.yml"))
 				if err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				if string(bytes) != "interval: '@every 5m'" {
-					return microerror.MaskAnyf(incorrectTemplatingError, "correct interval string not found, found: '%v'", string(bytes))
+					return microerror.Maskf(incorrectTemplatingError, "correct interval string not found, found: '%v'", string(bytes))
 				}
 
 				return nil
@@ -242,7 +242,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs, resourcesPath string) error {
 				if err := fs.Mkdir(resourcesPath, permission); err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				path := filepath.Join(resourcesPath, "deployment.yml")
@@ -252,7 +252,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					[]byte("image: foo/bar:{{ .BuildInfo.SHA }}"),
 					permission,
 				); err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				return nil
@@ -260,7 +260,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			check: func(fs afero.Fs, resourcesPath string) error {
 				fileInfos, err := afero.ReadDir(fs, resourcesPath)
 				if err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				if len(fileInfos) != 1 {
@@ -268,16 +268,16 @@ func TestTemplateKubernetesResources(t *testing.T) {
 				}
 
 				if fileInfos[0].Name() != "deployment.yml" {
-					return microerror.MaskAnyf(resourceNotFoundError, "deployment.yml")
+					return microerror.Maskf(resourceNotFoundError, "deployment.yml")
 				}
 
 				bytes, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "deployment.yml"))
 				if err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				if string(bytes) != "image: foo/bar:12345" {
-					return microerror.MaskAnyf(incorrectShaError, "in deployment, found: '%v'", string(bytes))
+					return microerror.Maskf(incorrectShaError, "in deployment, found: '%v'", string(bytes))
 				}
 
 				return nil
@@ -295,7 +295,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			},
 			setUp: func(fs afero.Fs, resourcesPath string) error {
 				if err := fs.Mkdir(resourcesPath, permission); err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				path := filepath.Join(resourcesPath, "deployment.yml")
@@ -305,7 +305,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 					[]byte("image: quay.io/giantswarm/api:%%DOCKER_TAG%%"),
 					permission,
 				); err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				return nil
@@ -313,7 +313,7 @@ func TestTemplateKubernetesResources(t *testing.T) {
 			check: func(fs afero.Fs, resourcesPath string) error {
 				fileInfos, err := afero.ReadDir(fs, resourcesPath)
 				if err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				if len(fileInfos) != 1 {
@@ -321,16 +321,16 @@ func TestTemplateKubernetesResources(t *testing.T) {
 				}
 
 				if fileInfos[0].Name() != "deployment.yml" {
-					return microerror.MaskAnyf(resourceNotFoundError, "deployment.yml")
+					return microerror.Maskf(resourceNotFoundError, "deployment.yml")
 				}
 
 				bytes, err := afero.ReadFile(fs, filepath.Join(resourcesPath, "deployment.yml"))
 				if err != nil {
-					return microerror.MaskAny(err)
+					return microerror.Mask(err)
 				}
 
 				if string(bytes) != "image: quay.io/giantswarm/api:12345" {
-					return microerror.MaskAnyf(incorrectShaError, "in deployment, found: '%v'", string(bytes))
+					return microerror.Maskf(incorrectShaError, "in deployment, found: '%v'", string(bytes))
 				}
 
 				return nil

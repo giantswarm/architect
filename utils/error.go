@@ -1,19 +1,19 @@
 package utils
 
 import (
-	"github.com/juju/errgo"
+	"github.com/giantswarm/microerror"
 )
 
-var sourceNotDirectoryError = errgo.New("source not directory")
+var sourceNotDirectoryError = microerror.New("source not directory")
 
 // IsSourceNotDirectory asserts sourceNotDirectoryError
 func IsSourceNotDirectory(err error) bool {
-	return errgo.Cause(err) == sourceNotDirectoryError
+	return microerror.Cause(err) == sourceNotDirectoryError
 }
 
-var destinationExistsError = errgo.New("destination exists")
+var destinationExistsError = microerror.New("destination exists")
 
 // IsDestinationExists asserts destinationExistsError.
 func IsDestinationExists(err error) bool {
-	return errgo.Cause(err) == destinationExistsError
+	return microerror.Cause(err) == destinationExistsError
 }
