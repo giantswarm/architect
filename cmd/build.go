@@ -17,8 +17,9 @@ var (
 		Run:   runBuild,
 	}
 
-	goos   string
-	goarch string
+	goos    string
+	goarch  string
+	ldflags string
 
 	golangImage   string
 	golangVersion string
@@ -29,6 +30,7 @@ func init() {
 
 	buildCmd.Flags().StringVar(&goos, "goos", "linux", "value for $GOOS")
 	buildCmd.Flags().StringVar(&goarch, "goarch", "amd64", "value for $GOARCH")
+	buildCmd.Flags().StringVar(&ldflags, "ldflags", "", "value for custom -ldflags")
 
 	buildCmd.Flags().StringVar(&golangImage, "golang-image", "quay.io/giantswarm/golang", "golang image")
 	buildCmd.Flags().StringVar(&golangVersion, "golang-version", "1.8.3", "golang version")
@@ -49,6 +51,7 @@ func runBuild(cmd *cobra.Command, args []string) {
 		Goarch:        goarch,
 		GolangImage:   golangImage,
 		GolangVersion: golangVersion,
+		Ldflags:       ldflags,
 	}
 
 	fs := afero.NewOsFs()

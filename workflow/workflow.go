@@ -51,6 +51,7 @@ type ProjectInfo struct {
 	Goarch        string
 	GolangImage   string
 	GolangVersion string
+	Ldflags       string
 }
 
 func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
