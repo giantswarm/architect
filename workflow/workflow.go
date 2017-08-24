@@ -137,16 +137,6 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		w = append(w, dockerRunHelp)
 	}
 
-	return w, nil
-}
-
-func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
-	w := Workflow{}
-
-	dockerFileExists, err := afero.Exists(fs, filepath.Join(projectInfo.WorkingDirectory, "Dockerfile"))
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
 	if dockerFileExists {
 		{
 			dockerLogin, err := NewDockerLoginTask(fs, projectInfo)
@@ -157,12 +147,6 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			w = append(w, wrappedDockerLogin)
 		}
 
-		dockerTagLatest, err := NewDockerTagLatestTask(fs, projectInfo)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-		w = append(w, dockerTagLatest)
-
 		{
 			dockerPushSha, err := NewDockerPushShaTask(fs, projectInfo)
 			if err != nil {
@@ -170,15 +154,6 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			}
 			wrappedDockerPushSha := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushSha)
 			w = append(w, wrappedDockerPushSha)
-		}
-
-		{
-			dockerPushLatest, err := NewDockerPushLatestTask(fs, projectInfo)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			wrappedDockerPushLatest := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushLatest)
-			w = append(w, wrappedDockerPushLatest)
 		}
 	}
 
@@ -214,6 +189,42 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			return nil, microerror.Mask(err)
 		}
 		w = append(w, helmPush)
+	}
+
+	return w, nil
+}
+
+func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
+	w := Workflow{}
+
+	dockerFileExists, err := afero.Exists(fs, filepath.Join(projectInfo.WorkingDirectory, "Dockerfile"))
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	if dockerFileExists {
+		{
+			dockerLogin, err := NewDockerLoginTask(fs, projectInfo)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+			wrappedDockerLogin := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerLogin)
+			w = append(w, wrappedDockerLogin)
+		}
+
+		dockerTagLatest, err := NewDockerTagLatestTask(fs, projectInfo)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		w = append(w, dockerTagLatest)
+
+		{
+			dockerPushLatest, err := NewDockerPushLatestTask(fs, projectInfo)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+			wrappedDockerPushLatest := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushLatest)
+			w = append(w, wrappedDockerPushLatest)
+		}
 	}
 
 	kubernetesDirectoryExists, err := afero.Exists(fs, projectInfo.KubernetesResourcesDirectoryPath)

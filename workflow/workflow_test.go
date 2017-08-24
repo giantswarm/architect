@@ -86,7 +86,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 		setUp             func(afero.Fs) error
 		expectedTaskNames map[int]string
 	}{
-		// Test a project with no files produces an empty workflow
+		// Test 1 a project with no files produces an empty workflow.
 		{
 			setUp: func(fs afero.Fs) error {
 				return nil
@@ -94,7 +94,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 			expectedTaskNames: map[int]string{},
 		},
 
-		// Test a project with only golang files produces a correct workflow
+		// Test 2 a project with only golang files produces a correct workflow.
 		{
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "main.go")); err != nil {
@@ -112,7 +112,8 @@ func TestGetBuildWorkflow(t *testing.T) {
 			},
 		},
 
-		// Test that a project with a golang file not named `main.go` produces a golang build workflow
+		// Test 3 that a project with a golang file not named `main.go` produces a
+		// golang build workflow.
 		{
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "other.go")); err != nil {
@@ -130,7 +131,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 			},
 		},
 
-		// Test a project with only a dockerfile produces a correct workflow
+		// Test 4 a project with only a dockerfile produces a correct workflow.
 		{
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
@@ -141,10 +142,13 @@ func TestGetBuildWorkflow(t *testing.T) {
 			},
 			expectedTaskNames: map[int]string{
 				0: DockerBuildTaskName,
+				1: DockerLoginTaskName,
+				2: DockerPushShaTaskName,
 			},
 		},
 
-		// Test a project with golang files, and a dockerfile produces a correct workflow
+		// Test 5 a project with golang files, and a dockerfile produces a correct
+		// workflow.
 		{
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "main.go")); err != nil {
@@ -165,6 +169,8 @@ func TestGetBuildWorkflow(t *testing.T) {
 				5: DockerBuildTaskName,
 				6: DockerRunVersionTaskName,
 				7: DockerRunHelpTaskName,
+				8: DockerLoginTaskName,
+				9: DockerPushShaTaskName,
 			},
 		},
 	}
@@ -172,27 +178,23 @@ func TestGetBuildWorkflow(t *testing.T) {
 	for index, test := range tests {
 		fs := afero.NewMemMapFs()
 		if err := test.setUp(fs); err != nil {
-			t.Fatalf("received unexpected error during setup: %v", err)
+			t.Fatalf("test %d received unexpected error during setup: %#v", index+1, err)
 		}
 
 		workflow, err := NewBuild(projectInfo, fs)
 		if err != nil {
-			t.Fatalf("received unexpected error getting build workflow: %v", err)
+			t.Fatalf("test %d received unexpected error getting build workflow: %#v", index+1, err)
 		}
 
 		if len(workflow) != len(test.expectedTaskNames) {
-			t.Fatalf(
-				"expected %v tasks, received %v",
-				len(test.expectedTaskNames),
-				len(workflow),
-			)
+			t.Fatalf("test %d expected %d tasks, received %#v", index+1, len(test.expectedTaskNames), len(workflow))
 		}
 
 		for testIndex, expectedTaskName := range test.expectedTaskNames {
 			if !strings.Contains(workflow[testIndex].Name(), expectedTaskName) {
 				t.Fatalf(
-					"%v: Task: %d, expected name: %s, received name: %s",
-					index,
+					"test %d task %d expected name '%s' received name '%s'",
+					index+1,
 					testIndex,
 					expectedTaskName,
 					workflow[testIndex].Name(),
@@ -211,7 +213,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 		setUp             func(afero.Fs) error
 		expectedTaskNames map[int]string
 	}{
-		// Test a project with no files produces an empty workflow
+		// Test 1 a project with no files produces an empty workflow.
 		{
 			projectInfo: ProjectInfo{
 				WorkingDirectory: workingDirectory,
@@ -224,7 +226,8 @@ func TestGetDeployWorkflow(t *testing.T) {
 			expectedTaskNames: map[int]string{},
 		},
 
-		// Test a project with only a Dockerfile productes a workflow containg docker push
+		// Test 2 a project with only a Dockerfile productes a workflow containg
+		// docker push.
 		{
 			projectInfo: ProjectInfo{
 				WorkingDirectory: workingDirectory,
@@ -246,12 +249,12 @@ func TestGetDeployWorkflow(t *testing.T) {
 			expectedTaskNames: map[int]string{
 				0: DockerLoginTaskName,
 				1: DockerTagLatestTaskName,
-				2: DockerPushShaTaskName,
-				3: DockerPushLatestTaskName,
+				2: DockerPushLatestTaskName,
 			},
 		},
 
-		// Test that a project with a helm directory produces a workflow containing helm push
+		// Test 3 a project with a helm directory produces a workflow that does
+		// nothing.
 		{
 			projectInfo: ProjectInfo{
 				WorkingDirectory: workingDirectory,
@@ -265,15 +268,11 @@ func TestGetDeployWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedTaskNames: map[int]string{
-				0: HelmPullTaskName,
-				1: template.TemplateHelmChartTaskName,
-				2: HelmLoginTaskName,
-				3: HelmPushTaskName,
-			},
+			expectedTaskNames: map[int]string{},
 		},
 
-		// Test a project with only a kubernetes directory produces a workflow containg kubernetes apply
+		// Test 4 a project with only a kubernetes directory produces a workflow
+		// containg kubernetes apply for one cluster.
 		{
 			projectInfo: ProjectInfo{
 				WorkingDirectory: workingDirectory,
@@ -304,7 +303,8 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 		},
 
-		// Test a project with a Dockerfile and a kubernetes directory contains both docker and kubernetes tasks/
+		// Test 5 a project with a Dockerfile and a kubernetes directory contains
+		// both docker and kubernetes tasks.
 		{
 			projectInfo: ProjectInfo{
 				WorkingDirectory:                 workingDirectory,
@@ -339,15 +339,14 @@ func TestGetDeployWorkflow(t *testing.T) {
 			expectedTaskNames: map[int]string{
 				0: DockerLoginTaskName,
 				1: DockerTagLatestTaskName,
-				2: DockerPushShaTaskName,
-				3: DockerPushLatestTaskName,
-				4: template.TemplateKubernetesResourcesTaskName,
-				5: KubectlClusterInfoTaskName,
-				6: KubectlApplyTaskName,
+				2: DockerPushLatestTaskName,
+				3: template.TemplateKubernetesResourcesTaskName,
+				4: KubectlClusterInfoTaskName,
+				5: KubectlApplyTaskName,
 			},
 		},
 
-		// Test that a project with two clusters configured returns two sets of kubectl tasks.
+		// Test 6 a project with two clusters configured does nothing.
 		{
 			projectInfo: ProjectInfo{
 				WorkingDirectory: workingDirectory,
@@ -390,7 +389,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 		},
 
-		// Test a project with a non-standard kubernetes resources directory
+		// Test 7 a project with a non-standard kubernetes resources directory.
 		{
 			projectInfo: ProjectInfo{
 				WorkingDirectory: workingDirectory,
@@ -426,28 +425,23 @@ func TestGetDeployWorkflow(t *testing.T) {
 	for index, test := range tests {
 		fs := afero.NewMemMapFs()
 		if err := test.setUp(fs); err != nil {
-			t.Fatalf("%v: received unexpected error during setup: %v", index, err)
+			t.Fatalf("test %d received unexpected error during setup: %#v", index+1, err)
 		}
 
 		workflow, err := NewDeploy(test.projectInfo, fs)
 		if err != nil {
-			t.Fatalf("%v: received unexpected error getting build workflow: %v", index, err)
+			t.Fatalf("test %d received unexpected error getting build workflow: %#v", index+1, err)
 		}
 
 		if len(workflow) != len(test.expectedTaskNames) {
-			t.Fatalf(
-				"%v: expected %v tasks, received %v",
-				index,
-				len(test.expectedTaskNames),
-				len(workflow),
-			)
+			t.Fatalf("test %d expected %d tasks received %d", index+1, len(test.expectedTaskNames), len(workflow))
 		}
 
 		for testIndex, expectedTaskName := range test.expectedTaskNames {
 			if !strings.Contains(workflow[testIndex].Name(), expectedTaskName) {
 				t.Fatalf(
-					"%d: task: %d, expected name: %s, received name: %s",
-					index,
+					"test %d task %d expected name '%s' received name '%s'",
+					index+1,
 					testIndex,
 					expectedTaskName,
 					workflow[testIndex].Name(),
