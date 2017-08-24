@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"log"
+	"os"
+	"path/filepath"
 
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/workflow"
@@ -17,24 +19,53 @@ var (
 		Run:   runBuild,
 	}
 
-	goos   string
-	goarch string
+	dockerEmail    string
+	dockerUsername string
+	dockerPassword string
 
+	goos          string
+	goarch        string
 	golangImage   string
 	golangVersion string
+
+	helmDirectoryPath      string
+	resourcesDirectoryPath string
 )
 
 func init() {
 	RootCmd.AddCommand(buildCmd)
 
+	var defaultDockerEmail string
+	var defaultDockerUsername string
+	var defaultDockerPassword string
+
+	if os.Getenv("CIRCLECI") == "true" {
+		defaultDockerEmail = ""
+		defaultDockerUsername = os.Getenv("QUAY_USERNAME")
+		defaultDockerPassword = os.Getenv("QUAY_PASSWORD")
+
+		deploymentEventsToken = os.Getenv("DEPLOYMENT_EVENTS_TOKEN")
+	}
+
+	buildCmd.Flags().StringVar(&dockerEmail, "docker-email", defaultDockerEmail, "email to use to login to docker registry")
+	buildCmd.Flags().StringVar(&dockerUsername, "docker-username", defaultDockerUsername, "username to use to login to docker registry")
+	buildCmd.Flags().StringVar(&dockerPassword, "docker-password", defaultDockerPassword, "password to use to login to docker registry")
+
 	buildCmd.Flags().StringVar(&goos, "goos", "linux", "value for $GOOS")
 	buildCmd.Flags().StringVar(&goarch, "goarch", "amd64", "value for $GOARCH")
+
+	buildCmd.Flags().StringVar(&helmDirectoryPath, "helm-directory-path", "./helm", "directory holding helm chart")
 
 	buildCmd.Flags().StringVar(&golangImage, "golang-image", "quay.io/giantswarm/golang", "golang image")
 	buildCmd.Flags().StringVar(&golangVersion, "golang-version", "1.8.3", "golang version")
 }
 
 func runBuild(cmd *cobra.Command, args []string) {
+	resourcesDirectoryAbsolutePath, err := filepath.Abs(resourcesDirectoryPath)
+	if err != nil {
+		log.Fatalf("could not get absolute path for resources directory: %v\n", err)
+	}
+
 	projectInfo := workflow.ProjectInfo{
 		WorkingDirectory: workingDirectory,
 		Organisation:     organisation,
@@ -43,7 +74,13 @@ func runBuild(cmd *cobra.Command, args []string) {
 		Branch: branch,
 		Sha:    sha,
 
-		Registry: registry,
+		Registry:       registry,
+		DockerEmail:    dockerEmail,
+		DockerUsername: dockerUsername,
+		DockerPassword: dockerPassword,
+
+		HelmDirectoryPath:                helmDirectoryPath,
+		KubernetesResourcesDirectoryPath: resourcesDirectoryAbsolutePath,
 
 		Goos:          goos,
 		Goarch:        goarch,
