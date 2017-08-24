@@ -23,10 +23,6 @@ var (
 		Run:   runDeploy,
 	}
 
-	dockerEmail    string
-	dockerUsername string
-	dockerPassword string
-
 	kubernetesApiServer string
 
 	kubernetesCaPath  string
@@ -34,9 +30,6 @@ var (
 	kubernetesKeyPath string
 
 	kubectlVersion string
-
-	helmDirectoryPath      string
-	resourcesDirectoryPath string
 
 	deploymentEventsToken string
 )
