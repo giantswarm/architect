@@ -16,7 +16,7 @@ type Environment string
 // and the projects that should be deployed there.
 // We use codenames for installations to not expose customer information.
 var environmentProjects = map[Environment][]string{
-	"centaur": []string{
+	"centaur": {
 		"api",
 		"cert-operator",
 		"cluster-service",
@@ -39,7 +39,7 @@ var environmentProjects = map[Environment][]string{
 		"tokend",
 		"userd",
 	},
-	"viking": []string{
+	"viking": {
 		"api",
 		"cert-operator",
 		"cluster-service",
@@ -60,7 +60,7 @@ var environmentProjects = map[Environment][]string{
 		"tokend",
 		"userd",
 	},
-	"heisenberg": []string{
+	"heisenberg": {
 		"api",
 		"cert-operator",
 		"cluster-service",
@@ -81,7 +81,7 @@ var environmentProjects = map[Environment][]string{
 		"tokend",
 		"userd",
 	},
-	"asgard": []string{
+	"asgard": {
 		"api",
 		"cert-operator",
 		"cluster-service",
@@ -102,7 +102,7 @@ var environmentProjects = map[Environment][]string{
 		"tokend",
 		"userd",
 	},
-	"iris": []string{
+	"iris": {
 		"api",
 		"cert-operator",
 		"cluster-service",
@@ -123,7 +123,7 @@ var environmentProjects = map[Environment][]string{
 		"tokend",
 		"userd",
 	},
-	"lycan": []string{
+	"lycan": {
 		"api",
 		"api-spec",
 		"cert-operator",
@@ -156,7 +156,7 @@ var environmentProjects = map[Environment][]string{
 		"userd",
 		"web-assets",
 	},
-	"anubis": []string{
+	"anubis": {
 		"api",
 		"cert-operator",
 		"cluster-service",
@@ -179,7 +179,7 @@ var environmentProjects = map[Environment][]string{
 		"tokend",
 		"userd",
 	},
-	"ginger": []string{
+	"ginger": {
 		"api",
 		"cert-operator",
 		"cluster-service",
@@ -200,7 +200,19 @@ var environmentProjects = map[Environment][]string{
 		"tokend",
 		"userd",
 	},
-	"gauss": []string{
+	"ginger_vxvc7": {
+		"api-spec",
+		"docs",
+		"docs-indexer",
+		"docs-proxy",
+		"giantswarmio-nginx",
+		"giantswarmio-webapp",
+		"web-assets",
+		"sitesearch",
+		"classify",
+		"mole-rat",
+	},
+	"gauss": {
 		"api",
 		"cert-operator",
 		"cluster-service",
@@ -221,7 +233,7 @@ var environmentProjects = map[Environment][]string{
 		"tokend",
 		"userd",
 	},
-	"archon": []string{
+	"archon": {
 		"api",
 		"cert-operator",
 		"cluster-service",
