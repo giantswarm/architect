@@ -3,7 +3,6 @@ package cmd
 import (
 	"log"
 	"os"
-	"path/filepath"
 
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/workflow"
@@ -28,8 +27,7 @@ var (
 	golangImage   string
 	golangVersion string
 
-	helmDirectoryPath      string
-	resourcesDirectoryPath string
+	helmDirectoryPath string
 )
 
 func init() {
@@ -61,11 +59,6 @@ func init() {
 }
 
 func runBuild(cmd *cobra.Command, args []string) {
-	resourcesDirectoryAbsolutePath, err := filepath.Abs(resourcesDirectoryPath)
-	if err != nil {
-		log.Fatalf("could not get absolute path for resources directory: %v\n", err)
-	}
-
 	projectInfo := workflow.ProjectInfo{
 		WorkingDirectory: workingDirectory,
 		Organisation:     organisation,
@@ -79,8 +72,7 @@ func runBuild(cmd *cobra.Command, args []string) {
 		DockerUsername: dockerUsername,
 		DockerPassword: dockerPassword,
 
-		HelmDirectoryPath:                helmDirectoryPath,
-		KubernetesResourcesDirectoryPath: resourcesDirectoryAbsolutePath,
+		HelmDirectoryPath: helmDirectoryPath,
 
 		Goos:          goos,
 		Goarch:        goarch,

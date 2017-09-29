@@ -45,10 +45,3 @@ var incorrectTemplatingError = microerror.New("incorrect templating")
 func IsIncorrectTemplating(err error) bool {
 	return microerror.Cause(err) == incorrectTemplatingError
 }
-
-var emptyKubernetesResourcesDirectoryPath = microerror.New("empty kubernetes resources directory path")
-
-// IsEmptyKubernetesResourcesDirectoryPath asserts emptyKubernetesResourcesDirectoryPath
-func IsEmptyKubernetesResourcesDirectoryPath(err error) bool {
-	return microerror.Cause(err) == emptyKubernetesResourcesDirectoryPath
-}

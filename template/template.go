@@ -4,8 +4,6 @@ package template
 
 import (
 	"os"
-
-	"github.com/giantswarm/architect/configuration"
 )
 
 var (
@@ -23,7 +21,4 @@ type BuildInfo struct {
 type TemplateConfiguration struct {
 	// BuildInfo is the configuration for the current build
 	BuildInfo
-
-	// Installation is the configuration for the installation
-	configuration.Installation
 }
