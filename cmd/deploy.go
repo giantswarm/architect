@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"os"
-	"path/filepath"
 
 	"github.com/google/go-github/github"
 	"github.com/spf13/afero"
@@ -22,14 +21,6 @@ var (
 		Short: "deploy the project",
 		Run:   runDeploy,
 	}
-
-	kubernetesApiServer string
-
-	kubernetesCaPath  string
-	kubernetesCrtPath string
-	kubernetesKeyPath string
-
-	kubectlVersion string
 
 	deploymentEventsToken string
 )
@@ -54,21 +45,10 @@ func init() {
 	deployCmd.Flags().StringVar(&dockerPassword, "docker-password", defaultDockerPassword, "password to use to login to docker registry")
 
 	deployCmd.Flags().StringVar(&helmDirectoryPath, "helm-directory-path", "./helm", "directory holding helm chart")
-	deployCmd.Flags().StringVar(&resourcesDirectoryPath, "resources-directory-path", "./kubernetes", "directory holding kubernetes resources")
 }
 
 func runDeploy(cmd *cobra.Command, args []string) {
 	fs := afero.NewOsFs()
-
-	clusters, err := workflow.ClustersFromEnv(fs, workingDirectory)
-	if err != nil {
-		log.Fatalf("could not get clusters from env: %v\n", err)
-	}
-
-	resourcesDirectoryAbsolutePath, err := filepath.Abs(resourcesDirectoryPath)
-	if err != nil {
-		log.Fatalf("could not get absolute path for resources directory: %v\n", err)
-	}
 
 	projectInfo := workflow.ProjectInfo{
 		WorkingDirectory: workingDirectory,
@@ -83,9 +63,7 @@ func runDeploy(cmd *cobra.Command, args []string) {
 		DockerUsername: dockerUsername,
 		DockerPassword: dockerPassword,
 
-		HelmDirectoryPath:                helmDirectoryPath,
-		KubernetesResourcesDirectoryPath: resourcesDirectoryAbsolutePath,
-		KubernetesClusters:               clusters,
+		HelmDirectoryPath: helmDirectoryPath,
 	}
 
 	workflow, err := workflow.NewDeploy(projectInfo, fs)

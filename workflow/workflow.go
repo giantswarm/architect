@@ -40,12 +40,7 @@ type ProjectInfo struct {
 	DockerUsername string
 	DockerPassword string
 
-	HelmDirectoryPath                string
-	KubernetesResourcesDirectoryPath string
-	KubernetesClusters               []KubernetesCluster
-
-	CurrentCluster              KubernetesCluster
-	TemplatedResourcesDirectory string
+	HelmDirectoryPath string
 
 	Goos          string
 	Goarch        string
@@ -224,39 +219,6 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			}
 			wrappedDockerPushLatest := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushLatest)
 			w = append(w, wrappedDockerPushLatest)
-		}
-	}
-
-	kubernetesDirectoryExists, err := afero.Exists(fs, projectInfo.KubernetesResourcesDirectoryPath)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	if kubernetesDirectoryExists {
-		for _, cluster := range projectInfo.KubernetesClusters {
-			dir, subdir := filepath.Split(projectInfo.KubernetesResourcesDirectoryPath)
-			templatedResourcesDirectory := filepath.Join(dir, subdir+"-"+cluster.Prefix)
-
-			projectInfo.CurrentCluster = cluster
-			projectInfo.TemplatedResourcesDirectory = templatedResourcesDirectory
-
-			kubernetesResourcesTemplate, err := NewTemplateKubernetesResourcesTask(fs, projectInfo)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			w = append(w, kubernetesResourcesTemplate)
-
-			kubectlClusterInfo, err := NewKubectlClusterInfoTask(fs, projectInfo)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			w = append(w, kubectlClusterInfo)
-
-			kubectlApply, err := NewKubectlApplyTask(fs, projectInfo)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			w = append(w, kubectlApply)
 		}
 	}
 
