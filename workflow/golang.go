@@ -8,7 +8,6 @@ import (
 	"github.com/giantswarm/microerror"
 
 	"github.com/giantswarm/architect/tasks"
-	"github.com/giantswarm/architect/utils"
 )
 
 var (
@@ -96,11 +95,6 @@ func NewGoVetTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	packageArguments, err := utils.NoVendor(fs, projectInfo.WorkingDirectory)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
 	goVet := tasks.NewDockerTask(
 		GoVetTaskName,
 		tasks.DockerTaskConfig{
@@ -121,21 +115,15 @@ func NewGoVetTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 				projectInfo.Project,
 			),
 			Image: fmt.Sprintf("%v:%v", projectInfo.GolangImage, projectInfo.GolangVersion),
-			Args:  []string{"go", "vet"},
+			Args:  []string{"go", "vet", "./..."},
 		},
 	)
-	goVet.Args = append(goVet.Args, packageArguments...)
 
 	return goVet, nil
 }
 
 func NewGoTestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkGolangRequirements(projectInfo); err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	packageArguments, err := utils.NoVendor(fs, projectInfo.WorkingDirectory)
-	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
@@ -162,10 +150,9 @@ func NewGoTestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 				projectInfo.Project,
 			),
 			Image: fmt.Sprintf("%v:%v", projectInfo.GolangImage, projectInfo.GolangVersion),
-			Args:  []string{"go", "test", "-v", "-race"},
+			Args:  []string{"go", "test", "-v", "-race", "./..."},
 		},
 	)
-	goTest.Args = append(goTest.Args, packageArguments...)
 
 	return goTest, nil
 }
