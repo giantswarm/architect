@@ -196,6 +196,7 @@ var environmentProjects = map[Environment][]string{
 	},
 	"gauss": {
 		"api",
+		"calico-node-controller",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
