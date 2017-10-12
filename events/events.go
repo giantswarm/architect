@@ -40,6 +40,7 @@ var environmentProjects = map[Environment][]string{
 	},
 	"viking": {
 		"api",
+		"calico-node-controller",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
@@ -60,6 +61,7 @@ var environmentProjects = map[Environment][]string{
 	},
 	"heisenberg": {
 		"api",
+		"calico-node-controller",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
@@ -80,6 +82,7 @@ var environmentProjects = map[Environment][]string{
 	},
 	"asgard": {
 		"api",
+		"calico-node-controller",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
@@ -100,6 +103,7 @@ var environmentProjects = map[Environment][]string{
 	},
 	"iris": {
 		"api",
+		"calico-node-controller",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
@@ -164,6 +168,7 @@ var environmentProjects = map[Environment][]string{
 	},
 	"ginger": {
 		"api",
+		"calico-node-controller",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
@@ -217,6 +222,7 @@ var environmentProjects = map[Environment][]string{
 	},
 	"archon": {
 		"api",
+		"calico-node-controller",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
