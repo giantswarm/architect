@@ -55,22 +55,15 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-
-	goLangFilesExist := false
-	if workingDirectoryExists {
-		fileInfos, err := afero.ReadDir(fs, projectInfo.WorkingDirectory)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-
-		for _, fileInfo := range fileInfos {
-			if filepath.Ext(fileInfo.Name()) == ".go" {
-				goLangFilesExist = true
-				break
-			}
-		}
+	if !workingDirectoryExists {
+		return w, nil
 	}
-	if goLangFilesExist {
+
+	isGolangFilesExist, err := golangFilesExist(fs, projectInfo.WorkingDirectory)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	if isGolangFilesExist {
 		{
 			golangPull, err := NewGoPullTask(fs, projectInfo)
 			if err != nil {
@@ -99,11 +92,17 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 		w = append(w, goTest)
 
-		goBuild, err := NewGoBuildTask(fs, projectInfo)
+		isGoBuildable, err := goBuildable(fs, projectInfo.WorkingDirectory)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
-		w = append(w, goBuild)
+		if isGoBuildable {
+			goBuild, err := NewGoBuildTask(fs, projectInfo)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+			w = append(w, goBuild)
+		}
 	}
 
 	dockerFileExists, err := afero.Exists(fs, filepath.Join(projectInfo.WorkingDirectory, "Dockerfile"))
@@ -118,7 +117,7 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		w = append(w, dockerBuild)
 	}
 
-	if goLangFilesExist && dockerFileExists {
+	if isGolangFilesExist && dockerFileExists {
 		dockerRunVersion, err := NewDockerRunVersionTask(fs, projectInfo)
 		if err != nil {
 			return nil, microerror.Mask(err)

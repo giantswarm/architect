@@ -85,7 +85,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 		setUp             func(afero.Fs) error
 		expectedTaskNames map[int]string
 	}{
-		// Test 1 a project with no files produces an empty workflow.
+		// 0: Test that a project with no files produces an empty workflow.
 		{
 			setUp: func(fs afero.Fs) error {
 				return nil
@@ -93,7 +93,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 			expectedTaskNames: map[int]string{},
 		},
 
-		// Test 2 a project with only golang files produces a correct workflow.
+		// 1: Test that a project with only golang files produces a correct workflow.
 		{
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "main.go")); err != nil {
@@ -111,7 +111,28 @@ func TestGetBuildWorkflow(t *testing.T) {
 			},
 		},
 
-		// Test 3 that a project with a golang file not named `main.go` produces a
+		// 2: Test that a library project creates a correct workflow.
+		{
+			setUp: func(fs afero.Fs) error {
+				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "client"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+
+				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "client", "client.go")); err != nil {
+					return microerror.Mask(err)
+				}
+
+				return nil
+			},
+			expectedTaskNames: map[int]string{
+				0: GoPullTaskName,
+				1: GoFmtTaskName,
+				2: GoVetTaskName,
+				3: GoTestTaskName,
+			},
+		},
+
+		// 3: Test that a project with a golang file not named `main.go` produces a
 		// golang build workflow.
 		{
 			setUp: func(fs afero.Fs) error {
@@ -130,7 +151,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 			},
 		},
 
-		// Test 4 a project with only a dockerfile produces a correct workflow.
+		// 4: Test that a project with only a dockerfile produces a correct workflow.
 		{
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
@@ -146,7 +167,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 			},
 		},
 
-		// Test 5 a project with golang files, and a dockerfile produces a correct
+		// 5: Test that a project with golang files, and a dockerfile produces a correct
 		// workflow.
 		{
 			setUp: func(fs afero.Fs) error {
@@ -177,23 +198,23 @@ func TestGetBuildWorkflow(t *testing.T) {
 	for index, test := range tests {
 		fs := afero.NewMemMapFs()
 		if err := test.setUp(fs); err != nil {
-			t.Fatalf("test %d received unexpected error during setup: %#v", index+1, err)
+			t.Fatalf("test %d received unexpected error during setup: %#v", index, err)
 		}
 
 		workflow, err := NewBuild(projectInfo, fs)
 		if err != nil {
-			t.Fatalf("test %d received unexpected error getting build workflow: %#v", index+1, err)
+			t.Fatalf("test %d received unexpected error getting build workflow: %#v", index, err)
 		}
 
 		if len(workflow) != len(test.expectedTaskNames) {
-			t.Fatalf("test %d expected %d tasks, received %#v", index+1, len(test.expectedTaskNames), len(workflow))
+			t.Fatalf("test %d expected %d tasks, received %#v", index, len(test.expectedTaskNames), len(workflow))
 		}
 
 		for testIndex, expectedTaskName := range test.expectedTaskNames {
 			if !strings.Contains(workflow[testIndex].Name(), expectedTaskName) {
 				t.Fatalf(
 					"test %d task %d expected name '%s' received name '%s'",
-					index+1,
+					index,
 					testIndex,
 					expectedTaskName,
 					workflow[testIndex].Name(),
