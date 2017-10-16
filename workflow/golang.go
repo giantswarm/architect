@@ -2,6 +2,8 @@ package workflow
 
 import (
 	"fmt"
+	"path"
+	"path/filepath"
 
 	"github.com/spf13/afero"
 
@@ -17,6 +19,49 @@ var (
 	GoTestTaskName  = "go-test"
 	GoBuildTaskName = "go-build"
 )
+
+func golangFilesExist(fs afero.Fs, directory string) (bool, error) {
+	fileInfos, err := afero.ReadDir(fs, directory)
+	if err != nil {
+		return false, microerror.Mask(err)
+	}
+
+	for _, fileInfo := range fileInfos {
+		if fileInfo.IsDir() {
+			subFileInfos, err := afero.ReadDir(fs, path.Join(directory, fileInfo.Name()))
+			if err != nil {
+				return false, microerror.Mask(err)
+			}
+
+			for _, subFileInfo := range subFileInfos {
+				if filepath.Ext(subFileInfo.Name()) == ".go" {
+					return true, nil
+				}
+			}
+		}
+
+		if filepath.Ext(fileInfo.Name()) == ".go" {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
+
+func goBuildable(fs afero.Fs, directory string) (bool, error) {
+	fileInfos, err := afero.ReadDir(fs, directory)
+	if err != nil {
+		return false, microerror.Mask(err)
+	}
+
+	for _, fileInfo := range fileInfos {
+		if filepath.Ext(fileInfo.Name()) == ".go" {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}
 
 func checkGolangRequirements(projectInfo ProjectInfo) error {
 	if projectInfo.WorkingDirectory == "" {
