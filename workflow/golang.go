@@ -2,7 +2,8 @@ package workflow
 
 import (
 	"fmt"
-	"path"
+	"io"
+	"os"
 	"path/filepath"
 
 	"github.com/spf13/afero"
@@ -21,28 +22,29 @@ var (
 )
 
 func golangFilesExist(fs afero.Fs, directory string) (bool, error) {
-	fileInfos, err := afero.ReadDir(fs, directory)
-	if err != nil {
-		return false, microerror.Mask(err)
+	err := afero.Walk(fs, directory, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if info.IsDir() {
+			return nil
+		}
+
+		// Return io.EOF to break walk early.
+		if filepath.Ext(path) == ".go" {
+			return io.EOF
+		}
+
+		return nil
+	})
+
+	if err == io.EOF {
+		return true, nil
 	}
 
-	for _, fileInfo := range fileInfos {
-		if fileInfo.IsDir() {
-			subFileInfos, err := afero.ReadDir(fs, path.Join(directory, fileInfo.Name()))
-			if err != nil {
-				return false, microerror.Mask(err)
-			}
-
-			for _, subFileInfo := range subFileInfos {
-				if filepath.Ext(subFileInfo.Name()) == ".go" {
-					return true, nil
-				}
-			}
-		}
-
-		if filepath.Ext(fileInfo.Name()) == ".go" {
-			return true, nil
-		}
+	if err != nil {
+		return false, microerror.Mask(err)
 	}
 
 	return false, nil
