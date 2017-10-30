@@ -132,7 +132,32 @@ func TestGetBuildWorkflow(t *testing.T) {
 			},
 		},
 
-		// 3: Test that a project with a golang file not named `main.go` produces a
+		// 3: Test that a particularly nested library project creates a correct workflow.
+		{
+			setUp: func(fs afero.Fs) error {
+				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "server"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+
+				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "server", "client"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+
+				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "server", "client", "client.go")); err != nil {
+					return microerror.Mask(err)
+				}
+
+				return nil
+			},
+			expectedTaskNames: map[int]string{
+				0: GoPullTaskName,
+				1: GoFmtTaskName,
+				2: GoVetTaskName,
+				3: GoTestTaskName,
+			},
+		},
+
+		// 4: Test that a project with a golang file not named `main.go` produces a
 		// golang build workflow.
 		{
 			setUp: func(fs afero.Fs) error {
@@ -151,7 +176,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 			},
 		},
 
-		// 4: Test that a project with only a dockerfile produces a correct workflow.
+		// 5: Test that a project with only a dockerfile produces a correct workflow.
 		{
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
@@ -167,7 +192,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 			},
 		},
 
-		// 5: Test that a project with golang files, and a dockerfile produces a correct
+		// 6: Test that a project with golang files, and a dockerfile produces a correct
 		// workflow.
 		{
 			setUp: func(fs afero.Fs) error {
