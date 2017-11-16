@@ -115,3 +115,41 @@ func NewHelmPushTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 
 	return helmPush, nil
 }
+
+func NewHelmPromoteToStableChannelTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+	helmDirExists, err := afero.DirExists(fs, filepath.Join(projectInfo.WorkingDirectory, "helm"))
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	if !helmDirExists {
+		return nil, microerror.Mask(noHelmDirectoryError)
+	}
+
+	cnrDir, err := cnrDirectory()
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	chartDir := filepath.Join(projectInfo.WorkingDirectory, "helm", fmt.Sprintf("%v-chart", projectInfo.Project))
+
+	helmPromoteToChannel := tasks.NewDockerTask(
+		HelmPushTaskName,
+		tasks.DockerTaskConfig{
+			WorkingDirectory: chartDir,
+			Image:            HelmImage,
+			Volumes: []string{
+				fmt.Sprintf("%v:/root/.cnr/", cnrDir),
+				fmt.Sprintf("%v:%v", chartDir, chartDir),
+			},
+			Args: []string{
+				"registry",
+				"push",
+				"--channel=stable",
+				fmt.Sprintf("--namespace=%v", projectInfo.Organisation),
+				projectInfo.Registry,
+			},
+		},
+	)
+
+	return helmPromoteToChannel, nil
+}

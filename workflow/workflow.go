@@ -219,6 +219,41 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			wrappedDockerPushLatest := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushLatest)
 			w = append(w, wrappedDockerPushLatest)
 		}
+
+		helmDirectoryExists, err := afero.Exists(fs, filepath.Join(projectInfo.WorkingDirectory, "helm"))
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		if helmDirectoryExists {
+			{
+				helmPull, err := NewHelmPullTask(fs, projectInfo)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+				wrappedHelmPull := tasks.NewRetryTask(backoff.NewExponentialBackOff(), helmPull)
+
+				w = append(w, wrappedHelmPull)
+			}
+
+			helmChartTemplate, err := NewTemplateHelmChartTask(fs, projectInfo)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+			w = append(w, helmChartTemplate)
+
+			helmLogin, err := NewHelmLoginTask(fs, projectInfo)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+			w = append(w, helmLogin)
+
+			helmPushToChannel, err := NewHelmPromoteToStableChannelTask(fs, projectInfo)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+			w = append(w, helmPushToChannel)
+		}
+
 	}
 
 	return w, nil
