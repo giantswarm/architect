@@ -247,11 +247,14 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			}
 			w = append(w, helmLogin)
 
-			helmPushToChannel, err := NewHelmPromoteToStableChannelTask(fs, projectInfo)
+			helmPromoteToChannel, err := NewHelmPromoteToStableChannelTask(fs, projectInfo)
 			if err != nil {
 				return nil, microerror.Mask(err)
 			}
-			w = append(w, helmPushToChannel)
+
+			wrappedHelmPromoteToChannel := tasks.NewRetryTask(backoff.NewExponentialBackOff(), helmPromoteToChannel)
+
+			w = append(w, wrappedHelmPromoteToChannel)
 		}
 
 	}
