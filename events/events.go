@@ -321,6 +321,7 @@ var environmentProjects = map[Environment][]string{
 	},
 	"gollum": {
 		"api",
+		"azure-operator",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
