@@ -36,7 +36,6 @@ type ProjectInfo struct {
 	Sha    string
 
 	Registry       string
-	DockerEmail    string
 	DockerUsername string
 	DockerPassword string
 

@@ -113,19 +113,11 @@ func NewDockerLoginTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error
 		return nil, microerror.Mask(emptyDockerPasswordError)
 	}
 
-	// CircleCI's Docker version still expects to be given an email,
-	// even though it is not used by quay.
-	// If we don't specify one, use the empty string.
-	if projectInfo.DockerEmail == "" {
-		projectInfo.DockerEmail = `" "`
-	}
-
 	dockerLogin := tasks.NewExecTask(
 		DockerLoginTaskName,
 		[]string{
 			"docker",
 			"login",
-			fmt.Sprintf("--email=%v", projectInfo.DockerEmail),
 			fmt.Sprintf("--username=%v", projectInfo.DockerUsername),
 			fmt.Sprintf("--password=%v", projectInfo.DockerPassword),
 			projectInfo.Registry,
