@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
+	"os"
 	"path/filepath"
 
 	"github.com/spf13/afero"
@@ -19,14 +20,9 @@ const (
 	// Name of the task, the helm directory path, and the sha.
 	TemplateHelmChartTaskString = "%s:\t%s %s"
 
-	// HelmChartYamlName is the name of Helm's chart yaml.
-	HelmChartYamlName = "Chart.yaml"
 	// HelmTemplateDirectoryName is the name of the directory that stores
 	// Kubernetes resources inside a chart.
 	HelmTemplateDirectoryName = "templates"
-	// HelmDeploymentYamlName is the name of the file we template inside the
-	// Helm template directory.
-	HelmDeploymentYamlName = "deployment.yaml"
 )
 
 type TemplateHelmChartTask struct {
@@ -53,39 +49,32 @@ func (t TemplateHelmChartTask) Run() error {
 
 	chartDirectory := fileInfos[0].Name()
 
-	chartsYamlPath := filepath.Join(t.helmPath, chartDirectory, HelmChartYamlName)
-	deploymentPath := filepath.Join(t.helmPath, chartDirectory, HelmTemplateDirectoryName, HelmDeploymentYamlName)
-
-	paths := []string{chartsYamlPath, deploymentPath}
-
-	for _, path := range paths {
-		exists, err := afero.Exists(t.fs, path)
+	err = afero.Walk(t.fs, filepath.Join(t.helmPath, chartDirectory), func(path string, info os.FileInfo, err error) error {
+		contents, err := afero.ReadFile(t.fs, path)
 		if err != nil {
 			microerror.Mask(err)
 		}
 
-		if exists {
-			contents, err := afero.ReadFile(t.fs, path)
-			if err != nil {
-				microerror.Mask(err)
-			}
+		buildInfo := BuildInfo{SHA: t.sha}
 
-			buildInfo := BuildInfo{SHA: t.sha}
-
-			newTemplate := template.Must(template.New(path).Delims("[[", "]]").Parse(string(contents)))
-			if err != nil {
-				microerror.Mask(err)
-			}
-
-			var buf bytes.Buffer
-			if err := newTemplate.Execute(&buf, buildInfo); err != nil {
-				microerror.Mask(err)
-			}
-
-			if err := afero.WriteFile(t.fs, path, buf.Bytes(), permission); err != nil {
-				microerror.Mask(err)
-			}
+		newTemplate := template.Must(template.New(path).Delims("[[", "]]").Parse(string(contents)))
+		if err != nil {
+			microerror.Mask(err)
 		}
+
+		var buf bytes.Buffer
+		if err := newTemplate.Execute(&buf, buildInfo); err != nil {
+			microerror.Mask(err)
+		}
+
+		if err := afero.WriteFile(t.fs, path, buf.Bytes(), permission); err != nil {
+			microerror.Mask(err)
+		}
+		return nil
+	})
+
+	if err != nil {
+		return microerror.Mask(err)
 	}
 
 	return nil

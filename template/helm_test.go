@@ -64,11 +64,15 @@ func TestTemplateHelmChartTask(t *testing.T) {
 					data string
 				}{
 					{
-						path: filepath.Join(helmPath, "test-chart", HelmChartYamlName),
+						path: filepath.Join(helmPath, "test-chart", "Chart.yaml"),
 						data: "version: 1.0.0-[[ .SHA ]]",
 					},
 					{
-						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName),
+						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "deployment.yaml"),
+						data: "image: abc:[[ .SHA ]] foo: {{ .Values.Foo }}",
+					},
+					{
+						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "daemonset.yaml"),
 						data: "image: [[ .SHA ]] foo: {{ .Values.Foo }}",
 					},
 					{
@@ -91,11 +95,15 @@ func TestTemplateHelmChartTask(t *testing.T) {
 					data string
 				}{
 					{
-						path: filepath.Join(helmPath, "test-chart", HelmChartYamlName),
+						path: filepath.Join(helmPath, "test-chart", "Chart.yaml"),
 						data: "version: 1.0.0-jabberwocky",
 					},
 					{
-						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName),
+						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "deployment.yaml"),
+						data: "image: abc:jabberwocky foo: {{ .Values.Foo }}",
+					},
+					{
+						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "daemonset.yaml"),
 						data: "image: jabberwocky foo: {{ .Values.Foo }}",
 					},
 					{
