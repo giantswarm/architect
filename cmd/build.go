@@ -18,7 +18,6 @@ var (
 		Run:   runBuild,
 	}
 
-	dockerEmail    string
 	dockerUsername string
 	dockerPassword string
 
@@ -33,19 +32,16 @@ var (
 func init() {
 	RootCmd.AddCommand(buildCmd)
 
-	var defaultDockerEmail string
 	var defaultDockerUsername string
 	var defaultDockerPassword string
 
 	if os.Getenv("CIRCLECI") == "true" {
-		defaultDockerEmail = ""
 		defaultDockerUsername = os.Getenv("QUAY_USERNAME")
 		defaultDockerPassword = os.Getenv("QUAY_PASSWORD")
 
 		deploymentEventsToken = os.Getenv("DEPLOYMENT_EVENTS_TOKEN")
 	}
 
-	buildCmd.Flags().StringVar(&dockerEmail, "docker-email", defaultDockerEmail, "email to use to login to docker registry")
 	buildCmd.Flags().StringVar(&dockerUsername, "docker-username", defaultDockerUsername, "username to use to login to docker registry")
 	buildCmd.Flags().StringVar(&dockerPassword, "docker-password", defaultDockerPassword, "password to use to login to docker registry")
 
@@ -68,7 +64,6 @@ func runBuild(cmd *cobra.Command, args []string) {
 		Sha:    sha,
 
 		Registry:       registry,
-		DockerEmail:    dockerEmail,
 		DockerUsername: dockerUsername,
 		DockerPassword: dockerPassword,
 
