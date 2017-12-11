@@ -72,6 +72,14 @@ func TestTemplateHelmChartTask(t *testing.T) {
 						data: "image: [[ .SHA ]] foo: {{ .Values.Foo }}",
 					},
 					{
+						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "daemonset.yaml"),
+						data: "image: [[ .SHA ]] foo: {{ .Values.Foo }}",
+					},
+					{
+						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "subdirectory", "replicaset.yaml"),
+						data: "image: [[ .SHA ]] foo: {{ .Values.Foo }}",
+					},
+					{
 						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "ingress.yaml"),
 						data: "host: {{ .Values.Installation.etc }}",
 					},
@@ -96,6 +104,14 @@ func TestTemplateHelmChartTask(t *testing.T) {
 					},
 					{
 						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName),
+						data: "image: jabberwocky foo: {{ .Values.Foo }}",
+					},
+					{
+						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "daemonset.yaml"),
+						data: "image: jabberwocky foo: {{ .Values.Foo }}",
+					},
+					{
+						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "subdirectory", "replicaset.yaml"),
 						data: "image: jabberwocky foo: {{ .Values.Foo }}",
 					},
 					{
