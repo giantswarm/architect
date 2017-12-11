@@ -20,9 +20,14 @@ const (
 	// Name of the task, the helm directory path, and the sha.
 	TemplateHelmChartTaskString = "%s:\t%s %s"
 
+	// HelmChartYamlName is the name of Helm's chart yaml.
+	HelmChartYamlName = "Chart.yaml"
 	// HelmTemplateDirectoryName is the name of the directory that stores
 	// Kubernetes resources inside a chart.
 	HelmTemplateDirectoryName = "templates"
+	// HelmDeploymentYamlName is the name of the file we template inside the
+	// Helm template directory.
+	HelmDeploymentYamlName = "deployment.yaml"
 )
 
 type TemplateHelmChartTask struct {
