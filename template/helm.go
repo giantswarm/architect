@@ -3,9 +3,9 @@ package template
 import (
 	"bytes"
 	"fmt"
-	"html/template"
 	"os"
 	"path/filepath"
+	"text/template"
 
 	"github.com/spf13/afero"
 
