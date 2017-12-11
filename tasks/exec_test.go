@@ -20,9 +20,9 @@ func TestExecTaskString(t *testing.T) {
 		{
 			execTask: NewExecTask(
 				"docker-login",
-				[]string{"docker", "login", "--email=foo", "--password=bar"},
+				[]string{"docker", "login", "--password=bar"},
 			),
-			expectedString: "docker-login:\t'docker login --email=foo --password=[REDACTED]'",
+			expectedString: "docker-login:\t'docker login --password=[REDACTED]'",
 		},
 		{
 			execTask: NewExecTask(

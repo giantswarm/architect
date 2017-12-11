@@ -66,7 +66,6 @@ func Test_Workflow_Docker_NewDockerBuildTask(t *testing.T) {
 			ExpectedArgs: []string{
 				"docker",
 				"login",
-				"--email=\" \"",
 				"--username=username",
 				"--password=password",
 				"quay.io",
