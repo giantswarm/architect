@@ -111,7 +111,6 @@ var environmentProjects = map[Environment][]string{
 	},
 	"lycan": {
 		"api",
-		"cert-exporter",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
