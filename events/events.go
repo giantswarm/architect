@@ -18,6 +18,7 @@ type Environment string
 var environmentProjects = map[Environment][]string{
 	"centaur": {
 		"api",
+		"cert-exporter",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
@@ -42,6 +43,7 @@ var environmentProjects = map[Environment][]string{
 	"viking": {
 		"api",
 		"calico-node-controller",
+		"cert-exporter",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
@@ -64,6 +66,7 @@ var environmentProjects = map[Environment][]string{
 	"asgard": {
 		"api",
 		"calico-node-controller",
+		"cert-exporter",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
@@ -86,6 +89,7 @@ var environmentProjects = map[Environment][]string{
 	"iris": {
 		"api",
 		"calico-node-controller",
+		"cert-exporter",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
@@ -130,6 +134,7 @@ var environmentProjects = map[Environment][]string{
 	},
 	"anubis": {
 		"api",
+		"cert-exporter",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
@@ -153,6 +158,7 @@ var environmentProjects = map[Environment][]string{
 	},
 	"ginger": {
 		"api",
+		"cert-exporter",
 		"calico-node-controller",
 		"cert-operator",
 		"cluster-service",
@@ -187,6 +193,7 @@ var environmentProjects = map[Environment][]string{
 	},
 	"gauss": {
 		"api",
+		"cert-exporter",
 		"calico-node-controller",
 		"cert-operator",
 		"cluster-service",
@@ -210,6 +217,7 @@ var environmentProjects = map[Environment][]string{
 	"archon": {
 		"api",
 		"calico-node-controller",
+		"cert-exporter",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
@@ -232,6 +240,7 @@ var environmentProjects = map[Environment][]string{
 	"jackal": {
 		"api",
 		"calico-node-controller",
+		"cert-exporter",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
@@ -254,6 +263,7 @@ var environmentProjects = map[Environment][]string{
 	"avatar": {
 		"api",
 		"calico-node-controller",
+		"cert-exporter",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
@@ -275,6 +285,7 @@ var environmentProjects = map[Environment][]string{
 	},
 	"amagon": {
 		"api",
+		"cert-exporter",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
@@ -298,6 +309,7 @@ var environmentProjects = map[Environment][]string{
 	},
 	"geckon": {
 		"api",
+		"cert-exporter",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
@@ -322,6 +334,7 @@ var environmentProjects = map[Environment][]string{
 	"gollum": {
 		"api",
 		"azure-operator",
+		"cert-exporter",
 		"cert-operator",
 		"cluster-service",
 		"companyd",
