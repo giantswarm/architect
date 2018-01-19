@@ -36,6 +36,7 @@ var environmentProjects = map[Environment][]string{
 		"kubernetesd",
 		"kvm-operator",
 		"passage",
+		"pv-cleaner-operator",
 		"testbot",
 		"tokend",
 		"userd",
