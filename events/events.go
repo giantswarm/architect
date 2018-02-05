@@ -38,6 +38,7 @@ var environmentProjects = map[Environment][]string{
 		"kvm-operator",
 		"node-operator",
 		"passage",
+		"pv-cleaner-operator",
 		"testbot",
 		"tokend",
 		"userd",
