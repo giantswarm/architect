@@ -4,13 +4,6 @@ import (
 	"github.com/giantswarm/microerror"
 )
 
-var multipleHelmChartsError = microerror.New("multiple helm charts")
-
-// IsMultipleHelmCharts asserts multipleHelmChartsError.
-func IsMultipleHelmChart(err error) bool {
-	return microerror.Cause(err) == multipleHelmChartsError
-}
-
 var incorrectShaError = microerror.New("incorrect sha")
 
 // IsIncorrectSha asserts incorrectShaError.

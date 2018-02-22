@@ -13,83 +13,53 @@ import (
 // TestTemplateHelmChartTask tests the TemplateHelmChartTask.
 func TestTemplateHelmChartTask(t *testing.T) {
 	tests := []struct {
-		helmPath string
+		chartDir string
 		sha      string
 		setUp    func(afero.Fs, string) error
 		check    func(afero.Fs, string) error
 	}{
-		// Test that an empty helm directory does nothing.
-		{
-			helmPath: "/helm",
-			sha:      "jabberwocky",
-			setUp: func(fs afero.Fs, helmPath string) error {
-				if err := fs.Mkdir(helmPath, permission); err != nil {
-					return microerror.Mask(err)
-				}
-
-				return nil
-			},
-			check: func(fs afero.Fs, helmPath string) error {
-				fileInfos, err := afero.ReadDir(fs, helmPath)
-				if err != nil {
-					return microerror.Mask(err)
-				}
-				if len(fileInfos) != 0 {
-					return microerror.Mask(multipleHelmChartsError)
-				}
-
-				return nil
-			},
-		},
-
 		// Test that a chart is templated correctly.
 		{
-			helmPath: "/helm",
+			chartDir: "/helm/test-chart",
 			sha:      "jabberwocky",
-			setUp: func(fs afero.Fs, helmPath string) error {
-				directories := []string{
-					helmPath,
-					filepath.Join(helmPath, "test-chart"),
-					filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName),
-				}
-
-				for _, directory := range directories {
-					if err := fs.Mkdir(directory, permission); err != nil {
-						return microerror.Mask(err)
-					}
-				}
-
+			setUp: func(fs afero.Fs, chartDir string) error {
 				files := []struct {
 					path string
 					data string
 				}{
 					{
-						path: filepath.Join(helmPath, "test-chart", HelmChartYamlName),
+						path: filepath.Join(chartDir, HelmChartYamlName),
 						data: "version: 1.0.0-[[ .SHA ]]",
 					},
 					{
-						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName),
+						path: filepath.Join(chartDir, HelmTemplateDirectoryName, HelmDeploymentYamlName),
 						data: "image: [[ .SHA ]] foo: {{ .Values.Foo }}",
 					},
 					{
-						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "daemonset.yaml"),
+						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "daemonset.yaml"),
 						data: "image: [[ .SHA ]] foo: {{ .Values.Foo }}",
 					},
 					{
-						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "otherfile.yaml"),
+						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "otherfile.yaml"),
 						data: "image: [[ .SHA ]] foo: < abc",
 					},
 					{
-						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "subdirectory", "replicaset.yaml"),
+						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "subdirectory", "replicaset.yaml"),
 						data: "image: [[ .SHA ]] foo: {{ .Values.Foo }}",
 					},
 					{
-						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "ingress.yaml"),
+						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "ingress.yaml"),
 						data: "host: {{ .Values.Installation.etc }}",
 					},
 				}
 
 				for _, file := range files {
+					dir := filepath.Base(file.path)
+					if dir != "." && dir != "/" {
+						if err := fs.MkdirAll(dir, permission); err != nil {
+							return microerror.Mask(err)
+						}
+					}
 					if err := afero.WriteFile(fs, file.path, []byte(file.data), permission); err != nil {
 						return microerror.Mask(err)
 					}
@@ -97,33 +67,33 @@ func TestTemplateHelmChartTask(t *testing.T) {
 
 				return nil
 			},
-			check: func(fs afero.Fs, helmPath string) error {
+			check: func(fs afero.Fs, chartDir string) error {
 				files := []struct {
 					path string
 					data string
 				}{
 					{
-						path: filepath.Join(helmPath, "test-chart", HelmChartYamlName),
+						path: filepath.Join(chartDir, HelmChartYamlName),
 						data: "version: 1.0.0-jabberwocky",
 					},
 					{
-						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, HelmDeploymentYamlName),
+						path: filepath.Join(chartDir, HelmTemplateDirectoryName, HelmDeploymentYamlName),
 						data: "image: jabberwocky foo: {{ .Values.Foo }}",
 					},
 					{
-						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "daemonset.yaml"),
+						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "daemonset.yaml"),
 						data: "image: jabberwocky foo: {{ .Values.Foo }}",
 					},
 					{
-						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "otherfile.yaml"),
+						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "otherfile.yaml"),
 						data: "image: jabberwocky foo: < abc",
 					},
 					{
-						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "subdirectory", "replicaset.yaml"),
+						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "subdirectory", "replicaset.yaml"),
 						data: "image: jabberwocky foo: {{ .Values.Foo }}",
 					},
 					{
-						path: filepath.Join(helmPath, "test-chart", HelmTemplateDirectoryName, "ingress.yaml"),
+						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "ingress.yaml"),
 						data: "host: {{ .Values.Installation.etc }}",
 					},
 				}
@@ -145,9 +115,9 @@ func TestTemplateHelmChartTask(t *testing.T) {
 
 	for index, test := range tests {
 		fs := afero.NewMemMapFs()
-		task := NewTemplateHelmChartTask(fs, test.helmPath, test.sha)
+		task := NewTemplateHelmChartTask(fs, test.chartDir, test.sha)
 
-		if err := test.setUp(fs, test.helmPath); err != nil {
+		if err := test.setUp(fs, test.chartDir); err != nil {
 			t.Fatalf("%v: unexpected error during setup: %v\n", index, err)
 		}
 
@@ -155,7 +125,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 			t.Fatalf("%v: unexpected error during templating: %v\n", index, err)
 		}
 
-		if err := test.check(fs, test.helmPath); err != nil {
+		if err := test.check(fs, test.chartDir); err != nil {
 			t.Fatalf("%v: unexpected error during check: %v\n", index, err)
 		}
 	}

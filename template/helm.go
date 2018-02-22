@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"os"
-	"path/filepath"
 	"text/template"
 
 	"github.com/spf13/afero"
@@ -32,29 +31,14 @@ const (
 
 type TemplateHelmChartTask struct {
 	fs       afero.Fs
-	helmPath string
+	chartDir string
 	sha      string
 }
 
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
 // It is an error if there are multiple charts in the helm directory.
 func (t TemplateHelmChartTask) Run() error {
-	fileInfos, err := afero.ReadDir(t.fs, t.helmPath)
-	if err != nil {
-		return microerror.Mask(err)
-	}
-
-	if len(fileInfos) == 0 {
-		return nil
-	}
-
-	if len(fileInfos) > 1 {
-		return microerror.Mask(multipleHelmChartsError)
-	}
-
-	chartDirectory := fileInfos[0].Name()
-
-	err = afero.Walk(t.fs, filepath.Join(t.helmPath, chartDirectory), func(path string, info os.FileInfo, err error) error {
+	err := afero.Walk(t.fs, t.chartDir, func(path string, info os.FileInfo, err error) error {
 		contents, err := afero.ReadFile(t.fs, path)
 		if err != nil {
 			microerror.Mask(err)
@@ -90,13 +74,13 @@ func (t TemplateHelmChartTask) Name() string {
 }
 
 func (t TemplateHelmChartTask) String() string {
-	return fmt.Sprintf(TemplateHelmChartTaskString, t.Name(), t.helmPath, t.sha)
+	return fmt.Sprintf(TemplateHelmChartTaskString, t.Name(), t.chartDir, t.sha)
 }
 
-func NewTemplateHelmChartTask(fs afero.Fs, helmPath, sha string) TemplateHelmChartTask {
+func NewTemplateHelmChartTask(fs afero.Fs, chartDir, sha string) TemplateHelmChartTask {
 	return TemplateHelmChartTask{
 		fs:       fs,
-		helmPath: helmPath,
+		chartDir: chartDir,
 		sha:      sha,
 	}
 }
