@@ -36,7 +36,6 @@ type TemplateHelmChartTask struct {
 }
 
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
-// It is an error if there are multiple charts in the helm directory.
 func (t TemplateHelmChartTask) Run() error {
 	err := afero.Walk(t.fs, t.chartDir, func(path string, info os.FileInfo, err error) error {
 		contents, err := afero.ReadFile(t.fs, path)
