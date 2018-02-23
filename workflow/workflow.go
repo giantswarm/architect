@@ -242,44 +242,45 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			wrappedDockerPushLatest := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushLatest)
 			w = append(w, wrappedDockerPushLatest)
 		}
+	}
 
-		chartDirectory := filepath.Join(projectInfo.WorkingDirectory, "helm", projectInfo.Project+"-chart")
-		chartDirectoryExists, err := afero.Exists(fs, chartDirectory)
+	chartDirectory := filepath.Join(projectInfo.WorkingDirectory, "helm", projectInfo.Project+"-chart")
+	chartDirectoryExists, err := afero.Exists(fs, chartDirectory)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	if chartDirectoryExists {
+		{
+			helmPull, err := NewHelmPullTask(fs, projectInfo)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+			wrappedHelmPull := tasks.NewRetryTask(backoff.NewExponentialBackOff(), helmPull)
+
+			fmt.Printf("adding wrappedHelmPull %v\n", chartDirectory)
+			w = append(w, wrappedHelmPull)
+		}
+
+		helmChartTemplate, err := NewTemplateHelmChartTask(fs, chartDirectory, projectInfo)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
-		if chartDirectoryExists {
-			{
-				helmPull, err := NewHelmPullTask(fs, projectInfo)
-				if err != nil {
-					return nil, microerror.Mask(err)
-				}
-				wrappedHelmPull := tasks.NewRetryTask(backoff.NewExponentialBackOff(), helmPull)
+		w = append(w, helmChartTemplate)
 
-				w = append(w, wrappedHelmPull)
-			}
-
-			helmChartTemplate, err := NewTemplateHelmChartTask(fs, chartDirectory, projectInfo)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			w = append(w, helmChartTemplate)
-
-			helmLogin, err := NewHelmLoginTask(fs, projectInfo)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			w = append(w, helmLogin)
-
-			helmPromoteToChannel, err := NewHelmPromoteToStableChannelTask(fs, chartDirectory, projectInfo)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-
-			wrappedHelmPromoteToChannel := tasks.NewRetryTask(backoff.NewExponentialBackOff(), helmPromoteToChannel)
-
-			w = append(w, wrappedHelmPromoteToChannel)
+		helmLogin, err := NewHelmLoginTask(fs, projectInfo)
+		if err != nil {
+			return nil, microerror.Mask(err)
 		}
+		w = append(w, helmLogin)
+
+		helmPromoteToChannel, err := NewHelmPromoteToStableChannelTask(fs, chartDirectory, projectInfo)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+
+		wrappedHelmPromoteToChannel := tasks.NewRetryTask(backoff.NewExponentialBackOff(), helmPromoteToChannel)
+
+		w = append(w, wrappedHelmPromoteToChannel)
 	}
 
 	return w, nil
