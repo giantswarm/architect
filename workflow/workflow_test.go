@@ -3,7 +3,7 @@ package workflow
 import (
 	"fmt"
 	"path/filepath"
-	"strings"
+	"reflect"
 	"testing"
 
 	"github.com/spf13/afero"
@@ -11,6 +11,7 @@ import (
 	"github.com/giantswarm/microerror"
 
 	"github.com/giantswarm/architect/tasks"
+	"github.com/giantswarm/architect/template"
 )
 
 func TestWorkflowString(t *testing.T) {
@@ -67,9 +68,9 @@ func TestWorkflowString(t *testing.T) {
 // TestGetBuildWorkflow tests that build workflows are correctly created for builds
 func TestGetBuildWorkflow(t *testing.T) {
 	projectInfo := ProjectInfo{
-		WorkingDirectory: "/test/",
+		WorkingDirectory: "/test-project/",
 		Organisation:     "giantswarm",
-		Project:          "test",
+		Project:          "test-project",
 		Sha:              "jfkejhfkejfkejfef",
 		Registry:         "quay.io",
 		DockerUsername:   "test",
@@ -82,17 +83,18 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 	tests := []struct {
 		setUp             func(afero.Fs) error
-		expectedTaskNames map[int]string
+		expectedTaskNames []string
+		errorMatcher      func(error) bool
 	}{
-		// 0: Test that a project with no files produces an empty workflow.
+		// Test 0 that a project with no files produces an empty workflow.
 		{
 			setUp: func(fs afero.Fs) error {
 				return nil
 			},
-			expectedTaskNames: map[int]string{},
+			expectedTaskNames: []string{},
 		},
 
-		// 1: Test that a project with only golang files produces a correct workflow.
+		// Test 1 that a project with only golang files produces a correct workflow.
 		{
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "main.go")); err != nil {
@@ -101,16 +103,16 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedTaskNames: map[int]string{
-				0: GoPullTaskName,
-				1: GoFmtTaskName,
-				2: GoVetTaskName,
-				3: GoTestTaskName,
-				4: GoBuildTaskName,
+			expectedTaskNames: []string{
+				GoPullTaskName,
+				GoFmtTaskName,
+				GoVetTaskName,
+				GoTestTaskName,
+				GoBuildTaskName,
 			},
 		},
 
-		// 2: Test that a library project creates a correct workflow.
+		// Test 2 that a library project creates a correct workflow.
 		{
 			setUp: func(fs afero.Fs) error {
 				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "client"), 0644); err != nil {
@@ -123,15 +125,15 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedTaskNames: map[int]string{
-				0: GoPullTaskName,
-				1: GoFmtTaskName,
-				2: GoVetTaskName,
-				3: GoTestTaskName,
+			expectedTaskNames: []string{
+				GoPullTaskName,
+				GoFmtTaskName,
+				GoVetTaskName,
+				GoTestTaskName,
 			},
 		},
 
-		// 3: Test that a particularly nested library project creates a correct workflow.
+		// Test 3 that a particularly nested library project creates a correct workflow.
 		{
 			setUp: func(fs afero.Fs) error {
 				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "server"), 0644); err != nil {
@@ -148,15 +150,15 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedTaskNames: map[int]string{
-				0: GoPullTaskName,
-				1: GoFmtTaskName,
-				2: GoVetTaskName,
-				3: GoTestTaskName,
+			expectedTaskNames: []string{
+				GoPullTaskName,
+				GoFmtTaskName,
+				GoVetTaskName,
+				GoTestTaskName,
 			},
 		},
 
-		// 4: Test that a project with a golang file not named `main.go` produces a
+		// Test 4 that a project with a golang file not named `main.go` produces a
 		// golang build workflow.
 		{
 			setUp: func(fs afero.Fs) error {
@@ -166,16 +168,16 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedTaskNames: map[int]string{
-				0: GoPullTaskName,
-				1: GoFmtTaskName,
-				2: GoVetTaskName,
-				3: GoTestTaskName,
-				4: GoBuildTaskName,
+			expectedTaskNames: []string{
+				GoPullTaskName,
+				GoFmtTaskName,
+				GoVetTaskName,
+				GoTestTaskName,
+				GoBuildTaskName,
 			},
 		},
 
-		// 5: Test that a project with only a dockerfile produces a correct workflow.
+		// Test 5 that a project with only a dockerfile produces a correct workflow.
 		{
 			setUp: func(fs afero.Fs) error {
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
@@ -184,14 +186,14 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedTaskNames: map[int]string{
-				0: DockerBuildTaskName,
-				1: DockerLoginTaskName,
-				2: DockerPushShaTaskName,
+			expectedTaskNames: []string{
+				DockerBuildTaskName,
+				DockerLoginTaskName,
+				DockerPushShaTaskName,
 			},
 		},
 
-		// 6: Test that a project with golang files, and a dockerfile produces a correct
+		// Test 6 that a project with golang files, and a dockerfile produces a correct
 		// workflow.
 		{
 			setUp: func(fs afero.Fs) error {
@@ -204,142 +206,269 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 				return nil
 			},
-			expectedTaskNames: map[int]string{
-				0: GoPullTaskName,
-				1: GoFmtTaskName,
-				2: GoVetTaskName,
-				3: GoTestTaskName,
-				4: GoBuildTaskName,
-				5: DockerBuildTaskName,
-				6: DockerRunVersionTaskName,
-				7: DockerRunHelpTaskName,
-				8: DockerLoginTaskName,
-				9: DockerPushShaTaskName,
+			expectedTaskNames: []string{
+				GoPullTaskName,
+				GoFmtTaskName,
+				GoVetTaskName,
+				GoTestTaskName,
+				GoBuildTaskName,
+				DockerBuildTaskName,
+				DockerRunVersionTaskName,
+				DockerRunHelpTaskName,
+				DockerLoginTaskName,
+				DockerPushShaTaskName,
 			},
+		},
+
+		// Test 7 that a project with multiple helm charts has all of them pushed.
+		{
+			setUp: func(fs afero.Fs) error {
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-chart"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-something-chart"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-another-chart"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+
+				return nil
+			},
+			expectedTaskNames: []string{
+				HelmPullTaskName,
+				HelmLoginTaskName,
+				template.TemplateHelmChartTaskName,
+				HelmPushTaskName,
+				template.TemplateHelmChartTaskName,
+				HelmPushTaskName,
+				template.TemplateHelmChartTaskName,
+				HelmPushTaskName,
+			},
+		},
+
+		// Test 8 that a docker image is pushed before helm chart.
+		{
+			setUp: func(fs afero.Fs) error {
+				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
+					return microerror.Mask(err)
+				}
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-some-chart"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+
+				return nil
+			},
+			expectedTaskNames: []string{
+				DockerBuildTaskName,
+				DockerLoginTaskName,
+				DockerPushShaTaskName,
+				HelmPullTaskName,
+				HelmLoginTaskName,
+				template.TemplateHelmChartTaskName,
+				HelmPushTaskName,
+			},
+		},
+
+		// Test 9 that charts not starting with a project name causes an error.
+		{
+			setUp: func(fs afero.Fs) error {
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/some-chart"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+
+				return nil
+			},
+			errorMatcher: IsInvalidHelmDirectory,
+		},
+
+		// Test 10 that charts not starting with a project name causes an error.
+		{
+			setUp: func(fs afero.Fs) error {
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-chart"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/some-chart"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+
+				return nil
+			},
+			errorMatcher: IsInvalidHelmDirectory,
 		},
 	}
 
-	for index, test := range tests {
+	for i, tc := range tests {
 		fs := afero.NewMemMapFs()
-		if err := test.setUp(fs); err != nil {
-			t.Fatalf("test %d received unexpected error during setup: %#v", index, err)
+		if err := tc.setUp(fs); err != nil {
+			t.Fatalf("test %d received unexpected error during setup: %#v", i, err)
 		}
 
 		workflow, err := NewBuild(projectInfo, fs)
-		if err != nil {
-			t.Fatalf("test %d received unexpected error getting build workflow: %#v", index, err)
+		if err != nil && tc.errorMatcher != nil && tc.errorMatcher(err) {
+			continue
+		}
+		if err == nil && tc.errorMatcher != nil {
+			t.Fatalf("test %d: expected error, got %#v", i, err)
+		}
+		if err != nil && tc.errorMatcher == nil {
+			t.Fatalf("test %d: unexpected error = %#v", i, err)
 		}
 
-		if len(workflow) != len(test.expectedTaskNames) {
-			t.Fatalf("test %d expected %d tasks, received %#v", index, len(test.expectedTaskNames), len(workflow))
-		}
-
-		for testIndex, expectedTaskName := range test.expectedTaskNames {
-			if !strings.Contains(workflow[testIndex].Name(), expectedTaskName) {
-				t.Fatalf(
-					"test %d task %d expected name '%s' received name '%s'",
-					index,
-					testIndex,
-					expectedTaskName,
-					workflow[testIndex].Name(),
-				)
+		taskNames := []string{}
+		for _, task := range workflow {
+			retryTask, ok := task.(tasks.RetryTask)
+			if ok {
+				taskNames = append(taskNames, retryTask.Task.Name())
+			} else {
+				taskNames = append(taskNames, task.Name())
 			}
+		}
+
+		if !reflect.DeepEqual(taskNames, tc.expectedTaskNames) {
+			t.Fatalf("test %d expected %v tasks, got %v", i, tc.expectedTaskNames, taskNames)
 		}
 	}
 }
 
 // TestGetDeployWorkflow tests that deploy workflows are correctly created
 func TestGetDeployWorkflow(t *testing.T) {
-	workingDirectory := "/test/"
+	projectInfo := ProjectInfo{
+		WorkingDirectory: "/test-project/",
+		Organisation:     "giantswarm",
+		Project:          "test-project",
+		Sha:              "1cd72a25e16e93da14f08d95bd98662f8827028e",
+		Registry:         "quay.io",
+		DockerUsername:   "test",
+		DockerPassword:   "test",
+	}
 
 	tests := []struct {
-		projectInfo       ProjectInfo
 		setUp             func(afero.Fs) error
-		expectedTaskNames map[int]string
+		expectedTaskNames []string
 	}{
-		// Test 1 a project with no files produces an empty workflow.
+		// Test 0 a project with no files produces an empty workflow.
 		{
-			projectInfo: ProjectInfo{
-				WorkingDirectory: workingDirectory,
-				Organisation:     "giantswarm",
-				Project:          "test",
-			},
 			setUp: func(fs afero.Fs) error {
 				return nil
 			},
-			expectedTaskNames: map[int]string{},
+			expectedTaskNames: []string{},
 		},
 
-		// Test 2 a project with only a Dockerfile productes a workflow containg
+		// Test 1 a project with only a Dockerfile productes a workflow containg
 		// docker push.
 		{
-			projectInfo: ProjectInfo{
-				WorkingDirectory: workingDirectory,
-				Organisation:     "giantswarm",
-				Project:          "test",
-				Sha:              "1cd72a25e16e93da14f08d95bd98662f8827028e",
-				Registry:         "quay.io",
-				DockerUsername:   "test",
-				DockerPassword:   "test",
-			},
 			setUp: func(fs afero.Fs) error {
-				if _, err := fs.Create(filepath.Join(workingDirectory, "Dockerfile")); err != nil {
+				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
 					return microerror.Mask(err)
 				}
 
 				return nil
 			},
-			expectedTaskNames: map[int]string{
-				0: DockerLoginTaskName,
-				1: DockerTagLatestTaskName,
-				2: DockerPushLatestTaskName,
+			expectedTaskNames: []string{
+				DockerLoginTaskName,
+				DockerTagLatestTaskName,
+				DockerPushLatestTaskName,
 			},
 		},
 
-		// Test 3 a project with a helm directory produces a workflow that does
+		// Test 2 a project with a helm directory produces a workflow that does
 		// nothing.
 		{
-			projectInfo: ProjectInfo{
-				WorkingDirectory: workingDirectory,
-				Organisation:     "giantswarm",
-				Project:          "test",
-			},
 			setUp: func(fs afero.Fs) error {
-				if err := fs.Mkdir(filepath.Join(workingDirectory, "helm/"), 0644); err != nil {
+				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
+					return microerror.Mask(err)
+				}
+				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "helm/"), 0644); err != nil {
 					return microerror.Mask(err)
 				}
 
 				return nil
 			},
-			expectedTaskNames: map[int]string{},
+			expectedTaskNames: []string{
+				DockerLoginTaskName,
+				DockerTagLatestTaskName,
+				DockerPushLatestTaskName,
+			},
+		},
+
+		// Test 3 a project with a helm/PROJECT-chart directory
+		// produces a workflow with helm push.
+		{
+			setUp: func(fs afero.Fs) error {
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm", "test-project-chart"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+
+				return nil
+			},
+			expectedTaskNames: []string{
+				HelmPullTaskName,
+				template.TemplateHelmChartTaskName,
+				HelmLoginTaskName,
+				HelmPushTaskName,
+			},
+		},
+
+		// Test 4 a project with a helm/PROJECT-something-chart directory
+		// doesn't push helm chart as it isn't main chart.
+		{
+			setUp: func(fs afero.Fs) error {
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-something-chart"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+
+				return nil
+			},
+			expectedTaskNames: []string{},
+		},
+
+		// Test 5 a project with a helm/PROJECT-chart and
+		// helm/PROJECT-something-chart directories pushes only one
+		// (main) chart.
+		{
+			setUp: func(fs afero.Fs) error {
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-chart"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-something-chart"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+
+				return nil
+			},
+			expectedTaskNames: []string{
+				HelmPullTaskName,
+				template.TemplateHelmChartTaskName,
+				HelmLoginTaskName,
+				HelmPushTaskName,
+			},
 		},
 	}
 
-	for index, test := range tests {
+	for i, tc := range tests {
 		fs := afero.NewMemMapFs()
-		if err := test.setUp(fs); err != nil {
-			t.Fatalf("test %d received unexpected error during setup: %#v", index+1, err)
+		if err := tc.setUp(fs); err != nil {
+			t.Fatalf("test %d received unexpected error during setup: %#v", i, err)
 		}
 
-		workflow, err := NewDeploy(test.projectInfo, fs)
+		workflow, err := NewDeploy(projectInfo, fs)
 		if err != nil {
-			t.Fatalf("test %d received unexpected error getting build workflow: %#v", index+1, err)
+			t.Fatalf("test %d received unexpected error getting build workflow: %#v", i, err)
 		}
 
-		if len(workflow) != len(test.expectedTaskNames) {
-			t.Fatalf("test %d expected %d tasks received %d", index+1, len(test.expectedTaskNames), len(workflow))
-		}
-
-		for testIndex, expectedTaskName := range test.expectedTaskNames {
-			if !strings.Contains(workflow[testIndex].Name(), expectedTaskName) {
-				t.Fatalf(
-					"test %d task %d expected name '%s' received name '%s'",
-					index+1,
-					testIndex,
-					expectedTaskName,
-					workflow[testIndex].Name(),
-				)
+		taskNames := []string{}
+		for _, task := range workflow {
+			retryTask, ok := task.(tasks.RetryTask)
+			if ok {
+				taskNames = append(taskNames, retryTask.Task.Name())
+			} else {
+				taskNames = append(taskNames, task.Name())
 			}
+		}
+
+		if !reflect.DeepEqual(taskNames, tc.expectedTaskNames) {
+			t.Fatalf("test %d expected %v tasks, got %v", i, tc.expectedTaskNames, taskNames)
 		}
 	}
 }

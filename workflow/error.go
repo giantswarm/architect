@@ -150,3 +150,10 @@ var emptyKubectlVersionError = microerror.New("empty kubectl version")
 func IsEmptyKubectlVersion(err error) bool {
 	return microerror.Cause(err) == emptyKubectlVersionError
 }
+
+var invalidHelmDirectoryError = microerror.New("invalid helm directory")
+
+// IsInvalidHelmDirectory asserts invalidHelmDirectoryError.
+func IsInvalidHelmDirectory(err error) bool {
+	return microerror.Cause(err) == invalidHelmDirectoryError
+}
