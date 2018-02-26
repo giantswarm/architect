@@ -45,6 +45,8 @@ type ProjectInfo struct {
 	Goarch        string
 	GolangImage   string
 	GolangVersion string
+
+	Channels []string
 }
 
 func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
@@ -273,7 +275,7 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 		w = append(w, helmLogin)
 
-		helmPromoteToChannel, err := NewHelmPromoteToStableChannelTask(fs, chartDirectory, projectInfo)
+		helmPromoteToChannel, err := NewHelmPromoteToChannelTask(fs, chartDirectory, projectInfo, "stable")
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -283,5 +285,29 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		w = append(w, wrappedHelmPromoteToChannel)
 	}
 
+	return w, nil
+}
+
+func NewPublish(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
+	w := Workflow{}
+
+	chartDirectory := filepath.Join(projectInfo.WorkingDirectory, "helm", projectInfo.Project+"-chart")
+	chartDirectoryExists, err := afero.Exists(fs, chartDirectory)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	if chartDirectoryExists {
+		for _, c := range projectInfo.Channels {
+			helmPromoteToChannel, err := NewHelmPromoteToChannelTask(fs, chartDirectory, projectInfo, c)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+
+			wrappedHelmPromoteToChannel := tasks.NewRetryTask(backoff.NewExponentialBackOff(), helmPromoteToChannel)
+
+			w = append(w, wrappedHelmPromoteToChannel)
+		}
+	}
 	return w, nil
 }
