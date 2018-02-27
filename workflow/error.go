@@ -32,6 +32,13 @@ func IsIncorrectNumberCerts(err error) bool {
 	return microerror.Cause(err) == incorrectNumberCertsError
 }
 
+var emptyChannelError = microerror.New("empty channel")
+
+// IsEmptyChannel asserts emptyChannelError
+func IsEmptyChannel(err error) bool {
+	return microerror.Cause(err) == emptyChannelError
+}
+
 var emptyWorkingDirectoryError = microerror.New("empty working directory")
 
 // IsEmptyWorkingDirectory asserts emptyWorkingDirectoryError

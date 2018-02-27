@@ -497,6 +497,7 @@ func TestGetPublishWorkflow(t *testing.T) {
 		description       string
 		channels          []string
 		expectedTaskNames []string
+		expectedError     error
 	}{
 		{
 			description: "default channels",
@@ -523,6 +524,12 @@ func TestGetPublishWorkflow(t *testing.T) {
 				fmt.Sprintf("%s-unstable", HelmPushTaskName),
 			},
 		},
+		{
+			description:       "error on empty channels",
+			channels:          []string{"alpha", "beta", "", "unstable", ""},
+			expectedTaskNames: []string{},
+			expectedError:     emptyChannelError,
+		},
 	}
 
 	for _, tc := range tcs {
@@ -534,7 +541,10 @@ func TestGetPublishWorkflow(t *testing.T) {
 
 			projectInfo.Channels = tc.channels
 			workflow, err := NewPublish(projectInfo, fs)
-			if err != nil {
+			if tc.expectedError != nil && err == nil {
+				t.Errorf("expected error didn't happen")
+			}
+			if err != nil && tc.expectedError != nil && err.Error() != tc.expectedError.Error() {
 				t.Errorf("received unexpected error getting build workflow: %v", err)
 			}
 
