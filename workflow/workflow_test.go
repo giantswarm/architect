@@ -523,6 +523,15 @@ func TestGetPublishWorkflow(t *testing.T) {
 				fmt.Sprintf("%s-unstable", HelmPushTaskName),
 			},
 		},
+		{
+			description: "do not push empty channels",
+			channels:    []string{"alpha", "beta", "", "unstable", ""},
+			expectedTaskNames: []string{
+				fmt.Sprintf("%s-alpha", HelmPushTaskName),
+				fmt.Sprintf("%s-beta", HelmPushTaskName),
+				fmt.Sprintf("%s-unstable", HelmPushTaskName),
+			},
+		},
 	}
 
 	for _, tc := range tcs {
