@@ -300,7 +300,7 @@ func NewPublish(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 	if chartDirectoryExists {
 		for _, c := range projectInfo.Channels {
 			if c == "" {
-				continue
+				return nil, microerror.Mask(emptyChannelError)
 			}
 			helmPromoteToChannel, err := NewHelmPromoteToChannelTask(fs, chartDirectory, projectInfo, c)
 			if err != nil {
