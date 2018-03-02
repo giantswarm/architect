@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
+	"github.com/giantswarm/architect/pipeline"
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/workflow"
 )
@@ -19,7 +20,8 @@ var (
 		Run:   runPublish,
 	}
 
-	channels string
+	channels      string
+	pipelineStart bool
 )
 
 func init() {
@@ -37,10 +39,22 @@ func init() {
 	publishCmd.Flags().StringVar(&dockerPassword, "docker-password", defaultDockerPassword, "password to use to login to docker registry")
 
 	publishCmd.Flags().StringVar(&channels, "channels", "beta,testing", "channels to publish the charts to, separated by comma")
+	publishCmd.Flags().BoolVar(&pipelineStart, "pipeline", true, "specifies if charts should be promoted to the first channel in the pipeline")
 }
 
 func runPublish(cmd *cobra.Command, args []string) {
 	fs := afero.NewOsFs()
+
+	var chs []string
+	if pipelineStart {
+		startChannel, err := pipeline.StartChannel(fs, workingDirectory, project)
+		if err != nil {
+			log.Fatalf("could not get pipeline start channel: %v", err)
+		}
+		chs = []string{startChannel}
+	} else {
+		chs = strings.Split(channels, ",")
+	}
 
 	projectInfo := workflow.ProjectInfo{
 		WorkingDirectory: workingDirectory,
@@ -54,7 +68,7 @@ func runPublish(cmd *cobra.Command, args []string) {
 		DockerUsername: dockerUsername,
 		DockerPassword: dockerPassword,
 
-		Channels: strings.Split(channels, ","),
+		Channels: chs,
 	}
 
 	workflow, err := workflow.NewPublish(projectInfo, fs)
