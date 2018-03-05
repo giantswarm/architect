@@ -1,3 +1,5 @@
+// Package pipeline provides functionality for moving artifacts between
+// different stages in the deployment process.
 package pipeline
 
 import (
@@ -9,6 +11,9 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// StartChannel determines the initial channel to push a chart when the
+// deployment process starts. It has inforamtion about the chart version
+// and the initial stability defined for charts.
 func StartChannel(fs afero.Fs, workingDirectory, project string) (string, error) {
 	c := &struct {
 		Version string `yaml:"version"`
