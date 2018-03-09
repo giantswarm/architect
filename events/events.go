@@ -353,8 +353,6 @@ var environmentProjects = map[Environment][]string{
 		"giantswarmio-webapp",
 		"web-assets",
 		"sitesearch",
-		"classify",
-		"mole-rat",
 	},
 	"gorgoth": {
 		"api",
