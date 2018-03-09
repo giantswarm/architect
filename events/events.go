@@ -343,6 +343,17 @@ var environmentProjects = map[Environment][]string{
 		"tokend",
 		"userd",
 	},
+	"gollum_6f342": {
+		"api-spec",
+		"docs",
+		"docs-indexer",
+		"docs-proxy",
+		"draughtsman",
+		"giantswarmio-nginx",
+		"giantswarmio-webapp",
+		"web-assets",
+		"sitesearch",
+	},
 	"gorgoth": {
 		"api",
 		"cert-exporter",
