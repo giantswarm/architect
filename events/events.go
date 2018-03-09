@@ -343,7 +343,7 @@ var environmentProjects = map[Environment][]string{
 		"tokend",
 		"userd",
 	},
-	"gollum_t6jsz": {
+	"gollum_6f342": {
 		"api-spec",
 		"docs",
 		"docs-indexer",
