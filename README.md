@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/giantswarm/architect.svg?style=shield)](https://circleci.com/gh/giantswarm/architect) [![Docker Repository on Quay](https://quay.io/repository/giantswarm/architect/status "Docker Repository on Quay")](https://quay.io/repository/giantswarm/architect)
+[![CircleCI](https://circleci.com/gh/giantswarm/architect.svg?style=shield)](https://circleci.com/gh/giantswarm/architect)
 
 # architect
 
