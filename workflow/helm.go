@@ -42,10 +42,10 @@ func NewHelmPullTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	return helmPull, nil
 }
 
-func NewTemplateHelmChartTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+func NewTemplateHelmChartTask(fs afero.Fs, chartDir string, projectInfo ProjectInfo) (tasks.Task, error) {
 	templateHelmChart := template.NewTemplateHelmChartTask(
 		fs,
-		projectInfo.HelmDirectoryPath,
+		chartDir,
 		projectInfo.Sha,
 	)
 
@@ -78,21 +78,11 @@ func NewHelmLoginTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) 
 	return helmLogin, nil
 }
 
-func NewHelmPushTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
-	helmDirExists, err := afero.DirExists(fs, filepath.Join(projectInfo.WorkingDirectory, "helm"))
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-	if !helmDirExists {
-		return nil, microerror.Mask(noHelmDirectoryError)
-	}
-
+func NewHelmPushTask(fs afero.Fs, chartDir string, projectInfo ProjectInfo) (tasks.Task, error) {
 	cnrDir, err := cnrDirectory()
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-
-	chartDir := filepath.Join(projectInfo.WorkingDirectory, "helm", fmt.Sprintf("%v-chart", projectInfo.Project))
 
 	helmPush := tasks.NewDockerTask(
 		HelmPushTaskName,
@@ -116,24 +106,14 @@ func NewHelmPushTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	return helmPush, nil
 }
 
-func NewHelmPromoteToStableChannelTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
-	helmDirExists, err := afero.DirExists(fs, filepath.Join(projectInfo.WorkingDirectory, "helm"))
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-	if !helmDirExists {
-		return nil, microerror.Mask(noHelmDirectoryError)
-	}
-
+func NewHelmPromoteToChannelTask(fs afero.Fs, chartDir string, projectInfo ProjectInfo, channel string) (tasks.Task, error) {
 	cnrDir, err := cnrDirectory()
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	chartDir := filepath.Join(projectInfo.WorkingDirectory, "helm", fmt.Sprintf("%v-chart", projectInfo.Project))
-
 	helmPromoteToChannel := tasks.NewDockerTask(
-		HelmPushTaskName,
+		fmt.Sprintf("%s-%s", HelmPushTaskName, channel),
 		tasks.DockerTaskConfig{
 			WorkingDirectory: chartDir,
 			Image:            HelmImage,
@@ -144,7 +124,7 @@ func NewHelmPromoteToStableChannelTask(fs afero.Fs, projectInfo ProjectInfo) (ta
 			Args: []string{
 				"registry",
 				"push",
-				"--channel=stable",
+				fmt.Sprintf("--channel=%s", channel),
 				fmt.Sprintf("--namespace=%v", projectInfo.Organisation),
 				projectInfo.Registry,
 			},

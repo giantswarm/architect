@@ -32,6 +32,13 @@ func IsIncorrectNumberCerts(err error) bool {
 	return microerror.Cause(err) == incorrectNumberCertsError
 }
 
+var emptyChannelError = microerror.New("empty channel")
+
+// IsEmptyChannel asserts emptyChannelError
+func IsEmptyChannel(err error) bool {
+	return microerror.Cause(err) == emptyChannelError
+}
+
 var emptyWorkingDirectoryError = microerror.New("empty working directory")
 
 // IsEmptyWorkingDirectory asserts emptyWorkingDirectoryError
@@ -149,4 +156,11 @@ var emptyKubectlVersionError = microerror.New("empty kubectl version")
 // IsEmptyKubectlVersion asserts emptyKubectlVersionError
 func IsEmptyKubectlVersion(err error) bool {
 	return microerror.Cause(err) == emptyKubectlVersionError
+}
+
+var invalidHelmDirectoryError = microerror.New("invalid helm directory")
+
+// IsInvalidHelmDirectory asserts invalidHelmDirectoryError.
+func IsInvalidHelmDirectory(err error) bool {
+	return microerror.Cause(err) == invalidHelmDirectoryError
 }

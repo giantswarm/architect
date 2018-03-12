@@ -45,6 +45,8 @@ type ProjectInfo struct {
 	Goarch        string
 	GolangImage   string
 	GolangVersion string
+
+	Channels []string
 }
 
 func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
@@ -150,7 +152,8 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 	}
 
-	helmDirectoryExists, err := afero.Exists(fs, filepath.Join(projectInfo.WorkingDirectory, "helm"))
+	helmDirectory := filepath.Join(projectInfo.WorkingDirectory, "helm")
+	helmDirectoryExists, err := afero.Exists(fs, helmDirectory)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -165,23 +168,46 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			w = append(w, wrappedHelmPull)
 		}
 
-		helmChartTemplate, err := NewTemplateHelmChartTask(fs, projectInfo)
+		fileInfos, err := afero.ReadDir(fs, helmDirectory)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
-		w = append(w, helmChartTemplate)
 
-		helmLogin, err := NewHelmLoginTask(fs, projectInfo)
-		if err != nil {
-			return nil, microerror.Mask(err)
+		if len(fileInfos) > 0 {
+			helmLogin, err := NewHelmLoginTask(fs, projectInfo)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+			w = append(w, helmLogin)
 		}
-		w = append(w, helmLogin)
 
-		helmPush, err := NewHelmPushTask(fs, projectInfo)
-		if err != nil {
-			return nil, microerror.Mask(err)
+		prefix := projectInfo.Project + "-"
+		suffix := "-chart"
+		for _, fileInfo := range fileInfos {
+			if !fileInfo.IsDir() {
+				return nil, microerror.Maskf(invalidHelmDirectoryError, "%q is not a directory", fileInfo.Name())
+			}
+			if !strings.HasPrefix(fileInfo.Name(), prefix) {
+				return nil, microerror.Maskf(invalidHelmDirectoryError, "%q must start with %q", fileInfo.Name(), prefix)
+			}
+			if !strings.HasSuffix(fileInfo.Name(), suffix) {
+				return nil, microerror.Maskf(invalidHelmDirectoryError, "%q must end with %q", fileInfo.Name(), suffix)
+			}
+
+			chartDir := filepath.Join(helmDirectory, fileInfo.Name())
+
+			helmChartTemplate, err := NewTemplateHelmChartTask(fs, chartDir, projectInfo)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+			w = append(w, helmChartTemplate)
+
+			helmPush, err := NewHelmPushTask(fs, chartDir, projectInfo)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+			w = append(w, helmPush)
 		}
-		w = append(w, helmPush)
 	}
 
 	return w, nil
@@ -218,35 +244,65 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			wrappedDockerPushLatest := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushLatest)
 			w = append(w, wrappedDockerPushLatest)
 		}
+	}
 
-		helmDirectoryExists, err := afero.Exists(fs, filepath.Join(projectInfo.WorkingDirectory, "helm"))
+	chartDirectory := filepath.Join(projectInfo.WorkingDirectory, "helm", projectInfo.Project+"-chart")
+	chartDirectoryExists, err := afero.Exists(fs, chartDirectory)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	if chartDirectoryExists {
+		{
+			helmPull, err := NewHelmPullTask(fs, projectInfo)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+			wrappedHelmPull := tasks.NewRetryTask(backoff.NewExponentialBackOff(), helmPull)
+
+			fmt.Printf("adding wrappedHelmPull %v\n", chartDirectory)
+			w = append(w, wrappedHelmPull)
+		}
+
+		helmChartTemplate, err := NewTemplateHelmChartTask(fs, chartDirectory, projectInfo)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
-		if helmDirectoryExists {
-			{
-				helmPull, err := NewHelmPullTask(fs, projectInfo)
-				if err != nil {
-					return nil, microerror.Mask(err)
-				}
-				wrappedHelmPull := tasks.NewRetryTask(backoff.NewExponentialBackOff(), helmPull)
+		w = append(w, helmChartTemplate)
 
-				w = append(w, wrappedHelmPull)
+		helmLogin, err := NewHelmLoginTask(fs, projectInfo)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		w = append(w, helmLogin)
+
+		helmPromoteToChannel, err := NewHelmPromoteToChannelTask(fs, chartDirectory, projectInfo, "stable")
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+
+		wrappedHelmPromoteToChannel := tasks.NewRetryTask(backoff.NewExponentialBackOff(), helmPromoteToChannel)
+
+		w = append(w, wrappedHelmPromoteToChannel)
+	}
+
+	return w, nil
+}
+
+func NewPublish(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
+	w := Workflow{}
+
+	chartDirectory := filepath.Join(projectInfo.WorkingDirectory, "helm", projectInfo.Project+"-chart")
+	chartDirectoryExists, err := afero.Exists(fs, chartDirectory)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	if chartDirectoryExists {
+		for _, c := range projectInfo.Channels {
+			if c == "" {
+				return nil, microerror.Mask(emptyChannelError)
 			}
-
-			helmChartTemplate, err := NewTemplateHelmChartTask(fs, projectInfo)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			w = append(w, helmChartTemplate)
-
-			helmLogin, err := NewHelmLoginTask(fs, projectInfo)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			w = append(w, helmLogin)
-
-			helmPromoteToChannel, err := NewHelmPromoteToStableChannelTask(fs, projectInfo)
+			helmPromoteToChannel, err := NewHelmPromoteToChannelTask(fs, chartDirectory, projectInfo, c)
 			if err != nil {
 				return nil, microerror.Mask(err)
 			}
@@ -255,8 +311,6 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 
 			w = append(w, wrappedHelmPromoteToChannel)
 		}
-
 	}
-
 	return w, nil
 }
