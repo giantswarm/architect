@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/giantswarm/architect.svg?style=shield)](https://circleci.com/gh/giantswarm/architect) [![Docker Repository on Quay](https://quay.io/repository/giantswarm/architect/status "Docker Repository on Quay")](https://quay.io/repository/giantswarm/architect)
+
 # architect
 
 architect is a highly opinionated tool used at Giant Swarm for building and deploying services.
