@@ -12,6 +12,13 @@ type ConcurrentTask struct {
 	tasks []Task
 }
 
+func NewConcurrentTask(name string, tasks ...Task) *ConcurrentTask {
+	return &ConcurrentTask{
+		name:  name,
+		tasks: tasks,
+	}
+}
+
 func (c *ConcurrentTask) Run() error {
 	var g errgroup.Group
 
@@ -41,11 +48,4 @@ func (c *ConcurrentTask) String() string {
 	}
 
 	return buffer.String()
-}
-
-func NewConcurrentTask(name string, tasks ...Task) *ConcurrentTask {
-	return &ConcurrentTask{
-		name:  name,
-		tasks: tasks,
-	}
 }
