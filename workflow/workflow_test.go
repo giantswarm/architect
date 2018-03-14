@@ -106,9 +106,8 @@ func TestGetBuildWorkflow(t *testing.T) {
 			expectedTaskNames: []string{
 				GoPullTaskName,
 				GoFmtTaskName,
-				GoVetTaskName,
-				GoTestTaskName,
 				GoBuildTaskName,
+				GoTestTaskName,
 			},
 		},
 
@@ -128,7 +127,6 @@ func TestGetBuildWorkflow(t *testing.T) {
 			expectedTaskNames: []string{
 				GoPullTaskName,
 				GoFmtTaskName,
-				GoVetTaskName,
 				GoTestTaskName,
 			},
 		},
@@ -153,7 +151,6 @@ func TestGetBuildWorkflow(t *testing.T) {
 			expectedTaskNames: []string{
 				GoPullTaskName,
 				GoFmtTaskName,
-				GoVetTaskName,
 				GoTestTaskName,
 			},
 		},
@@ -171,9 +168,8 @@ func TestGetBuildWorkflow(t *testing.T) {
 			expectedTaskNames: []string{
 				GoPullTaskName,
 				GoFmtTaskName,
-				GoVetTaskName,
-				GoTestTaskName,
 				GoBuildTaskName,
+				GoTestTaskName,
 			},
 		},
 
@@ -209,9 +205,8 @@ func TestGetBuildWorkflow(t *testing.T) {
 			expectedTaskNames: []string{
 				GoPullTaskName,
 				GoFmtTaskName,
-				GoVetTaskName,
-				GoTestTaskName,
 				GoBuildTaskName,
+				GoTestTaskName,
 				DockerBuildTaskName,
 				DockerRunVersionTaskName,
 				DockerRunHelpTaskName,

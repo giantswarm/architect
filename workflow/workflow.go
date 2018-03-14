@@ -81,18 +81,6 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 		w = append(w, goFmt)
 
-		goVet, err := NewGoVetTask(fs, projectInfo)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-		w = append(w, goVet)
-
-		goTest, err := NewGoTestTask(fs, projectInfo)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-		w = append(w, goTest)
-
 		isGoBuildable, err := goBuildable(fs, projectInfo.WorkingDirectory)
 		if err != nil {
 			return nil, microerror.Mask(err)
@@ -104,6 +92,12 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			}
 			w = append(w, goBuild)
 		}
+
+		goTest, err := NewGoTestTask(fs, projectInfo)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		w = append(w, goTest)
 	}
 
 	dockerFileExists, err := afero.Exists(fs, filepath.Join(projectInfo.WorkingDirectory, "Dockerfile"))
