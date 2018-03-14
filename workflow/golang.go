@@ -152,9 +152,11 @@ func NewGoVetTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 					projectInfo.Organisation,
 					projectInfo.Project,
 				),
+				"/tmp/go/cache:/go/cache",
 			},
 			Env: []string{
 				"GOPATH=/go",
+				"GOCACHE=/go/cache",
 			},
 			WorkingDirectory: fmt.Sprintf(
 				"/go/src/github.com/%v/%v",
@@ -184,10 +186,12 @@ func NewGoTestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 					projectInfo.Organisation,
 					projectInfo.Project,
 				),
+				"/tmp/go/cache:/go/cache",
 			},
 			Env: []string{
 				fmt.Sprintf("GOOS=%v", projectInfo.Goos),
 				fmt.Sprintf("GOARCH=%v", projectInfo.Goarch),
+				"GOCACHE=/go/cache",
 				"GOPATH=/go",
 				"CGOENABLED=0",
 			},
@@ -219,10 +223,12 @@ func NewGoBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 					projectInfo.Organisation,
 					projectInfo.Project,
 				),
+				"/tmp/go/cache:/go/cache",
 			},
 			Env: []string{
 				fmt.Sprintf("GOOS=%v", projectInfo.Goos),
 				fmt.Sprintf("GOARCH=%v", projectInfo.Goarch),
+				"GOCACHE=/go/cache",
 				"GOPATH=/go",
 				"CGOENABLED=0",
 			},
