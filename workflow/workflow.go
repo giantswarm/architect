@@ -65,15 +65,14 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		return nil, microerror.Mask(err)
 	}
 	if isGolangFilesExist {
-		var goTasks []tasks.Task
-
 		golangPull, err := NewGoPullTask(fs, projectInfo)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
 		wrappedGolangPull := tasks.NewRetryTask(backoff.NewExponentialBackOff(), golangPull)
-		goTasks = append(goTasks, wrappedGolangPull)
+		w = append(w, wrappedGolangPull)
 
+		var goTasks []tasks.Task
 		goFmt, err := NewGoFmtTask(fs, projectInfo)
 		if err != nil {
 			return nil, microerror.Mask(err)
