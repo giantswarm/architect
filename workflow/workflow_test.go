@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/spf13/afero"
@@ -104,10 +105,12 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
-				GoPullTaskName,
-				GoFmtTaskName,
-				GoBuildTaskName,
-				GoTestTaskName,
+				strings.Join([]string{
+					fmt.Sprintf("retry task '%s'", GoPullTaskName),
+					GoFmtTaskName,
+					GoBuildTaskName,
+					GoTestTaskName,
+				}, ";") + ";",
 			},
 		},
 
@@ -125,9 +128,11 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
-				GoPullTaskName,
-				GoFmtTaskName,
-				GoTestTaskName,
+				strings.Join([]string{
+					fmt.Sprintf("retry task '%s'", GoPullTaskName),
+					GoFmtTaskName,
+					GoTestTaskName,
+				}, ";") + ";",
 			},
 		},
 
@@ -149,9 +154,11 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
-				GoPullTaskName,
-				GoFmtTaskName,
-				GoTestTaskName,
+				strings.Join([]string{
+					fmt.Sprintf("retry task '%s'", GoPullTaskName),
+					GoFmtTaskName,
+					GoTestTaskName,
+				}, ";") + ";",
 			},
 		},
 
@@ -166,10 +173,12 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
-				GoPullTaskName,
-				GoFmtTaskName,
-				GoBuildTaskName,
-				GoTestTaskName,
+				strings.Join([]string{
+					fmt.Sprintf("retry task '%s'", GoPullTaskName),
+					GoFmtTaskName,
+					GoBuildTaskName,
+					GoTestTaskName,
+				}, ";") + ";",
 			},
 		},
 
@@ -203,10 +212,12 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
-				GoPullTaskName,
-				GoFmtTaskName,
-				GoBuildTaskName,
-				GoTestTaskName,
+				strings.Join([]string{
+					fmt.Sprintf("retry task '%s'", GoPullTaskName),
+					GoFmtTaskName,
+					GoBuildTaskName,
+					GoTestTaskName,
+				}, ";") + ";",
 				DockerBuildTaskName,
 				DockerRunVersionTaskName,
 				DockerRunHelpTaskName,

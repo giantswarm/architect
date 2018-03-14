@@ -14,11 +14,12 @@ import (
 )
 
 var (
-	GoPullTaskName  = "go-pull"
-	GoFmtTaskName   = "go-fmt"
-	GoVetTaskName   = "go-vet"
-	GoTestTaskName  = "go-test"
-	GoBuildTaskName = "go-build"
+	GoPullTaskName       = "go-pull"
+	GoFmtTaskName        = "go-fmt"
+	GoVetTaskName        = "go-vet"
+	GoTestTaskName       = "go-test"
+	GoBuildTaskName      = "go-build"
+	GoConcurrentTaskName = "go-concurrent"
 )
 
 func golangFilesExist(fs afero.Fs, directory string) (bool, error) {

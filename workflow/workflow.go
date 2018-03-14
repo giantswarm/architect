@@ -65,21 +65,20 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		return nil, microerror.Mask(err)
 	}
 	if isGolangFilesExist {
-		{
-			golangPull, err := NewGoPullTask(fs, projectInfo)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			wrappedGolangPull := tasks.NewRetryTask(backoff.NewExponentialBackOff(), golangPull)
+		var goTasks []tasks.Task
 
-			w = append(w, wrappedGolangPull)
+		golangPull, err := NewGoPullTask(fs, projectInfo)
+		if err != nil {
+			return nil, microerror.Mask(err)
 		}
+		wrappedGolangPull := tasks.NewRetryTask(backoff.NewExponentialBackOff(), golangPull)
+		goTasks = append(goTasks, wrappedGolangPull)
 
 		goFmt, err := NewGoFmtTask(fs, projectInfo)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
-		w = append(w, goFmt)
+		goTasks = append(goTasks, goFmt)
 
 		isGoBuildable, err := goBuildable(fs, projectInfo.WorkingDirectory)
 		if err != nil {
@@ -90,14 +89,18 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			if err != nil {
 				return nil, microerror.Mask(err)
 			}
-			w = append(w, goBuild)
+			goTasks = append(goTasks, goBuild)
 		}
 
 		goTest, err := NewGoTestTask(fs, projectInfo)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
-		w = append(w, goTest)
+		goTasks = append(goTasks, goTest)
+
+		goConcurrentTask := tasks.NewConcurrentTask(GoConcurrentTaskName, goTasks...)
+
+		w = append(w, goConcurrentTask)
 	}
 
 	dockerFileExists, err := afero.Exists(fs, filepath.Join(projectInfo.WorkingDirectory, "Dockerfile"))
