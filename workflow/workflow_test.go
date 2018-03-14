@@ -105,8 +105,8 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
+				GoPullTaskName,
 				strings.Join([]string{
-					fmt.Sprintf("retry task '%s'", GoPullTaskName),
 					GoFmtTaskName,
 					GoBuildTaskName,
 					GoTestTaskName,
@@ -128,8 +128,8 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
+				GoPullTaskName,
 				strings.Join([]string{
-					fmt.Sprintf("retry task '%s'", GoPullTaskName),
 					GoFmtTaskName,
 					GoTestTaskName,
 				}, ";") + ";",
@@ -154,8 +154,8 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
+				GoPullTaskName,
 				strings.Join([]string{
-					fmt.Sprintf("retry task '%s'", GoPullTaskName),
 					GoFmtTaskName,
 					GoTestTaskName,
 				}, ";") + ";",
@@ -173,8 +173,8 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
+				GoPullTaskName,
 				strings.Join([]string{
-					fmt.Sprintf("retry task '%s'", GoPullTaskName),
 					GoFmtTaskName,
 					GoBuildTaskName,
 					GoTestTaskName,
@@ -212,8 +212,8 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
+				GoPullTaskName,
 				strings.Join([]string{
-					fmt.Sprintf("retry task '%s'", GoPullTaskName),
 					GoFmtTaskName,
 					GoBuildTaskName,
 					GoTestTaskName,
