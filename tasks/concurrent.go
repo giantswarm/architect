@@ -7,6 +7,12 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// ConcurrentTask represent a set of tasks that are executed concurrently using
+// an errgroup.Group.
+// Externally it act as a Task, and as such, can be included on a workflow or
+// wrapped on a retry. Keep in mmind in the latter case that, given the nature
+// of errgroup.Group, on failure the whole task set will be retried, including
+// tasks that potentially have already finished.
 type ConcurrentTask struct {
 	name  string
 	tasks []Task
