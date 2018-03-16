@@ -17,6 +17,7 @@ const (
 	DockerTagLatestTaskName  = "docker-tag-latest"
 	DockerPushShaTaskName    = "docker-push-sha"
 	DockerPushLatestTaskName = "docker-push-latest"
+	DockerPullTaskName       = "docker-pull"
 
 	// DockerImageRefFmt is the format string used to compute the reference of the
 	// Docker image used to build and push. It may look something like this.
@@ -177,6 +178,23 @@ func NewDockerPushLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, 
 	)
 
 	return dockerPush, nil
+}
+
+func NewDockerPullTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+	if err := checkDockerRequirements(projectInfo); err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	dockerPull := tasks.NewExecTask(
+		DockerPullTaskName,
+		[]string{
+			"docker",
+			"pull",
+			newDockerImageRef(projectInfo, projectInfo.Sha),
+		},
+	)
+
+	return dockerPull, nil
 }
 
 func newDockerImageRef(projectInfo ProjectInfo, version string) string {

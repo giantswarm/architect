@@ -375,6 +375,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 			expectedTaskNames: []string{
 				DockerLoginTaskName,
+				DockerPullTaskName,
 				DockerTagLatestTaskName,
 				DockerPushLatestTaskName,
 			},
@@ -395,6 +396,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 			expectedTaskNames: []string{
 				DockerLoginTaskName,
+				DockerPullTaskName,
 				DockerTagLatestTaskName,
 				DockerPushLatestTaskName,
 			},
