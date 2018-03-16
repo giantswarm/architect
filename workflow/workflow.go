@@ -226,6 +226,12 @@ func NewDeploy(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			w = append(w, wrappedDockerLogin)
 		}
 
+		dockerPull, err := NewDockerPullTask(fs, projectInfo)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		w = append(w, dockerPull)
+
 		dockerTagLatest, err := NewDockerTagLatestTask(fs, projectInfo)
 		if err != nil {
 			return nil, microerror.Mask(err)

@@ -108,6 +108,18 @@ func Test_Workflow_Docker_NewDockerBuildTask(t *testing.T) {
 				"quay.io/giantswarm/architect:latest",
 			},
 		},
+
+		// Test 8, make sure NewDockerPullTask works as expected.
+		{
+			TaskFunc: func() (tasks.Task, error) {
+				return NewDockerPullTask(nil, testNewProjectInfo())
+			},
+			ExpectedArgs: []string{
+				"docker",
+				"pull",
+				"quay.io/giantswarm/architect:e8363ac222255e991c126abe6673cd0f33934ac8",
+			},
+		},
 	}
 
 	for i, tc := range testCases {
