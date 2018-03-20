@@ -6,7 +6,7 @@ import (
 
 var noCertEnvVarError = microerror.New("no cert env var")
 
-// IsNoCertEnvVar asserts multipleHelmChartsError.
+// IsNoCertEnvVar asserts noCertEnvVarError
 func IsNoCertEnvVar(err error) bool {
 	return microerror.Cause(err) == noCertEnvVarError
 }
