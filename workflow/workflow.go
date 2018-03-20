@@ -91,11 +91,17 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			goTasks = append(goTasks, goBuild)
 		}
 
-		goTest, err := NewGoTestTask(fs, projectInfo)
+		isGoTestable, err := goTestable()
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
-		goTasks = append(goTasks, goTest)
+		if isGoTestable {
+			goTest, err := NewGoTestTask(fs, projectInfo)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+			goTasks = append(goTasks, goTest)
+		}
 
 		goConcurrentTask := tasks.NewConcurrentTask(GoConcurrentTaskName, goTasks...)
 
