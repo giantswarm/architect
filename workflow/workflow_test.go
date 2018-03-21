@@ -302,6 +302,28 @@ func TestGetBuildWorkflow(t *testing.T) {
 			},
 			errorMatcher: IsInvalidHelmDirectory,
 		},
+
+		// Test 11 that a project with only golang files that have build contraints
+		// do not trigger a test workflow.
+		{
+			setUp: func(fs afero.Fs) error {
+				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "integration"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+				if err := afero.WriteFile(fs, filepath.Join(projectInfo.WorkingDirectory, "integration", "integration_test.go"), []byte("// +build k8srequired"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+
+				return nil
+			},
+			expectedTaskNames: []string{
+				GoPullTaskName,
+				strings.Join([]string{
+					GoFmtTaskName,
+					GoBuildTaskName,
+				}, ";") + ";",
+			},
+		},
 	}
 
 	for i, tc := range tests {
