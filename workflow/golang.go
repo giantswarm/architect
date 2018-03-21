@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strconv"
+	"strings"
 
 	"github.com/spf13/afero"
 
@@ -61,6 +64,26 @@ func goBuildable(fs afero.Fs, directory string) (bool, error) {
 		if filepath.Ext(fileInfo.Name()) == ".go" {
 			return true, nil
 		}
+	}
+
+	return false, nil
+}
+
+func goTestable() (bool, error) {
+	out, err := exec.Command("bash", "-c", "go list ./... | wc -l").Output()
+	if err != nil {
+		return false, microerror.Mask(err)
+	}
+
+	numPackages, err := strconv.Atoi(strings.TrimSpace(string(out)))
+	if err != nil {
+		return false, microerror.Mask(err)
+	}
+	if numPackages == 0 {
+		return false, microerror.Mask(noGolangPackagesError)
+	}
+	if numPackages > 0 {
+		return true, nil
 	}
 
 	return false, nil
