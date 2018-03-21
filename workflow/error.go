@@ -11,13 +11,6 @@ func IsNoCertEnvVar(err error) bool {
 	return microerror.Cause(err) == noCertEnvVarError
 }
 
-var noGolangPackagesError = microerror.New("no golang packages found")
-
-// IsNoGolangPackages asserts noGolangPackagesError
-func IsNoGolangPackages(err error) bool {
-	return microerror.Cause(err) == noGolangPackagesError
-}
-
 var decodeCertError = microerror.New("decode cert")
 
 // IsDecodeCert asserts decodeCertError

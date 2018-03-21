@@ -79,9 +79,6 @@ func goTestable() (bool, error) {
 	if err != nil {
 		return false, microerror.Mask(err)
 	}
-	if numPackages == 0 {
-		return false, microerror.Mask(noGolangPackagesError)
-	}
 	if numPackages > 0 {
 		return true, nil
 	}
