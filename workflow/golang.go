@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strconv"
 	"strings"
 
 	"github.com/spf13/afero"
@@ -70,20 +69,14 @@ func goBuildable(fs afero.Fs, directory string) (bool, error) {
 }
 
 func goTestable() (bool, error) {
-	out, err := exec.Command("bash", "-c", "go list ./... | wc -l").Output()
+	out, err := exec.Command("go", "list", "./...").Output()
 	if err != nil {
 		return false, microerror.Mask(err)
 	}
 
-	numPackages, err := strconv.Atoi(strings.TrimSpace(string(out)))
-	if err != nil {
-		return false, microerror.Mask(err)
-	}
-	if numPackages > 0 {
-		return true, nil
-	}
+	numPackages := strings.Count(string(out), "\n")
 
-	return false, nil
+	return numPackages > 0, nil
 }
 
 func checkGolangRequirements(projectInfo ProjectInfo) error {
