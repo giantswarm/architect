@@ -91,7 +91,7 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			goTasks = append(goTasks, goBuild)
 		}
 
-		isGoTestable, err := goTestable()
+		isGoTestable, err := goTestable(projectInfo.WorkingDirectory)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}

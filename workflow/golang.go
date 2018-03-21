@@ -68,8 +68,11 @@ func goBuildable(fs afero.Fs, directory string) (bool, error) {
 	return false, nil
 }
 
-func goTestable() (bool, error) {
-	out, err := exec.Command("go", "list", "./...").Output()
+func goTestable(directory string) (bool, error) {
+	cmd := exec.Command("go", "list", "./...")
+	cmd.Dir = directory
+
+	out, err := cmd.Output()
 	if err != nil {
 		return false, microerror.Mask(err)
 	}
