@@ -68,8 +68,15 @@ func TestWorkflowString(t *testing.T) {
 
 // TestGetBuildWorkflow tests that build workflows are correctly created for builds
 func TestGetBuildWorkflow(t *testing.T) {
+	// Run this test in working dir, since it has to be executed on the os fs
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Fatalf("could not get working directory: %v\n", err)
+	}
+	testdir := filepath.Join(wd, "test-project")
+
 	projectInfo := ProjectInfo{
-		WorkingDirectory: "/test-project/",
+		WorkingDirectory: testdir,
 		Organisation:     "giantswarm",
 		Project:          "test-project",
 		Sha:              "jfkejhfkejfkejfef",
@@ -327,7 +334,12 @@ func TestGetBuildWorkflow(t *testing.T) {
 	}
 
 	for i, tc := range tests {
-		fs := afero.NewMemMapFs()
+		fs := afero.NewOsFs()
+
+		// Create testing dir and clean up after
+		fs.Mkdir(testdir, 0740)
+		defer fs.RemoveAll(testdir)
+
 		if err := tc.setUp(fs); err != nil {
 			t.Fatalf("test %d received unexpected error during setup: %#v", i, err)
 		}
