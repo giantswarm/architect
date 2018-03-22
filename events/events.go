@@ -163,18 +163,6 @@ var environmentProjects = map[Environment][]string{
 		"tokend",
 		"userd",
 	},
-	"ginger_vxvc7": {
-		"api-spec",
-		"docs",
-		"docs-indexer",
-		"docs-proxy",
-		"giantswarmio-nginx",
-		"giantswarmio-webapp",
-		"web-assets",
-		"sitesearch",
-		"classify",
-		"mole-rat",
-	},
 	"gauss": {
 		"api",
 		"cert-exporter",
