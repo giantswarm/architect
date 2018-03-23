@@ -68,35 +68,32 @@ func TestWorkflowString(t *testing.T) {
 
 // TestGetBuildWorkflow tests that build workflows are correctly created for builds
 func TestGetBuildWorkflow(t *testing.T) {
-	// Run this test in working dir, since it has to be executed on the os fs
-	wd, err := os.Getwd()
-	if err != nil {
-		log.Fatalf("could not get working directory: %v\n", err)
-	}
-	testdir := filepath.Join(wd, "test-project")
-
 	projectInfo := ProjectInfo{
-		WorkingDirectory: testdir,
-		Organisation:     "giantswarm",
-		Project:          "test-project",
-		Sha:              "jfkejhfkejfkejfef",
-		Registry:         "quay.io",
-		DockerUsername:   "test",
-		DockerPassword:   "ekfnkfne",
-		Goos:             "linux",
-		Goarch:           "amd64",
-		GolangImage:      "golang",
-		GolangVersion:    "1.7.5",
+		Organisation:   "giantswarm",
+		Project:        "test-project",
+		Sha:            "jfkejhfkejfkejfef",
+		Registry:       "quay.io",
+		DockerUsername: "test",
+		DockerPassword: "ekfnkfne",
+		Goos:           "linux",
+		Goarch:         "amd64",
+		GolangImage:    "golang",
+		GolangVersion:  "1.7.5",
 	}
 
 	tests := []struct {
-		setUp             func(afero.Fs) error
+		setUp             func(afero.Fs, string) error
 		expectedTaskNames []string
 		errorMatcher      func(error) bool
 	}{
 		// Test 0 that a project with no files produces an empty workflow.
 		{
-			setUp: func(fs afero.Fs) error {
+			setUp: func(fs afero.Fs, testDir string) error {
+				projectInfo.WorkingDirectory = testDir
+
+				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "empty"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
 				return nil
 			},
 			expectedTaskNames: []string{},
@@ -104,11 +101,12 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 		// Test 1 that a project with only golang files produces a correct workflow.
 		{
-			setUp: func(fs afero.Fs) error {
+			setUp: func(fs afero.Fs, testDir string) error {
+				projectInfo.WorkingDirectory = testDir
+
 				if err := afero.WriteFile(fs, filepath.Join(projectInfo.WorkingDirectory, "main.go"), []byte("package test"), 0644); err != nil {
 					return microerror.Mask(err)
 				}
-
 				return nil
 			},
 			expectedTaskNames: []string{
@@ -123,15 +121,15 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 		// Test 2 that a library project creates a correct workflow.
 		{
-			setUp: func(fs afero.Fs) error {
+			setUp: func(fs afero.Fs, testDir string) error {
+				projectInfo.WorkingDirectory = testDir
+
 				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "client"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
-
 				if err := afero.WriteFile(fs, filepath.Join(projectInfo.WorkingDirectory, "client", "client.go"), []byte("package test"), 0644); err != nil {
 					return microerror.Mask(err)
 				}
-
 				return nil
 			},
 			expectedTaskNames: []string{
@@ -145,15 +143,15 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 		// Test 3 that a particularly nested library project creates a correct workflow.
 		{
-			setUp: func(fs afero.Fs) error {
+			setUp: func(fs afero.Fs, testDir string) error {
+				projectInfo.WorkingDirectory = testDir
+
 				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "server", "client"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
-
 				if err := afero.WriteFile(fs, filepath.Join(projectInfo.WorkingDirectory, "server", "client", "client.go"), []byte("package test"), 0644); err != nil {
 					return microerror.Mask(err)
 				}
-
 				return nil
 			},
 			expectedTaskNames: []string{
@@ -168,11 +166,12 @@ func TestGetBuildWorkflow(t *testing.T) {
 		// Test 4 that a project with a golang file not named `main.go` produces a
 		// golang build workflow.
 		{
-			setUp: func(fs afero.Fs) error {
+			setUp: func(fs afero.Fs, testDir string) error {
+				projectInfo.WorkingDirectory = testDir
+
 				if err := afero.WriteFile(fs, filepath.Join(projectInfo.WorkingDirectory, "other.go"), []byte("package test"), 0644); err != nil {
 					return microerror.Mask(err)
 				}
-
 				return nil
 			},
 			expectedTaskNames: []string{
@@ -187,11 +186,12 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 		// Test 5 that a project with only a dockerfile produces a correct workflow.
 		{
-			setUp: func(fs afero.Fs) error {
+			setUp: func(fs afero.Fs, testDir string) error {
+				projectInfo.WorkingDirectory = testDir
+
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
 					return microerror.Mask(err)
 				}
-
 				return nil
 			},
 			expectedTaskNames: []string{
@@ -204,14 +204,15 @@ func TestGetBuildWorkflow(t *testing.T) {
 		// Test 6 that a project with golang files, and a dockerfile produces a correct
 		// workflow.
 		{
-			setUp: func(fs afero.Fs) error {
+			setUp: func(fs afero.Fs, testDir string) error {
+				projectInfo.WorkingDirectory = testDir
+
 				if err := afero.WriteFile(fs, filepath.Join(projectInfo.WorkingDirectory, "main.go"), []byte("package test"), 0644); err != nil {
 					return microerror.Mask(err)
 				}
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
 					return microerror.Mask(err)
 				}
-
 				return nil
 			},
 			expectedTaskNames: []string{
@@ -231,7 +232,9 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 		// Test 7 that a project with multiple helm charts has all of them pushed.
 		{
-			setUp: func(fs afero.Fs) error {
+			setUp: func(fs afero.Fs, testDir string) error {
+				projectInfo.WorkingDirectory = testDir
+
 				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm", "test-project-chart"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
@@ -241,7 +244,6 @@ func TestGetBuildWorkflow(t *testing.T) {
 				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm", "test-project-another-chart"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
-
 				return nil
 			},
 			expectedTaskNames: []string{
@@ -258,14 +260,15 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 		// Test 8 that a docker image is pushed before helm chart.
 		{
-			setUp: func(fs afero.Fs) error {
+			setUp: func(fs afero.Fs, testDir string) error {
+				projectInfo.WorkingDirectory = testDir
+
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
 					return microerror.Mask(err)
 				}
 				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm", "test-project-some-chart"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
-
 				return nil
 			},
 			expectedTaskNames: []string{
@@ -281,7 +284,9 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 		// Test 9 that charts not starting with a project name causes an error.
 		{
-			setUp: func(fs afero.Fs) error {
+			setUp: func(fs afero.Fs, testDir string) error {
+				projectInfo.WorkingDirectory = testDir
+
 				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm", "some-chart"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
@@ -293,14 +298,15 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 		// Test 10 that charts not starting with a project name causes an error.
 		{
-			setUp: func(fs afero.Fs) error {
+			setUp: func(fs afero.Fs, testDir string) error {
+				projectInfo.WorkingDirectory = testDir
+
 				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm", "test-project-chart"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
 				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm", "some-chart"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
-
 				return nil
 			},
 			errorMatcher: IsInvalidHelmDirectory,
@@ -309,21 +315,21 @@ func TestGetBuildWorkflow(t *testing.T) {
 		// Test 11 that a project with only golang files that have build contraints
 		// do not trigger a test workflow.
 		{
-			setUp: func(fs afero.Fs) error {
+			setUp: func(fs afero.Fs, testDir string) error {
+				projectInfo.WorkingDirectory = testDir
+
 				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "integration"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
-				if err := afero.WriteFile(fs, filepath.Join(projectInfo.WorkingDirectory, "integration", "integration_test.go"), []byte("// +build k8srequired\npackage test"), 0644); err != nil {
+				if err := afero.WriteFile(fs, filepath.Join(projectInfo.WorkingDirectory, "integration", "integration_test.go"), []byte("// +build k8srequired\n\npackage test"), 0644); err != nil {
 					return microerror.Mask(err)
 				}
-
 				return nil
 			},
 			expectedTaskNames: []string{
 				GoPullTaskName,
 				strings.Join([]string{
 					GoFmtTaskName,
-					GoBuildTaskName,
 				}, ";") + ";",
 			},
 		},
@@ -332,11 +338,14 @@ func TestGetBuildWorkflow(t *testing.T) {
 	for i, tc := range tests {
 		fs := afero.NewOsFs()
 
-		// Create testing dir and clean up after
-		fs.Mkdir(testdir, 0740)
-		defer fs.RemoveAll(testdir)
+		// Create temporary testing dir and clean up after.
+		testDir, err := afero.TempDir(fs, "", "test-dir")
+		if err != nil {
+			t.Fatalf("test %d received unexpected error creating a test directory: %#v", i, err)
+		}
+		defer fs.RemoveAll(testDir)
 
-		if err := tc.setUp(fs); err != nil {
+		if err := tc.setUp(fs, testDir); err != nil {
 			t.Fatalf("test %d received unexpected error during setup: %#v", i, err)
 		}
 
