@@ -105,7 +105,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 		// Test 1 that a project with only golang files produces a correct workflow.
 		{
 			setUp: func(fs afero.Fs) error {
-				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "main.go")); err != nil {
+				if err := afero.WriteFile(fs, filepath.Join(projectInfo.WorkingDirectory, "main.go"), []byte("package test"), 0644); err != nil {
 					return microerror.Mask(err)
 				}
 
@@ -124,11 +124,11 @@ func TestGetBuildWorkflow(t *testing.T) {
 		// Test 2 that a library project creates a correct workflow.
 		{
 			setUp: func(fs afero.Fs) error {
-				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "client"), 0644); err != nil {
+				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "client"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
 
-				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "client", "client.go")); err != nil {
+				if err := afero.WriteFile(fs, filepath.Join(projectInfo.WorkingDirectory, "client", "client.go"), []byte("package test"), 0644); err != nil {
 					return microerror.Mask(err)
 				}
 
@@ -146,15 +146,11 @@ func TestGetBuildWorkflow(t *testing.T) {
 		// Test 3 that a particularly nested library project creates a correct workflow.
 		{
 			setUp: func(fs afero.Fs) error {
-				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "server"), 0644); err != nil {
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "server", "client"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
 
-				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "server", "client"), 0644); err != nil {
-					return microerror.Mask(err)
-				}
-
-				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "server", "client", "client.go")); err != nil {
+				if err := afero.WriteFile(fs, filepath.Join(projectInfo.WorkingDirectory, "server", "client", "client.go"), []byte("package test"), 0644); err != nil {
 					return microerror.Mask(err)
 				}
 
@@ -173,7 +169,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 		// golang build workflow.
 		{
 			setUp: func(fs afero.Fs) error {
-				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "other.go")); err != nil {
+				if err := afero.WriteFile(fs, filepath.Join(projectInfo.WorkingDirectory, "other.go"), []byte("package test"), 0644); err != nil {
 					return microerror.Mask(err)
 				}
 
@@ -209,7 +205,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 		// workflow.
 		{
 			setUp: func(fs afero.Fs) error {
-				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "main.go")); err != nil {
+				if err := afero.WriteFile(fs, filepath.Join(projectInfo.WorkingDirectory, "main.go"), []byte("package test"), 0644); err != nil {
 					return microerror.Mask(err)
 				}
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
@@ -236,13 +232,13 @@ func TestGetBuildWorkflow(t *testing.T) {
 		// Test 7 that a project with multiple helm charts has all of them pushed.
 		{
 			setUp: func(fs afero.Fs) error {
-				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-chart"), 0644); err != nil {
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm", "test-project-chart"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
-				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-something-chart"), 0644); err != nil {
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm", "test-project-something-chart"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
-				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-another-chart"), 0644); err != nil {
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm", "test-project-another-chart"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
 
@@ -266,7 +262,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
 					return microerror.Mask(err)
 				}
-				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-some-chart"), 0644); err != nil {
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm", "test-project-some-chart"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
 
@@ -286,7 +282,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 		// Test 9 that charts not starting with a project name causes an error.
 		{
 			setUp: func(fs afero.Fs) error {
-				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/some-chart"), 0644); err != nil {
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm", "some-chart"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
 
@@ -298,10 +294,10 @@ func TestGetBuildWorkflow(t *testing.T) {
 		// Test 10 that charts not starting with a project name causes an error.
 		{
 			setUp: func(fs afero.Fs) error {
-				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-chart"), 0644); err != nil {
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm", "test-project-chart"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
-				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/some-chart"), 0644); err != nil {
+				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm", "some-chart"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
 
@@ -314,10 +310,10 @@ func TestGetBuildWorkflow(t *testing.T) {
 		// do not trigger a test workflow.
 		{
 			setUp: func(fs afero.Fs) error {
-				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "integration"), 0644); err != nil {
+				if err := fs.Mkdir(filepath.Join(projectInfo.WorkingDirectory, "integration"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
-				if err := afero.WriteFile(fs, filepath.Join(projectInfo.WorkingDirectory, "integration", "integration_test.go"), []byte("// +build k8srequired"), 0644); err != nil {
+				if err := afero.WriteFile(fs, filepath.Join(projectInfo.WorkingDirectory, "integration", "integration_test.go"), []byte("// +build k8srequired\npackage test"), 0644); err != nil {
 					return microerror.Mask(err)
 				}
 
