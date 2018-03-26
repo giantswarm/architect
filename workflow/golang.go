@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"github.com/spf13/afero"
 
@@ -64,6 +66,20 @@ func goBuildable(fs afero.Fs, directory string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+func goTestable(directory string) (bool, error) {
+	cmd := exec.Command("go", "list", "./...")
+	cmd.Dir = directory
+
+	out, err := cmd.Output()
+	if err != nil {
+		return false, microerror.Mask(err)
+	}
+
+	numPackages := strings.Count(string(out), "\n")
+
+	return numPackages > 0, nil
 }
 
 func checkGolangRequirements(projectInfo ProjectInfo) error {
