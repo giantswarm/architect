@@ -25,7 +25,7 @@ var (
 )
 
 func init() {
-	RootCmd.AddCommand(deployCmd)
+	RootCmd.AddCommand(publishCmd)
 
 	var defaultDockerUsername string
 	var defaultDockerPassword string
