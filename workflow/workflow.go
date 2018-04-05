@@ -306,6 +306,12 @@ func NewPublish(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 	}
 
 	if chartDirectoryExists {
+		helmLogin, err := NewHelmLoginTask(fs, projectInfo)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		w = append(w, helmLogin)
+
 		for _, c := range projectInfo.Channels {
 			if c == "" {
 				return nil, microerror.Mask(emptyChannelError)

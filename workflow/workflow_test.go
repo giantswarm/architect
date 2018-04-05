@@ -550,6 +550,7 @@ func TestGetPublishWorkflow(t *testing.T) {
 			description: "default channels",
 			channels:    []string{"beta", "testing"},
 			expectedTaskNames: []string{
+				"helm-login",
 				fmt.Sprintf("%s-beta", HelmPushTaskName),
 				fmt.Sprintf("%s-testing", HelmPushTaskName),
 			},
@@ -558,6 +559,7 @@ func TestGetPublishWorkflow(t *testing.T) {
 			description: "single channel",
 			channels:    []string{"alpha"},
 			expectedTaskNames: []string{
+				"helm-login",
 				fmt.Sprintf("%s-alpha", HelmPushTaskName),
 			},
 		},
@@ -565,6 +567,7 @@ func TestGetPublishWorkflow(t *testing.T) {
 			description: "multiple channels",
 			channels:    []string{"alpha", "beta", "testing", "unstable"},
 			expectedTaskNames: []string{
+				"helm-login",
 				fmt.Sprintf("%s-alpha", HelmPushTaskName),
 				fmt.Sprintf("%s-beta", HelmPushTaskName),
 				fmt.Sprintf("%s-testing", HelmPushTaskName),
