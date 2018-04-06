@@ -106,6 +106,15 @@ func NewHelmPushTask(fs afero.Fs, chartDir string, projectInfo ProjectInfo) (tas
 	return helmPush, nil
 }
 
+func NewHelmPromoteToStableChannelTask(fs afero.Fs, chartDir string, projectInfo ProjectInfo) (tasks.Task, error) {
+	t, err := NewHelmPromoteToChannelTask(fs, chartDir, projectInfo, "stable")
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	return t, nil
+}
+
 func NewHelmPromoteToChannelTask(fs afero.Fs, chartDir string, projectInfo ProjectInfo, channel string) (tasks.Task, error) {
 	cnrDir, err := cnrDirectory()
 	if err != nil {
