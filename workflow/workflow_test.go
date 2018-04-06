@@ -453,28 +453,14 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 			expectedTaskNames: []string{
 				HelmPullTaskName,
-				template.TemplateHelmChartTaskName,
 				HelmLoginTaskName,
+				template.TemplateHelmChartTaskName,
 				pushTaskName,
 			},
 		},
 
-		// Test 4 a project with a helm/PROJECT-something-chart directory
-		// doesn't push helm chart as it isn't main chart.
-		{
-			setUp: func(fs afero.Fs) error {
-				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-something-chart"), 0644); err != nil {
-					return microerror.Mask(err)
-				}
-
-				return nil
-			},
-			expectedTaskNames: []string{},
-		},
-
-		// Test 5 a project with a helm/PROJECT-chart and
-		// helm/PROJECT-something-chart directories pushes only one
-		// (main) chart.
+		// Test 4 a project with a helm/PROJECT-chart and
+		// helm/PROJECT-something-chart directories pushes both charts
 		{
 			setUp: func(fs afero.Fs) error {
 				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-chart"), 0644); err != nil {
@@ -488,8 +474,10 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 			expectedTaskNames: []string{
 				HelmPullTaskName,
-				template.TemplateHelmChartTaskName,
 				HelmLoginTaskName,
+				template.TemplateHelmChartTaskName,
+				pushTaskName,
+				template.TemplateHelmChartTaskName,
 				pushTaskName,
 			},
 		},
