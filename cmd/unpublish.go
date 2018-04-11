@@ -31,10 +31,10 @@ func init() {
 		defaultDockerPassword = os.Getenv("QUAY_PASSWORD")
 	}
 
-	publishCmd.Flags().StringVar(&dockerUsername, "docker-username", defaultDockerUsername, "username to use to login to docker registry")
-	publishCmd.Flags().StringVar(&dockerPassword, "docker-password", defaultDockerPassword, "password to use to login to docker registry")
+	unpublishCmd.Flags().StringVar(&dockerUsername, "docker-username", defaultDockerUsername, "username to use to login to docker registry")
+	unpublishCmd.Flags().StringVar(&dockerPassword, "docker-password", defaultDockerPassword, "password to use to login to docker registry")
 
-	publishCmd.Flags().StringVar(&channels, "channels", "beta,testing", "channels to unpublish the charts from, separated by comma")
+	unpublishCmd.Flags().StringVar(&channels, "channels", "beta,testing", "channels to unpublish the charts from, separated by comma")
 }
 
 func runUnpublish(cmd *cobra.Command, args []string) {
