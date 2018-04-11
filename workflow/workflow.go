@@ -248,6 +248,35 @@ func NewPublish(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 
 func NewUnpublish(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 	w := Workflow{}
+
+	chartDirectory := filepath.Join(projectInfo.WorkingDirectory, "helm", projectInfo.Project+"-chart")
+	chartDirectoryExists, err := afero.Exists(fs, chartDirectory)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	if chartDirectoryExists {
+		helmLogin, err := NewHelmLoginTask(fs, projectInfo)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		w = append(w, helmLogin)
+
+		for _, c := range projectInfo.Channels {
+			if c == "" {
+				return nil, microerror.Mask(emptyChannelError)
+			}
+
+			helmDeleteFromChannel, err := NewHelmDeleteFromChannelTask(fs, chartDirectory, projectInfo, c)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+
+			wrappedHelmDeleteFromChannel := tasks.NewRetryTask(backoff.NewExponentialBackOff(), helmDeleteFromChannel)
+
+			w = append(w, wrappedHelmDeleteFromChannel)
+		}
+	}
 	return w, nil
 }
 
