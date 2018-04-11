@@ -246,6 +246,11 @@ func NewPublish(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 	return w, nil
 }
 
+func NewUnpublish(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
+	w := Workflow{}
+	return w, nil
+}
+
 func processHelmDir(fs afero.Fs, projectInfo ProjectInfo, f func(afero.Fs, string, ProjectInfo) (tasks.Task, error)) (Workflow, error) {
 	var w = Workflow{}
 
