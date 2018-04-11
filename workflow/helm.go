@@ -162,7 +162,7 @@ func NewHelmDeleteFromChannelTask(fs afero.Fs, chartDir string, projectInfo Proj
 			Args: []string{
 				"registry",
 				"channel",
-				fmt.Sprintf("%v/%v/%v/%s", projectInfo.Registry, projectInfo.Organisation, projectInfo.Project, "-chart"),
+				fmt.Sprintf("%v/%v/%v%s", projectInfo.Registry, projectInfo.Organisation, projectInfo.Project, "-chart"),
 				"--delete",
 				fmt.Sprintf("--channel=%s", channel),
 			},
