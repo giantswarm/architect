@@ -157,7 +157,6 @@ func NewHelmDeleteFromChannelTask(fs afero.Fs, chartDir string, projectInfo Proj
 			Image:            HelmImage,
 			Volumes: []string{
 				fmt.Sprintf("%v:/root/.cnr/", cnrDir),
-				fmt.Sprintf("%v:%v", chartDir, chartDir),
 			},
 			Args: []string{
 				"registry",
