@@ -17,9 +17,10 @@ const (
 )
 
 var (
-	HelmPullTaskName  = "helm-pull"
-	HelmLoginTaskName = "helm-login"
-	HelmPushTaskName  = "helm-push"
+	HelmPullTaskName          = "helm-pull"
+	HelmLoginTaskName         = "helm-login"
+	HelmPushTaskName          = "helm-push"
+	HelmDeleteChannelTaskName = "helm-delete-channel"
 )
 
 func cnrDirectory() (string, error) {
@@ -141,4 +142,31 @@ func NewHelmPromoteToChannelTask(fs afero.Fs, chartDir string, projectInfo Proje
 	)
 
 	return helmPromoteToChannel, nil
+}
+
+func NewHelmDeleteFromChannelTask(fs afero.Fs, chartDir string, projectInfo ProjectInfo, channel string) (tasks.Task, error) {
+	cnrDir, err := cnrDirectory()
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	helmDeleteFromChannel := tasks.NewDockerTask(
+		fmt.Sprintf("%s-%s", HelmDeleteChannelTaskName, channel),
+		tasks.DockerTaskConfig{
+			WorkingDirectory: chartDir,
+			Image:            HelmImage,
+			Volumes: []string{
+				fmt.Sprintf("%v:/root/.cnr/", cnrDir),
+			},
+			Args: []string{
+				"registry",
+				"channel",
+				fmt.Sprintf("%v/%v/%v%s", projectInfo.Registry, projectInfo.Organisation, projectInfo.Project, "-chart"),
+				"--delete",
+				fmt.Sprintf("--channel=%s", channel),
+			},
+		},
+	)
+
+	return helmDeleteFromChannel, nil
 }
