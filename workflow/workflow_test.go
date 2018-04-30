@@ -453,28 +453,14 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 			expectedTaskNames: []string{
 				HelmPullTaskName,
-				template.TemplateHelmChartTaskName,
 				HelmLoginTaskName,
+				template.TemplateHelmChartTaskName,
 				pushTaskName,
 			},
 		},
 
-		// Test 4 a project with a helm/PROJECT-something-chart directory
-		// doesn't push helm chart as it isn't main chart.
-		{
-			setUp: func(fs afero.Fs) error {
-				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-something-chart"), 0644); err != nil {
-					return microerror.Mask(err)
-				}
-
-				return nil
-			},
-			expectedTaskNames: []string{},
-		},
-
-		// Test 5 a project with a helm/PROJECT-chart and
-		// helm/PROJECT-something-chart directories pushes only one
-		// (main) chart.
+		// Test 4 a project with a helm/PROJECT-chart and
+		// helm/PROJECT-something-chart directories pushes both charts
 		{
 			setUp: func(fs afero.Fs) error {
 				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-chart"), 0644); err != nil {
@@ -488,8 +474,10 @@ func TestGetDeployWorkflow(t *testing.T) {
 			},
 			expectedTaskNames: []string{
 				HelmPullTaskName,
-				template.TemplateHelmChartTaskName,
 				HelmLoginTaskName,
+				template.TemplateHelmChartTaskName,
+				pushTaskName,
+				template.TemplateHelmChartTaskName,
 				pushTaskName,
 			},
 		},
@@ -550,6 +538,7 @@ func TestGetPublishWorkflow(t *testing.T) {
 			description: "default channels",
 			channels:    []string{"beta", "testing"},
 			expectedTaskNames: []string{
+				"helm-login",
 				fmt.Sprintf("%s-beta", HelmPushTaskName),
 				fmt.Sprintf("%s-testing", HelmPushTaskName),
 			},
@@ -558,6 +547,7 @@ func TestGetPublishWorkflow(t *testing.T) {
 			description: "single channel",
 			channels:    []string{"alpha"},
 			expectedTaskNames: []string{
+				"helm-login",
 				fmt.Sprintf("%s-alpha", HelmPushTaskName),
 			},
 		},
@@ -565,6 +555,7 @@ func TestGetPublishWorkflow(t *testing.T) {
 			description: "multiple channels",
 			channels:    []string{"alpha", "beta", "testing", "unstable"},
 			expectedTaskNames: []string{
+				"helm-login",
 				fmt.Sprintf("%s-alpha", HelmPushTaskName),
 				fmt.Sprintf("%s-beta", HelmPushTaskName),
 				fmt.Sprintf("%s-testing", HelmPushTaskName),
@@ -588,6 +579,99 @@ func TestGetPublishWorkflow(t *testing.T) {
 
 			projectInfo.Channels = tc.channels
 			workflow, err := NewPublish(projectInfo, fs)
+			if tc.expectedError != nil && err == nil {
+				t.Errorf("expected error didn't happen")
+			}
+			if err != nil && tc.expectedError != nil && err.Error() != tc.expectedError.Error() {
+				t.Errorf("received unexpected error getting build workflow: %v", err)
+			}
+
+			taskNames := []string{}
+			for _, task := range workflow {
+				retryTask, ok := task.(tasks.RetryTask)
+				if ok {
+					taskNames = append(taskNames, retryTask.Task.Name())
+				} else {
+					taskNames = append(taskNames, task.Name())
+				}
+			}
+
+			if !reflect.DeepEqual(taskNames, tc.expectedTaskNames) {
+				t.Errorf("expected %v tasks, got %v", tc.expectedTaskNames, taskNames)
+			}
+		})
+	}
+}
+
+func TestGetUnpublishWorkflow(t *testing.T) {
+	projectInfo := ProjectInfo{
+		WorkingDirectory: "/test-project/",
+		Organisation:     "giantswarm",
+		Project:          "test-project",
+		Sha:              "1cd72a25e16e93da14f08d95bd98662f8827028e",
+		Registry:         "quay.io",
+		DockerUsername:   "test",
+		DockerPassword:   "test",
+	}
+
+	setUp := func(fs afero.Fs) error {
+		if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm/test-project-chart"), 0644); err != nil {
+			return microerror.Mask(err)
+		}
+		return nil
+	}
+
+	tcs := []struct {
+		description       string
+		channels          []string
+		expectedTaskNames []string
+		expectedError     error
+	}{
+		{
+			description: "default channels",
+			channels:    []string{"beta", "testing"},
+			expectedTaskNames: []string{
+				"helm-login",
+				fmt.Sprintf("%s-beta", HelmDeleteChannelTaskName),
+				fmt.Sprintf("%s-testing", HelmDeleteChannelTaskName),
+			},
+		},
+		{
+			description: "single channel",
+			channels:    []string{"alpha"},
+			expectedTaskNames: []string{
+				"helm-login",
+				fmt.Sprintf("%s-alpha", HelmDeleteChannelTaskName),
+			},
+		},
+		{
+			description: "multiple channels",
+			channels:    []string{"alpha", "beta", "testing", "unstable"},
+			expectedTaskNames: []string{
+				"helm-login",
+				fmt.Sprintf("%s-alpha", HelmDeleteChannelTaskName),
+				fmt.Sprintf("%s-beta", HelmDeleteChannelTaskName),
+				fmt.Sprintf("%s-testing", HelmDeleteChannelTaskName),
+				fmt.Sprintf("%s-unstable", HelmDeleteChannelTaskName),
+			},
+		},
+		{
+			description:       "error on empty channels",
+			channels:          []string{"alpha", "beta", "", "unstable", ""},
+			expectedTaskNames: []string{},
+			expectedError:     emptyChannelError,
+		},
+	}
+
+	for _, tc := range tcs {
+		fs := afero.NewMemMapFs()
+		t.Run(tc.description, func(t *testing.T) {
+			if err := setUp(fs); err != nil {
+				t.Errorf("received unexpected error during setup: %v", err)
+			}
+
+			projectInfo.Channels = tc.channels
+			workflow, err := NewUnpublish(projectInfo, fs)
 			if tc.expectedError != nil && err == nil {
 				t.Errorf("expected error didn't happen")
 			}
