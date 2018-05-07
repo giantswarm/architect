@@ -182,6 +182,7 @@ var environmentProjects = map[Environment][]string{
 		"aws-operator",
 		"node-operator",
 		"passage",
+		"release-bot",
 		"tokend",
 		"userd",
 	},
