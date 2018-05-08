@@ -48,18 +48,18 @@ func runPublish(cmd *cobra.Command, args []string) {
 	fs := afero.NewOsFs()
 
 	var chs []string
-	if pipelineStart {
-		startChannel, err := pipeline.StartChannel(fs, workingDirectory, project)
-		if err != nil {
-			log.Fatalf("could not get pipeline start channel: %v", err)
-		}
-		chs = []string{startChannel}
-	} else if pipelineEnd {
+	if pipelineEnd {
 		endChannel, err := pipeline.EndChannel(fs, workingDirectory, project)
 		if err != nil {
 			log.Fatalf("could not get pipeline end channel: %v", err)
 		}
 		chs = []string{endChannel}
+	} else if pipelineStart {
+		startChannel, err := pipeline.StartChannel(fs, workingDirectory, project)
+		if err != nil {
+			log.Fatalf("could not get pipeline start channel: %v", err)
+		}
+		chs = []string{startChannel}
 	} else {
 		chs = strings.Split(channels, ",")
 	}
