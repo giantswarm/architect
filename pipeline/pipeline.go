@@ -12,9 +12,20 @@ import (
 )
 
 // StartChannel determines the initial channel to push a chart when the
-// deployment process starts. It has inforamtion about the chart version
+// deployment process starts. It has information about the chart version
 // and the initial stability defined for charts.
 func StartChannel(fs afero.Fs, workingDirectory, project string) (string, error) {
+	return determineChannel(fs, workingDirectory, project, initialStability)
+}
+
+// EndChannel determines the stable channel to push a chart when the
+// deployment process ends. It has inforamtion about the chart version
+// and the final stability defined for charts.
+func EndChannel(fs afero.Fs, workingDirectory, project string) (string, error) {
+	return determineChannel(fs, workingDirectory, project, finalStability)
+}
+
+func determineChannel(fs afero.Fs, workingDirectory, project, stability string) (string, error) {
 	c := &struct {
 		Version string `yaml:"version"`
 	}{}
@@ -38,7 +49,7 @@ func StartChannel(fs afero.Fs, workingDirectory, project string) (string, error)
 	// remove initial v
 	elements[0] = strings.TrimLeft(elements[0], "v")
 
-	items := append(elements[0:2], initialStability)
+	items := append(elements[0:2], stability)
 
 	startChannel := strings.Join(items, "-")
 

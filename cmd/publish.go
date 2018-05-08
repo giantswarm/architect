@@ -22,6 +22,7 @@ var (
 
 	channels      string
 	pipelineStart bool
+	pipelineEnd   bool
 )
 
 func init() {
@@ -40,6 +41,7 @@ func init() {
 
 	publishCmd.Flags().StringVar(&channels, "channels", "beta,testing", "channels to publish the charts to, separated by comma")
 	publishCmd.Flags().BoolVar(&pipelineStart, "pipeline", true, "specifies if charts should be promoted to the first channel in the pipeline")
+	publishCmd.Flags().BoolVar(&pipelineEnd, "stable", false, "specifies if charts should be promoted to the last channel in the pipeline")
 }
 
 func runPublish(cmd *cobra.Command, args []string) {
@@ -52,6 +54,12 @@ func runPublish(cmd *cobra.Command, args []string) {
 			log.Fatalf("could not get pipeline start channel: %v", err)
 		}
 		chs = []string{startChannel}
+	} else if pipelineEnd {
+		endChannel, err := pipeline.EndChannel(fs, workingDirectory, project)
+		if err != nil {
+			log.Fatalf("could not get pipeline end channel: %v", err)
+		}
+		chs = []string{endChannel}
 	} else {
 		chs = strings.Split(channels, ",")
 	}
