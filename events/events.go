@@ -453,6 +453,28 @@ var environmentProjects = map[Environment][]string{
 		"tokend",
 		"userd",
 	},
+	"tarantula": {
+		"api",
+		"azure-operator",
+		"cert-exporter",
+		"cert-operator",
+		"cluster-operator",
+		"cluster-service",
+		"companyd",
+		"credentiald",
+		"desmotes",
+		"draughtsman",
+		"etcd-backup",
+		"g8s-efk",
+		"g8s-grafana",
+		"g8s-prometheus",
+		"happa",
+		"kubernetesd",
+		"node-operator",
+		"passage",
+		"tokend",
+		"userd",
+	},
 }
 
 // GetEnvironments takes a project name, and returns a list of environments
