@@ -41,6 +41,7 @@ var environmentProjects = map[Environment][]string{
 		"pv-cleaner-operator",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"viking": {
 		"api",
@@ -65,6 +66,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"asgard": {
 		"api",
@@ -89,6 +91,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"iris": {
 		"api",
@@ -113,6 +116,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"anubis": {
 		"api",
@@ -138,6 +142,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"ginger": {
 		"api",
@@ -162,6 +167,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"gauss": {
 		"api",
@@ -186,6 +192,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"archon": {
 		"api",
@@ -210,6 +217,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"jackal": {
 		"api",
@@ -234,6 +242,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"avatar": {
 		"api",
@@ -258,6 +267,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"amagon": {
 		"api",
@@ -283,6 +293,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"geckon": {
 		"api",
@@ -308,6 +319,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"gollum": {
 		"api",
@@ -331,6 +343,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"gollum_6f342": {
 		"api-spec",
@@ -367,6 +380,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"atlantis": {
 		"api",
@@ -391,6 +405,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"godsmack": {
 		"api",
@@ -414,6 +429,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"victory": {
 		"api",
@@ -437,6 +453,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"tarantula": {
 		"api",
@@ -460,6 +477,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"talos": {
 		"api",
@@ -483,6 +501,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 	"axolotl": {
 		"api",
@@ -507,6 +526,7 @@ var environmentProjects = map[Environment][]string{
 		"passage",
 		"tokend",
 		"userd",
+		"vault-exporter",
 	},
 }
 
