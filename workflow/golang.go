@@ -260,7 +260,7 @@ func NewGoBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 				"-a",
 				"-tags", "netgo",
 				"-ldflags", fmt.Sprintf(
-					"-X main.gitCommit=%s -linkmode 'external' -extldflags '-static'",
+					"-w -X main.gitCommit=%s -linkmode 'external' -extldflags '-static'",
 					projectInfo.Sha,
 				),
 			},
