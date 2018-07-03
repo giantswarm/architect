@@ -37,8 +37,8 @@ var (
 	}
 	// aws project list + aws specific services
 	awsProjectList = append(baseProjectList,
-		"g8s-cloudwatch-exporter",
 		"aws-operator",
+		"g8s-cloudwatch-exporter",
 	)
 	// azure project list + azure specific services
 	azureProjectList = append(baseProjectList,
@@ -60,19 +60,28 @@ type Environment string
 // and the projects that should be deployed there.
 // We use codenames for installations to not expose customer information.
 var environmentProjects = map[Environment][]string{
-	"centaur": append(kvmProjectList, "pv-cleaner-operator"),
-	"viking":  awsProjectList,
-	"asgard":  awsProjectList,
-	"iris":    awsProjectList,
-	"anubis":  kvmProjectList,
-	"ginger":  awsProjectList,
-	"gauss":   awsProjectList,
-	"archon":  awsProjectList,
-	"jackal":  awsProjectList,
-	"avatar":  awsProjectList,
-	"amagon":  kvmProjectList,
-	"geckon":  kvmProjectList,
-	"gollum":  azureProjectList,
+	"amagon":    kvmProjectList,
+	"anubis":    kvmProjectList,
+	"archon":    awsProjectList,
+	"asgard":    awsProjectList,
+	"atlantis":  awsProjectList,
+	"avatar":    awsProjectList,
+	"axolotl":   awsProjectList,
+	"centaur":   append(kvmProjectList, "pv-cleaner-operator"),
+	"gauss":     awsProjectList,
+	"geckon":    kvmProjectList,
+	"ghost":     azureProjectList,
+	"ginger":    awsProjectList,
+	"godsmack":  azureProjectList,
+	"gollum":    azureProjectList,
+	"gorgoth":   kvmProjectList,
+	"iris":      awsProjectList,
+	"jackal":    awsProjectList,
+	"tarantula": azureProjectList,
+	"victory":   azureProjectList,
+	"viking":    awsProjectList,
+
+	// non standard cluster just for our website
 	"gollum_6f342": {
 		"api-spec",
 		"docs",
@@ -84,13 +93,6 @@ var environmentProjects = map[Environment][]string{
 		"web-assets",
 		"sitesearch",
 	},
-	"gorgoth":   kvmProjectList,
-	"atlantis":  awsProjectList,
-	"godsmack":  azureProjectList,
-	"victory":   azureProjectList,
-	"tarantula": azureProjectList,
-	"axolotl":   awsProjectList,
-	"ghost":     azureProjectList,
 }
 
 // GetEnvironments takes a project name, and returns a list of environments
