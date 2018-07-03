@@ -10,7 +10,8 @@ import (
 )
 
 var (
-	awsProjectList = []string{
+	// services used in all our installations
+	baseProjectList = []string{
 		"api",
 		"cert-exporter",
 		"cert-operator",
@@ -22,72 +23,34 @@ var (
 		"draughtsman",
 		"etcd-backup",
 		"g8s-cert-manager",
+		"g8s-efk",
+		"g8s-grafana",
+		"g8s-oauth2-proxy",
+		"g8s-prometheus",
+		"happa",
+		"kubernetesd",
+		"node-operator",
+		"passage",
+		"tokend",
+		"userd",
+		"vault-exporter",
+	}
+	// aws project list + aws specific services
+	awsProjectList = append(baseProjectList,
 		"g8s-cloudwatch-exporter",
-		"g8s-efk",
-		"g8s-grafana",
-		"g8s-oauth2-proxy",
-		"g8s-prometheus",
-		"happa",
-		"kubernetesd",
 		"aws-operator",
-		"node-operator",
-		"passage",
-		"tokend",
-		"userd",
-		"vault-exporter",
-	}
-	azureProjectList = []string{
-		"api",
+	)
+	// azure project list + azure specific services
+	azureProjectList = append(baseProjectList,
 		"azure-operator",
-		"cert-exporter",
-		"cert-operator",
-		"cluster-operator",
-		"cluster-service",
-		"companyd",
-		"credentiald",
-		"desmotes",
-		"draughtsman",
-		"etcd-backup",
-		"g8s-cert-manager",
-		"g8s-efk",
-		"g8s-grafana",
-		"g8s-oauth2-proxy",
-		"g8s-prometheus",
-		"happa",
-		"kubernetesd",
-		"node-operator",
-		"passage",
-		"tokend",
-		"userd",
-		"vault-exporter",
-	}
-	kvmProjectList = []string{
-		"api",
-		"cert-exporter",
-		"cert-operator",
-		"cluster-operator",
-		"cluster-service",
-		"companyd",
-		"desmotes",
-		"draughtsman",
-		"etcd-backup",
+	)
+	// kvm project list + kvm specific services
+	kvmProjectList = append(baseProjectList,
 		"endpoint-operator",
 		"flannel-operator",
-		"g8s-cert-manager",
-		"g8s-efk",
-		"g8s-grafana",
-		"g8s-oauth2-proxy",
-		"g8s-prometheus",
-		"happa",
 		"ingress-operator",
-		"kubernetesd",
 		"kvm-operator",
-		"node-operator",
-		"passage",
-		"tokend",
-		"userd",
-		"vault-exporter",
-	}
+	)
 )
 
 // Environment is a name of an installation.
