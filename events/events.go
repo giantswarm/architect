@@ -29,6 +29,7 @@ var (
 		"g8s-prometheus",
 		"happa",
 		"kubernetesd",
+		"net-exporter",
 		"node-operator",
 		"passage",
 		"tokend",
