@@ -99,6 +99,17 @@ var environmentProjects = map[Environment][]string{
 		"web-assets",
 		"sitesearch",
 	},
+	"gollum_6iec4": {
+		"api-spec",
+		"docs",
+		"docs-indexer",
+		"docs-proxy",
+		"draughtsman",
+		"giantswarmio-nginx",
+		"giantswarmio-webapp",
+		"web-assets",
+		"sitesearch",
+	},
 }
 
 // GetEnvironments takes a project name, and returns a list of environments
