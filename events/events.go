@@ -88,17 +88,6 @@ var environmentProjects = map[Environment][]string{
 	"viking":    awsProjectList,
 
 	// non standard cluster just for our website
-	"gollum_6f342": {
-		"api-spec",
-		"docs",
-		"docs-indexer",
-		"docs-proxy",
-		"draughtsman",
-		"giantswarmio-nginx",
-		"giantswarmio-webapp",
-		"web-assets",
-		"sitesearch",
-	},
 	"gollum_6iec4": {
 		"api-spec",
 		"docs",
