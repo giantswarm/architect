@@ -2,7 +2,9 @@ package pipeline
 
 import "github.com/giantswarm/microerror"
 
-var incorrectChartVersionError = microerror.New("incorrect chart version")
+var incorrectChartVersionError = &microerror.Error{
+	Kind: "incorrectChartVersionError",
+}
 
 // IsIncorrectChartVersion asserts incorrectChartVersion.
 func IsIncorrectChartVersion(err error) bool {

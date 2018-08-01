@@ -4,161 +4,207 @@ import (
 	"github.com/giantswarm/microerror"
 )
 
-var noCertEnvVarError = microerror.New("no cert env var")
+var noCertEnvVarError = &microerror.Error{
+	Kind: "noCertEnvVarError",
+}
 
 // IsNoCertEnvVar asserts noCertEnvVarError
 func IsNoCertEnvVar(err error) bool {
 	return microerror.Cause(err) == noCertEnvVarError
 }
 
-var decodeCertError = microerror.New("decode cert")
+var decodeCertError = &microerror.Error{
+	Kind: "decodeCertError",
+}
 
 // IsDecodeCert asserts decodeCertError
 func IsDecodeCert(err error) bool {
 	return microerror.Cause(err) == decodeCertError
 }
 
-var writeCertError = microerror.New("write cert")
+var writeCertError = &microerror.Error{
+	Kind: "writeCertError",
+}
 
 // IsWriteCert asserts writeCertError
 func IsWriteCert(err error) bool {
 	return microerror.Cause(err) == writeCertError
 }
 
-var incorrectNumberCertsError = microerror.New("incorrect number certs")
+var incorrectNumberCertsError = &microerror.Error{
+	Kind: "incorrectNumberCertsError",
+}
 
 // IsIncorrectNumberCerts asserts incorrectNumberCertsError
 func IsIncorrectNumberCerts(err error) bool {
 	return microerror.Cause(err) == incorrectNumberCertsError
 }
 
-var emptyChannelError = microerror.New("empty channel")
+var emptyChannelError = &microerror.Error{
+	Kind: "emptyChannelError",
+}
 
 // IsEmptyChannel asserts emptyChannelError
 func IsEmptyChannel(err error) bool {
 	return microerror.Cause(err) == emptyChannelError
 }
 
-var emptyWorkingDirectoryError = microerror.New("empty working directory")
+var emptyWorkingDirectoryError = &microerror.Error{
+	Kind: "emptyWorkingDirectoryError",
+}
 
 // IsEmptyWorkingDirectory asserts emptyWorkingDirectoryError
 func IsEmptyWorkingDirectory(err error) bool {
 	return microerror.Cause(err) == emptyWorkingDirectoryError
 }
 
-var emptyOrganisationError = microerror.New("empty organisation")
+var emptyOrganisationError = &microerror.Error{
+	Kind: "emptyOrganisationError",
+}
 
 // IsEmptyOrganisation asserts emptyOrganisationError
 func IsEmptyOrganisation(err error) bool {
 	return microerror.Cause(err) == emptyOrganisationError
 }
 
-var emptyProjectError = microerror.New("empty project")
+var emptyProjectError = &microerror.Error{
+	Kind: "emptyProjectError",
+}
 
 // IsEmptyProject asserts emptyProjectError
 func IsEmptyProject(err error) bool {
 	return microerror.Cause(err) == emptyProjectError
 }
 
-var emptyShaError = microerror.New("empty sha")
+var emptyShaError = &microerror.Error{
+	Kind: "emptyShaError",
+}
 
 // IsEmptySha asserts emptyShaError
 func IsEmptySha(err error) bool {
 	return microerror.Cause(err) == emptyShaError
 }
 
-var emptyRegistryError = microerror.New("empty registry")
+var emptyRegistryError = &microerror.Error{
+	Kind: "emptyRegistryError",
+}
 
 // IsEmptyRegistry asserts emptyRegistryError
 func IsEmptyRegistry(err error) bool {
 	return microerror.Cause(err) == emptyRegistryError
 }
 
-var emptyDockerUsernameError = microerror.New("empty docker username")
+var emptyDockerUsernameError = &microerror.Error{
+	Kind: "emptyDockerUsernameError",
+}
 
 // IsEmptyDockerUsername asserts emptyDockerUsernameError
 func IsEmptyDockerUsername(err error) bool {
 	return microerror.Cause(err) == emptyDockerUsernameError
 }
 
-var emptyDockerPasswordError = microerror.New("empty docker password")
+var emptyDockerPasswordError = &microerror.Error{
+	Kind: "emptyDockerPasswordError",
+}
 
 // IsEmptyDockerPassword asserts emptyDockerPasswordError
 func IsEmptyDockerPassword(err error) bool {
 	return microerror.Cause(err) == emptyDockerPasswordError
 }
 
-var emptyGoosError = microerror.New("empty goos")
+var emptyGoosError = &microerror.Error{
+	Kind: "emptyGoosError",
+}
 
 // IsEmptyGoos asserts emptyGoosError
 func IsEmptyGoos(err error) bool {
 	return microerror.Cause(err) == emptyGoosError
 }
 
-var emptyGoarchError = microerror.New("empty goarch")
+var emptyGoarchError = &microerror.Error{
+	Kind: "emptyGoarchError",
+}
 
 // IsEmptyGoarch asserts emptyGoarchError
 func IsEmptyGoarch(err error) bool {
 	return microerror.Cause(err) == emptyGoarchError
 }
 
-var emptyGolangImageError = microerror.New("empty golang image")
+var emptyGolangImageError = &microerror.Error{
+	Kind: "emptyGolangImageError",
+}
 
 // IsEmptyGolangImage asserts emptyGolangImageError
 func IsEmptyGolangImage(err error) bool {
 	return microerror.Cause(err) == emptyGolangImageError
 }
 
-var emptyGolangVersionError = microerror.New("empty golang version")
+var emptyGolangVersionError = &microerror.Error{
+	Kind: "emptyGolangVersionError",
+}
 
 // IsEmptyGolangVersion asserts emptyGolangVersionError
 func IsEmptyGolangVersion(err error) bool {
 	return microerror.Cause(err) == emptyGolangVersionError
 }
 
-var noHelmDirectoryError = microerror.New("no helm directory")
+var noHelmDirectoryError = &microerror.Error{
+	Kind: "noHelmDirectoryError",
+}
 
 // IsNoHelmDirectory asserts noHelmDirectoryError
 func IsNoHelmDirectory(err error) bool {
 	return microerror.Cause(err) == noHelmDirectoryError
 }
 
-var emptyKubernetesAPIServerError = microerror.New("empty kubernetes api server")
+var emptyKubernetesAPIServerError = &microerror.Error{
+	Kind: "emptyKubernetesAPIServerError",
+}
 
 // IsEmptyKubernetesAPIServer asserts emptyKubernetesAPIServerError
 func IsEmptyKubernetesAPIServer(err error) bool {
 	return microerror.Cause(err) == emptyKubernetesAPIServerError
 }
 
-var emptyKubernetesCaPathError = microerror.New("empty kubernetes ca path")
+var emptyKubernetesCaPathError = &microerror.Error{
+	Kind: "emptyKubernetesCaPathError",
+}
 
 // IsEmptyKubernetesCaPath asserts emptyKubernetesCaPathError
 func IsEmptyKubernetesCaPath(err error) bool {
 	return microerror.Cause(err) == emptyKubernetesCaPathError
 }
 
-var emptyKubernetesCrtPathError = microerror.New("empty kubernetes crt path")
+var emptyKubernetesCrtPathError = &microerror.Error{
+	Kind: "emptyKubernetesCrtPathError",
+}
 
 // IsEmptyKubernetesCrtPath asserts emptyKubernetesCAPathError
 func IsEmptyKubernetesCrtPath(err error) bool {
 	return microerror.Cause(err) == emptyKubernetesCrtPathError
 }
 
-var emptyKubernetesKeyPathError = microerror.New("empty kubernetes key path")
+var emptyKubernetesKeyPathError = &microerror.Error{
+	Kind: "emptyKubernetesKeyPathError",
+}
 
 // IsEmptyKubernetesKeyPath asserts emptyKubernetesKeyPathError
 func IsEmptyKubernetesCAPath(err error) bool {
 	return microerror.Cause(err) == emptyKubernetesKeyPathError
 }
 
-var emptyKubectlVersionError = microerror.New("empty kubectl version")
+var emptyKubectlVersionError = &microerror.Error{
+	Kind: "emptyKubectlVersionError",
+}
 
 // IsEmptyKubectlVersion asserts emptyKubectlVersionError
 func IsEmptyKubectlVersion(err error) bool {
 	return microerror.Cause(err) == emptyKubectlVersionError
 }
 
-var invalidHelmDirectoryError = microerror.New("invalid helm directory")
+var invalidHelmDirectoryError = &microerror.Error{
+	Kind: "invalidHelmDirectoryError",
+}
 
 // IsInvalidHelmDirectory asserts invalidHelmDirectoryError.
 func IsInvalidHelmDirectory(err error) bool {
