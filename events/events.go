@@ -15,6 +15,7 @@ var (
 		"api",
 		"cert-exporter",
 		"cert-operator",
+		"chart-operator",
 		"cluster-operator",
 		"cluster-service",
 		"companyd",
