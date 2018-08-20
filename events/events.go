@@ -83,7 +83,6 @@ var environmentProjects = map[Environment][]string{
 	"gollum":    azureProjectList,
 	"gorgoth":   kvmProjectList,
 	"iris":      awsProjectList,
-	"jackal":    awsProjectList,
 	"tarantula": azureProjectList,
 	"victory":   azureProjectList,
 	"viking":    awsProjectList,
