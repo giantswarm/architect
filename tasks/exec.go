@@ -2,9 +2,13 @@ package tasks
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
+	"path"
 	"strings"
+
+	"github.com/giantswarm/microerror"
 )
 
 // ExecTask is a task backed by os/exec.
@@ -16,8 +20,18 @@ type ExecTask struct {
 func (t ExecTask) Run() error {
 	cmd := exec.Command(t.Args[0], t.Args[1:]...)
 
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	outputFile := path.Join(os.TempDir(), fmt.Sprintf("architect-%s", t.name))
+
+	f, err := os.Create(outputFile)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	stdoutWriter := io.MultiWriter(os.Stdout, f)
+	stderrWriter := io.MultiWriter(os.Stderr, f)
+
+	cmd.Stdout = stdoutWriter
+	cmd.Stderr = stderrWriter
 
 	return cmd.Run()
 }

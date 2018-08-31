@@ -218,7 +218,7 @@ func NewGoTestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 				projectInfo.Project,
 			),
 			Image: fmt.Sprintf("%v:%v", projectInfo.GolangImage, projectInfo.GolangVersion),
-			Args:  []string{"go", "test", "-race", "./..."},
+			Args:  []string{"go", "test", "-v", "-race", "./..."},
 		},
 	)
 
