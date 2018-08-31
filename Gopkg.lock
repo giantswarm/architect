@@ -39,6 +39,15 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/jstemmer/go-junit-report"
+  packages = [
+    "formatter",
+    "parser"
+  ]
+  revision = "385fac0ced9acaae6dc5b39144194008ded00697"
+
+[[projects]]
+  branch = "master"
   name = "github.com/juju/errgo"
   packages = ["."]
   revision = "08cceb5d0b5331634b9826762a8fd53b29b86ad8"
@@ -124,6 +133,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "21e9f5b6b503dca2415c16c826024363587255d723894e8aae0ac2ed52ea32e8"
+  inputs-digest = "3dbfadaae4745edea962143d840d4ed0dc5e1177b468bb36a8393f389cb7eac2"
   solver-name = "gps-cdcl"
   solver-version = 1
