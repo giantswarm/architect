@@ -75,6 +75,7 @@ var environmentProjects = map[Environment][]string{
 	"avatar":    awsProjectList,
 	"axolotl":   axolotlProjectList,
 	"centaur":   append(kvmProjectList, "pv-cleaner-operator"),
+	"dragon":    kvmProjectList,
 	"gauss":     awsProjectList,
 	"geckon":    kvmProjectList,
 	"ghost":     azureProjectList,
