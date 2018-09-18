@@ -33,6 +33,7 @@ var (
 		"net-exporter",
 		"node-operator",
 		"passage",
+		"release-operator",
 		"tokend",
 		"userd",
 		"vault-exporter",
