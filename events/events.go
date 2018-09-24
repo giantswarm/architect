@@ -20,7 +20,6 @@ var (
 		"cluster-service",
 		"companyd",
 		"credentiald",
-		"desmotes",
 		"draughtsman",
 		"etcd-backup",
 		"g8s-cert-manager",
