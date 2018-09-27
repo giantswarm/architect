@@ -53,9 +53,9 @@ var (
 		"ingress-operator",
 		"kvm-operator",
 	)
-	// axolotolProjectList adds route53-manager to awsProjectList. This is
+	// awsChinaProjectList adds route53-manager to awsProjectList. This is
 	// required until route53 is vailable on AWS China.
-	axolotlProjectList = append(awsProjectList,
+	awsChinaProjectList = append(awsProjectList,
 		"route53-manager",
 	)
 )
@@ -73,7 +73,7 @@ var environmentProjects = map[Environment][]string{
 	"asgard":    awsProjectList,
 	"atlantis":  awsProjectList,
 	"avatar":    awsProjectList,
-	"axolotl":   axolotlProjectList,
+	"axolotl":   awsChinaProjectList,
 	"centaur":   append(kvmProjectList, "pv-cleaner-operator"),
 	"dinosaur":  kvmProjectList,
 	"dragon":    kvmProjectList,
@@ -81,6 +81,7 @@ var environmentProjects = map[Environment][]string{
 	"geckon":    kvmProjectList,
 	"ghost":     azureProjectList,
 	"ginger":    awsProjectList,
+	"giraffe":   awsChinaProjectList,
 	"godsmack":  azureProjectList,
 	"gollum":    azureProjectList,
 	"gorgoth":   kvmProjectList,
