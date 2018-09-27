@@ -53,7 +53,7 @@ var (
 		"ingress-operator",
 		"kvm-operator",
 	)
-	// awsCHinaProjectList adds route53-manager to awsProjectList. This is
+	// awsChinaProjectList adds route53-manager to awsProjectList. This is
 	// required until route53 is vailable on AWS China.
 	awsChinaProjectList = append(awsProjectList,
 		"route53-manager",
