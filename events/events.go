@@ -37,9 +37,11 @@ var (
 		"userd",
 		"vault-exporter",
 	}
-	// aws project list + aws specific services
-	awsProjectList = append(baseProjectList,
+	awsBaseProjectList = append(baseProjectList,
 		"aws-operator",
+	)
+	// aws project list + aws specific services
+	awsProjectList = append(awsBaseProjectList,
 		"g8s-cloudwatch-exporter",
 	)
 	// azure project list + azure specific services
@@ -77,10 +79,10 @@ var environmentProjects = map[Environment][]string{
 	"centaur":   append(kvmProjectList, "pv-cleaner-operator"),
 	"dinosaur":  kvmProjectList,
 	"dragon":    kvmProjectList,
-	"gauss":     awsProjectList,
+	"gauss":     awsBaseProjectList,
 	"geckon":    kvmProjectList,
 	"ghost":     azureProjectList,
-	"ginger":    awsProjectList,
+	"ginger":    awsBaseProjectList,
 	"giraffe":   awsChinaProjectList,
 	"godsmack":  azureProjectList,
 	"gollum":    azureProjectList,
