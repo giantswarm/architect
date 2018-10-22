@@ -229,6 +229,12 @@ func NewPublish(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 		w = append(w, helmLogin)
 
+		helmChartTemplate, err := NewTemplateHelmChartTask(fs, chartDirectory, projectInfo)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		w = append(w, helmChartTemplate)
+
 		for _, c := range projectInfo.Channels {
 			if c == "" {
 				return nil, microerror.Mask(emptyChannelError)
