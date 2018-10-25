@@ -8,11 +8,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/spf13/afero"
-
-	"github.com/giantswarm/microerror"
-
 	"github.com/giantswarm/architect/tasks"
+	"github.com/giantswarm/microerror"
+	"github.com/spf13/afero"
 )
 
 var (
@@ -218,7 +216,7 @@ func NewGoTestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 				projectInfo.Project,
 			),
 			Image: fmt.Sprintf("%v:%v", projectInfo.GolangImage, projectInfo.GolangVersion),
-			Args:  []string{"go", "test", "-v", "-race", "./..."},
+			Args:  []string{"go", "test", "-race", "./..."},
 		},
 	)
 

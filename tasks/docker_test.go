@@ -23,7 +23,7 @@ func TestNewDockerTask(t *testing.T) {
 				},
 				WorkingDirectory: "/go/src/github.com/giantswarm/architect",
 				Image:            "golang:1.7.5",
-				Args:             []string{"go", "test", "-v"},
+				Args:             []string{"go", "test"},
 			},
 			inCircle: false,
 			expectedArgs: []string{
@@ -32,7 +32,7 @@ func TestNewDockerTask(t *testing.T) {
 				"-e", "GOOS=linux",
 				"-w", "/go/src/github.com/giantswarm/architect",
 				"golang:1.7.5",
-				"go", "test", "-v",
+				"go", "test",
 			},
 		},
 
