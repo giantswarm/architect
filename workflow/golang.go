@@ -245,7 +245,7 @@ func NewGoBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 				fmt.Sprintf("GOARCH=%v", projectInfo.Goarch),
 				"GOCACHE=/go/cache",
 				"GOPATH=/go",
-				"CGOENABLED=0",
+				"CGO_ENABLED=0",
 			},
 			WorkingDirectory: fmt.Sprintf(
 				"/go/src/github.com/%v/%v",
@@ -257,9 +257,8 @@ func NewGoBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 				"go", "build",
 				"-a",
 				"-v",
-				"-tags", "netgo",
 				"-ldflags", fmt.Sprintf(
-					"-w -X main.gitCommit=%s -linkmode 'external' -extldflags '-static'",
+					"-w -X main.gitCommit=%s -linkmode 'auto' -extldflags '-static'",
 					projectInfo.Sha,
 				),
 			},
