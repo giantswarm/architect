@@ -53,7 +53,7 @@ var (
 	)
 	// awsChinaProjectList adds route53-manager to awsProjectList. This is
 	// required until route53 is vailable on AWS China.
-	awsChinaProjectList = append(awsProjectList,
+	awsChinaProjectList = append(awsBaseProjectList,
 		"route53-manager",
 	)
 )
@@ -67,10 +67,10 @@ type Environment string
 var environmentProjects = map[Environment][]string{
 	"amagon":    kvmProjectList,
 	"anubis":    kvmProjectList,
-	"archon":    awsProjectList,
-	"asgard":    awsProjectList,
-	"atlantis":  awsProjectList,
-	"avatar":    awsProjectList,
+	"archon":    awsBaseProjectList,
+	"asgard":    awsBaseProjectList,
+	"atlantis":  awsBaseProjectList,
+	"avatar":    awsBaseProjectList,
 	"axolotl":   awsChinaProjectList,
 	"centaur":   append(kvmProjectList, "pv-cleaner-operator"),
 	"dinosaur":  kvmProjectList,
@@ -83,12 +83,12 @@ var environmentProjects = map[Environment][]string{
 	"godsmack":  azureProjectList,
 	"gollum":    azureProjectList,
 	"gorgoth":   kvmProjectList,
-	"iris":      awsProjectList,
-	"seal":      awsProjectList,
+	"iris":      awsBaseProjectList,
+	"seal":      awsBaseProjectList,
 	"talos":     azureProjectList,
 	"tarantula": azureProjectList,
 	"victory":   azureProjectList,
-	"viking":    awsProjectList,
+	"viking":    awsBaseProjectList,
 
 	// non standard cluster just for our website
 	"gollum_6iec4": {
