@@ -1,9 +1,5 @@
 package tasks
 
-import (
-	"os"
-)
-
 type DockerTaskConfig struct {
 	Volumes          []string
 	Env              []string
@@ -15,14 +11,7 @@ type DockerTaskConfig struct {
 func NewDockerTask(name string, config DockerTaskConfig) ExecTask {
 	args := []string{
 		"docker", "run",
-	}
-
-	// CircleCI struggles with intermediate images, this helps to deal with that.
-	// See https://circleci.com/docs/docker/#deployment-to-a-docker-registry
-	if os.Getenv("CIRCLECI") == "true" {
-		args = append(args, "--rm=false")
-	} else {
-		args = append(args, "--rm")
+		"--rm",
 	}
 
 	for _, volume := range config.Volumes {
