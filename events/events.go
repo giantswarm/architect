@@ -40,10 +40,6 @@ var (
 	awsBaseProjectList = append(baseProjectList,
 		"aws-operator",
 	)
-	// aws project list + aws specific services
-	awsProjectList = append(awsBaseProjectList,
-		"g8s-cloudwatch-exporter",
-	)
 	// azure project list + azure specific services
 	azureProjectList = append(baseProjectList,
 		"azure-operator",
