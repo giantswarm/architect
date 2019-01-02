@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	HelmImage = "quay.io/giantswarm/docker-helm:006b0db51ec484be8b1bd49990804784a9737ece"
+	HelmImage = "quay.io/giantswarm/docker-helm:23ac1ca6527bb59e07a6a8c36809488e39dd5791"
 )
 
 var (
