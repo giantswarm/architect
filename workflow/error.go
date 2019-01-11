@@ -210,3 +210,12 @@ var invalidHelmDirectoryError = &microerror.Error{
 func IsInvalidHelmDirectory(err error) bool {
 	return microerror.Cause(err) == invalidHelmDirectoryError
 }
+
+var missingFileError = &microerror.Error{
+	Kind: "missingFileError",
+}
+
+// IsMissingFileError asserts missingFileError.
+func IsMissingFileError(err error) bool {
+	return microerror.Cause(err) == missingFileError
+}

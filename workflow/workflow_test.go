@@ -86,7 +86,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 		expectedTaskNames []string
 		errorMatcher      func(error) bool
 	}{
-		// Test 0 that a project with no files produces an empty workflow.
+		// Test 0 that a project with no files produces a workflow with just the repo check.
 		{
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
@@ -96,7 +96,9 @@ func TestGetBuildWorkflow(t *testing.T) {
 				}
 				return nil
 			},
-			expectedTaskNames: []string{},
+			expectedTaskNames: []string{
+				RepoCheckTaskName,
+			},
 		},
 
 		// Test 1 that a project with only golang files produces a correct workflow.
@@ -110,6 +112,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
+				RepoCheckTaskName,
 				GoPullTaskName,
 				strings.Join([]string{
 					GoFmtTaskName,
@@ -133,6 +136,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
+				RepoCheckTaskName,
 				GoPullTaskName,
 				strings.Join([]string{
 					GoFmtTaskName,
@@ -155,6 +159,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
+				RepoCheckTaskName,
 				GoPullTaskName,
 				strings.Join([]string{
 					GoFmtTaskName,
@@ -175,6 +180,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
+				RepoCheckTaskName,
 				GoPullTaskName,
 				strings.Join([]string{
 					GoFmtTaskName,
@@ -195,6 +201,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
+				RepoCheckTaskName,
 				DockerBuildTaskName,
 				DockerLoginTaskName,
 				DockerPushShaTaskName,
@@ -216,6 +223,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
+				RepoCheckTaskName,
 				GoPullTaskName,
 				strings.Join([]string{
 					GoFmtTaskName,
@@ -247,6 +255,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
+				RepoCheckTaskName,
 				HelmPullTaskName,
 				HelmLoginTaskName,
 				template.TemplateHelmChartTaskName,
@@ -272,6 +281,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
+				RepoCheckTaskName,
 				DockerBuildTaskName,
 				DockerLoginTaskName,
 				DockerPushShaTaskName,
@@ -327,6 +337,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 				return nil
 			},
 			expectedTaskNames: []string{
+				RepoCheckTaskName,
 				GoPullTaskName,
 				strings.Join([]string{
 					GoFmtTaskName,
