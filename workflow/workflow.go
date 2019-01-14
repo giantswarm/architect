@@ -60,6 +60,12 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		return w, nil
 	}
 
+	repoCheckTask, err := NewRepoCheckTask(fs, projectInfo)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	w = append(w, repoCheckTask)
+
 	isGolangFilesExist, err := golangFilesExist(fs, projectInfo.WorkingDirectory)
 	if err != nil {
 		return nil, microerror.Mask(err)
