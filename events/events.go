@@ -91,6 +91,7 @@ var environmentProjects = map[Environment][]string{
 	// non standard cluster just for our website
 	"gollum_6iec4": {
 		"api-spec",
+		"auto-oncall",
 		"docs",
 		"docs-indexer",
 		"docs-proxy",
