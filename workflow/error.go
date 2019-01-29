@@ -219,3 +219,12 @@ var missingFileError = &microerror.Error{
 func IsMissingFileError(err error) bool {
 	return microerror.Cause(err) == missingFileError
 }
+
+var missingLicenseTextError = &microerror.Error{
+	Kind: "missingLicenseText",
+}
+
+// IsMissingLicenseText asserts missingLicenseTextError.
+func IsMissingLicenseTextError(err error) bool {
+	return microerror.Cause(err) == missingLicenseTextError
+}
