@@ -148,6 +148,15 @@ func IsEmptyGolangVersion(err error) bool {
 	return microerror.Cause(err) == emptyGolangVersionError
 }
 
+var failedExecutionError = &microerror.Error{
+	Kind: "failedExecutionError",
+}
+
+// IsFailedExecution asserts failedExecutionError.
+func IsFailedExecutionError(err error) bool {
+	return microerror.Cause(err) == failedExecutionError
+}
+
 var noHelmDirectoryError = &microerror.Error{
 	Kind: "noHelmDirectoryError",
 }
