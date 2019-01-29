@@ -46,7 +46,6 @@ var (
 	)
 	// kvm project list + kvm specific services
 	kvmProjectList = append(baseProjectList,
-		"endpoint-operator",
 		"flannel-operator",
 		"kvm-operator",
 	)
