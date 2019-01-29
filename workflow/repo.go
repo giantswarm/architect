@@ -74,7 +74,7 @@ func (t RepoCheckTask) checkLicenseText() error {
 	license := string(l)
 	if !strings.Contains(license, licenseText) {
 		fmt.Printf("repo '%s' file does not contain required text '%s'\n", licenseFileName, licenseText)
-		return microerror.Maskf(missingLicenseTextError, licenseText)
+		return microerror.Maskf(failedExecutionError, "license does not contain text '%s'", licenseText)
 	}
 
 	fmt.Printf("repo '%s' has required text '%s'\n", licenseFileName, licenseText)

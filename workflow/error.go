@@ -148,6 +148,15 @@ func IsEmptyGolangVersion(err error) bool {
 	return microerror.Cause(err) == emptyGolangVersionError
 }
 
+var failedExecutionError = &microerror.Error{
+	Kind: "failedExecutionError",
+}
+
+// IsFailedExecution asserts failedExecutionError.
+func IsFailedExecutionError(err error) bool {
+	return microerror.Cause(err) == failedExecutionError
+}
+
 var noHelmDirectoryError = &microerror.Error{
 	Kind: "noHelmDirectoryError",
 }
@@ -218,13 +227,4 @@ var missingFileError = &microerror.Error{
 // IsMissingFileError asserts missingFileError.
 func IsMissingFileError(err error) bool {
 	return microerror.Cause(err) == missingFileError
-}
-
-var missingLicenseTextError = &microerror.Error{
-	Kind: "missingLicenseText",
-}
-
-// IsMissingLicenseText asserts missingLicenseTextError.
-func IsMissingLicenseTextError(err error) bool {
-	return microerror.Cause(err) == missingLicenseTextError
 }
