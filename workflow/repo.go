@@ -12,8 +12,14 @@ import (
 const (
 	RepoCheckTaskName = "repo-check"
 
-	// licenseTextFormat is used to generate the license text so the format can
-	// be checked.
+	// dcoFileName is the name of the Developer Certificate of Origin file.
+	dcoFileName = "DCO"
+
+	// licenseFileName is the name of the License file.
+	licenseFileName = "LICENSE"
+
+	// licenseTextFormat generates the license text so the format can be
+	// checked.
 	licenseTextFormat = "Copyright 2016 - %d Giant Swarm GmbH"
 )
 
@@ -26,7 +32,7 @@ func (t RepoCheckTask) Name() string {
 }
 
 func (t RepoCheckTask) Run() error {
-	requiredFiles := []string{"DCO", "LICENSE"}
+	requiredFiles := []string{dcoFileName, licenseFileName}
 
 	for _, requiredFile := range requiredFiles {
 		if _, err := t.fs.Stat(requiredFile); err != nil {
@@ -60,15 +66,18 @@ func NewRepoCheckTask(fs afero.Fs, projectInfo ProjectInfo) (RepoCheckTask, erro
 func (t RepoCheckTask) checkLicenseText() error {
 	licenseText := fmt.Sprintf(licenseTextFormat, time.Now().Year())
 
-	l, err := afero.ReadFile(t.fs, "LICENSE")
+	l, err := afero.ReadFile(t.fs, licenseFileName)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
 	license := string(l)
 	if !strings.Contains(license, licenseText) {
-		return microerror.Maskf(missingLicenseTextError, "LICENSE file does not contain text %#q", licenseText)
+		fmt.Printf("repo '%s' file does not contain required text '%s'\n", licenseFileName, licenseText)
+		return microerror.Maskf(missingLicenseTextError, licenseText)
 	}
+
+	fmt.Printf("repo '%s' has required text '%s'\n", licenseFileName, licenseText)
 
 	return nil
 }
