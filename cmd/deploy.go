@@ -23,6 +23,7 @@ var (
 	}
 
 	deploymentEventsToken string
+	group                 string
 )
 
 func init() {
@@ -42,6 +43,7 @@ func init() {
 	deployCmd.Flags().StringVar(&dockerPassword, "docker-password", defaultDockerPassword, "password to use to login to docker registry")
 
 	deployCmd.Flags().StringVar(&helmDirectoryPath, "helm-directory-path", "./helm", "directory holding helm chart")
+	deployCmd.Flags().StringVar(&group, "group", "stable", "the group you want to create deployment events for. Can be 'stable' or 'testing'")
 }
 
 func runDeploy(cmd *cobra.Command, args []string) {
@@ -91,7 +93,7 @@ func runDeploy(cmd *cobra.Command, args []string) {
 	githubClient := github.NewClient(tc)
 
 	log.Printf("creating deployment events")
-	environments := events.GetEnvironments(project)
+	environments := events.GetEnvironments(project, group)
 
 	log.Printf("creating for environments: %v", environments)
 	for _, environment := range environments {
