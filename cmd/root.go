@@ -47,14 +47,19 @@ func init() {
 		defaultProject = path[len(path)-1]
 	}
 
-	// We also use the git HEAD commit sha as well.
+	// Use CIRCLE_TAG environment variable if available
+	// otherwise use git HEAD.
 	var defaultSha string
 	{
-		out, err := exec.Command("git", "rev-parse", "HEAD").Output()
-		if err != nil {
-			log.Fatalf("could not get git sha: %#v\n", err)
+		if tag := os.Getenv("CIRCLE_TAG"); tag != "" {
+			defaultSha = tag
+		} else {
+			out, err := exec.Command("git", "rev-parse", "HEAD").Output()
+			if err != nil {
+				log.Fatalf("could not get git sha: %#v\n", err)
+			}
+			defaultSha = strings.TrimSpace(string(out))
 		}
-		defaultSha = strings.TrimSpace(string(out))
 	}
 
 	// We also use the git HEAD branch as well.
