@@ -104,12 +104,42 @@ var environmentProjects = map[Environment][]string{
 	},
 }
 
+// testingGroup is a specific grouping of environments that are considered
+// testing environments.
+var testingGroup = []Environment{
+	"gauss",
+	"geckon",
+	"ghost",
+	"ginger",
+	"giraffe",
+	"godsmack",
+	"gorgoth",
+}
+
+// isTestingEnvironment checks if a given environment is in the testingGroup.
+func isTestingEnvironment(environment Environment) bool {
+	for _, testEnvironment := range testingGroup {
+		if environment == testEnvironment {
+			return true
+		}
+	}
+
+	return false
+}
+
 // GetEnvironments takes a project name, and returns a list of environments
-// where this project should be deployed to.
-func GetEnvironments(project string) []Environment {
+// where this project should be deployed to. If group is 'testing', then it
+// only considers environments in the testingGroup.
+func GetEnvironments(project string, group string) []Environment {
 	environments := []Environment{}
 
 	for environment, projects := range environmentProjects {
+		// Skip environments that are not testing environments
+		// if we are requesting deploys to the testing group
+		if group == "testing" && !isTestingEnvironment(environment) {
+			continue
+		}
+
 		for _, p := range projects {
 			if project == p {
 				environments = append(environments, environment)
