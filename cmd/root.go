@@ -50,7 +50,8 @@ func init() {
 	// Use git tag when available otherwise use to git sha.
 	var defaultRef string
 	{
-		tag, err := exec.Command("git", "describe", "--tags", "--exact-match", "HEAD").Output()
+		out, err := exec.Command("git", "describe", "--tags", "--exact-match", "HEAD").Output()
+		tag := strings.TrimSpace(string(out))
 		if err == nil && tag != "" {
 			defaultRef = tag
 		} else {
