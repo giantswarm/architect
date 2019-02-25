@@ -49,16 +49,16 @@ func init() {
 
 	// Use CIRCLE_TAG environment variable if available
 	// otherwise use git HEAD.
-	var defaultSha string
+	var defaultRef string
 	{
 		if tag := os.Getenv("CIRCLE_TAG"); tag != "" {
-			defaultSha = tag
+			defaultRef = tag
 		} else {
 			out, err := exec.Command("git", "rev-parse", "HEAD").Output()
 			if err != nil {
 				log.Fatalf("could not get git sha: %#v\n", err)
 			}
-			defaultSha = strings.TrimSpace(string(out))
+			defaultRef = strings.TrimSpace(string(out))
 		}
 	}
 
@@ -79,7 +79,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&project, "project", defaultProject, "name of the project")
 
 	RootCmd.PersistentFlags().StringVar(&branch, "branch", defaultBranch, "git branch to build")
-	RootCmd.PersistentFlags().StringVar(&sha, "sha", defaultSha, "git SHA1 to build")
+	RootCmd.PersistentFlags().StringVar(&sha, "sha", defaultRef, "git SHA1 to build")
 
 	RootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", dryRun, "show what would be executed, but take no action")
 }
