@@ -47,11 +47,11 @@ func init() {
 		defaultProject = path[len(path)-1]
 	}
 
-	// Use CIRCLE_TAG environment variable if available
-	// otherwise use git HEAD.
+	// Use git tag when available otherwise use to git sha.
 	var defaultRef string
 	{
-		if tag := os.Getenv("CIRCLE_TAG"); tag != "" {
+		tag, err := exec.Command("git", "describe", "--tags", "--exact-match", "HEAD").Output()
+		if err == nil && tag != "" {
 			defaultRef = tag
 		} else {
 			out, err := exec.Command("git", "rev-parse", "HEAD").Output()
