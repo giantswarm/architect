@@ -22,7 +22,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 		// Test that a chart is templated correctly.
 		{
 			chartDir: "/helm/test-chart",
-			ref:      "jabberwocky",
+			ref:      "white-rabbit",
 			sha:      "jabberwocky",
 			setUp: func(fs afero.Fs, chartDir string) error {
 				files := []struct {
@@ -52,6 +52,10 @@ func TestTemplateHelmChartTask(t *testing.T) {
 					{
 						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "ingress.yaml"),
 						data: "host: {{ .Values.Installation.etc }}",
+					},
+					{
+						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "with-ref.yaml"),
+						data: "image: [[ .Ref ]] foo: < abc",
 					},
 				}
 
@@ -97,6 +101,10 @@ func TestTemplateHelmChartTask(t *testing.T) {
 					{
 						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "ingress.yaml"),
 						data: "host: {{ .Values.Installation.etc }}",
+					},
+					{
+						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "with-ref.yaml"),
+						data: "image: white-rabbit foo: < abc",
 					},
 				}
 
