@@ -48,6 +48,7 @@ func runUnpublish(cmd *cobra.Command, args []string) {
 		Project:          project,
 
 		Branch: branch,
+		Ref:    ref,
 		Sha:    sha,
 
 		Registry:       registry,
