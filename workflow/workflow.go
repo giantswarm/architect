@@ -33,7 +33,7 @@ type ProjectInfo struct {
 	Project          string
 
 	Branch string
-	Sha    string
+	Ref    string
 
 	Registry       string
 	DockerUsername string
