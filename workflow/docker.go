@@ -40,7 +40,7 @@ func checkDockerRequirements(projectInfo ProjectInfo) error {
 	}
 
 	if projectInfo.Ref == "" {
-		return microerror.Mask(emptyShaError)
+		return microerror.Mask(emptyRefError)
 	}
 	if projectInfo.Registry == "" {
 		return microerror.Mask(emptyRegistryError)
