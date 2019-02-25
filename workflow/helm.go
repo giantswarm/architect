@@ -48,6 +48,7 @@ func NewTemplateHelmChartTask(fs afero.Fs, chartDir string, projectInfo ProjectI
 		fs,
 		chartDir,
 		projectInfo.Ref,
+		projectInfo.Sha,
 	)
 
 	return templateHelmChart, nil

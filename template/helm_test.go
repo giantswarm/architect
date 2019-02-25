@@ -14,6 +14,7 @@ import (
 func TestTemplateHelmChartTask(t *testing.T) {
 	tests := []struct {
 		chartDir string
+		ref      string
 		sha      string
 		setUp    func(afero.Fs, string) error
 		check    func(afero.Fs, string) error
@@ -21,6 +22,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 		// Test that a chart is templated correctly.
 		{
 			chartDir: "/helm/test-chart",
+			ref:      "jabberwocky",
 			sha:      "jabberwocky",
 			setUp: func(fs afero.Fs, chartDir string) error {
 				files := []struct {
@@ -115,7 +117,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 
 	for index, test := range tests {
 		fs := afero.NewMemMapFs()
-		task := NewTemplateHelmChartTask(fs, test.chartDir, test.sha)
+		task := NewTemplateHelmChartTask(fs, test.chartDir, test.ref, test.sha)
 
 		if err := test.setUp(fs, test.chartDir); err != nil {
 			t.Fatalf("%v: unexpected error during setup: %v\n", index, err)

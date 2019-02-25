@@ -13,6 +13,8 @@ var (
 
 // BuildInfo holds information concerning the current build.
 type BuildInfo struct {
+	// Ref is the reference of the commit we are building for.
+	Ref string
 	// SHA is the SHA-1 tag of the commit we are building for.
 	SHA string
 }

@@ -17,7 +17,7 @@ const (
 	// TemplateHelmChartTaskString is the format for printing the
 	// helm chart templating task.
 	// Name of the task, the helm directory path, and the sha.
-	TemplateHelmChartTaskString = "%s:\t%s %s"
+	TemplateHelmChartTaskString = "%s:\t%s sha:%s ref:%s"
 
 	// HelmChartYamlName is the name of Helm's chart yaml.
 	HelmChartYamlName = "Chart.yaml"
@@ -32,6 +32,7 @@ const (
 type TemplateHelmChartTask struct {
 	fs       afero.Fs
 	chartDir string
+	ref      string
 	sha      string
 }
 
@@ -43,7 +44,10 @@ func (t TemplateHelmChartTask) Run() error {
 			microerror.Mask(err)
 		}
 
-		buildInfo := BuildInfo{SHA: t.sha}
+		buildInfo := BuildInfo{
+			Ref: t.ref,
+			SHA: t.sha,
+		}
 
 		newTemplate := template.Must(template.New(path).Delims("[[", "]]").Parse(string(contents)))
 		if err != nil {
@@ -73,13 +77,14 @@ func (t TemplateHelmChartTask) Name() string {
 }
 
 func (t TemplateHelmChartTask) String() string {
-	return fmt.Sprintf(TemplateHelmChartTaskString, t.Name(), t.chartDir, t.sha)
+	return fmt.Sprintf(TemplateHelmChartTaskString, t.Name(), t.chartDir, t.sha, t.ref)
 }
 
-func NewTemplateHelmChartTask(fs afero.Fs, chartDir, sha string) TemplateHelmChartTask {
+func NewTemplateHelmChartTask(fs afero.Fs, chartDir, ref, sha string) TemplateHelmChartTask {
 	return TemplateHelmChartTask{
 		fs:       fs,
 		chartDir: chartDir,
+		ref:      ref,
 		sha:      sha,
 	}
 }
