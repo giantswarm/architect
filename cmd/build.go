@@ -65,6 +65,7 @@ func runBuild(cmd *cobra.Command, args []string) {
 
 		Branch: branch,
 		Ref:    ref,
+		Sha:    sha,
 
 		Registry:       registry,
 		DockerUsername: dockerUsername,

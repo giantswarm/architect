@@ -259,7 +259,7 @@ func NewGoBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 				"-v",
 				"-ldflags", fmt.Sprintf(
 					"-w -X main.gitCommit=%s -X github.com/%s/%s/pkg/project.gitSHA=%[1]s -linkmode 'auto' -extldflags '-static'",
-					projectInfo.Ref,
+					projectInfo.Sha,
 					projectInfo.Organisation,
 					projectInfo.Project,
 				),

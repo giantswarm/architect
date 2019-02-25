@@ -23,6 +23,7 @@ var (
 
 	branch string
 	ref    string
+	sha    string
 
 	dryRun bool
 )
@@ -47,18 +48,23 @@ func init() {
 		defaultProject = path[len(path)-1]
 	}
 
-	// Use git tag when available otherwise use to git sha.
+	// Use git HEAD as defaultSha.
+	var defaultSha string
+	{
+		out, err := exec.Command("git", "rev-parse", "HEAD").Output()
+		if err != nil {
+			log.Fatalf("could not get git sha: %#v\n", err)
+		}
+		defaultSha = strings.TrimSpace(string(out))
+	}
+
+	// Use git tag as defaultRef when available otherwise use defaultSha.
 	var defaultRef string
 	{
 		out, err := exec.Command("git", "describe", "--tags", "--exact-match", "HEAD").Output()
-		tag := strings.TrimSpace(string(out))
-		if err == nil && tag != "" {
-			defaultRef = tag
+		if err != nil {
+			defaultRef = defaultSha
 		} else {
-			out, err := exec.Command("git", "rev-parse", "HEAD").Output()
-			if err != nil {
-				log.Fatalf("could not get git sha: %#v\n", err)
-			}
 			defaultRef = strings.TrimSpace(string(out))
 		}
 	}
@@ -80,7 +86,8 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&project, "project", defaultProject, "name of the project")
 
 	RootCmd.PersistentFlags().StringVar(&branch, "branch", defaultBranch, "git branch to build")
-	RootCmd.PersistentFlags().StringVar(&ref, "ref", defaultRef, "git ref to build")
+	RootCmd.PersistentFlags().StringVar(&sha, "ref", defaultRef, "git ref to build")
+	RootCmd.PersistentFlags().StringVar(&sha, "sha", defaultSha, "git SHA1 to build")
 
 	RootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", dryRun, "show what would be executed, but take no action")
 }
