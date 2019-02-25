@@ -204,7 +204,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 				RepoCheckTaskName,
 				DockerBuildTaskName,
 				DockerLoginTaskName,
-				DockerPushShaTaskName,
+				DockerPushRefTaskName,
 			},
 		},
 
@@ -234,7 +234,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 				DockerRunVersionTaskName,
 				DockerRunHelpTaskName,
 				DockerLoginTaskName,
-				DockerPushShaTaskName,
+				DockerPushRefTaskName,
 			},
 		},
 
@@ -284,7 +284,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 				RepoCheckTaskName,
 				DockerBuildTaskName,
 				DockerLoginTaskName,
-				DockerPushShaTaskName,
+				DockerPushRefTaskName,
 				HelmPullTaskName,
 				HelmLoginTaskName,
 				template.TemplateHelmChartTaskName,

@@ -152,12 +152,12 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 
 		{
-			dockerPushSha, err := NewDockerPushShaTask(fs, projectInfo)
+			dockerPushRef, err := NewDockerPushRefTask(fs, projectInfo)
 			if err != nil {
 				return nil, microerror.Mask(err)
 			}
-			wrappedDockerPushSha := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushSha)
-			w = append(w, wrappedDockerPushSha)
+			wrappedDockerPushRef := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushRef)
+			w = append(w, wrappedDockerPushRef)
 		}
 	}
 

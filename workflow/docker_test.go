@@ -85,10 +85,10 @@ func Test_Workflow_Docker_NewDockerBuildTask(t *testing.T) {
 			},
 		},
 
-		// Test 6, make sure NewDockerPushShaTask works as expected.
+		// Test 6, make sure NewDockerPushRefTask works as expected.
 		{
 			TaskFunc: func() (tasks.Task, error) {
-				return NewDockerPushShaTask(nil, testNewProjectInfo())
+				return NewDockerPushRefTask(nil, testNewProjectInfo())
 			},
 			ExpectedArgs: []string{
 				"docker",

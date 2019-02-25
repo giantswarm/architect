@@ -15,7 +15,7 @@ const (
 
 	DockerLoginTaskName      = "docker-login"
 	DockerTagLatestTaskName  = "docker-tag-latest"
-	DockerPushShaTaskName    = "docker-push-sha"
+	DockerPushRefTaskName    = "docker-push-ref"
 	DockerPushLatestTaskName = "docker-push-latest"
 	DockerPullTaskName       = "docker-pull"
 
@@ -146,13 +146,13 @@ func NewDockerTagLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, e
 	return dockerPush, nil
 }
 
-func NewDockerPushShaTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+func NewDockerPushRefTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	dockerPush := tasks.NewExecTask(
-		DockerPushShaTaskName,
+		DockerPushRefTaskName,
 		[]string{
 			"docker",
 			"push",
