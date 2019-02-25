@@ -55,7 +55,7 @@ func runDeploy(cmd *cobra.Command, args []string) {
 		Project:          project,
 
 		Branch: branch,
-		Ref:    sha,
+		Ref:    ref,
 
 		Registry:       registry,
 		DockerUsername: dockerUsername,
@@ -97,7 +97,7 @@ func runDeploy(cmd *cobra.Command, args []string) {
 
 	log.Printf("creating for environments: %v", environments)
 	for _, environment := range environments {
-		if err := events.CreateDeploymentEvent(githubClient, environment, organisation, project, sha); err != nil {
+		if err := events.CreateDeploymentEvent(githubClient, environment, organisation, project, ref); err != nil {
 			log.Fatalf("could not create deployment event: %v", err)
 		}
 	}

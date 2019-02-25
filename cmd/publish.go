@@ -70,7 +70,7 @@ func runPublish(cmd *cobra.Command, args []string) {
 		Project:          project,
 
 		Branch: branch,
-		Ref:    sha,
+		Ref:    ref,
 
 		Registry:       registry,
 		DockerUsername: dockerUsername,
