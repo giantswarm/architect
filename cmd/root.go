@@ -79,7 +79,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&project, "project", defaultProject, "name of the project")
 
 	RootCmd.PersistentFlags().StringVar(&branch, "branch", defaultBranch, "git branch to build")
-	RootCmd.PersistentFlags().StringVar(&ref, "sha", defaultRef, "git SHA1 to build")
+	RootCmd.PersistentFlags().StringVar(&ref, "ref", defaultRef, "git ref to build")
 
 	RootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", dryRun, "show what would be executed, but take no action")
 }
