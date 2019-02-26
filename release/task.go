@@ -22,7 +22,7 @@ type ReleaseGithubTask struct {
 
 // Run creates a draft github release.
 func (r ReleaseGithubTask) Run() error {
-	return CreateWithDir(r.client, r.dir, r.organisation, r.project, r.sha, r.tag)
+	return createWithDir(r.client, r.dir, r.organisation, r.project, r.sha, r.tag)
 }
 
 func (r ReleaseGithubTask) Name() string {

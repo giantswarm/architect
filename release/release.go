@@ -12,8 +12,8 @@ import (
 	"github.com/giantswarm/microerror"
 )
 
-// CreateWithDir creates a draft github release with files contained in dir as assets.
-func CreateWithDir(client *github.Client, dir, organisation, project, sha, tag string) error {
+// createWithDir creates a draft github release with files contained in dir as assets.
+func createWithDir(client *github.Client, dir, organisation, project, sha, tag string) error {
 	release, err := create(client, organisation, project, sha, tag, false)
 	if err != nil {
 		return microerror.Mask(err)
