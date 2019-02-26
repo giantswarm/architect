@@ -33,6 +33,7 @@ type ProjectInfo struct {
 	Project          string
 
 	Branch string
+	Ref    string
 	Sha    string
 
 	Registry       string

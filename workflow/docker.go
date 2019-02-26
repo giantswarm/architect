@@ -39,7 +39,7 @@ func checkDockerRequirements(projectInfo ProjectInfo) error {
 		return microerror.Mask(emptyProjectError)
 	}
 
-	if projectInfo.Sha == "" {
+	if projectInfo.Ref == "" {
 		return microerror.Mask(emptyShaError)
 	}
 	if projectInfo.Registry == "" {
@@ -60,7 +60,7 @@ func NewDockerBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error
 			"docker",
 			"build",
 			"-t",
-			newDockerImageRef(projectInfo, projectInfo.Sha),
+			newDockerImageRef(projectInfo, projectInfo.Ref),
 			projectInfo.WorkingDirectory,
 		},
 	)
@@ -77,7 +77,7 @@ func NewDockerRunVersionTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, 
 		DockerRunVersionTaskName,
 		tasks.DockerTaskConfig{
 			Args:             []string{"version"},
-			Image:            newDockerImageRef(projectInfo, projectInfo.Sha),
+			Image:            newDockerImageRef(projectInfo, projectInfo.Ref),
 			WorkingDirectory: projectInfo.WorkingDirectory,
 		},
 	)
@@ -94,7 +94,7 @@ func NewDockerRunHelpTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, err
 		DockerRunHelpTaskName,
 		tasks.DockerTaskConfig{
 			Args:             []string{"--help"},
-			Image:            newDockerImageRef(projectInfo, projectInfo.Sha),
+			Image:            newDockerImageRef(projectInfo, projectInfo.Ref),
 			WorkingDirectory: projectInfo.WorkingDirectory,
 		},
 	)
@@ -138,7 +138,7 @@ func NewDockerTagLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, e
 		[]string{
 			"docker",
 			"tag",
-			newDockerImageRef(projectInfo, projectInfo.Sha),
+			newDockerImageRef(projectInfo, projectInfo.Ref),
 			newDockerImageRef(projectInfo, LatestDockerImageTag),
 		},
 	)
@@ -156,7 +156,7 @@ func NewDockerPushShaTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, err
 		[]string{
 			"docker",
 			"push",
-			newDockerImageRef(projectInfo, projectInfo.Sha),
+			newDockerImageRef(projectInfo, projectInfo.Ref),
 		},
 	)
 
@@ -190,7 +190,7 @@ func NewDockerPullTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error)
 		[]string{
 			"docker",
 			"pull",
-			newDockerImageRef(projectInfo, projectInfo.Sha),
+			newDockerImageRef(projectInfo, projectInfo.Ref),
 		},
 	)
 

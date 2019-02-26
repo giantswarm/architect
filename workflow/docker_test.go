@@ -155,7 +155,7 @@ func testNewProjectInfo() ProjectInfo {
 		Project:          "architect",
 
 		Branch: "master",
-		Sha:    "e8363ac222255e991c126abe6673cd0f33934ac8",
+		Ref:    "e8363ac222255e991c126abe6673cd0f33934ac8",
 
 		Registry:       "quay.io",
 		DockerUsername: "username",

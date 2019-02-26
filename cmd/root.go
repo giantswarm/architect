@@ -22,6 +22,7 @@ var (
 	project      string
 
 	branch string
+	ref    string
 	sha    string
 
 	dryRun bool
@@ -47,7 +48,7 @@ func init() {
 		defaultProject = path[len(path)-1]
 	}
 
-	// We also use the git HEAD commit sha as well.
+	// Use git HEAD as defaultSha.
 	var defaultSha string
 	{
 		out, err := exec.Command("git", "rev-parse", "HEAD").Output()
@@ -55,6 +56,16 @@ func init() {
 			log.Fatalf("could not get git sha: %#v\n", err)
 		}
 		defaultSha = strings.TrimSpace(string(out))
+	}
+
+	// Use git tag as ref when available otherwise use defaultSha.
+	{
+		out, err := exec.Command("git", "describe", "--tags", "--exact-match", "HEAD").Output()
+		if err != nil {
+			ref = defaultSha
+		} else {
+			ref = strings.TrimSpace(string(out))
+		}
 	}
 
 	// We also use the git HEAD branch as well.
