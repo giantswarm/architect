@@ -30,7 +30,7 @@ func (r ReleaseGithubTask) Run() error {
 		Sha:          r.Sha,
 		Tag:          r.Tag,
 	}
-	return createWithDir(r.Client, info)
+	return ensureWithDir(r.Client, info)
 }
 
 func (r ReleaseGithubTask) Name() string {
