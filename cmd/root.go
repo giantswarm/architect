@@ -58,17 +58,15 @@ func init() {
 		defaultSha = strings.TrimSpace(string(out))
 	}
 
-	// Use git tag as defaultRef when available otherwise use defaultSha.
-	var defaultRef string
+	// Use git tag as ref when available otherwise use defaultSha.
 	{
 		out, err := exec.Command("git", "describe", "--tags", "--exact-match", "HEAD").Output()
 		if err != nil {
-			defaultRef = defaultSha
+			ref = defaultSha
 		} else {
-			defaultRef = strings.TrimSpace(string(out))
+			ref = strings.TrimSpace(string(out))
 		}
 	}
-	ref = defaultRef
 
 	// We also use the git HEAD branch as well.
 	var defaultBranch string
