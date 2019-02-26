@@ -22,8 +22,8 @@ var (
 	project      string
 
 	branch string
-	tag    string
 	sha    string
+	tag    string
 
 	dryRun bool
 )
