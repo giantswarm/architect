@@ -159,6 +159,23 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 			wrappedDockerPushSha := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushSha)
 			w = append(w, wrappedDockerPushSha)
 		}
+
+		{
+			if projectInfo.Tag != "" {
+				dockerTag, err := NewDockerTagTask(fs, projectInfo)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+				w = append(w, dockerTag)
+
+				dockerPushTag, err := NewDockerPushTagTask(fs, projectInfo)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+				wrappedDockerPushTag := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushTag)
+				w = append(w, wrappedDockerPushTag)
+			}
+		}
 	}
 
 	helmTasks, err := processHelmDir(fs, projectInfo, NewHelmPushTask)

@@ -120,6 +120,31 @@ func Test_Workflow_Docker_NewDockerBuildTask(t *testing.T) {
 				"quay.io/giantswarm/architect:e8363ac222255e991c126abe6673cd0f33934ac8",
 			},
 		},
+
+		// Test 9, make sure NewDockerTagTask works as expected.
+		{
+			TaskFunc: func() (tasks.Task, error) {
+				return NewDockerTagTask(nil, testNewProjectInfo())
+			},
+			ExpectedArgs: []string{
+				"docker",
+				"tag",
+				"quay.io/giantswarm/architect:e8363ac222255e991c126abe6673cd0f33934ac8",
+				"quay.io/giantswarm/architect:v1.0.0",
+			},
+		},
+
+		// Test 10, make sure NewDockerPushTagTask works as expected.
+		{
+			TaskFunc: func() (tasks.Task, error) {
+				return NewDockerPushTagTask(nil, testNewProjectInfo())
+			},
+			ExpectedArgs: []string{
+				"docker",
+				"push",
+				"quay.io/giantswarm/architect:v1.0.0",
+			},
+		},
 	}
 
 	for i, tc := range testCases {
@@ -156,6 +181,7 @@ func testNewProjectInfo() ProjectInfo {
 
 		Branch: "master",
 		Sha:    "e8363ac222255e991c126abe6673cd0f33934ac8",
+		Tag:    "v1.0.0",
 
 		Registry:       "quay.io",
 		DockerUsername: "username",

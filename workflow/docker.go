@@ -14,8 +14,10 @@ const (
 	DockerRunHelpTaskName    = "docker-run-help"
 
 	DockerLoginTaskName      = "docker-login"
+	DockerTagTaskName        = "docker-tag"
 	DockerTagLatestTaskName  = "docker-tag-latest"
 	DockerPushShaTaskName    = "docker-push-sha"
+	DockerPushTagTaskName    = "docker-push-tag"
 	DockerPushLatestTaskName = "docker-push-latest"
 	DockerPullTaskName       = "docker-pull"
 
@@ -128,6 +130,24 @@ func NewDockerLoginTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error
 	return dockerLogin, nil
 }
 
+func NewDockerTagTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+	if err := checkDockerRequirements(projectInfo); err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	dockerPush := tasks.NewExecTask(
+		DockerTagTaskName,
+		[]string{
+			"docker",
+			"tag",
+			newDockerImageRef(projectInfo, projectInfo.Sha),
+			newDockerImageRef(projectInfo, projectInfo.Tag),
+		},
+	)
+
+	return dockerPush, nil
+}
+
 func NewDockerTagLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
 		return nil, microerror.Mask(err)
@@ -157,6 +177,23 @@ func NewDockerPushShaTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, err
 			"docker",
 			"push",
 			newDockerImageRef(projectInfo, projectInfo.Sha),
+		},
+	)
+
+	return dockerPush, nil
+}
+
+func NewDockerPushTagTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+	if err := checkDockerRequirements(projectInfo); err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	dockerPush := tasks.NewExecTask(
+		DockerPushTagTaskName,
+		[]string{
+			"docker",
+			"push",
+			newDockerImageRef(projectInfo, projectInfo.Tag),
 		},
 	)
 
