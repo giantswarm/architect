@@ -46,8 +46,8 @@ func NewHelmPullTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 func NewTemplateHelmChartTask(fs afero.Fs, chartDir string, projectInfo ProjectInfo) (tasks.Task, error) {
 	var dockerTag string
 	{
-		if projectInfo.Tag != "" {
-			dockerTag = projectInfo.Tag
+		if projectInfo.Ref != "" {
+			dockerTag = projectInfo.Ref
 		} else {
 			dockerTag = projectInfo.Sha
 		}
