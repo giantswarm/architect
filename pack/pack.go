@@ -21,17 +21,22 @@ type PackageHelmChartTask struct {
 }
 
 // Run package the helm chart at p.chartDir into p.dst.
+//
+// If p.dst is /foo, and the chart is named bar, with version 1.0.0, this
+// will generate /foo/bar-1.0.0.tgz.
 func (p PackageHelmChartTask) Run() error {
 	path, err := filepath.Abs(p.chartDir)
 	if err != nil {
 		return err
 	}
 
+	// Load chart from a directory.
 	ch, err := chartutil.LoadDir(path)
 	if err != nil {
 		return err
 	}
 
+	// Save the chart as an archive in the given director.
 	_, err = chartutil.Save(ch, p.dst)
 	if err != nil {
 		return microerror.Mask(err)
