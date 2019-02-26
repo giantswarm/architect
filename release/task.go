@@ -12,17 +12,25 @@ const (
 )
 
 type ReleaseGithubTask struct {
-	client       *github.Client
-	dir          string
-	organisation string
-	project      string
-	sha          string
-	tag          string
+	Client       *github.Client
+	Dir          string
+	Organisation string
+	Project      string
+	Sha          string
+	Tag          string
 }
 
 // Run creates a draft github release.
 func (r ReleaseGithubTask) Run() error {
-	return createWithDir(r.client, r.dir, r.organisation, r.project, r.sha, r.tag)
+	info := releaseInfo{
+		AssetsDir:    r.Dir,
+		Draft:        true,
+		Organisation: r.Organisation,
+		Project:      r.Project,
+		Sha:          r.Sha,
+		Tag:          r.Tag,
+	}
+	return createWithDir(r.Client, info)
 }
 
 func (r ReleaseGithubTask) Name() string {
@@ -30,16 +38,5 @@ func (r ReleaseGithubTask) Name() string {
 }
 
 func (r ReleaseGithubTask) String() string {
-	return fmt.Sprintf(ReleaseGithubTaskString, r.Name(), r.sha, r.tag)
-}
-
-func NewReleaseGithubTask(client *github.Client, dir, organisation, project, sha, tag string) ReleaseGithubTask {
-	return ReleaseGithubTask{
-		client:       client,
-		dir:          dir,
-		organisation: organisation,
-		project:      project,
-		sha:          sha,
-		tag:          tag,
-	}
+	return fmt.Sprintf(ReleaseGithubTaskString, r.Name(), r.Sha, r.Tag)
 }

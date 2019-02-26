@@ -12,26 +12,37 @@ import (
 	"github.com/giantswarm/microerror"
 )
 
+type releaseInfo struct {
+	AssetsDir    string
+	Draft        bool
+	Organisation string
+	Project      string
+	Sha          string
+	Tag          string
+}
+
 // createWithDir creates a draft github release with files contained in dir as assets.
-func createWithDir(client *github.Client, dir, organisation, project, sha, tag string) error {
-	release, err := create(client, organisation, project, sha, tag, false)
+func createWithDir(client *github.Client, info releaseInfo) error {
+	ctx := context.Background()
+
+	release, err := create(ctx, client, info)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	filesInfo, err := ioutil.ReadDir(dir)
+	filesInfo, err := ioutil.ReadDir(info.AssetsDir)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
 	for _, f := range filesInfo {
-		fd, err := os.Open(filepath.Join(dir, f.Name()))
+		fd, err := os.Open(filepath.Join(info.AssetsDir, f.Name()))
 		if err != nil {
 			return microerror.Mask(err)
 		}
 		defer fd.Close()
 
-		err = uploadAsset(client, organisation, project, release.GetID(), fd)
+		err = uploadAsset(ctx, client, info, release.GetID(), fd)
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -40,47 +51,47 @@ func createWithDir(client *github.Client, dir, organisation, project, sha, tag s
 	return nil
 }
 
-func create(client *github.Client, organisation, project, sha, tag string, draft bool) (*github.RepositoryRelease, error) {
+func create(ctx context.Context, client *github.Client, info releaseInfo) (*github.RepositoryRelease, error) {
 	release := &github.RepositoryRelease{
-		Draft:           &draft,
-		Name:            &tag,
-		TagName:         &tag,
-		TargetCommitish: &sha,
+		Draft:           &info.Draft,
+		Name:            &info.Tag,
+		TagName:         &info.Tag,
+		TargetCommitish: &info.Sha,
 	}
 
 	createdRelease, _, err := client.Repositories.CreateRelease(
-		context.TODO(),
-		organisation,
-		project,
+		ctx,
+		info.Organisation,
+		info.Project,
 		release,
 	)
 	if err != nil {
-		return nil, microerror.Maskf(err, "could not create release for %s:%s", project, tag)
+		return nil, microerror.Mask(err)
 	}
 
-	log.Printf("created release for %s sha:%s tag:%s", project, sha, tag)
+	log.Printf("created release for %s sha:%s tag:%s", info.Project, info.Sha, info.Tag)
 
 	return createdRelease, nil
 }
 
-func uploadAsset(client *github.Client, organisation, project string, id int64, file *os.File) error {
+func uploadAsset(ctx context.Context, client *github.Client, info releaseInfo, releaseID int64, file *os.File) error {
 	options := &github.UploadOptions{
 		Name: filepath.Base(file.Name()),
 	}
 
 	_, _, err := client.Repositories.UploadReleaseAsset(
-		context.TODO(),
-		organisation,
-		project,
-		id,
+		ctx,
+		info.Organisation,
+		info.Project,
+		releaseID,
 		options,
 		file,
 	)
 	if err != nil {
-		return microerror.Maskf(err, "could not upload release asset id:%d file:%s", id, file.Name())
+		return microerror.Mask(err)
 	}
 
-	log.Printf("uploaded release asset id:%d file:%s", id, file.Name())
+	log.Printf("uploaded release asset id:%d file:%s", releaseID, file.Name())
 
 	return nil
 }
