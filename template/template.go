@@ -17,6 +17,8 @@ type BuildInfo struct {
 	DockerTag string
 	// SHA is the SHA-1 tag of the commit we are building for.
 	SHA string
+	// Version is the version of the commit being built.
+	Version string
 }
 
 // TemplateConfiguration holds both build info, and configuration info.

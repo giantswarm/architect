@@ -58,6 +58,7 @@ func NewTemplateHelmChartTask(fs afero.Fs, chartDir string, projectInfo ProjectI
 		chartDir,
 		dockerTag,
 		projectInfo.Sha,
+		"", // TODO: fill this with appropriate version when available.
 	)
 
 	return templateHelmChart, nil

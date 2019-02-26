@@ -16,8 +16,8 @@ const (
 
 	// TemplateHelmChartTaskString is the format for printing the
 	// helm chart templating task.
-	// Name of the task, the helm directory path, and the sha.
-	TemplateHelmChartTaskString = "%s:\t%s docker-tag:%s sha:%s"
+	// Name of the task, the helm directory path, the docker-tag, the sha, and the version.
+	TemplateHelmChartTaskString = "%s:\t%s docker-tag:%s sha:%s version:%s"
 
 	// HelmChartYamlName is the name of Helm's chart yaml.
 	HelmChartYamlName = "Chart.yaml"
@@ -34,6 +34,7 @@ type TemplateHelmChartTask struct {
 	fs        afero.Fs
 	chartDir  string
 	sha       string
+	version   string
 }
 
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
@@ -47,6 +48,7 @@ func (t TemplateHelmChartTask) Run() error {
 		buildInfo := BuildInfo{
 			DockerTag: t.dockerTag,
 			SHA:       t.sha,
+			Version:   t.version,
 		}
 
 		newTemplate := template.Must(template.New(path).Delims("[[", "]]").Parse(string(contents)))
@@ -77,14 +79,15 @@ func (t TemplateHelmChartTask) Name() string {
 }
 
 func (t TemplateHelmChartTask) String() string {
-	return fmt.Sprintf(TemplateHelmChartTaskString, t.Name(), t.chartDir, t.dockerTag, t.sha)
+	return fmt.Sprintf(TemplateHelmChartTaskString, t.Name(), t.chartDir, t.dockerTag, t.sha, t.version)
 }
 
-func NewTemplateHelmChartTask(fs afero.Fs, chartDir, dockerTag, sha string) TemplateHelmChartTask {
+func NewTemplateHelmChartTask(fs afero.Fs, chartDir, dockerTag, sha, version string) TemplateHelmChartTask {
 	return TemplateHelmChartTask{
 		dockerTag: dockerTag,
 		fs:        fs,
 		chartDir:  chartDir,
 		sha:       sha,
+		version:   version,
 	}
 }
