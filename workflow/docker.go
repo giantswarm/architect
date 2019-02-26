@@ -15,7 +15,7 @@ const (
 
 	DockerLoginTaskName      = "docker-login"
 	DockerTagLatestTaskName  = "docker-tag-latest"
-	DockerPushRefTaskName    = "docker-push-ref"
+	DockerPushShaTaskName    = "docker-push-sha"
 	DockerPushLatestTaskName = "docker-push-latest"
 	DockerPullTaskName       = "docker-pull"
 
@@ -39,8 +39,8 @@ func checkDockerRequirements(projectInfo ProjectInfo) error {
 		return microerror.Mask(emptyProjectError)
 	}
 
-	if projectInfo.Ref == "" {
-		return microerror.Mask(emptyRefError)
+	if projectInfo.Sha == "" {
+		return microerror.Mask(emptyShaError)
 	}
 	if projectInfo.Registry == "" {
 		return microerror.Mask(emptyRegistryError)
@@ -60,7 +60,7 @@ func NewDockerBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error
 			"docker",
 			"build",
 			"-t",
-			newDockerImageRef(projectInfo, projectInfo.Ref),
+			newDockerImageRef(projectInfo, projectInfo.Sha),
 			projectInfo.WorkingDirectory,
 		},
 	)
@@ -77,7 +77,7 @@ func NewDockerRunVersionTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, 
 		DockerRunVersionTaskName,
 		tasks.DockerTaskConfig{
 			Args:             []string{"version"},
-			Image:            newDockerImageRef(projectInfo, projectInfo.Ref),
+			Image:            newDockerImageRef(projectInfo, projectInfo.Sha),
 			WorkingDirectory: projectInfo.WorkingDirectory,
 		},
 	)
@@ -94,7 +94,7 @@ func NewDockerRunHelpTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, err
 		DockerRunHelpTaskName,
 		tasks.DockerTaskConfig{
 			Args:             []string{"--help"},
-			Image:            newDockerImageRef(projectInfo, projectInfo.Ref),
+			Image:            newDockerImageRef(projectInfo, projectInfo.Sha),
 			WorkingDirectory: projectInfo.WorkingDirectory,
 		},
 	)
@@ -138,7 +138,7 @@ func NewDockerTagLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, e
 		[]string{
 			"docker",
 			"tag",
-			newDockerImageRef(projectInfo, projectInfo.Ref),
+			newDockerImageRef(projectInfo, projectInfo.Sha),
 			newDockerImageRef(projectInfo, LatestDockerImageTag),
 		},
 	)
@@ -146,17 +146,17 @@ func NewDockerTagLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, e
 	return dockerPush, nil
 }
 
-func NewDockerPushRefTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+func NewDockerPushShaTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	dockerPush := tasks.NewExecTask(
-		DockerPushRefTaskName,
+		DockerPushShaTaskName,
 		[]string{
 			"docker",
 			"push",
-			newDockerImageRef(projectInfo, projectInfo.Ref),
+			newDockerImageRef(projectInfo, projectInfo.Sha),
 		},
 	)
 
@@ -190,7 +190,7 @@ func NewDockerPullTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error)
 		[]string{
 			"docker",
 			"pull",
-			newDockerImageRef(projectInfo, projectInfo.Ref),
+			newDockerImageRef(projectInfo, projectInfo.Sha),
 		},
 	)
 

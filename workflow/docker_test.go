@@ -85,10 +85,10 @@ func Test_Workflow_Docker_NewDockerBuildTask(t *testing.T) {
 			},
 		},
 
-		// Test 6, make sure NewDockerPushRefTask works as expected.
+		// Test 6, make sure NewDockerPushShaTask works as expected.
 		{
 			TaskFunc: func() (tasks.Task, error) {
-				return NewDockerPushRefTask(nil, testNewProjectInfo())
+				return NewDockerPushShaTask(nil, testNewProjectInfo())
 			},
 			ExpectedArgs: []string{
 				"docker",
@@ -155,7 +155,7 @@ func testNewProjectInfo() ProjectInfo {
 		Project:          "architect",
 
 		Branch: "master",
-		Ref:    "e8363ac222255e991c126abe6673cd0f33934ac8",
+		Sha:    "e8363ac222255e991c126abe6673cd0f33934ac8",
 
 		Registry:       "quay.io",
 		DockerUsername: "username",

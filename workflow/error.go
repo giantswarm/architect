@@ -76,13 +76,13 @@ func IsEmptyProject(err error) bool {
 	return microerror.Cause(err) == emptyProjectError
 }
 
-var emptyRefError = &microerror.Error{
-	Kind: "emptyRefError",
+var emptyShaError = &microerror.Error{
+	Kind: "emptyShaError",
 }
 
-// IsEmptyRef asserts emptyRefError
-func IsEmptyRef(err error) bool {
-	return microerror.Cause(err) == emptyRefError
+// IsEmptySha asserts emptyShaError
+func IsEmptySha(err error) bool {
+	return microerror.Cause(err) == emptyShaError
 }
 
 var emptyRegistryError = &microerror.Error{
