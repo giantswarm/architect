@@ -36,7 +36,7 @@ func (p PackageHelmChartTask) Run() error {
 		return err
 	}
 
-	// Save the chart as an archive in the given director.
+	// Save the chart as an archive in the given directory.
 	_, err = chartutil.Save(ch, p.dst)
 	if err != nil {
 		return microerror.Mask(err)
