@@ -55,8 +55,8 @@ func runDeploy(cmd *cobra.Command, args []string) {
 		Project:          project,
 
 		Branch: branch,
-		Ref:    ref,
 		Sha:    sha,
+		Tag:    tag,
 
 		Registry:       registry,
 		DockerUsername: dockerUsername,
