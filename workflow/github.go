@@ -20,7 +20,7 @@ func NewReleaseGithubTask(client *github.Client, dir string, projectInfo Project
 		Organisation: projectInfo.Organisation,
 		Project:      projectInfo.Project,
 		Sha:          projectInfo.Sha,
-		Tag:          projectInfo.Ref,
+		Tag:          projectInfo.Tag,
 	}
 
 	return githubRelease, nil
@@ -33,11 +33,11 @@ func checkReleaseRequirements(projectInfo ProjectInfo) error {
 	if projectInfo.Project == "" {
 		return microerror.Mask(emptyProjectError)
 	}
-	if projectInfo.Ref == "" {
-		return microerror.Mask(emptyRefError)
-	}
 	if projectInfo.Sha == "" {
 		return microerror.Mask(emptyShaError)
+	}
+	if projectInfo.Tag == "" {
+		return microerror.Mask(emptyRefError)
 	}
 
 	return nil
