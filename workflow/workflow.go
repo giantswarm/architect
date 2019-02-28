@@ -2,12 +2,16 @@ package workflow
 
 import (
 	"fmt"
+	"io/ioutil"
 	"path/filepath"
 	"strings"
 
 	"github.com/cenk/backoff"
+	"github.com/giantswarm/architect/pack"
+	"github.com/giantswarm/architect/release"
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/microerror"
+	"github.com/google/go-github/github"
 
 	"github.com/spf13/afero"
 )
@@ -272,6 +276,44 @@ func NewPublish(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 
 			w = append(w, wrappedHelmPromoteToChannel)
 		}
+	}
+	return w, nil
+}
+
+func NewRelease(projectInfo ProjectInfo, fs afero.Fs, githubClient *github.Client) (Workflow, error) {
+	w := Workflow{}
+
+	chartDirectory := filepath.Join(projectInfo.WorkingDirectory, "helm", projectInfo.Project+"-chart")
+	chartDirectoryExists, err := afero.Exists(fs, chartDirectory)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	tmpDir, err := ioutil.TempDir("", "release")
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	if chartDirectoryExists {
+		helmChartTemplate, err := NewTemplateHelmChartTask(fs, chartDirectory, projectInfo)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		w = append(w, helmChartTemplate)
+
+		helmChartPackage := pack.NewPackageHelmChartTask(chartDirectory, tmpDir)
+		w = append(w, helmChartPackage)
+
+		githubRelease := release.ReleaseGithubTask{
+			Client:       githubClient,
+			Dir:          tmpDir,
+			Organisation: projectInfo.Organisation,
+			Project:      projectInfo.Project,
+			Sha:          projectInfo.Sha,
+			Tag:          projectInfo.Tag,
+		}
+		wrappedGithubRelease := tasks.NewRetryTask(backoff.NewExponentialBackOff(), githubRelease)
+		w = append(w, wrappedGithubRelease)
 	}
 	return w, nil
 }
