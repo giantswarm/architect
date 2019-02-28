@@ -22,8 +22,8 @@ var (
 	project      string
 
 	branch string
-	ref    string
 	sha    string
+	tag    string
 
 	dryRun bool
 )
@@ -58,13 +58,11 @@ func init() {
 		defaultSha = strings.TrimSpace(string(out))
 	}
 
-	// Use git tag as ref when available otherwise use defaultSha.
+	// Use git tag when available.
 	{
 		out, err := exec.Command("git", "describe", "--tags", "--exact-match", "HEAD").Output()
-		if err != nil {
-			ref = defaultSha
-		} else {
-			ref = strings.TrimSpace(string(out))
+		if err == nil {
+			tag = strings.TrimSpace(string(out))
 		}
 	}
 

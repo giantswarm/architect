@@ -71,7 +71,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 	projectInfo := ProjectInfo{
 		Organisation:   "giantswarm",
 		Project:        "test-project",
-		Ref:            "jfkejhfkejfkejfef",
+		Sha:            "jfkejhfkejfkejfef",
 		Registry:       "quay.io",
 		DockerUsername: "test",
 		DockerPassword: "ekfnkfne",
@@ -344,6 +344,39 @@ func TestGetBuildWorkflow(t *testing.T) {
 				}, ";") + ";",
 			},
 		},
+
+		// Test 12 that a project with golang files, a dockerfile, and git tag produces a correct
+		// workflow.
+		{
+			setUp: func(fs afero.Fs, testDir string) error {
+				projectInfo.WorkingDirectory = testDir
+				projectInfo.Tag = "v1.0.0"
+
+				if err := afero.WriteFile(fs, filepath.Join(projectInfo.WorkingDirectory, "main.go"), []byte("package test"), 0644); err != nil {
+					return microerror.Mask(err)
+				}
+				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
+					return microerror.Mask(err)
+				}
+				return nil
+			},
+			expectedTaskNames: []string{
+				RepoCheckTaskName,
+				GoPullTaskName,
+				strings.Join([]string{
+					GoFmtTaskName,
+					GoBuildTaskName,
+					GoTestTaskName,
+				}, ";") + ";",
+				DockerBuildTaskName,
+				DockerRunVersionTaskName,
+				DockerRunHelpTaskName,
+				DockerLoginTaskName,
+				DockerPushShaTaskName,
+				DockerTagTaskName,
+				DockerPushTagTaskName,
+			},
+		},
 	}
 
 	for i, tc := range tests {
@@ -393,7 +426,7 @@ func TestGetDeployWorkflow(t *testing.T) {
 		WorkingDirectory: "/test-project/",
 		Organisation:     "giantswarm",
 		Project:          "test-project",
-		Ref:              "1cd72a25e16e93da14f08d95bd98662f8827028e",
+		Sha:              "1cd72a25e16e93da14f08d95bd98662f8827028e",
 		Registry:         "quay.io",
 		DockerUsername:   "test",
 		DockerPassword:   "test",
@@ -526,7 +559,7 @@ func TestGetPublishWorkflow(t *testing.T) {
 		WorkingDirectory: "/test-project/",
 		Organisation:     "giantswarm",
 		Project:          "test-project",
-		Ref:              "1cd72a25e16e93da14f08d95bd98662f8827028e",
+		Sha:              "1cd72a25e16e93da14f08d95bd98662f8827028e",
 		Registry:         "quay.io",
 		DockerUsername:   "test",
 		DockerPassword:   "test",
@@ -622,7 +655,7 @@ func TestGetUnpublishWorkflow(t *testing.T) {
 		WorkingDirectory: "/test-project/",
 		Organisation:     "giantswarm",
 		Project:          "test-project",
-		Ref:              "1cd72a25e16e93da14f08d95bd98662f8827028e",
+		Sha:              "1cd72a25e16e93da14f08d95bd98662f8827028e",
 		Registry:         "quay.io",
 		DockerUsername:   "test",
 		DockerPassword:   "test",
