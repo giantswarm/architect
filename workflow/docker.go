@@ -135,7 +135,7 @@ func NewDockerTagTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) 
 		return nil, microerror.Mask(err)
 	}
 
-	dockerPush := tasks.NewExecTask(
+	dockerTag := tasks.NewExecTask(
 		DockerTagTaskName,
 		[]string{
 			"docker",
@@ -145,7 +145,7 @@ func NewDockerTagTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) 
 		},
 	)
 
-	return dockerPush, nil
+	return dockerTag, nil
 }
 
 func NewDockerTagLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
