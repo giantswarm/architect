@@ -90,7 +90,6 @@ func init() {
 		} else {
 			out, err := exec.Command("git", "describe", "--tags", "--abbrev=0", "HEAD").Output()
 			if err != nil {
-				log.Fatalf("could not get git branch: %#v\n", err)
 				version = fmt.Sprintf("v0.0.0-%s", defaultSha)
 			} else {
 				version = fmt.Sprintf("%s-%s", strings.TrimSpace(string(out)), defaultSha)
