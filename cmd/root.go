@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -24,6 +25,8 @@ var (
 	branch string
 	sha    string
 	tag    string
+
+	version string
 
 	dryRun bool
 )
@@ -66,14 +69,32 @@ func init() {
 		}
 	}
 
-	// We also use the git HEAD branch as well.
-	var defaultBranch string
+	// Use git tag when available.
 	{
-		out, err := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD").Output()
-		if err != nil {
-			log.Fatalf("could not get git branch: %#v\n", err)
+		out, err := exec.Command("git", "describe", "--tags", "--exact-match", "HEAD").Output()
+		if err == nil {
+			version = strings.TrimSpace(string(out))
 		}
-		defaultBranch = strings.TrimSpace(string(out))
+	}
+
+	// Define the version we are building.
+	{
+		// version can be of three different formats:
+		//   v1.0.0: building a tagged version.
+		//   v1.0.0+git: building ahead of a tagged version.
+		//   v0.0.0-939f5c6949f83c0a7ea98a25bc9524fd2f751ffe: building a repo which has no tags.
+		if tag != "" {
+			version = tag
+		} else {
+			out, err := exec.Command("git", "describe", "--tags", "--abbrev=0", "HEAD").Output()
+			if err != nil {
+				log.Fatalf("could not get git branch: %#v\n", err)
+				version = fmt.Sprintf("v0.0.0-%s", defaultSha)
+			} else {
+				version = fmt.Sprintf("%s+git", strings.TrimSpace(string(out)))
+			}
+
+		}
 	}
 
 	RootCmd.PersistentFlags().StringVar(&workingDirectory, "working-directory", defaultWorkingDirectory, "working directory for architect")

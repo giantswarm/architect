@@ -51,6 +51,8 @@ func runUnpublish(cmd *cobra.Command, args []string) {
 		Sha:    sha,
 		Tag:    tag,
 
+		Version: version,
+
 		Registry:       registry,
 		DockerUsername: dockerUsername,
 		DockerPassword: dockerPassword,
