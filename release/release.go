@@ -12,38 +12,29 @@ import (
 	"github.com/giantswarm/microerror"
 )
 
-type releaseInfo struct {
-	AssetsDir    string
-	Draft        bool
-	Organisation string
-	Project      string
-	Sha          string
-	Tag          string
-}
-
 // ensureWithDir ensure github release created with files in dir as assets.
-func ensureWithDir(client *github.Client, info releaseInfo) error {
+func (r ReleaseGithubTask) ensureWithDir() error {
 	ctx := context.Background()
 
-	release, err := getByTag(ctx, client, info)
+	release, err := r.getByTag(ctx)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
 	if release == nil {
-		release, err = create(ctx, client, info)
+		release, err = r.create(ctx)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 	}
 
-	filesInfo, err := ioutil.ReadDir(info.AssetsDir)
+	filesInfo, err := ioutil.ReadDir(r.AssetsDir)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
 	for _, f := range filesInfo {
-		fd, err := os.Open(filepath.Join(info.AssetsDir, f.Name()))
+		fd, err := os.Open(filepath.Join(r.AssetsDir, f.Name()))
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -55,7 +46,7 @@ func ensureWithDir(client *github.Client, info releaseInfo) error {
 		}
 
 		if !uploaded {
-			err = uploadAsset(ctx, client, info, release.GetID(), fd)
+			err = r.uploadAsset(ctx, release.GetID(), fd)
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -65,35 +56,35 @@ func ensureWithDir(client *github.Client, info releaseInfo) error {
 	return nil
 }
 
-func create(ctx context.Context, client *github.Client, info releaseInfo) (*github.RepositoryRelease, error) {
+func (r ReleaseGithubTask) create(ctx context.Context) (*github.RepositoryRelease, error) {
 	release := &github.RepositoryRelease{
-		Draft:           &info.Draft,
-		Name:            &info.Tag,
-		TagName:         &info.Tag,
-		TargetCommitish: &info.Sha,
+		Draft:           &r.Draft,
+		Name:            &r.Tag,
+		TagName:         &r.Tag,
+		TargetCommitish: &r.Sha,
 	}
 
-	createdRelease, _, err := client.Repositories.CreateRelease(
+	createdRelease, _, err := r.Client.Repositories.CreateRelease(
 		ctx,
-		info.Organisation,
-		info.Project,
+		r.Organisation,
+		r.Project,
 		release,
 	)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	log.Printf("created release for %s sha:%s tag:%s", info.Project, info.Sha, info.Tag)
+	log.Printf("created release for %s sha:%s tag:%s", r.Project, r.Sha, r.Tag)
 
 	return createdRelease, nil
 }
 
-func getByTag(ctx context.Context, client *github.Client, info releaseInfo) (*github.RepositoryRelease, error) {
-	release, _, err := client.Repositories.GetReleaseByTag(
+func (r ReleaseGithubTask) getByTag(ctx context.Context) (*github.RepositoryRelease, error) {
+	release, _, err := r.Client.Repositories.GetReleaseByTag(
 		ctx,
-		info.Organisation,
-		info.Project,
-		info.Tag,
+		r.Organisation,
+		r.Project,
+		r.Tag,
 	)
 	if IsNotFoundError(err) {
 		// fallthrough
@@ -128,15 +119,15 @@ func isFileUploaded(fd *os.File, assets []github.ReleaseAsset) (bool, error) {
 	return false, nil
 }
 
-func uploadAsset(ctx context.Context, client *github.Client, info releaseInfo, releaseID int64, file *os.File) error {
+func (r ReleaseGithubTask) uploadAsset(ctx context.Context, releaseID int64, file *os.File) error {
 	options := &github.UploadOptions{
 		Name: filepath.Base(file.Name()),
 	}
 
-	_, _, err := client.Repositories.UploadReleaseAsset(
+	_, _, err := r.Client.Repositories.UploadReleaseAsset(
 		ctx,
-		info.Organisation,
-		info.Project,
+		r.Organisation,
+		r.Project,
 		releaseID,
 		options,
 		file,

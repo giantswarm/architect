@@ -305,8 +305,10 @@ func NewRelease(projectInfo ProjectInfo, fs afero.Fs, githubClient *github.Clien
 		w = append(w, helmChartPackage)
 
 		githubRelease := release.ReleaseGithubTask{
-			Client:       githubClient,
-			Dir:          tmpDir,
+			Client: githubClient,
+
+			AssetsDir:    tmpDir,
+			Draft:        true,
 			Organisation: projectInfo.Organisation,
 			Project:      projectInfo.Project,
 			Sha:          projectInfo.Sha,
