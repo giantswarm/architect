@@ -294,7 +294,7 @@ func NewRelease(projectInfo ProjectInfo, fs afero.Fs, githubClient *github.Clien
 		return nil, microerror.Mask(err)
 	}
 
-	if chartDirectoryExists {
+	if chartDirectoryExists && projectInfo.Tag != "" {
 		helmChartTemplate, err := NewTemplateHelmChartTask(fs, chartDirectory, projectInfo)
 		if err != nil {
 			return nil, microerror.Mask(err)
