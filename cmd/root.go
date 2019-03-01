@@ -69,12 +69,14 @@ func init() {
 		}
 	}
 
-	// Use git tag when available.
+	// We also use the git HEAD branch as well.
+	var defaultBranch string
 	{
-		out, err := exec.Command("git", "describe", "--tags", "--exact-match", "HEAD").Output()
-		if err == nil {
-			version = strings.TrimSpace(string(out))
+		out, err := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD").Output()
+		if err != nil {
+			log.Fatalf("could not get git branch: %#v\n", err)
 		}
+		defaultBranch = strings.TrimSpace(string(out))
 	}
 
 	// Define the version we are building.
