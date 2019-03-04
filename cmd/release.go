@@ -42,8 +42,7 @@ func runRelease(cmd *cobra.Command, args []string) {
 	var githubClient *github.Client
 	{
 		if deploymentEventsToken == "" {
-			log.Printf("no github token")
-			return
+			log.Fatalf("no github token")
 		}
 
 		ts := oauth2.StaticTokenSource(
