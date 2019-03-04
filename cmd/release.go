@@ -26,6 +26,8 @@ func init() {
 }
 
 func runRelease(cmd *cobra.Command, args []string) {
+	ctx := context.Background()
+
 	fs := afero.NewOsFs()
 
 	projectInfo := workflow.ProjectInfo{
@@ -44,7 +46,6 @@ func runRelease(cmd *cobra.Command, args []string) {
 			return
 		}
 
-		ctx := context.Background()
 		ts := oauth2.StaticTokenSource(
 			&oauth2.Token{AccessToken: deploymentEventsToken},
 		)
