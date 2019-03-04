@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -24,6 +25,8 @@ var (
 	branch string
 	sha    string
 	tag    string
+
+	version string
 
 	dryRun bool
 )
@@ -74,6 +77,25 @@ func init() {
 			log.Fatalf("could not get git branch: %#v\n", err)
 		}
 		defaultBranch = strings.TrimSpace(string(out))
+	}
+
+	// Define the version we are building.
+	{
+		// version can be of three different formats:
+		//   v1.0.0: building a tagged version.
+		//   v1.0.0-3a955cbb126f0fe5d51aedf2eb84acca7b074374: building ahead of a tagged version.
+		//   v0.0.0-939f5c6949f83c0a7ea98a25bc9524fd2f751ffe: building a repo which has no tags.
+		if tag != "" {
+			version = tag
+		} else {
+			out, err := exec.Command("git", "describe", "--tags", "--abbrev=0", "HEAD").Output()
+			if err != nil {
+				version = fmt.Sprintf("v0.0.0-%s", defaultSha)
+			} else {
+				version = fmt.Sprintf("%s-%s", strings.TrimSpace(string(out)), defaultSha)
+			}
+
+		}
 	}
 
 	RootCmd.PersistentFlags().StringVar(&workingDirectory, "working-directory", defaultWorkingDirectory, "working directory for architect")
