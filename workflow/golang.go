@@ -261,9 +261,12 @@ func NewGoBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 					"-w "+
 						"-linkmode 'auto' "+
 						"-extldflags '-static' "+
-						"-X 'main.gitCommit=%[1]s' "+
-						"-X 'github.com/%s/%s/pkg/project.gitSHA=%[1]s' "+
+						"-X 'main.gitCommit=%s' "+
+						"-X 'github.com/%s/%s/pkg/project.gitSHA=%s' "+
 						"-X 'github.com/%s/%s/pkg/project.version=%s'",
+					projectInfo.Sha,
+					projectInfo.Organisation,
+					projectInfo.Project,
 					projectInfo.Sha,
 					projectInfo.Organisation,
 					projectInfo.Project,
