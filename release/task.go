@@ -20,6 +20,14 @@ type ReleaseGithubTask struct {
 	Tag          string
 }
 
+func NewReleaseGithubTaskclient(client *github.Client) ReleaseGithubTask {
+	task := ReleaseGithubTask{
+		Client: client,
+	}
+
+	return task
+}
+
 // Run creates a draft github release.
 func (r ReleaseGithubTask) Run() error {
 	info := releaseInfo{
