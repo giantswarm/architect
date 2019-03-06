@@ -16,7 +16,8 @@ func NewReleaseGithubTask(client *github.Client, dir string, projectInfo Project
 
 	githubRelease := release.ReleaseGithubTask{
 		Client:       client,
-		Dir:          dir,
+		AssetsDir:    dir,
+		Draft:        true,
 		Organisation: projectInfo.Organisation,
 		Project:      projectInfo.Project,
 		Sha:          projectInfo.Sha,
