@@ -93,13 +93,13 @@ func TestPackageHelmChartTask(t *testing.T) {
 			// setup chartDir and dst as temporary directories.
 			var chartDir, dst, filename string
 			{
-				chartDir, err = ioutil.TempDir(os.TempDir(), "architect-packagehelmcharttask-chartdir")
+				chartDir, err = ioutil.TempDir(os.TempDir(), "architect-package-helmcharttask-chartdir-")
 				if err != nil {
 					t.Fatalf("error during chartDir directory creation: %v", err)
 				}
 				defer os.RemoveAll(chartDir)
 
-				dst, err = ioutil.TempDir(os.TempDir(), "architect-packagehelmcharttask-dst")
+				dst, err = ioutil.TempDir(os.TempDir(), "architect-package-helmcharttask-dst-")
 				if err != nil {
 					t.Fatalf("error during dst directory creation: %v", err)
 				}
