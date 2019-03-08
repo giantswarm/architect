@@ -2,6 +2,7 @@ package pack
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -53,15 +54,17 @@ func TestPackageHelmChartTask(t *testing.T) {
 		expectedDeploymentData string
 		expectedValues         string
 
-		setup func(chartDir string) error
+		errorMatcher func(err error) bool
+		setup        func(chartDir string) error
 	}{
 		{
-			name:                   "case 0: test package chart",
+			name:                   "case 0: package chart",
 			expectedChartName:      "hello-test-chart",
 			expectedChartVersion:   "v1.0.0",
 			expectedDeploymentName: "templates/deployment.yaml",
 			expectedDeploymentData: deploymentYaml,
 			expectedValues:         valuesYaml,
+			errorMatcher:           nil,
 			setup: func(chartDir string) error {
 				files := []File{
 					{
@@ -101,9 +104,6 @@ func TestPackageHelmChartTask(t *testing.T) {
 					t.Fatalf("error during dst directory creation: %v", err)
 				}
 				defer os.RemoveAll(dst)
-
-				// packaged chart filename is deterministic.
-				filename = filepath.Join(dst, fmt.Sprintf("%s-%s.tgz", tc.expectedChartName, tc.expectedChartVersion))
 			}
 
 			// setup Chart directories and files.
@@ -113,9 +113,25 @@ func TestPackageHelmChartTask(t *testing.T) {
 
 			// run the test: package the chart.
 			task := NewPackageHelmChartTask(chartDir, dst)
-			if err := task.Run(); err != nil {
-				t.Fatalf("error during workflow execution: %v", err)
+			err = task.Run()
+
+			switch {
+			case err == nil && tc.errorMatcher == nil:
+				// correct; carry on
+			case err != nil && tc.errorMatcher == nil:
+				t.Fatalf("error == %#v, want nil", err)
+			case err == nil && tc.errorMatcher != nil:
+				t.Fatalf("error == nil, want non-nil")
+			case !tc.errorMatcher(err):
+				t.Fatalf("error == %#v, want matching", err)
 			}
+
+			if tc.expectedChartName == "" || tc.expectedChartVersion == "" {
+				return
+			}
+
+			// packaged chart filename is deterministic.
+			filename = filepath.Join(dst, fmt.Sprintf("%s-%s.tgz", tc.expectedChartName, tc.expectedChartVersion))
 
 			// test for expected chart archive filename.
 			_, err = os.Stat(filename)
@@ -141,13 +157,15 @@ func TestPackageHelmChartTask(t *testing.T) {
 				t.Fatalf("wrong chart version: expected %#q, got %#q", tc.expectedChartVersion, version)
 			}
 
-			// check for chart values.
-			if values := values.GetRaw(); values != tc.expectedValues {
-				t.Fatalf("wrong chart values: expected %#q, got %#q", tc.expectedValues, values)
+			if tc.expectedValues != "" {
+				// check for chart values.
+				if values := values.GetRaw(); values != tc.expectedValues {
+					t.Fatalf("wrong chart values:\n>>> expected\n%#q\n>>> got\n%#q\n", tc.expectedValues, values)
+				}
 			}
 
 			// check for chart deployment template.
-			{
+			if tc.expectedDeploymentName != "" && tc.expectedDeploymentData != "" {
 				var deploymentTemplate *hapichart.Template
 				templates := chart.GetTemplates()
 				for _, template := range templates {
