@@ -178,7 +178,6 @@ func TestPackageHelmChartTask(t *testing.T) {
 					t.Fatalf("not found deployment template: %#q", tc.expectedDeploymentName)
 				}
 				if data := deploymentTemplate.GetData(); !bytes.Equal(data, []byte(tc.expectedDeploymentData)) {
-					t.Logf("%s", deploymentTemplate.GetData())
 					t.Fatalf("wrong deployment template data:\n>>> expected\n%s\n>>> got\n%s\n", tc.expectedDeploymentData, data)
 				}
 			}
