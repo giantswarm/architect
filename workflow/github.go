@@ -11,7 +11,7 @@ import (
 func NewReleaseGithubTask(client *github.Client, dir string, projectInfo ProjectInfo) (tasks.Task, error) {
 	err := checkReleaseRequirements(projectInfo)
 	if err != nil {
-		microerror.Mask(err)
+		return nil, microerror.Mask(err)
 	}
 
 	githubRelease := release.ReleaseGithubTask{
