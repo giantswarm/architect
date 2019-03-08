@@ -84,6 +84,32 @@ func TestPackageHelmChartTask(t *testing.T) {
 				return createFiles(files)
 			},
 		},
+		{
+			name: "case 1: no chart",
+			errorMatcher: func(err error) bool {
+				expectedError := errors.New("chart metadata (Chart.yaml) missing")
+				return err.Error() == expectedError.Error()
+			},
+			setup: func(chartDir string) error {
+				return nil
+			},
+		},
+		{
+			name:                 "case 2: only Chart.yaml",
+			expectedChartName:    "hello-test-chart",
+			expectedChartVersion: "v1.0.0",
+			errorMatcher:         nil,
+			setup: func(chartDir string) error {
+				files := []File{
+					{
+						path: filepath.Join(chartDir, "Chart.yaml"),
+						data: chartYaml,
+					},
+				}
+
+				return createFiles(files)
+			},
+		},
 	}
 
 	for _, tc := range testCases {
