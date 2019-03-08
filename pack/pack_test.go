@@ -38,6 +38,11 @@ spec:
         image: quay.io/giantswarm/hello-test:v1.0.0`
 )
 
+type File struct {
+	path string
+	data string
+}
+
 func TestPackageHelmChartTask(t *testing.T) {
 	testCases := []struct {
 		name string
@@ -58,10 +63,7 @@ func TestPackageHelmChartTask(t *testing.T) {
 			expectedDeploymentData: deploymentYaml,
 			expectedValues:         valuesYaml,
 			setup: func(chartDir string) error {
-				files := []struct {
-					path string
-					data string
-				}{
+				files := []File{
 					{
 						path: filepath.Join(chartDir, "Chart.yaml"),
 						data: chartYaml,
@@ -75,19 +77,8 @@ func TestPackageHelmChartTask(t *testing.T) {
 						data: deploymentYaml,
 					},
 				}
-				for _, file := range files {
-					dir := filepath.Dir(file.path)
-					if dir != "." && dir != "/" {
-						if err := os.MkdirAll(dir, 0755); err != nil {
-							return microerror.Mask(err)
-						}
-					}
-					if err := ioutil.WriteFile(file.path, []byte(file.data), 0644); err != nil {
-						return microerror.Mask(err)
-					}
-				}
 
-				return nil
+				return createFiles(files)
 			},
 		},
 	}
@@ -175,4 +166,20 @@ func TestPackageHelmChartTask(t *testing.T) {
 			}
 		})
 	}
+}
+
+func createFiles(files []File) error {
+	for _, file := range files {
+		dir := filepath.Dir(file.path)
+		if dir != "." && dir != "/" {
+			if err := os.MkdirAll(dir, 0755); err != nil {
+				return microerror.Mask(err)
+			}
+		}
+		if err := ioutil.WriteFile(file.path, []byte(file.data), 0644); err != nil {
+			return microerror.Mask(err)
+		}
+	}
+
+	return nil
 }
