@@ -27,13 +27,13 @@ type PackageHelmChartTask struct {
 func (p PackageHelmChartTask) Run() error {
 	path, err := filepath.Abs(p.chartDir)
 	if err != nil {
-		return err
+		return microerror.Mask(err)
 	}
 
 	// Load chart from a directory.
 	ch, err := chartutil.LoadDir(path)
 	if err != nil {
-		return err
+		return microerror.Mask(err)
 	}
 
 	// Save the chart as an archive in the given directory.
