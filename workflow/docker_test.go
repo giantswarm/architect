@@ -183,6 +183,8 @@ func testNewProjectInfo() ProjectInfo {
 		Sha:    "e8363ac222255e991c126abe6673cd0f33934ac8",
 		Tag:    "v1.0.0",
 
+		Version: "test",
+
 		Registry:       "quay.io",
 		DockerUsername: "username",
 		DockerPassword: "password",

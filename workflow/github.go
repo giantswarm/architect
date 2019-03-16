@@ -11,12 +11,13 @@ import (
 func NewReleaseGithubTask(client *github.Client, dir string, projectInfo ProjectInfo) (tasks.Task, error) {
 	err := checkReleaseRequirements(projectInfo)
 	if err != nil {
-		microerror.Mask(err)
+		return nil, microerror.Mask(err)
 	}
 
 	githubRelease := release.ReleaseGithubTask{
 		Client:       client,
-		Dir:          dir,
+		AssetsDir:    dir,
+		Draft:        true,
 		Organisation: projectInfo.Organisation,
 		Project:      projectInfo.Project,
 		Sha:          projectInfo.Sha,
