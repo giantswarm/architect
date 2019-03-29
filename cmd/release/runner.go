@@ -17,13 +17,7 @@ import (
 )
 
 func runReleaseError(cmd *cobra.Command, args []string) error {
-	var err error
-
-	ctx := context.Background()
-
-	fs := afero.NewOsFs()
-
-	projectInfo := workflow.ProjectInfo{
+	var projectInfo = workflow.ProjectInfo{
 		WorkingDirectory: cmd.Flag("working-directory").Value.String(),
 		Organisation:     cmd.Flag("organisation").Value.String(),
 		Project:          cmd.Flag("project").Value.String(),
@@ -44,13 +38,14 @@ func runReleaseError(cmd *cobra.Command, args []string) error {
 		ts := oauth2.StaticTokenSource(
 			&oauth2.Token{AccessToken: githubToken},
 		)
+		ctx := context.Background()
 		tc := oauth2.NewClient(ctx, ts)
 		githubClient = github.NewClient(tc)
 	}
 
 	var releaseDir string
 	{
-		releaseDir, err = ioutil.TempDir(os.TempDir(), "architect-release")
+		releaseDir, err := ioutil.TempDir(os.TempDir(), "architect-release")
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -58,6 +53,8 @@ func runReleaseError(cmd *cobra.Command, args []string) error {
 	}
 
 	{
+		fs := afero.NewOsFs()
+
 		workflow, err := workflow.NewRelease(projectInfo, fs, releaseDir, githubClient)
 		if err != nil {
 			return microerror.Mask(err)
