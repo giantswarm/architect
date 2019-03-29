@@ -1,4 +1,4 @@
-package cmd
+package release
 
 import (
 	"context"
@@ -13,21 +13,10 @@ import (
 
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/workflow"
+	"github.com/giantswarm/microerror"
 )
 
-var (
-	releaseCmd = &cobra.Command{
-		Use:   "release",
-		Short: "release chart as github release",
-		Run:   runRelease,
-	}
-)
-
-func init() {
-	RootCmd.AddCommand(releaseCmd)
-}
-
-func runRelease(cmd *cobra.Command, args []string) {
+func runReleaseError(cmd *cobra.Command, args []string) error {
 	var err error
 
 	ctx := context.Background()
@@ -35,24 +24,25 @@ func runRelease(cmd *cobra.Command, args []string) {
 	fs := afero.NewOsFs()
 
 	projectInfo := workflow.ProjectInfo{
-		WorkingDirectory: workingDirectory,
-		Organisation:     organisation,
-		Project:          project,
+		WorkingDirectory: cmd.Flag("working-directory").Value.String(),
+		Organisation:     cmd.Flag("organisation").Value.String(),
+		Project:          cmd.Flag("project").Value.String(),
 
-		Sha: sha,
-		Tag: tag,
+		Sha: cmd.Flag("sha").Value.String(),
+		Tag: cmd.Flag("tag").Value.String(),
 
-		Version: version,
+		Version: cmd.Flag("version").Value.String(),
 	}
 
 	var githubClient *github.Client
 	{
-		if deploymentEventsToken == "" {
-			log.Fatalf("no github token")
+		githubToken := cmd.Flag("github-token").Value.String()
+		if githubToken == "" {
+			return microerror.Mask(missingGithubTokenError)
 		}
 
 		ts := oauth2.StaticTokenSource(
-			&oauth2.Token{AccessToken: deploymentEventsToken},
+			&oauth2.Token{AccessToken: githubToken},
 		)
 		tc := oauth2.NewClient(ctx, ts)
 		githubClient = github.NewClient(tc)
@@ -62,7 +52,7 @@ func runRelease(cmd *cobra.Command, args []string) {
 	{
 		releaseDir, err = ioutil.TempDir(os.TempDir(), "architect-release")
 		if err != nil {
-			log.Fatalf("could not create release dir: %v", err)
+			return microerror.Mask(err)
 		}
 		defer os.RemoveAll(releaseDir)
 	}
@@ -70,18 +60,24 @@ func runRelease(cmd *cobra.Command, args []string) {
 	{
 		workflow, err := workflow.NewRelease(projectInfo, fs, releaseDir, githubClient)
 		if err != nil {
-			log.Fatalf("could not get workflow: %v", err)
+			return microerror.Mask(err)
 		}
 
 		log.Printf("running workflow: %s\n", workflow)
 
+		dryRun, err := cmd.Flags().GetBool("dry-run")
+		if err != nil {
+			return microerror.Mask(err)
+		}
 		if dryRun {
 			log.Printf("dry run, not actually running workflow")
-			return
+			return nil
 		}
 
 		if err := tasks.Run(workflow); err != nil {
-			log.Fatalf("could not execute workflow: %v", err)
+			return microerror.Mask(err)
 		}
 	}
+
+	return nil
 }
