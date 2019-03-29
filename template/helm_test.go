@@ -13,15 +13,19 @@ import (
 // TestTemplateHelmChartTask tests the TemplateHelmChartTask.
 func TestTemplateHelmChartTask(t *testing.T) {
 	tests := []struct {
-		chartDir string
-		sha      string
-		setUp    func(afero.Fs, string) error
-		check    func(afero.Fs, string) error
+		chartDir  string
+		dockerTag string
+		sha       string
+		version   string
+		setUp     func(afero.Fs, string) error
+		check     func(afero.Fs, string) error
 	}{
 		// Test that a chart is templated correctly.
 		{
-			chartDir: "/helm/test-chart",
-			sha:      "jabberwocky",
+			chartDir:  "/helm/test-chart",
+			dockerTag: "white-rabbit",
+			sha:       "jabberwocky",
+			version:   "mad-hatter",
 			setUp: func(fs afero.Fs, chartDir string) error {
 				files := []struct {
 					path string
@@ -50,6 +54,14 @@ func TestTemplateHelmChartTask(t *testing.T) {
 					{
 						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "ingress.yaml"),
 						data: "host: {{ .Values.Installation.etc }}",
+					},
+					{
+						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "with-dockerTag.yaml"),
+						data: "image: [[ .DockerTag ]]",
+					},
+					{
+						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "with-version.yaml"),
+						data: "version: [[ .Version ]]",
 					},
 				}
 
@@ -96,6 +108,14 @@ func TestTemplateHelmChartTask(t *testing.T) {
 						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "ingress.yaml"),
 						data: "host: {{ .Values.Installation.etc }}",
 					},
+					{
+						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "with-dockerTag.yaml"),
+						data: "image: white-rabbit",
+					},
+					{
+						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "with-version.yaml"),
+						data: "version: mad-hatter",
+					},
 				}
 
 				for _, file := range files {
@@ -115,7 +135,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 
 	for index, test := range tests {
 		fs := afero.NewMemMapFs()
-		task := NewTemplateHelmChartTask(fs, test.chartDir, test.sha)
+		task := NewTemplateHelmChartTask(fs, test.chartDir, test.dockerTag, test.sha, test.version)
 
 		if err := test.setUp(fs, test.chartDir); err != nil {
 			t.Fatalf("%v: unexpected error during setup: %v\n", index, err)
