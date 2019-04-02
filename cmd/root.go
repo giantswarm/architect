@@ -8,6 +8,8 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+
+	"github.com/giantswarm/architect/cmd/release"
 )
 
 var (
@@ -62,10 +64,11 @@ func init() {
 	}
 
 	// Use git tag when available.
+	var defaultTag string
 	{
 		out, err := exec.Command("git", "describe", "--tags", "--exact-match", "HEAD").Output()
 		if err == nil {
-			tag = strings.TrimSpace(string(out))
+			defaultTag = strings.TrimSpace(string(out))
 		}
 	}
 
@@ -80,32 +83,44 @@ func init() {
 	}
 
 	// Define the version we are building.
+	var defaultVersion string
 	{
 		// version can be of three different formats:
 		//   v1.0.0: building a tagged version.
 		//   v1.0.0-3a955cbb126f0fe5d51aedf2eb84acca7b074374: building ahead of a tagged version.
 		//   v0.0.0-939f5c6949f83c0a7ea98a25bc9524fd2f751ffe: building a repo which has no tags.
-		if tag != "" {
-			version = tag
+		if defaultTag != "" {
+			defaultVersion = defaultTag
 		} else {
 			out, err := exec.Command("git", "describe", "--tags", "--abbrev=0", "HEAD").Output()
 			if err != nil {
-				version = fmt.Sprintf("v0.0.0-%s", defaultSha)
+				defaultVersion = fmt.Sprintf("v0.0.0-%s", defaultSha)
 			} else {
-				version = fmt.Sprintf("%s-%s", strings.TrimSpace(string(out)), defaultSha)
+				defaultVersion = fmt.Sprintf("%s-%s", strings.TrimSpace(string(out)), defaultSha)
 			}
 
 		}
 	}
 
+	var githubToken string
+	{
+		githubToken = os.Getenv("DEPLOYMENT_EVENTS_TOKEN")
+	}
+
 	RootCmd.PersistentFlags().StringVar(&workingDirectory, "working-directory", defaultWorkingDirectory, "working directory for architect")
+	RootCmd.PersistentFlags().String("github-token", githubToken, "github OAuth access token")
 
 	RootCmd.PersistentFlags().StringVar(&registry, "registry", "quay.io", "docker registry")
 	RootCmd.PersistentFlags().StringVar(&organisation, "organisation", defaultOrganisation, "organisation who owns the project")
 	RootCmd.PersistentFlags().StringVar(&project, "project", defaultProject, "name of the project")
 
-	RootCmd.PersistentFlags().StringVar(&branch, "branch", defaultBranch, "git branch to build")
-	RootCmd.PersistentFlags().StringVar(&sha, "sha", defaultSha, "git SHA1 to build")
+	RootCmd.PersistentFlags().StringVar(&branch, "branch", defaultBranch, "git branch being built")
+	RootCmd.PersistentFlags().StringVar(&sha, "sha", defaultSha, "git SHA1 being built")
+	RootCmd.PersistentFlags().String("tag", defaultTag, "git tag being built")
+
+	RootCmd.PersistentFlags().String("version", defaultVersion, "project version being built")
 
 	RootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", dryRun, "show what would be executed, but take no action")
+
+	RootCmd.AddCommand(release.Cmd)
 }
