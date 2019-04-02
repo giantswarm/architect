@@ -68,7 +68,7 @@ func init() {
 	{
 		out, err := exec.Command("git", "describe", "--tags", "--exact-match", "HEAD").Output()
 		if err == nil {
-			defaultTag = strings.TrimSpace(string(out))
+			defaultTag = strings.TrimPrefix(strings.TrimSpace(string(out)), "v")
 		}
 	}
 
@@ -86,17 +86,17 @@ func init() {
 	var defaultVersion string
 	{
 		// version can be of three different formats:
-		//   v1.0.0: building a tagged version.
-		//   v1.0.0-3a955cbb126f0fe5d51aedf2eb84acca7b074374: building ahead of a tagged version.
-		//   v0.0.0-939f5c6949f83c0a7ea98a25bc9524fd2f751ffe: building a repo which has no tags.
+		//   2.0.0: building a tagged version.
+		//   2.0.0-3a955cbb126f0fe5d51aedf2eb84acca7b074374: building ahead of a tagged version.
+		//   1.0.0-939f5c6949f83c0a7ea98a25bc9524fd2f751ffe: building a repo which has no tags.
 		if defaultTag != "" {
 			defaultVersion = defaultTag
 		} else {
 			out, err := exec.Command("git", "describe", "--tags", "--abbrev=0", "HEAD").Output()
 			if err != nil {
-				defaultVersion = fmt.Sprintf("v0.0.0-%s", defaultSha)
+				defaultVersion = fmt.Sprintf("1.0.0-%s", defaultSha)
 			} else {
-				defaultVersion = fmt.Sprintf("%s-%s", strings.TrimSpace(string(out)), defaultSha)
+				defaultVersion = fmt.Sprintf("%s-%s", strings.TrimPrefix(strings.TrimSpace(string(out)), "v"), defaultSha)
 			}
 
 		}
