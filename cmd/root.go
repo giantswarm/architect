@@ -116,9 +116,9 @@ func init() {
 
 	RootCmd.PersistentFlags().StringVar(&branch, "branch", defaultBranch, "git branch being built")
 	RootCmd.PersistentFlags().StringVar(&sha, "sha", defaultSha, "git SHA1 being built")
-	RootCmd.PersistentFlags().String("tag", defaultTag, "git tag being built")
+	RootCmd.PersistentFlags().StringVar(&tag, "tag", defaultTag, "git tag being built")
 
-	RootCmd.PersistentFlags().String("version", defaultVersion, "project version being built")
+	RootCmd.PersistentFlags().StringVar(&version, "version", defaultVersion, "project version being built")
 
 	RootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", dryRun, "show what would be executed, but take no action")
 
