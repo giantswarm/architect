@@ -25,6 +25,10 @@ func runReleaseError(cmd *cobra.Command, args []string) error {
 		Sha: cmd.Flag("sha").Value.String(),
 		Tag: cmd.Flag("tag").Value.String(),
 
+		Registry:       cmd.Flag("registry").Value.String(),
+		DockerUsername: cmd.Flag("docker-username").Value.String(),
+		DockerPassword: cmd.Flag("docker-password").Value.String(),
+
 		Version: cmd.Flag("version").Value.String(),
 	}
 
