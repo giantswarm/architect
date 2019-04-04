@@ -68,7 +68,10 @@ func init() {
 	{
 		out, err := exec.Command("git", "describe", "--tags", "--exact-match", "HEAD").Output()
 		if err == nil {
-			defaultTag = strings.TrimPrefix(strings.TrimSpace(string(out)), "v")
+			// Always populate tag unless building on CircleCI and it is not explicitly requesting to build a tag.
+			if _, ciTagExists := os.LookupEnv("CIRCLE_TAG"); os.Getenv("CIRCLECI") != "true" || ciTagExists {
+				defaultTag = strings.TrimPrefix(strings.TrimSpace(string(out)), "v")
+			}
 		}
 	}
 
