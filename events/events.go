@@ -110,7 +110,6 @@ var testingGroup = []Environment{
 	"gauss",
 	"geckon",
 	"ghost",
-	"ginger",
 	"giraffe",
 	"godsmack",
 	"gorgoth",
