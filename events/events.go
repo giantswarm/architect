@@ -98,6 +98,7 @@ var environmentProjects = map[Environment][]string{
 		"draughtsman",
 		"giantswarmio-nginx",
 		"giantswarmio-webapp",
+		"github-exporter",
 		"kpi-prometheus",
 		"web-assets",
 		"sitesearch",
