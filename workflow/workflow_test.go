@@ -82,12 +82,14 @@ func TestGetBuildWorkflow(t *testing.T) {
 	}
 
 	tests := []struct {
+		noPush            bool
 		setUp             func(afero.Fs, string) error
 		expectedTaskNames []string
 		errorMatcher      func(error) bool
 	}{
 		// Test 0 that a project with no files produces a workflow with just the repo check.
 		{
+			noPush: false,
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
 
@@ -103,6 +105,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 		// Test 1 that a project with only golang files produces a correct workflow.
 		{
+			noPush: false,
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
 
@@ -124,6 +127,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 		// Test 2 that a library project creates a correct workflow.
 		{
+			noPush: false,
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
 
@@ -147,6 +151,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 		// Test 3 that a particularly nested library project creates a correct workflow.
 		{
+			noPush: false,
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
 
@@ -171,6 +176,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 		// Test 4 that a project with a golang file not named `main.go` produces a
 		// golang build workflow.
 		{
+			noPush: false,
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
 
@@ -190,8 +196,9 @@ func TestGetBuildWorkflow(t *testing.T) {
 			},
 		},
 
-		// Test 5 that a project with only a dockerfile produces a correct workflow.
+		// Test 5a that a project with only a dockerfile produces a correct workflow.
 		{
+			noPush: false,
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
 
@@ -208,9 +215,27 @@ func TestGetBuildWorkflow(t *testing.T) {
 			},
 		},
 
+		// Test 5b that noPush and a project with only a dockerfile produces a workflow that doesn't try to push.
+		{
+			noPush: true,
+			setUp: func(fs afero.Fs, testDir string) error {
+				projectInfo.WorkingDirectory = testDir
+
+				if _, err := fs.Create(filepath.Join(projectInfo.WorkingDirectory, "Dockerfile")); err != nil {
+					return microerror.Mask(err)
+				}
+				return nil
+			},
+			expectedTaskNames: []string{
+				RepoCheckTaskName,
+				DockerBuildTaskName,
+			},
+		},
+
 		// Test 6 that a project with golang files, and a dockerfile produces a correct
 		// workflow.
 		{
+			noPush: false,
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
 
@@ -240,6 +265,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 		// Test 7 that a project with multiple helm charts has all of them pushed.
 		{
+			noPush: false,
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
 
@@ -269,6 +295,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 		// Test 8 that a docker image is pushed before helm chart.
 		{
+			noPush: false,
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
 
@@ -294,6 +321,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 		// Test 9 that charts not starting with a project name causes an error.
 		{
+			noPush: false,
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
 
@@ -308,6 +336,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 
 		// Test 10 that charts not starting with a project name causes an error.
 		{
+			noPush: false,
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
 
@@ -325,6 +354,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 		// Test 11 that a project with only golang files that have build contraints
 		// do not trigger a test workflow.
 		{
+			noPush: false,
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
 
@@ -348,6 +378,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 		// Test 12 that a project with golang files, a dockerfile, and git tag produces a correct
 		// workflow.
 		{
+			noPush: false,
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
 				projectInfo.Tag = "v1.0.0"
@@ -393,7 +424,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 			t.Fatalf("test %d received unexpected error during setup: %#v", i, err)
 		}
 
-		workflow, err := NewBuild(projectInfo, fs)
+		workflow, err := NewBuild(projectInfo, fs, tc.noPush)
 		if err != nil && tc.errorMatcher != nil && tc.errorMatcher(err) {
 			continue
 		}
