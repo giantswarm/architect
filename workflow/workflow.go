@@ -145,49 +145,51 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs, push bool) (Workflow, error)
 		w = append(w, dockerRunHelp)
 	}
 
-	if dockerFileExists && push {
-		{
-			dockerLogin, err := NewDockerLoginTask(fs, projectInfo)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			wrappedDockerLogin := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerLogin)
-			w = append(w, wrappedDockerLogin)
-		}
-
-		{
-			dockerPushSha, err := NewDockerPushShaTask(fs, projectInfo)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			wrappedDockerPushSha := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushSha)
-			w = append(w, wrappedDockerPushSha)
-		}
-
-		{
-			if projectInfo.Tag != "" {
-				dockerTag, err := NewDockerTagTask(fs, projectInfo)
+	if push {
+		if dockerFileExists {
+			{
+				dockerLogin, err := NewDockerLoginTask(fs, projectInfo)
 				if err != nil {
 					return nil, microerror.Mask(err)
 				}
-				w = append(w, dockerTag)
+				wrappedDockerLogin := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerLogin)
+				w = append(w, wrappedDockerLogin)
+			}
 
-				dockerPushTag, err := NewDockerPushTagTask(fs, projectInfo)
+			{
+				dockerPushSha, err := NewDockerPushShaTask(fs, projectInfo)
 				if err != nil {
 					return nil, microerror.Mask(err)
 				}
-				wrappedDockerPushTag := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushTag)
-				w = append(w, wrappedDockerPushTag)
+				wrappedDockerPushSha := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushSha)
+				w = append(w, wrappedDockerPushSha)
+			}
+
+			{
+				if projectInfo.Tag != "" {
+					dockerTag, err := NewDockerTagTask(fs, projectInfo)
+					if err != nil {
+						return nil, microerror.Mask(err)
+					}
+					w = append(w, dockerTag)
+
+					dockerPushTag, err := NewDockerPushTagTask(fs, projectInfo)
+					if err != nil {
+						return nil, microerror.Mask(err)
+					}
+					wrappedDockerPushTag := tasks.NewRetryTask(backoff.NewExponentialBackOff(), dockerPushTag)
+					w = append(w, wrappedDockerPushTag)
+				}
 			}
 		}
-	}
 
-	helmTasks, err := processHelmDir(fs, projectInfo, NewHelmPushTask)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
+		helmTasks, err := processHelmDir(fs, projectInfo, NewHelmPushTask)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 
-	w = append(w, helmTasks...)
+		w = append(w, helmTasks...)
+	}
 
 	return w, nil
 }
