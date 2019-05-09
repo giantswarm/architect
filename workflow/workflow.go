@@ -54,7 +54,7 @@ type ProjectInfo struct {
 	Channels []string
 }
 
-func NewBuild(projectInfo ProjectInfo, fs afero.Fs, noPush bool) (Workflow, error) {
+func NewBuild(projectInfo ProjectInfo, fs afero.Fs, push bool) (Workflow, error) {
 	w := Workflow{}
 
 	workingDirectoryExists, err := afero.Exists(fs, projectInfo.WorkingDirectory)
@@ -145,7 +145,7 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs, noPush bool) (Workflow, erro
 		w = append(w, dockerRunHelp)
 	}
 
-	if dockerFileExists && !noPush {
+	if dockerFileExists && push {
 		{
 			dockerLogin, err := NewDockerLoginTask(fs, projectInfo)
 			if err != nil {

@@ -31,7 +31,7 @@ var (
 
 	helmDirectoryPath string
 
-	noPush bool
+	push bool
 )
 
 func init() {
@@ -58,7 +58,7 @@ func init() {
 	buildCmd.Flags().StringVar(&golangImage, "golang-image", "quay.io/giantswarm/golang", "golang image")
 	buildCmd.Flags().StringVar(&golangVersion, "golang-version", "1.11.3", "golang version")
 
-	buildCmd.Flags().BoolVar(&noPush, "no-push", false, "don't push the built image to the registry")
+	buildCmd.Flags().BoolVar(&push, "push", true, "push the built image to the registry")
 }
 
 func runBuild(cmd *cobra.Command, args []string) {
@@ -87,7 +87,7 @@ func runBuild(cmd *cobra.Command, args []string) {
 
 	fs := afero.NewOsFs()
 
-	workflow, err := workflow.NewBuild(projectInfo, fs, noPush)
+	workflow, err := workflow.NewBuild(projectInfo, fs, push)
 	if err != nil {
 		log.Fatalf("could not fetch workflow: %v", err)
 	}
