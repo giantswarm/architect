@@ -115,6 +115,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:f26f4333376a7ad3090b4e6249e9e59ad11e43c198965104356cf452574452cb"
+  name = "github.com/jszwedko/go-circleci"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "3ba8054f4e5ad1504aba135201b22aba1b56ad52"
+
+[[projects]]
+  branch = "master"
   digest = "1:926b6084b81f49359f67e48ef8b74f33ea8509afe8410d3b34789eaea02da898"
   name = "github.com/juju/errgo"
   packages = ["."]
@@ -257,12 +265,14 @@
     "github.com/google/go-github/github",
     "github.com/jstemmer/go-junit-report/formatter",
     "github.com/jstemmer/go-junit-report/parser",
+    "github.com/jszwedko/go-circleci",
     "github.com/spf13/afero",
     "github.com/spf13/cobra",
     "golang.org/x/oauth2",
     "golang.org/x/sync/errgroup",
     "gopkg.in/yaml.v2",
     "k8s.io/helm/pkg/chartutil",
+    "k8s.io/helm/pkg/proto/hapi/chart",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
