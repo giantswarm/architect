@@ -3,7 +3,7 @@ package circleci
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/giantswarm/architect/cmd/circleci/triggerjob"
+	"github.com/giantswarm/architect/cmd/circleci/triggerbuild"
 )
 
 var (
@@ -14,5 +14,5 @@ var (
 )
 
 func init() {
-	Cmd.AddCommand(triggerjob.Cmd)
+	Cmd.AddCommand(triggerbuild.Cmd)
 }

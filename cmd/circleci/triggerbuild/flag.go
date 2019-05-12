@@ -1,4 +1,4 @@
-package triggerjob
+package triggerbuild
 
 func init() {
 	Cmd.Flags().String("branch", "master", "project's branch name")

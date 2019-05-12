@@ -1,4 +1,4 @@
-package triggerjob
+package triggerbuild
 
 import (
 	"github.com/giantswarm/microerror"

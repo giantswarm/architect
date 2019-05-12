@@ -1,4 +1,4 @@
-package triggerjob
+package triggerbuild
 
 import (
 	"github.com/spf13/cobra"
@@ -6,8 +6,8 @@ import (
 
 var (
 	Cmd = &cobra.Command{
-		Use:   "trigger-job",
+		Use:   "trigger-build",
 		Short: "Trigger a CircleCI build",
-		RunE:  runTriggerJobError,
+		RunE:  runTriggerBuildError,
 	}
 )

@@ -1,4 +1,4 @@
-package triggerjob
+package triggerbuild
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func runTriggerJobError(cmd *cobra.Command, args []string) error {
+func runTriggerBuildError(cmd *cobra.Command, args []string) error {
 	var (
 		branch  = cmd.Flag("branch").Value.String()
 		job     = cmd.Flag("job").Value.String()
@@ -42,7 +42,7 @@ func runTriggerJobError(cmd *cobra.Command, args []string) error {
 		return microerror.Mask(err)
 	}
 
-	fmt.Printf("job triggered: %s\n", build.BuildURL)
+	fmt.Printf("build triggered: %s\n", build.BuildURL)
 
 	return nil
 }
