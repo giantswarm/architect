@@ -22,7 +22,7 @@ func runTriggerJobError(cmd *cobra.Command, args []string) error {
 	}
 
 	if project == "" {
-		return microerror.Mask(missingRepositoryError)
+		return microerror.Mask(missingProjectError)
 	}
 
 	if branch == "" {
