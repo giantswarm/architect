@@ -10,11 +10,11 @@ import (
 
 func runTriggerJobError(cmd *cobra.Command, args []string) error {
 	var (
-		token  = cmd.Flag("token").Value.String()
-		org    = cmd.Flag("org").Value.String()
-		repo   = cmd.Flag("repo").Value.String()
 		branch = cmd.Flag("branch").Value.String()
 		job    = cmd.Flag("job").Value.String()
+		org    = cmd.Flag("org").Value.String()
+		repo   = cmd.Flag("repo").Value.String()
+		token  = cmd.Flag("token").Value.String()
 	)
 
 	if org == "" {
