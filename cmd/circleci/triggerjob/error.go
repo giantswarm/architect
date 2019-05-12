@@ -20,10 +20,10 @@ func IsMissingOrganisationnError(err error) bool {
 	return microerror.Cause(err) == missingOrganisationError
 }
 
-var missingRepositoryError = &microerror.Error{
-	Kind: "missingRepositoryError",
+var missingProjectError = &microerror.Error{
+	Kind: "missingProjectError",
 }
 
-func IsMissingRepositorynError(err error) bool {
-	return microerror.Cause(err) == missingRepositoryError
+func IsMissingProjectnError(err error) bool {
+	return microerror.Cause(err) == missingProjectError
 }

@@ -10,18 +10,18 @@ import (
 
 func runTriggerJobError(cmd *cobra.Command, args []string) error {
 	var (
-		branch = cmd.Flag("branch").Value.String()
-		job    = cmd.Flag("job").Value.String()
-		org    = cmd.Flag("org").Value.String()
-		repo   = cmd.Flag("repo").Value.String()
-		token  = cmd.Flag("token").Value.String()
+		branch  = cmd.Flag("branch").Value.String()
+		job     = cmd.Flag("job").Value.String()
+		org     = cmd.Flag("org").Value.String()
+		project = cmd.Flag("project").Value.String()
+		token   = cmd.Flag("token").Value.String()
 	)
 
 	if org == "" {
 		return microerror.Mask(missingOrganisationError)
 	}
 
-	if repo == "" {
+	if project == "" {
 		return microerror.Mask(missingRepositoryError)
 	}
 
@@ -37,7 +37,7 @@ func runTriggerJobError(cmd *cobra.Command, args []string) error {
 	}
 
 	client := &circleci.Client{Token: token}
-	build, err := client.ParameterizedBuild(org, repo, branch, params)
+	build, err := client.ParameterizedBuild(org, project, branch, params)
 	if err != nil {
 		return microerror.Mask(err)
 	}
