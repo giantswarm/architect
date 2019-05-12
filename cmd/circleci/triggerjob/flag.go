@@ -1,9 +1,9 @@
 package triggerjob
 
 func init() {
-	Cmd.Flags().String("branch", "master", "name of the repository branch")
-	Cmd.Flags().String("job", "", "CircleCI job name")
-	Cmd.Flags().String("org", "", "CircleCI organization or username")
-	Cmd.Flags().String("repo", "", "CircleCI repository or project name")
-	Cmd.Flags().String("token", "", "CircleCI API token")
+	Cmd.LocalFlags().String("branch", "master", "project's branch name")
+	Cmd.LocalFlags().String("job", "", "CircleCI job name. This can only be used for project which do not have a defined workflow.")
+	Cmd.LocalFlags().String("org", "", "CircleCI organization or username")
+	Cmd.LocalFlags().String("project", "", "CircleCI project name")
+	Cmd.LocalFlags().String("token", "", "CircleCI API token")
 }
