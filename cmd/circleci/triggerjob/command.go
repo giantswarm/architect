@@ -7,7 +7,7 @@ import (
 var (
 	Cmd = &cobra.Command{
 		Use:   "trigger-job",
-		Short: "Trigger a CircleCI job",
+		Short: "Trigger a CircleCI build",
 		RunE:  runTriggerJobError,
 	}
 )
