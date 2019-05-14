@@ -182,14 +182,22 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs, push bool) (Workflow, error)
 				}
 			}
 		}
-
-		helmTasks, err := processHelmDir(fs, projectInfo, NewHelmPushTask)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-
-		w = append(w, helmTasks...)
 	}
+
+	HelmPushTaskOrNoop := func(fs afero.Fs, chartDir string, projectInfo ProjectInfo) (tasks.Task, error) {
+		return nil, nil
+	}
+
+	if push {
+		HelmPushTaskOrNoop = NewHelmPushTask
+	}
+
+	helmTasks, err := processHelmDir(fs, projectInfo, HelmPushTaskOrNoop)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	w = append(w, helmTasks...)
 
 	return w, nil
 }
