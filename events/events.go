@@ -93,6 +93,7 @@ var environmentProjects = map[Environment][]string{
 	"gollum_6iec4": {
 		"api-spec",
 		"auto-oncall",
+		"circleci-exporter",
 		"docs",
 		"docs-indexer",
 		"docs-proxy",
