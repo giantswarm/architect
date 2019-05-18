@@ -185,7 +185,7 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs, push bool) (Workflow, error)
 	}
 
 	HelmPushTaskOrNoop := func(fs afero.Fs, chartDir string, projectInfo ProjectInfo) (tasks.Task, error) {
-		return nil, nil
+		return tasks.NoopTask{}, nil
 	}
 
 	if push {
