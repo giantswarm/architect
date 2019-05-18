@@ -2,7 +2,6 @@ package workflow
 
 import (
 	"fmt"
-	"io/ioutil"
 	"path/filepath"
 	"strings"
 
@@ -282,11 +281,6 @@ func NewPublish(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 
 func NewRelease(projectInfo ProjectInfo, fs afero.Fs, releaseDir string, githubClient *github.Client, push bool) (Workflow, error) {
 	w := Workflow{}
-
-	releaseDir, err := ioutil.TempDir("", "release")
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
 
 	packageTaskCreator := NewPackageHelmChartTaskCreator(releaseDir)
 	helmTasks, err := processHelmDir(fs, projectInfo, packageTaskCreator)

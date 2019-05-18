@@ -2,9 +2,9 @@ package release
 
 import (
 	"context"
-	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/google/go-github/github"
 	"github.com/spf13/afero"
@@ -49,11 +49,12 @@ func runReleaseError(cmd *cobra.Command, args []string) error {
 
 	var releaseDir string
 	{
-		releaseDir, err := ioutil.TempDir(os.TempDir(), "architect-release")
+		path := filepath.Join(cmd.Flag("working-directory").Value.String(), "architect-release")
+		err := os.Mkdir(path, os.ModePerm)
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		defer os.RemoveAll(releaseDir)
+		releaseDir = path
 	}
 
 	{
