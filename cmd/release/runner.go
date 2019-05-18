@@ -59,7 +59,7 @@ func runReleaseError(cmd *cobra.Command, args []string) error {
 	{
 		fs := afero.NewOsFs()
 
-		workflow, err := workflow.NewRelease(projectInfo, fs, releaseDir, githubClient)
+		workflow, err := workflow.NewRelease(projectInfo, fs, releaseDir, githubClient, push)
 		if err != nil {
 			return microerror.Mask(err)
 		}

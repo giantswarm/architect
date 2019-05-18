@@ -280,7 +280,7 @@ func NewPublish(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 	return w, nil
 }
 
-func NewRelease(projectInfo ProjectInfo, fs afero.Fs, releaseDir string, githubClient *github.Client) (Workflow, error) {
+func NewRelease(projectInfo ProjectInfo, fs afero.Fs, releaseDir string, githubClient *github.Client, push bool) (Workflow, error) {
 	w := Workflow{}
 
 	releaseDir, err := ioutil.TempDir("", "release")
@@ -295,12 +295,14 @@ func NewRelease(projectInfo ProjectInfo, fs afero.Fs, releaseDir string, githubC
 	}
 	w = append(w, helmTasks...)
 
-	githubRelease, err := NewReleaseGithubTask(githubClient, releaseDir, projectInfo)
-	if err != nil {
-		return nil, microerror.Mask(err)
+	if push {
+		githubRelease, err := NewReleaseGithubTask(githubClient, releaseDir, projectInfo)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		wrappedGithubRelease := tasks.NewRetryTask(backoff.NewExponentialBackOff(), githubRelease)
+		w = append(w, wrappedGithubRelease)
 	}
-	wrappedGithubRelease := tasks.NewRetryTask(backoff.NewExponentialBackOff(), githubRelease)
-	w = append(w, wrappedGithubRelease)
 
 	return w, nil
 }
