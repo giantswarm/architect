@@ -283,26 +283,24 @@ func NewPublish(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 func NewRelease(projectInfo ProjectInfo, fs afero.Fs, releaseDir string, githubClient *github.Client) (Workflow, error) {
 	w := Workflow{}
 
-	if projectInfo.Tag != "" {
-		releaseDir, err := ioutil.TempDir("", "release")
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-
-		packageTaskCreator := NewPackageHelmChartTaskCreator(releaseDir)
-		helmTasks, err := processHelmDir(fs, projectInfo, packageTaskCreator)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-		w = append(w, helmTasks...)
-
-		githubRelease, err := NewReleaseGithubTask(githubClient, releaseDir, projectInfo)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-		wrappedGithubRelease := tasks.NewRetryTask(backoff.NewExponentialBackOff(), githubRelease)
-		w = append(w, wrappedGithubRelease)
+	releaseDir, err := ioutil.TempDir("", "release")
+	if err != nil {
+		return nil, microerror.Mask(err)
 	}
+
+	packageTaskCreator := NewPackageHelmChartTaskCreator(releaseDir)
+	helmTasks, err := processHelmDir(fs, projectInfo, packageTaskCreator)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	w = append(w, helmTasks...)
+
+	githubRelease, err := NewReleaseGithubTask(githubClient, releaseDir, projectInfo)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	wrappedGithubRelease := tasks.NewRetryTask(backoff.NewExponentialBackOff(), githubRelease)
+	w = append(w, wrappedGithubRelease)
 
 	return w, nil
 }
