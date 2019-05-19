@@ -2,6 +2,7 @@ package pack
 
 import (
 	"fmt"
+	"log"
 	"path/filepath"
 
 	"k8s.io/helm/pkg/chartutil"
@@ -37,10 +38,12 @@ func (p PackageHelmChartTask) Run() error {
 	}
 
 	// Save the chart as an archive in the given directory.
-	_, err = chartutil.Save(ch, p.dst)
+	savedFile, err := chartutil.Save(ch, p.dst)
 	if err != nil {
 		return microerror.Mask(err)
 	}
+
+	log.Printf("chart %s packaged at %s", ch.Metadata.GetName(), savedFile)
 
 	return nil
 }
