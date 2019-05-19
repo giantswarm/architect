@@ -49,7 +49,7 @@ func runReleaseError(cmd *cobra.Command, args []string) error {
 
 	var releaseDir string
 	{
-		path := filepath.Join(cmd.Flag("working-directory").Value.String(), "architect-release")
+		path := filepath.Join(cmd.Flag("working-directory").Value.String(), cmd.Flag("destination").Value.String())
 		err := os.Mkdir(path, os.ModePerm)
 		if err != nil {
 			return microerror.Mask(err)
