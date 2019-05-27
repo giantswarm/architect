@@ -49,6 +49,7 @@ var (
 	kvmProjectList = append(baseProjectList,
 		"flannel-operator",
 		"kvm-operator",
+		"ingress-exporter",
 	)
 	// awsChinaProjectList adds route53-manager to awsProjectList. This is
 	// required until route53 is vailable on AWS China.
