@@ -2,8 +2,6 @@ package workflow
 
 import (
 	"fmt"
-	"strings"
-	"time"
 
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/afero"
@@ -17,10 +15,6 @@ const (
 
 	// licenseFileName is the name of the License file.
 	licenseFileName = "LICENSE"
-
-	// licenseTextFormat generates the license text so the format can be
-	// checked.
-	licenseTextFormat = "Copyright 2016 - %d Giant Swarm GmbH"
 )
 
 type RepoCheckTask struct {
@@ -43,11 +37,6 @@ func (t RepoCheckTask) Run() error {
 		fmt.Printf("repo has required file '%s'\n", requiredFile)
 	}
 
-	err := t.checkLicenseText()
-	if err != nil {
-		return microerror.Mask(err)
-	}
-
 	return nil
 }
 
@@ -61,23 +50,4 @@ func NewRepoCheckTask(fs afero.Fs, projectInfo ProjectInfo) (RepoCheckTask, erro
 	}
 
 	return t, nil
-}
-
-func (t RepoCheckTask) checkLicenseText() error {
-	licenseText := fmt.Sprintf(licenseTextFormat, time.Now().Year())
-
-	l, err := afero.ReadFile(t.fs, licenseFileName)
-	if err != nil {
-		return microerror.Mask(err)
-	}
-
-	license := string(l)
-	if !strings.Contains(license, licenseText) {
-		fmt.Printf("repo '%s' file does not contain required text '%s'\n", licenseFileName, licenseText)
-		return microerror.Maskf(failedExecutionError, "license does not contain text '%s'", licenseText)
-	}
-
-	fmt.Printf("repo '%s' has required text '%s'\n", licenseFileName, licenseText)
-
-	return nil
 }
