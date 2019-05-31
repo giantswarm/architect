@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"
 
+	"github.com/giantswarm/architect/cmd/hook"
 	"github.com/giantswarm/architect/events"
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/workflow"
@@ -17,9 +18,10 @@ import (
 
 var (
 	deployCmd = &cobra.Command{
-		Use:   "deploy",
-		Short: "deploy the project",
-		Run:   runDeploy,
+		Use:     "deploy",
+		Short:   "deploy the project",
+		Run:     runDeploy,
+		PreRunE: hook.PreRunE,
 	}
 
 	deploymentEventsToken string
@@ -54,11 +56,11 @@ func runDeploy(cmd *cobra.Command, args []string) {
 		Organisation:     organisation,
 		Project:          project,
 
-		Branch: branch,
-		Sha:    sha,
-		Tag:    tag,
+		Branch: cmd.Flag("branch").Value.String(),
+		Sha:    cmd.Flag("sha").Value.String(),
+		Tag:    cmd.Flag("tag").Value.String(),
 
-		Version: version,
+		Version: cmd.Flag("version").Value.String(),
 
 		Registry:       registry,
 		DockerUsername: dockerUsername,
