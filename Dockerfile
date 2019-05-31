@@ -7,7 +7,8 @@ RUN apk add --no-cache \
         curl=7.64.0-r1 \
         git=2.20.1-r0 \
         openssh-client=7.9_p1-r5 &&\
-        curl -SL https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar -C /usr/bin --strip-components 1 -xvzf - linux-amd64/helm &&\
+        curl -SL https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz | \
+            tar -C /usr/bin --strip-components 1 -xvzf - linux-amd64/helm &&\
         apk del curl &&\
         rm -f /var/cache/apk/*
 
