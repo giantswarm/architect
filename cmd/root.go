@@ -9,6 +9,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/giantswarm/architect/cmd/helm"
 	"github.com/giantswarm/architect/cmd/release"
 )
 
@@ -126,4 +127,5 @@ func init() {
 	RootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", dryRun, "show what would be executed, but take no action")
 
 	RootCmd.AddCommand(release.Cmd)
+	RootCmd.AddCommand(helm.Cmd)
 }
