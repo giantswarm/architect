@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
+	"github.com/giantswarm/architect/cmd/hook"
 	"github.com/giantswarm/architect/pipeline"
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/workflow"
@@ -15,9 +16,10 @@ import (
 
 var (
 	publishCmd = &cobra.Command{
-		Use:   "publish",
-		Short: "publish charts to the specified channels",
-		Run:   runPublish,
+		Use:     "publish",
+		Short:   "publish charts to the specified channels",
+		Run:     runPublish,
+		PreRunE: hook.PreRunE,
 	}
 
 	channels      string
@@ -69,11 +71,11 @@ func runPublish(cmd *cobra.Command, args []string) {
 		Organisation:     organisation,
 		Project:          project,
 
-		Branch: branch,
-		Sha:    sha,
-		Tag:    tag,
+		Branch: cmd.Flag("branch").Value.String(),
+		Sha:    cmd.Flag("sha").Value.String(),
+		Tag:    cmd.Flag("tag").Value.String(),
 
-		Version: version,
+		Version: cmd.Flag("version").Value.String(),
 
 		Registry:       registry,
 		DockerUsername: dockerUsername,

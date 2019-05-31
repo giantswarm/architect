@@ -8,15 +8,17 @@ import (
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
+	"github.com/giantswarm/architect/cmd/hook"
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/workflow"
 )
 
 var (
 	unpublishCmd = &cobra.Command{
-		Use:   "unpublish",
-		Short: "unpublish charts from the specified channels",
-		Run:   runUnpublish,
+		Use:     "unpublish",
+		Short:   "unpublish charts from the specified channels",
+		Run:     runUnpublish,
+		PreRunE: hook.PreRunE,
 	}
 )
 
@@ -47,11 +49,11 @@ func runUnpublish(cmd *cobra.Command, args []string) {
 		Organisation:     organisation,
 		Project:          project,
 
-		Branch: branch,
-		Sha:    sha,
-		Tag:    tag,
+		Branch: cmd.Flag("branch").Value.String(),
+		Sha:    cmd.Flag("sha").Value.String(),
+		Tag:    cmd.Flag("tag").Value.String(),
 
-		Version: version,
+		Version: cmd.Flag("version").Value.String(),
 
 		Registry:       registry,
 		DockerUsername: dockerUsername,
