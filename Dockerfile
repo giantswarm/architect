@@ -3,10 +3,10 @@ FROM alpine:3.9
 ARG HELM_VERSION=v2.14.0
 
 RUN apk add --no-cache \
-        ca-certificates \
-        curl \
-        git \
-        openssh-client &&\
+        ca-certificates=20190108-r0 \
+        curl=7.64.0-r1 \
+        git=2.20.1-r0 \
+        openssh-client=7.9_p1-r5 &&\
         # Install helm
         curl -SL https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar -C /usr/bin --strip-components 1 -xvzf - linux-amd64/helm &&\
         apk del curl &&\
