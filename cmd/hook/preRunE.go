@@ -2,11 +2,11 @@ package hook
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"strings"
 
+	"github.com/giantswarm/microerror"
 	"github.com/spf13/cobra"
 )
 
@@ -16,7 +16,7 @@ func PreRunE(cmd *cobra.Command, args []string) error {
 	{
 		out, err := exec.Command("git", "rev-parse", "HEAD").Output()
 		if err != nil {
-			log.Fatalf("could not get git sha: %#v\n", err)
+			return microerror.Maskf(gitNoSHAError, "could not get git sha: %#v\n", err)
 		}
 		defaultSha = strings.TrimSpace(string(out))
 	}
@@ -38,7 +38,7 @@ func PreRunE(cmd *cobra.Command, args []string) error {
 	{
 		out, err := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD").Output()
 		if err != nil {
-			log.Fatalf("could not get git branch: %#v\n", err)
+			return microerror.Maskf(gitNoBranchError, "could not get git branch: %#v\n", err)
 		}
 		defaultBranch = strings.TrimSpace(string(out))
 	}
