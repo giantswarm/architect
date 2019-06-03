@@ -23,12 +23,6 @@ var (
 	organisation string
 	project      string
 
-	branch string
-	sha    string
-	tag    string
-
-	version string
-
 	dryRun bool
 )
 
