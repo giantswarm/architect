@@ -3,6 +3,7 @@ FROM alpine:3.9
 ARG HELM_VERSION=v2.14.0
 
 RUN apk add --no-cache \
+        bash=4.4.19-r1 \
         ca-certificates=20190108-r0 \
         curl=7.64.0-r1 \
         git=2.20.1-r0 \
