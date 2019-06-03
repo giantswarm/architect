@@ -16,5 +16,6 @@ jobs:
     - deploy:
         command: |
           if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            ./architect deploy
             ./github-release.sh $CIRCLE_SHA1 $PERSONAL_ACCESS_TOKEN
           fi
