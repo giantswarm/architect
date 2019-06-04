@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/cenk/backoff"
 	"github.com/giantswarm/architect/tasks"
@@ -33,6 +34,8 @@ type ProjectInfo struct {
 	WorkingDirectory string
 	Organisation     string
 	Project          string
+
+	BuildTimestamp time.Time
 
 	Branch string
 	Sha    string

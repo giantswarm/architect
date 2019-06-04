@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"time"
 
 	"github.com/jstemmer/go-junit-report/formatter"
 	"github.com/jstemmer/go-junit-report/parser"
@@ -64,6 +65,8 @@ func runBuild(cmd *cobra.Command, args []string) {
 		WorkingDirectory: workingDirectory,
 		Organisation:     organisation,
 		Project:          project,
+
+		BuildTimestamp: time.Now(),
 
 		Branch: cmd.Flag("branch").Value.String(),
 		Sha:    cmd.Flag("sha").Value.String(),

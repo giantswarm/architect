@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/microerror"
@@ -262,6 +263,7 @@ func NewGoBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 					"-linkmode 'auto'",
 					"-extldflags '-static'",
 					fmt.Sprintf("-X 'main.gitCommit=%s'", projectInfo.Sha),
+					fmt.Sprintf("-X 'github.com/%s/%s/pkg/project.buildTimestamp=%s'", projectInfo.Organisation, projectInfo.Project, projectInfo.BuildTimestamp.UTC().Format(time.RFC3339)),
 					fmt.Sprintf("-X 'github.com/%s/%s/pkg/project.gitSHA=%s'", projectInfo.Organisation, projectInfo.Project, projectInfo.Sha),
 					fmt.Sprintf("-X 'github.com/%s/%s/pkg/project.version=%s'", projectInfo.Organisation, projectInfo.Project, projectInfo.Version),
 				}, " "),

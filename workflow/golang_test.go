@@ -54,6 +54,7 @@ func TestNewGoBuildTask(t *testing.T) {
 					"-linkmode 'auto' " +
 					"-extldflags '-static' " +
 					"-X 'main.gitCommit=e8363ac222255e991c126abe6673cd0f33934ac8' " +
+					"-X 'github.com/giantswarm/architect/pkg/project.buildTimestamp=2019-06-04T12:40:05Z' " +
 					"-X 'github.com/giantswarm/architect/pkg/project.gitSHA=e8363ac222255e991c126abe6673cd0f33934ac8' " +
 					"-X 'github.com/giantswarm/architect/pkg/project.version=test'",
 			},
