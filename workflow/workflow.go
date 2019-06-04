@@ -371,7 +371,7 @@ func processHelmDir(fs afero.Fs, projectInfo ProjectInfo, f func(afero.Fs, strin
 			w = append(w, helmLogin)
 		}
 
-		prefix := projectInfo.Project + "-"
+		prefix := projectInfo.Project
 		suffix := "-chart"
 		for _, fileInfo := range fileInfos {
 			if !fileInfo.IsDir() {
@@ -381,7 +381,7 @@ func processHelmDir(fs afero.Fs, projectInfo ProjectInfo, f func(afero.Fs, strin
 				return nil, microerror.Maskf(invalidHelmDirectoryError, "%q must start with %q", fileInfo.Name(), prefix)
 			}
 			if !strings.HasSuffix(fileInfo.Name(), suffix) {
-				return nil, microerror.Maskf(invalidHelmDirectoryError, "%q must end with %q", fileInfo.Name(), suffix)
+				continue
 			}
 
 			chartDir := filepath.Join(helmDirectory, fileInfo.Name())
