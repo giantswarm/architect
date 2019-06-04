@@ -5,6 +5,8 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+
+	pkgproject "github.com/giantswarm/architect/pkg/project"
 )
 
 var (
@@ -13,9 +15,6 @@ var (
 		Short: "show version information",
 		Run:   runVersion,
 	}
-
-	Commit         string
-	BuildTimestamp string
 )
 
 func init() {
@@ -23,11 +22,11 @@ func init() {
 }
 
 func runVersion(cmd *cobra.Command, args []string) {
-	if Commit == "" && BuildTimestamp == "" {
+	if pkgproject.GitSHA() == "" && pkgproject.BuildTimestamp() == "" {
 		fmt.Printf("version information not compiled\n")
 		os.Exit(0)
 	}
 
-	fmt.Printf("Git Commit Hash: %s\n", Commit)
-	fmt.Printf("Build Timestamp: %s\n", BuildTimestamp)
+	fmt.Printf("Git Commit Hash: %s\n", pkgproject.GitSHA())
+	fmt.Printf("Build Timestamp: %s\n", pkgproject.BuildTimestamp())
 }

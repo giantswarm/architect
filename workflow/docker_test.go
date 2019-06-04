@@ -3,6 +3,7 @@ package workflow
 import (
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/giantswarm/architect/tasks"
 )
@@ -178,6 +179,8 @@ func testNewProjectInfo() ProjectInfo {
 		WorkingDirectory: "/usr/code/",
 		Organisation:     "giantswarm",
 		Project:          "architect",
+
+		BuildTimestamp: time.Date(2019, time.June, 04, 12, 40, 05, 0, time.UTC),
 
 		Branch: "master",
 		Sha:    "e8363ac222255e991c126abe6673cd0f33934ac8",
