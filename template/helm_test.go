@@ -63,6 +63,10 @@ func TestTemplateHelmChartTask(t *testing.T) {
 						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "with-version.yaml"),
 						data: "version: [[ .Version ]]",
 					},
+					{
+						path: filepath.Join(chartDir, "charts", "foo.tgz"),
+						data: "version: [[ .SHA ]] - not templated as .tgz files are ignored",
+					},
 				}
 
 				for _, file := range files {
@@ -115,6 +119,10 @@ func TestTemplateHelmChartTask(t *testing.T) {
 					{
 						path: filepath.Join(chartDir, HelmTemplateDirectoryName, "with-version.yaml"),
 						data: "version: mad-hatter",
+					},
+					{
+						path: filepath.Join(chartDir, "charts", "foo.tgz"),
+						data: "version: [[ .SHA ]] - not templated as .tgz files are ignored",
 					},
 				}
 

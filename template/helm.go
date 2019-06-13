@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"strings"
 	"text/template"
 
 	"github.com/spf13/afero"
@@ -40,6 +41,10 @@ type TemplateHelmChartTask struct {
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
 func (t TemplateHelmChartTask) Run() error {
 	err := afero.Walk(t.fs, t.chartDir, func(path string, info os.FileInfo, err error) error {
+		if strings.HasSuffix(info.Name(), ".tgz") {
+			return nil
+		}
+
 		contents, err := afero.ReadFile(t.fs, path)
 		if err != nil {
 			microerror.Mask(err)
