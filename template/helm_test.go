@@ -65,7 +65,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 					},
 					{
 						path: filepath.Join(chartDir, "charts", "foo.tgz"),
-						data: "version: [[ .SHA ]]",
+						data: "version: [[ .SHA ]] - not templated as .tgz files are ignored",
 					},
 				}
 
