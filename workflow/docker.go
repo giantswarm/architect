@@ -30,27 +30,6 @@ const (
 	LatestDockerImageTag = "latest"
 )
 
-func checkDockerRequirements(projectInfo ProjectInfo) error {
-	if projectInfo.WorkingDirectory == "" {
-		return microerror.Mask(emptyWorkingDirectoryError)
-	}
-	if projectInfo.Organisation == "" {
-		return microerror.Mask(emptyOrganisationError)
-	}
-	if projectInfo.Project == "" {
-		return microerror.Mask(emptyProjectError)
-	}
-
-	if projectInfo.Sha == "" {
-		return microerror.Mask(emptyShaError)
-	}
-	if projectInfo.Registry == "" {
-		return microerror.Mask(emptyRegistryError)
-	}
-
-	return nil
-}
-
 func NewDockerBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
 		return nil, microerror.Mask(err)
@@ -68,40 +47,6 @@ func NewDockerBuildTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error
 	)
 
 	return dockerBuild, nil
-}
-
-func NewDockerRunVersionTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
-	if err := checkDockerRequirements(projectInfo); err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	dockerRunVersion := tasks.NewDockerTask(
-		DockerRunVersionTaskName,
-		tasks.DockerTaskConfig{
-			Args:             []string{"version"},
-			Image:            newDockerImageRef(projectInfo, projectInfo.Sha),
-			WorkingDirectory: projectInfo.WorkingDirectory,
-		},
-	)
-
-	return dockerRunVersion, nil
-}
-
-func NewDockerRunHelpTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
-	if err := checkDockerRequirements(projectInfo); err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	dockerRunHelp := tasks.NewDockerTask(
-		DockerRunHelpTaskName,
-		tasks.DockerTaskConfig{
-			Args:             []string{"--help"},
-			Image:            newDockerImageRef(projectInfo, projectInfo.Sha),
-			WorkingDirectory: projectInfo.WorkingDirectory,
-		},
-	)
-
-	return dockerRunHelp, nil
 }
 
 func NewDockerLoginTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
@@ -130,35 +75,33 @@ func NewDockerLoginTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error
 	return dockerLogin, nil
 }
 
-func NewDockerTagTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+func NewDockerPullTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	dockerTag := tasks.NewExecTask(
-		DockerTagTaskName,
+	dockerPull := tasks.NewExecTask(
+		DockerPullTaskName,
 		[]string{
 			"docker",
-			"tag",
+			"pull",
 			newDockerImageRef(projectInfo, projectInfo.Sha),
-			newDockerImageRef(projectInfo, projectInfo.Tag),
 		},
 	)
 
-	return dockerTag, nil
+	return dockerPull, nil
 }
 
-func NewDockerTagLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+func NewDockerPushLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	dockerPush := tasks.NewExecTask(
-		DockerTagLatestTaskName,
+		DockerPushLatestTaskName,
 		[]string{
 			"docker",
-			"tag",
-			newDockerImageRef(projectInfo, projectInfo.Sha),
+			"push",
 			newDockerImageRef(projectInfo, LatestDockerImageTag),
 		},
 	)
@@ -200,16 +143,51 @@ func NewDockerPushTagTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, err
 	return dockerPush, nil
 }
 
-func NewDockerPushLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+func NewDockerRunHelpTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+	if err := checkDockerRequirements(projectInfo); err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	dockerRunHelp := tasks.NewDockerTask(
+		DockerRunHelpTaskName,
+		tasks.DockerTaskConfig{
+			Args:             []string{"--help"},
+			Image:            newDockerImageRef(projectInfo, projectInfo.Sha),
+			WorkingDirectory: projectInfo.WorkingDirectory,
+		},
+	)
+
+	return dockerRunHelp, nil
+}
+
+func NewDockerRunVersionTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+	if err := checkDockerRequirements(projectInfo); err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	dockerRunVersion := tasks.NewDockerTask(
+		DockerRunVersionTaskName,
+		tasks.DockerTaskConfig{
+			Args:             []string{"version"},
+			Image:            newDockerImageRef(projectInfo, projectInfo.Sha),
+			WorkingDirectory: projectInfo.WorkingDirectory,
+		},
+	)
+
+	return dockerRunVersion, nil
+}
+
+func NewDockerTagLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	dockerPush := tasks.NewExecTask(
-		DockerPushLatestTaskName,
+		DockerTagLatestTaskName,
 		[]string{
 			"docker",
-			"push",
+			"tag",
+			newDockerImageRef(projectInfo, projectInfo.Sha),
 			newDockerImageRef(projectInfo, LatestDockerImageTag),
 		},
 	)
@@ -217,21 +195,43 @@ func NewDockerPushLatestTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, 
 	return dockerPush, nil
 }
 
-func NewDockerPullTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
+func NewDockerTagTask(fs afero.Fs, projectInfo ProjectInfo) (tasks.Task, error) {
 	if err := checkDockerRequirements(projectInfo); err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	dockerPull := tasks.NewExecTask(
-		DockerPullTaskName,
+	dockerTag := tasks.NewExecTask(
+		DockerTagTaskName,
 		[]string{
 			"docker",
-			"pull",
+			"tag",
 			newDockerImageRef(projectInfo, projectInfo.Sha),
+			newDockerImageRef(projectInfo, projectInfo.Tag),
 		},
 	)
 
-	return dockerPull, nil
+	return dockerTag, nil
+}
+
+func checkDockerRequirements(projectInfo ProjectInfo) error {
+	if projectInfo.WorkingDirectory == "" {
+		return microerror.Mask(emptyWorkingDirectoryError)
+	}
+	if projectInfo.Organisation == "" {
+		return microerror.Mask(emptyOrganisationError)
+	}
+	if projectInfo.Project == "" {
+		return microerror.Mask(emptyProjectError)
+	}
+
+	if projectInfo.Sha == "" {
+		return microerror.Mask(emptyShaError)
+	}
+	if projectInfo.Registry == "" {
+		return microerror.Mask(emptyRegistryError)
+	}
+
+	return nil
 }
 
 func newDockerImageRef(projectInfo ProjectInfo, version string) string {
