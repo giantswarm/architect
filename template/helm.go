@@ -41,7 +41,7 @@ type TemplateHelmChartTask struct {
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
 func (t TemplateHelmChartTask) Run() error {
 	err := afero.Walk(t.fs, t.chartDir, func(path string, info os.FileInfo, err error) error {
-		if strings.HasSuffix(info.Name(), ".tgz") {
+		if info != nil && strings.HasSuffix(info.Name(), ".tgz") {
 			return nil
 		}
 
