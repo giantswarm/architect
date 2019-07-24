@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/giantswarm/architect/cmd/helm"
+	cmdProject "github.com/giantswarm/architect/cmd/project"
 	"github.com/giantswarm/architect/cmd/release"
 )
 
@@ -62,4 +63,5 @@ func init() {
 
 	RootCmd.AddCommand(release.Cmd)
 	RootCmd.AddCommand(helm.Cmd)
+	RootCmd.AddCommand(cmdProject.Cmd)
 }
