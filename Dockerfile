@@ -6,6 +6,7 @@ RUN apk add --no-cache \
         bash=4.4.19-r1 \
         ca-certificates=20190108-r0 \
         curl=7.64.0-r2 \
+        docker=18.09.8-r0 \
         git=2.20.1-r0 \
         openssh-client=7.9_p1-r5 &&\
         curl -SL https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz | \
