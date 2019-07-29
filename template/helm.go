@@ -56,13 +56,28 @@ func (t TemplateHelmChartTask) Run() error {
 			Version:   t.version,
 		}
 
-		newTemplate := template.Must(template.New(path).Delims("[[", "]]").Parse(string(contents)))
-		if err != nil {
-			microerror.Mask(err)
+		var tmpl *template.Template
+		{
+			// Taken from https://github.com/Masterminds/sprig. If
+			// we need more common functions we should use that
+			// library.
+			replaceFunc := func(old, new, src string) string {
+				return strings.Replace(src, old, new, -1)
+			}
+
+			tmpl = template.New(path)
+			tmpl = tmpl.Delims("[[", "]]")
+			tmpl = tmpl.Funcs(template.FuncMap{
+				"replace": replaceFunc,
+			})
+			tmpl, err = tmpl.Parse(string(contents))
+			if err != nil {
+				microerror.Mask(err)
+			}
 		}
 
 		var buf bytes.Buffer
-		if err := newTemplate.Execute(&buf, buildInfo); err != nil {
+		if err := tmpl.Execute(&buf, buildInfo); err != nil {
 			microerror.Mask(err)
 		}
 
