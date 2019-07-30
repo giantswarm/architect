@@ -31,7 +31,8 @@ const (
 )
 
 type TemplateHelmChartTask struct {
-	fs       afero.Fs
+	fs afero.Fs
+
 	chartDir string
 	sha      string
 	version  string
