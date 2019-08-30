@@ -14,6 +14,7 @@ var (
 	baseProjectList = []string{
 		"api",
 		"app-operator",
+		"app-collection",
 		"cert-exporter",
 		"cert-operator",
 		"chart-operator",
