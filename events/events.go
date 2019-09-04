@@ -14,7 +14,6 @@ var (
 	baseProjectList = []string{
 		"api",
 		"app-operator",
-		"app-collection",
 		"cert-exporter",
 		"cert-operator",
 		"chart-operator",
@@ -78,7 +77,7 @@ var environmentProjects = map[Environment][]string{
 	"centaur":  append(kvmProjectList, "pv-cleaner-operator"),
 	"dinosaur": kvmProjectList,
 	"dragon":   kvmProjectList,
-	"gauss":    awsProjectList,
+	"gauss":    append(awsProjectList, "aws-app-collection"),
 	"geckon":   kvmProjectList,
 	"ghost":    azureProjectList,
 	"ginger":   awsProjectList,
