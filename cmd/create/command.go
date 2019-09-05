@@ -9,7 +9,7 @@ import (
 var (
 	Cmd = &cobra.Command{
 		Use:   "create",
-		Short: "create all the things.",
+		Short: "create a resource.",
 	}
 )
 
