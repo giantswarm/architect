@@ -11,17 +11,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-const (
-	// Namespace is the namespace where App CRs are created.
-	namespace = "giantswarm"
-
-	labelAppOperatorVersion = "app-operator.giantswarm.io/version"
-	labelReleaseCyclePhase  = "release-operator.giantswarm.io/release-cycle-phase"
-	labelServiceType        = "giantswarm.io/service-type"
-
-	appOperatorVersion = "1.0.0"
-)
-
 // NewCR returns new application CR.
 //
 // AppCatalog is the name of the app catalog where the app stored.
@@ -30,9 +19,9 @@ func NewCR(name, appName, appVersion, appCatalog string) *applicationv1alpha1.Ap
 		TypeMeta: applicationv1alpha1.NewAppTypeMeta(),
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
-			Namespace: namespace,
+			Namespace: "giantswarm",
 			Labels: map[string]string{
-				labelAppOperatorVersion: appOperatorVersion,
+				"app-operator.giantswarm.io/version": "1.0.0",
 			},
 		},
 		Spec: applicationv1alpha1.AppSpec{
@@ -41,7 +30,7 @@ func NewCR(name, appName, appVersion, appCatalog string) *applicationv1alpha1.Ap
 				InCluster: true,
 			},
 			Name:      appName,
-			Namespace: namespace,
+			Namespace: "giantswarm",
 			Version:   appVersion,
 		},
 	}
