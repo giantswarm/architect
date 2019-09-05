@@ -54,7 +54,7 @@ func Print(w io.Writer, format string, appCR *applicationv1alpha1.App) error {
 			return microerror.Mask(err)
 		}
 	default:
-		return microerror.Maskf(wrongFormatError, "format: %q", format)
+		return microerror.Maskf(executionFailedError, "format: %q", format)
 	}
 
 	_, err = fmt.Fprintf(w, "%s", output)

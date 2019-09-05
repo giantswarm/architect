@@ -4,10 +4,10 @@ import (
 	"github.com/giantswarm/microerror"
 )
 
-var wrongFormatError = &microerror.Error{
-	Kind: "wrongFormatError",
+var executionFailedError = &microerror.Error{
+	Kind: "executionFailedError",
 }
 
-func IsWrongFormatError(err error) bool {
-	return microerror.Cause(err) == wrongFormatError
+func IsExecutionFailedError(err error) bool {
+	return microerror.Cause(err) == executionFailedError
 }
