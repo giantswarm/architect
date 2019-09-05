@@ -6,7 +6,8 @@ import (
 
 var (
 	Cmd = &cobra.Command{
-		Use:  "appcr",
-		RunE: runAppCRError,
+		Use:   "appcr",
+		Short: "create App CR resource.",
+		RunE:  runAppCRError,
 	}
 )
