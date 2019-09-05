@@ -14,5 +14,5 @@ var (
 )
 
 func init() {
-	Cmd.AddCommand(appcr.Cmd)
+	Cmd.AddCommand(appcr.NewCommand())
 }
