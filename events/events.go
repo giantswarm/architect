@@ -40,6 +40,7 @@ var (
 	}
 	awsProjectList = append(baseProjectList,
 		"aws-operator",
+		"aws-app-collection",
 	)
 	// azure project list + azure specific services
 	azureProjectList = append(baseProjectList,
