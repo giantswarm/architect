@@ -6,7 +6,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/cobra"
 
-	"github.com/giantswarm/architect/pkg/app"
+	"github.com/giantswarm/app/pkg/app"
 )
 
 func runAppCRError(cmd *cobra.Command, args []string) error {

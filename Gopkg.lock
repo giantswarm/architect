@@ -34,20 +34,28 @@
   version = "v0.2.2"
 
 [[projects]]
-  branch = "master"
-  digest = "1:08188cf7ce7027b22e88cc23da27f17349a0ba7746271a60cbe0a70266c2346f"
+  digest = "1:2cd7915ab26ede7d95b8749e6b1f933f1c6d5398030684e6505940a10f31cfda"
   name = "github.com/ghodss/yaml"
   packages = ["."]
   pruneopts = "UT"
-  revision = "25d852aebe32c875e9c044af3eef9c7dc6bc777f"
+  revision = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7"
+  version = "v1.0.0"
 
 [[projects]]
-  branch = "master"
-  digest = "1:814d05e818818d9eb591bfccce02add54ff92c4af3b99c0a45469928d40675a6"
+  branch = "add_calico_ipip"
+  digest = "1:13467aaf5d744d7e1024026ac8f446847f099e376d9548ca24390c2966126575"
   name = "github.com/giantswarm/apiextensions"
   packages = ["pkg/apis/application/v1alpha1"]
   pruneopts = "UT"
-  revision = "a1822dc1393b7e6a7ece14d3bf2c6a410dc419c9"
+  revision = "f4bc18de5f2f06a337dd7a01aac46d2b686b2c96"
+
+[[projects]]
+  branch = "master"
+  digest = "1:772d8363b36610abd353fd19f45ebd05606c48e8e83bfb9fb691d2d24b36ae98"
+  name = "github.com/giantswarm/app"
+  packages = ["pkg/app"]
+  pruneopts = "UT"
+  revision = "8ca9064ef8d4631db41062915c7629b76fc43295"
 
 [[projects]]
   branch = "master"
@@ -342,8 +350,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/cenk/backoff",
-    "github.com/ghodss/yaml",
-    "github.com/giantswarm/apiextensions/pkg/apis/application/v1alpha1",
+    "github.com/giantswarm/app/pkg/app",
     "github.com/giantswarm/microerror",
     "github.com/google/go-github/github",
     "github.com/jstemmer/go-junit-report/formatter",
@@ -353,7 +360,6 @@
     "golang.org/x/oauth2",
     "golang.org/x/sync/errgroup",
     "gopkg.in/yaml.v2",
-    "k8s.io/apimachinery/pkg/apis/meta/v1",
     "k8s.io/helm/pkg/chartutil",
     "k8s.io/helm/pkg/proto/hapi/chart",
   ]

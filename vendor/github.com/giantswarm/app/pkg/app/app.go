@@ -38,7 +38,7 @@ func NewCR(name, appName, appVersion, appCatalog string) *applicationv1alpha1.Ap
 	return appCR
 }
 
-func Print(w io.Writer, format string, appCR *applicationv1alpha1.App) error {
+func Marshal(appCR *applicationv1alpha1.App, format string) (string, error) {
 	var output []byte
 	var err error
 
@@ -46,15 +46,24 @@ func Print(w io.Writer, format string, appCR *applicationv1alpha1.App) error {
 	case "json":
 		output, err = json.Marshal(appCR)
 		if err != nil {
-			return microerror.Mask(err)
+			return "", microerror.Mask(err)
 		}
 	case "yaml":
 		output, err = yaml.Marshal(appCR)
 		if err != nil {
-			return microerror.Mask(err)
+			return "", microerror.Mask(err)
 		}
 	default:
-		return microerror.Maskf(executionFailedError, "format: %q", format)
+		return "", microerror.Maskf(executionFailedError, "format: %q", format)
+	}
+
+	return string(output), nil
+}
+
+func Print(w io.Writer, format string, appCR *applicationv1alpha1.App) error {
+	output, err := Marshal(appCR, format)
+	if err != nil {
+		return microerror.Mask(err)
 	}
 
 	_, err = fmt.Fprintf(w, "%s", output)
