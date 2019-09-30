@@ -1,7 +1,6 @@
 package v1alpha1
 
 import (
-	"github.com/ghodss/yaml"
 	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -9,69 +8,6 @@ import (
 const (
 	kindChart = "Chart"
 )
-
-const chartCRDYAML = `
-apiVersion: apiextensions.k8s.io/v1beta1
-kind: CustomResourceDefinition
-metadata:
-  name: charts.application.giantswarm.io
-spec:
-  group: application.giantswarm.io
-  scope: Namespaced
-  version: v1alpha1
-  names:
-    kind: Chart
-    plural: charts
-    singular: chart
-  subresources:
-    status: {}
-  validation:
-    openAPIV3Schema:
-      properties:
-        spec:
-          type: object
-          properties:
-            name:
-              type: string
-            namespace:
-              type: string
-            config:
-              type: object
-              properties:
-                configMap:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    namespace:
-                      type: string
-                    resourceVersion:
-                      type: string
-                  required: ["name", "namespace"]
-                secret:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    namespace:
-                      type: string
-                    resourceVersion:
-                      type: string
-                  required: ["name", "namespace"]
-            tarballURL:
-              type: string
-              format: uri
-          required: ["name", "namespace", "tarballURL"]
-`
-
-var chartCRD *apiextensionsv1beta1.CustomResourceDefinition
-
-func init() {
-	err := yaml.Unmarshal([]byte(chartCRDYAML), &chartCRD)
-	if err != nil {
-		panic(err)
-	}
-}
 
 // NewChartCRD returns a new custom resource definition for Chart.
 // This might look something like the following.
@@ -90,12 +26,33 @@ func init() {
 //         singular: chart
 //
 func NewChartCRD() *apiextensionsv1beta1.CustomResourceDefinition {
-	return chartCRD.DeepCopy()
+	return &apiextensionsv1beta1.CustomResourceDefinition{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: apiextensionsv1beta1.SchemeGroupVersion.String(),
+			Kind:       "CustomResourceDefinition",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "charts.application.giantswarm.io",
+		},
+		Spec: apiextensionsv1beta1.CustomResourceDefinitionSpec{
+			Group:   "application.giantswarm.io",
+			Scope:   "Namespaced",
+			Version: "v1alpha1",
+			Names: apiextensionsv1beta1.CustomResourceDefinitionNames{
+				Kind:     "Chart",
+				Plural:   "charts",
+				Singular: "chart",
+			},
+			Subresources: &apiextensionsv1beta1.CustomResourceSubresources{
+				Status: &apiextensionsv1beta1.CustomResourceSubresourceStatus{},
+			},
+		},
+	}
 }
 
 func NewChartTypeMeta() metav1.TypeMeta {
 	return metav1.TypeMeta{
-		APIVersion: SchemeGroupVersion.String(),
+		APIVersion: version,
 		Kind:       kindChart,
 	}
 }
@@ -194,9 +151,6 @@ type ChartStatus struct {
 	// e.g. 0.21.0.
 	// https://docs.helm.sh/developing_charts/#the-chart-yaml-file
 	AppVersion string `json:"appVersion" yaml:"appVersion"`
-	// Reason is the description of the last status of helm release when the chart is
-	// not installed successfully, e.g. deploy resource already exists.
-	Reason string `json:"reason,omitempty" yaml:"reason,omitempty"`
 	// Release is the status of the Helm release for the deployed chart.
 	Release ChartStatusRelease `json:"release" yaml:"release"`
 	// Version is the value of the Version field in the Chart.yaml of the
