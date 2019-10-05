@@ -57,7 +57,7 @@ func init() {
 	buildCmd.Flags().StringVar(&helmDirectoryPath, "helm-directory-path", "./helm", "directory holding helm chart")
 
 	buildCmd.Flags().StringVar(&golangImage, "golang-image", "quay.io/giantswarm/golang", "golang image")
-	buildCmd.Flags().StringVar(&golangVersion, "golang-version", "1.13.0", "golang version")
+	buildCmd.Flags().StringVar(&golangVersion, "golang-version", "1.13.1", "golang version")
 }
 
 func runBuild(cmd *cobra.Command, args []string) {

@@ -1,5 +1,5 @@
 # Stage 0
-FROM quay.io/giantswarm/golang:1.13.0-alpine3.10
+FROM quay.io/giantswarm/golang:1.13.1-alpine3.10
 
 # Stage 1
 FROM quay.io/giantswarm/alpine:3.10
@@ -10,7 +10,7 @@ COPY --from=0 /usr/local/go /usr/local/go
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
-ARG HELM_VERSION=v2.14.0
+ARG HELM_VERSION=v2.14.3
 
 RUN apk add --no-cache \
         bash \
