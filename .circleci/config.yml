@@ -1,21 +1,25 @@
-version: 2
-jobs:
-  build:
-    machine: true
-    steps:
-    - checkout
+version: 2.1
+orbs:
+  architect: giantswarm/architect@0.4.3
 
-    - run: |
-        wget -q $(curl -sS -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/architect/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
-        chmod +x ./architect
-        ./architect version
-    - run: ./architect build
-    - run: ./architect build    # For sanity, build again using the new version.
-    - store_test_results:
-        path: /tmp/results
-    - deploy:
-        command: |
-          if [ "${CIRCLE_BRANCH}" == "master" ]; then
-            ./architect deploy
-            ./github-release.sh $CIRCLE_SHA1 $PERSONAL_ACCESS_TOKEN
-          fi
+workflows:
+  go-build:
+    jobs:
+      - architect/go-build:
+          name: go-build-architect
+          binary: architect
+          # Needed to trigger job also on git tag.
+          filters:
+            tags:
+              only: /^v.*/
+      - deploy:
+          steps:
+            - run: |
+                ./architect deploy
+            - run: |
+                ./github-release.sh $CIRCLE_SHA1 $PERSONAL_ACCESS_TOKEN
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^v.*/
