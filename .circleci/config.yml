@@ -2,6 +2,19 @@ version: 2.1
 orbs:
   architect: giantswarm/architect@0.4.3
 
+
+jobs:
+  release:
+    machine: true
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run: |
+          ./architect deploy
+      - run: |
+          ./github-release.sh $CIRCLE_SHA1 $PERSONAL_ACCESS_TOKEN
+
 workflows:
   go-build:
     jobs:
@@ -12,12 +25,22 @@ workflows:
           filters:
             tags:
               only: /^v.*/
-      - deploy:
-          steps:
-            - run: |
-                ./architect deploy
-            - run: |
-                ./github-release.sh $CIRCLE_SHA1 $PERSONAL_ACCESS_TOKEN
+
+      - architect/push-to-docker:
+          name: "push-architect-to-docker"
+          image: "quay.io/giantswarm/architect"
+          username_envar: "QUAY_USERNAME"
+          password_envar: "QUAY_PASSWORD"
+          requires:
+            - go-build-architect
+          filters:
+            # Needed to trigger job also on git tag.
+            tags:
+              only: /^v.*/
+
+      - release:
+          requires:
+            - go-build-architect
           filters:
             branches:
               only: master
