@@ -1,21 +1,48 @@
-version: 2
+version: 2.1
+orbs:
+  architect: giantswarm/architect@0.4.3
+
+
 jobs:
-  build:
+  release:
     machine: true
     steps:
-    - checkout
+      - checkout
+      - attach_workspace:
+          at: .
+      - run: |
+          ./architect deploy
+      - run: |
+          ./github-release.sh $CIRCLE_SHA1 $PERSONAL_ACCESS_TOKEN
 
-    - run: |
-        wget -q $(curl -sS -H "Authorization: token $RELEASE_TOKEN" https://api.github.com/repos/giantswarm/architect/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
-        chmod +x ./architect
-        ./architect version
-    - run: ./architect build
-    - run: ./architect build    # For sanity, build again using the new version.
-    - store_test_results:
-        path: /tmp/results
-    - deploy:
-        command: |
-          if [ "${CIRCLE_BRANCH}" == "master" ]; then
-            ./architect deploy
-            ./github-release.sh $CIRCLE_SHA1 $PERSONAL_ACCESS_TOKEN
-          fi
+workflows:
+  go-build:
+    jobs:
+      - architect/go-build:
+          name: go-build-architect
+          binary: architect
+          # Needed to trigger job also on git tag.
+          filters:
+            tags:
+              only: /^v.*/
+
+      - architect/push-to-docker:
+          name: "push-architect-to-docker"
+          image: "quay.io/giantswarm/architect"
+          username_envar: "QUAY_USERNAME"
+          password_envar: "QUAY_PASSWORD"
+          requires:
+            - go-build-architect
+          filters:
+            # Needed to trigger job also on git tag.
+            tags:
+              only: /^v.*/
+
+      - release:
+          requires:
+            - go-build-architect
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^v.*/
