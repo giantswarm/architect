@@ -38,7 +38,7 @@ workflows:
 
       - release:
           requires:
-            - go-build-architect
+            - push-architect-to-docker
           filters:
             branches:
               only: master
