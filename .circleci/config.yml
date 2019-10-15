@@ -11,8 +11,6 @@ jobs:
       - attach_workspace:
           at: .
       - run: |
-          ./architect deploy
-      - run: |
           ./github-release.sh $CIRCLE_SHA1 $PERSONAL_ACCESS_TOKEN
 
 workflows:
