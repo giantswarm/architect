@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  architect: giantswarm/architect@dev:push-to-docker--latest
+  architect: giantswarm/architect@0.4.4
 
 jobs:
   release:
@@ -28,7 +28,6 @@ workflows:
           image: "quay.io/giantswarm/architect"
           username_envar: "QUAY_USERNAME"
           password_envar: "QUAY_PASSWORD"
-          tag-latest-branch: "circleci"
           requires:
             - go-build-architect
           filters:
