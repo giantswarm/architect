@@ -1,66 +1,57 @@
 package hook
 
 import (
-	"fmt"
-	"os"
-	"os/exec"
-	"strings"
+	"context"
 
+	"github.com/giantswarm/gitrepo/pkg/gitrepo"
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/cobra"
 )
 
 func PreRunE(cmd *cobra.Command, args []string) error {
-	// Use git HEAD as defaultSha.
-	var defaultSha string
+	ctx := context.Background()
+
+	var err error
+
+	var repo *gitrepo.Repo
 	{
-		out, err := exec.Command("git", "rev-parse", "HEAD").Output()
+
+		dir, err := gitrepo.TopLevel(ctx, ".")
 		if err != nil {
-			return microerror.Maskf(gitNoSHAError, "could not get git sha: %#v\n", err)
+			return microerror.Mask(err)
 		}
-		defaultSha = strings.TrimSpace(string(out))
+
+		c := gitrepo.Config{
+			Dir: dir,
+		}
+
+		repo, err = gitrepo.New(c)
+		if err != nil {
+			return microerror.Mask(err)
+		}
 	}
 
-	// Use git tag when available.
-	var defaultTag string
-	{
-		out, err := exec.Command("git", "describe", "--tags", "--exact-match", "HEAD").Output()
-		if err == nil {
-			// Always populate tag unless building on CircleCI and it is not explicitly requesting to build a tag.
-			if _, ciTagExists := os.LookupEnv("CIRCLE_TAG"); os.Getenv("CIRCLECI") != "true" || ciTagExists {
-				defaultTag = strings.TrimPrefix(strings.TrimSpace(string(out)), "v")
-			}
-		}
+	defaultSha, err := repo.HeadSHA(ctx)
+	if err != nil {
+		return microerror.Mask(err)
 	}
 
-	// We also use the git HEAD branch as well.
-	var defaultBranch string
-	{
-		out, err := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD").Output()
-		if err != nil {
-			return microerror.Maskf(gitNoBranchError, "could not get git branch: %#v\n", err)
-		}
-		defaultBranch = strings.TrimSpace(string(out))
+	defaultTag, err := repo.HeadTag(ctx)
+	if gitrepo.IsNotFound(err) {
+		defaultTag = ""
+	} else if err != nil {
+		return microerror.Mask(err)
+	}
+
+	defaultBranch, err := repo.HeadBranch(ctx)
+	if err != nil {
+		return microerror.Mask(err)
 	}
 
 	// Define the version we are building.
-	var defaultVersion string
-	{
-		// version can be of three different formats:
-		//   2.0.0: building a tagged version.
-		//   2.0.0-3a955cbb126f0fe5d51aedf2eb84acca7b074374: building ahead of a tagged version.
-		//   0.0.0-939f5c6949f83c0a7ea98a25bc9524fd2f751ffe: building a repo which has no tags.
-		if defaultTag != "" {
-			defaultVersion = defaultTag
-		} else {
-			out, err := exec.Command("git", "describe", "--tags", "--abbrev=0", "HEAD").Output()
-			if err != nil {
-				defaultVersion = fmt.Sprintf("0.0.0-%s", defaultSha)
-			} else {
-				defaultVersion = fmt.Sprintf("%s-%s", strings.TrimPrefix(strings.TrimSpace(string(out)), "v"), defaultSha)
-			}
-
-		}
+	defaultVersion, err := repo.ResolveVersion(ctx, "HEAD")
+	if err != nil {
+		return microerror.Mask(err)
 	}
 
 	cmd.PersistentFlags().String("branch", defaultBranch, "git branch being built")
