@@ -95,19 +95,11 @@ var environmentProjects = map[Environment][]string{
 
 	// non standard cluster just for our website
 	"gollum_6iec4": {
-		"api-spec",
 		"auto-oncall",
 		"circleci-exporter",
-		"docs",
-		"docs-indexer",
-		"docs-proxy",
 		"draughtsman",
-		"giantswarmio-nginx",
-		"giantswarmio-webapp",
 		"github-exporter",
 		"kpi-prometheus",
-		"web-assets",
-		"sitesearch",
 	},
 }
 
