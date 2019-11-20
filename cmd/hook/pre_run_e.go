@@ -37,7 +37,7 @@ func PreRunE(cmd *cobra.Command, args []string) error {
 	}
 
 	defaultTag, err := repo.HeadTag(ctx)
-	if gitrepo.IsNotFound(err) {
+	if gitrepo.IsReferenceNotFound(err) {
 		defaultTag = ""
 	} else if err != nil {
 		return microerror.Mask(err)
