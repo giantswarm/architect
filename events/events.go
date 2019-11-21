@@ -45,6 +45,7 @@ var (
 	// azure project list + azure specific services
 	azureProjectList = append(baseProjectList,
 		"azure-operator",
+		"azure-app-collection",
 	)
 	// kvm project list + kvm specific services
 	kvmProjectList = append(baseProjectList,
@@ -52,6 +53,7 @@ var (
 		"flannel-operator",
 		"ingress-exporter",
 		"kvm-operator",
+		"kvm-app-collection",
 	)
 	// awsChinaProjectList adds route53-manager to awsProjectList. This is
 	// required until route53 is vailable on AWS China.
