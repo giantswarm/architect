@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
-	"github.com/giantswarm/architect/workflow"
+	"github.com/giantswarm/architect/helmtemplate"
 )
 
 func runTemplateError(cmd *cobra.Command, args []string) error {
@@ -18,17 +18,17 @@ func runTemplateError(cmd *cobra.Command, args []string) error {
 		version  = cmd.Flag("version").Value.String()
 	)
 
-	var projectInfo = workflow.ProjectInfo{
-		Sha:     sha,
-		Tag:     tag,
-		Version: version,
-	}
-
 	fs := afero.NewOsFs()
 
 	log.Printf("templating helm chart\ndir: %s\nsha: %s\ntag: %s\nversion: %s\n", chartDir, sha, tag, version)
 
-	helmChartTemplate, err := workflow.NewTemplateHelmChartTask(fs, chartDir, projectInfo)
+	helmChartTemplate, err := helmtemplate.NewTemplateHelmChartTask(helmtemplate.Config{
+		Fs:       fs,
+		ChartDir: chartDir,
+		Sha:      sha,
+		Version:  version,
+	})
+
 	if err != nil {
 		return microerror.Mask(err)
 	}
