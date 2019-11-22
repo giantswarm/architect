@@ -56,7 +56,7 @@ var (
 		"kvm-app-collection",
 	)
 	// awsChinaProjectList adds route53-manager to awsProjectList. This is
-	// required until route53 is vailable on AWS China.
+	// required until route53 is available on AWS China.
 	awsChinaProjectList = append(awsProjectList,
 		"route53-manager",
 	)
