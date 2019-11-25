@@ -22,18 +22,23 @@ func runTemplateError(cmd *cobra.Command, args []string) error {
 
 	log.Printf("templating helm chart\ndir: %s\nsha: %s\ntag: %s\nversion: %s\n", chartDir, sha, tag, version)
 
-	helmChartTemplate, err := helmtemplate.NewTemplateHelmChartTask(helmtemplate.Config{
-		Fs:       fs,
-		ChartDir: chartDir,
-		Sha:      sha,
-		Version:  version,
-	})
+	var err error
+	var s *helmtemplate.TemplateHelmChartTask
+	{
+		c := helmtemplate.Config{
+			Fs:       fs,
+			ChartDir: chartDir,
+			Sha:      sha,
+			Version:  version,
+		}
 
-	if err != nil {
-		return microerror.Mask(err)
+		s, err = helmtemplate.NewTemplateHelmChartTask(c)
+		if err != nil {
+			return microerror.Mask(err)
+		}
 	}
 
-	if err := helmChartTemplate.Run(); err != nil {
+	if err := s.Run(); err != nil {
 		return microerror.Mask(err)
 	}
 

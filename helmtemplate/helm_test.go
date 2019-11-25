@@ -73,7 +73,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 						return microerror.Mask(err)
 					}
 					if string(bytes) != file.data {
-						return microerror.Maskf(incorrectValueError, fmt.Sprintf("%v, found: %v, expected: %v", file.path, string(bytes), file.data))
+						return microerror.Maskf(invalidConfigError, fmt.Sprintf("%v, found: %v, expected: %v", file.path, string(bytes), file.data))
 					}
 				}
 

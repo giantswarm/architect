@@ -11,22 +11,14 @@ import (
 )
 
 const (
-	// TemplateHelmChartTaskName is the architect task name for templating helm chart
-	TemplateHelmChartTaskName = "template-helm-chart"
-
-	// TemplateHelmChartTaskString is the format for printing the
-	// helm chart templating task.
-	// Name of the task, the helm directory path, the sha, and the version.
-	TemplateHelmChartTaskString = "%s:\t%s sha:%s version:%s"
-
 	// HelmChartYamlName is the name of Helm's chart yaml.
 	HelmChartYamlName = "Chart.yaml"
-	// HelmTemplateDirectoryName is the name of the directory that stores
-	// Kubernetes resources inside a chart.
-	HelmTemplateDirectoryName = "templates"
 	// HelmValuesYamlName is hte name fo the file that holds default Helm chart
 	// values inside the template directory.
 	HelmValuesYamlName = "values.yaml"
+	// HelmTemplateDirectoryName is the name of the directory that stores
+	// Kubernetes resources inside a chart.
+	HelmTemplateDirectoryName = "templates"
 )
 
 // TemplateHelmChartTask is used to run a template-helm-chart command
@@ -79,37 +71,34 @@ func (t TemplateHelmChartTask) Run() error {
 	return nil
 }
 
-// Name return the name of this task
-func (t TemplateHelmChartTask) Name() string {
-	return TemplateHelmChartTaskName
-}
-
 func (t TemplateHelmChartTask) String() string {
-	return fmt.Sprintf(TemplateHelmChartTaskString, t.Name(), t.chartDir, t.sha, t.version)
+	return fmt.Sprintf("%s:\t%s sha:%s version:%s", "template-helm-chart", t.chartDir, t.sha, t.version)
 }
 
 // NewTemplateHelmChartTask creates a new TemplateHelmChartTask
 func NewTemplateHelmChartTask(config Config) (*TemplateHelmChartTask, error) {
 	if config.Fs == nil {
-		return nil, microerror.Maskf(incorrectValueError, "%T.Fs must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.Fs must not be empty", config)
 	}
 
 	if config.ChartDir == "" {
-		return nil, microerror.Maskf(incorrectValueError, "%T.ChartDir must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.ChartDir must not be empty", config)
 	}
 
 	if config.Sha == "" {
-		return nil, microerror.Maskf(incorrectValueError, "%T.Sha must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.Sha must not be empty", config)
 	}
 
 	if config.Version == "" {
-		return nil, microerror.Maskf(incorrectValueError, "%T.Version must not be empty", config)
+		return nil, microerror.Maskf(invalidConfigError, "%T.Version must not be empty", config)
 	}
 
-	return &TemplateHelmChartTask{
+	t := &TemplateHelmChartTask{
 		fs:       config.Fs,
 		chartDir: config.ChartDir,
 		sha:      config.Sha,
 		version:  config.Version,
-	}, nil
+	}
+
+	return t, nil
 }

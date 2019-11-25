@@ -1,5 +1,4 @@
-// Package template provides functions for templating Kubernetes resources,
-// with standard G8S configuration.
+// Package helmtemplate provides functions for templating helm charts
 package helmtemplate
 
 import (
@@ -17,10 +16,4 @@ type BuildInfo struct {
 	SHA string
 	// Version is the version of the commit being built.
 	Version string
-}
-
-// TemplateConfiguration holds both build info, and configuration info.
-type TemplateConfiguration struct {
-	// BuildInfo is the configuration for the current build
-	BuildInfo
 }
