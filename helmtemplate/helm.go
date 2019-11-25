@@ -41,7 +41,6 @@ type Config struct {
 
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
 func (t TemplateHelmChartTask) Run() error {
-
 	for _, file := range []string{HelmChartYamlName, HelmValuesYamlName} {
 		path := path.Join(t.chartDir, file)
 		contents, err := afero.ReadFile(t.fs, path)
