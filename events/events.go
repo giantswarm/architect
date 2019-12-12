@@ -32,6 +32,7 @@ var (
 		"kubernetesd",
 		"net-exporter",
 		"node-operator",
+		"operator-week-app-collection",
 		"passage",
 		"release-operator",
 		"tokend",
