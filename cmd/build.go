@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 	"path"
-	"strings"
 	"time"
 
 	"github.com/jstemmer/go-junit-report/formatter"
@@ -59,8 +58,6 @@ func init() {
 
 	buildCmd.Flags().StringVar(&golangImage, "golang-image", "quay.io/giantswarm/golang", "golang image")
 	buildCmd.Flags().StringVar(&golangVersion, "golang-version", "1.13.1", "golang version")
-
-	publishCmd.Flags().StringVar(&channels, "channels", "", "channels to publish the charts to, separated by comma")
 }
 
 func runBuild(cmd *cobra.Command, args []string) {
@@ -87,8 +84,6 @@ func runBuild(cmd *cobra.Command, args []string) {
 		Goarch:        goarch,
 		GolangImage:   golangImage,
 		GolangVersion: golangVersion,
-
-		Channels: strings.Split(channels, ","),
 	}
 
 	fs := afero.NewOsFs()

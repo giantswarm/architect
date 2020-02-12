@@ -5,9 +5,8 @@ import (
 	"os/user"
 	"path/filepath"
 
-	"github.com/spf13/afero"
-
 	"github.com/giantswarm/microerror"
+	"github.com/spf13/afero"
 
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/template"
@@ -87,19 +86,6 @@ func NewHelmPushTask(fs afero.Fs, chartDir string, projectInfo ProjectInfo) (tas
 		return nil, microerror.Mask(err)
 	}
 
-	args := []string{
-		"registry",
-		"push",
-	}
-	if len(projectInfo.Channels) > 0 {
-		args = append(args, fmt.Sprintf("--channel=%s", projectInfo.Channels[0]))
-	}
-	args = append(args,
-		fmt.Sprintf("--namespace=%v", projectInfo.Organisation),
-		"--force",
-		projectInfo.Registry,
-	)
-
 	helmPush := tasks.NewDockerTask(
 		HelmPushTaskName,
 		tasks.DockerTaskConfig{
@@ -109,7 +95,13 @@ func NewHelmPushTask(fs afero.Fs, chartDir string, projectInfo ProjectInfo) (tas
 				fmt.Sprintf("%v:/root/.cnr/", cnrDir),
 				fmt.Sprintf("%v:%v", chartDir, chartDir),
 			},
-			Args: args,
+			Args: []string{
+				"registry",
+				"push",
+				fmt.Sprintf("--namespace=%v", projectInfo.Organisation),
+				"--force",
+				projectInfo.Registry,
+			},
 		},
 	)
 
