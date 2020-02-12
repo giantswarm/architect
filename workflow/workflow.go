@@ -186,8 +186,8 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 	}
 
-	branch := os.Getenv("CIRCLE_BRANCH")
-	if branch == "" || branch == "master" {
+	branch, ok := os.LookupEnv("CIRCLE_BRANCH")
+	if !ok || branch == "master" {
 		helmTasks, err := processHelmDir(fs, projectInfo, NewHelmPushTask)
 		if err != nil {
 			return nil, microerror.Mask(err)
