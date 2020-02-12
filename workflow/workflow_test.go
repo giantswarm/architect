@@ -2,6 +2,7 @@ package workflow
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
@@ -243,6 +244,9 @@ func TestGetBuildWorkflow(t *testing.T) {
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
 
+				if err := os.Setenv("CIRCLE_BRANCH", ""); err != nil {
+					return microerror.Mask(err)
+				}
 				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm", "test-project-chart"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
