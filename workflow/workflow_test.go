@@ -244,6 +244,8 @@ func TestGetBuildWorkflow(t *testing.T) {
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
 
+				// Build task won't push the chart to the registry when on a branch other than master, so we need to
+				// unset the CIRCLE_BRANCH which is set while running this own repository CI.
 				if err := os.Unsetenv("CIRCLE_BRANCH"); err != nil {
 					return microerror.Mask(err)
 				}
