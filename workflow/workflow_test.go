@@ -244,11 +244,6 @@ func TestGetBuildWorkflow(t *testing.T) {
 			setUp: func(fs afero.Fs, testDir string) error {
 				projectInfo.WorkingDirectory = testDir
 
-				// Build task won't push the chart to the registry when on a branch other than master, so we need to
-				// unset the CIRCLE_BRANCH which is set while running this own repository CI.
-				if err := os.Unsetenv("CIRCLE_BRANCH"); err != nil {
-					return microerror.Mask(err)
-				}
 				if err := fs.MkdirAll(filepath.Join(projectInfo.WorkingDirectory, "helm", "test-project-chart"), 0744); err != nil {
 					return microerror.Mask(err)
 				}
@@ -384,6 +379,17 @@ func TestGetBuildWorkflow(t *testing.T) {
 			},
 		},
 	}
+
+	// Build task won't push the chart to the registry when on a branch other than master, so we need to
+	// unset the CIRCLE_BRANCH which is set while running this own repository CI.
+	currentBranch := os.Getenv("CIRCLE_BRANCH")
+	if err := os.Unsetenv("CIRCLE_BRANCH"); err != nil {
+		t.Fatalf("unexpected error during setup: %#v", err)
+	}
+
+	defer func() {
+		os.Setenv("CIRCLE_BRANCH", currentBranch)
+	}()
 
 	for i, tc := range tests {
 		fs := afero.NewOsFs()
