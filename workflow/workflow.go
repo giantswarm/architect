@@ -3,17 +3,16 @@ package workflow
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/cenk/backoff"
+	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/microerror"
 	"github.com/google/go-github/github"
-	"github.com/spf13/afero"
 
-	"github.com/giantswarm/architect/tasks"
+	"github.com/spf13/afero"
 )
 
 type Workflow []tasks.Task
@@ -186,15 +185,12 @@ func NewBuild(projectInfo ProjectInfo, fs afero.Fs) (Workflow, error) {
 		}
 	}
 
-	branch, ok := os.LookupEnv("CIRCLE_BRANCH")
-	if !ok || branch == "master" {
-		helmTasks, err := processHelmDir(fs, projectInfo, NewHelmPushTask)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-
-		w = append(w, helmTasks...)
+	helmTasks, err := processHelmDir(fs, projectInfo, NewHelmPushTask)
+	if err != nil {
+		return nil, microerror.Mask(err)
 	}
+
+	w = append(w, helmTasks...)
 
 	return w, nil
 }

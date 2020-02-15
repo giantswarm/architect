@@ -5,11 +5,11 @@ import (
 	"os/user"
 	"path/filepath"
 
-	"github.com/giantswarm/microerror"
 	"github.com/spf13/afero"
 
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/template"
+	"github.com/giantswarm/microerror"
 )
 
 const (
