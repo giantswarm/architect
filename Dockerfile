@@ -1,11 +1,20 @@
-# Stage 0
-FROM quay.io/giantswarm/golang:1.13.1-alpine3.10
+FROM quay.io/giantswarm/helm-chart-testing:v2.4.0 AS ct
 
-# Stage 1
+RUN pip freeze > /helm-chart-testing-py-requirements.txt
+
+FROM quay.io/giantswarm/golang:1.13.1-alpine3.10 AS golang
+
+# Build Image
 FROM quay.io/giantswarm/alpine:3.10
 
 # Copy go from golang image.
-COPY --from=0 /usr/local/go /usr/local/go
+COPY --from=golang /usr/local/go /usr/local/go
+
+# Copy files needed for Helm Chart testing
+COPY --from=ct /helm-chart-testing-py-requirements.txt /helm-chart-testing-py-requirements.txt
+COPY --from=ct /usr/local/bin/ct /usr/local/bin/ct
+COPY --from=ct /etc/ct/chart_schema.yaml /etc/ct/chart_schema.yaml
+COPY --from=ct /etc/ct/lintconf.yaml /etc/ct/lintconf.yaml
 
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
@@ -18,6 +27,7 @@ RUN apk add --no-cache \
         curl \
         docker \
         git \
+        py-pip \
         openssh-client &&\
         curl -SL https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz | \
             tar -C /usr/bin --strip-components 1 -xvzf - linux-amd64/helm
@@ -28,6 +38,8 @@ RUN mkdir ~/.ssh &&\
     ssh-keyscan github.com >> ~/.ssh/known_hosts &&\
     printf "Host github.com\n IdentitiesOnly yes\n IdentityFile ~/.ssh/id_rsa\n" >> ~/.ssh/config &&\
     chmod 600 ~/.ssh/*
+
+RUN pip install -r /helm-chart-testing-py-requirements.txt
 
 ADD ./architect /usr/bin/architect
 ENTRYPOINT ["/usr/bin/architect"]
