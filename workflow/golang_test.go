@@ -2,6 +2,7 @@ package workflow
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/giantswarm/architect/tasks"
@@ -50,13 +51,14 @@ func TestNewGoBuildTask(t *testing.T) {
 				"-a",
 				"-v",
 				"-ldflags",
-				"-w " +
-					"-linkmode 'auto' " +
-					"-extldflags '-static' " +
-					"-X 'main.gitCommit=e8363ac222255e991c126abe6673cd0f33934ac8' " +
-					"-X 'github.com/giantswarm/architect/pkg/project.buildTimestamp=2019-06-04T12:40:05Z' " +
-					"-X 'github.com/giantswarm/architect/pkg/project.gitSHA=e8363ac222255e991c126abe6673cd0f33934ac8' " +
-					"-X 'github.com/giantswarm/architect/pkg/project.version=test'",
+				strings.Join([]string{
+					"-w",
+					"-linkmode 'auto'",
+					"-extldflags '-static'",
+					"-X 'main.gitCommit=e8363ac222255e991c126abe6673cd0f33934ac8'",
+					"-X 'github.com/giantswarm/architect/pkg/project.buildTimestamp=2019-06-04T12:40:05Z'",
+					"-X 'github.com/giantswarm/architect/pkg/project.gitSHA=e8363ac222255e991c126abe6673cd0f33934ac8'",
+				}, " "),
 			},
 			errorMatcher: nil,
 		},
