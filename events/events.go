@@ -73,6 +73,7 @@ var environmentProjects = map[Environment][]string{
 	"anubis":   kvmProjectList,
 	"archon":   awsProjectList,
 	"asgard":   awsProjectList,
+	"anteater": awsProjectList,
 	"atlantis": awsProjectList,
 	"avatar":   awsProjectList,
 	"axolotl":  awsChinaProjectList,
@@ -100,15 +101,6 @@ var environmentProjects = map[Environment][]string{
 	"talos":    azureProjectList,
 	"victory":  azureProjectList,
 	"viking":   awsProjectList,
-
-	// non standard cluster just for our website
-	"gollum_6iec4": {
-		"auto-oncall",
-		"circleci-exporter",
-		"draughtsman",
-		"github-exporter",
-		"kpi-prometheus",
-	},
 }
 
 // testingGroup is a specific grouping of environments that are considered
