@@ -20,7 +20,7 @@ func TestNewDockerTask(t *testing.T) {
 					"GOOS=linux",
 				},
 				WorkingDirectory: "/go/src/github.com/giantswarm/architect",
-				Image:            "golang:1.13.1",
+				Image:            "golang:1.14.0",
 				Args:             []string{"go", "test"},
 			},
 			expectedArgs: []string{
@@ -28,7 +28,7 @@ func TestNewDockerTask(t *testing.T) {
 				"-v", "/home/ubuntu/architect:/go/src/github.com/giantswarm/architect",
 				"-e", "GOOS=linux",
 				"-w", "/go/src/github.com/giantswarm/architect",
-				"golang:1.13.1",
+				"golang:1.14.0",
 				"go", "test",
 			},
 		},
