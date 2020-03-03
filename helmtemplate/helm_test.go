@@ -13,6 +13,7 @@ import (
 func TestTemplateHelmChartTask(t *testing.T) {
 	tests := []struct {
 		chartDir string
+		branch   string
 		sha      string
 		version  string
 		setUp    func(afero.Fs, string) error
@@ -21,6 +22,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 		// Test that a chart is templated correctly.
 		{
 			chartDir: "/helm/test-chart",
+			branch:   "beamish-boy",
 			sha:      "jabberwocky",
 			version:  "mad-hatter",
 			setUp: func(fs afero.Fs, chartDir string) error {
@@ -34,7 +36,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 					},
 					{
 						path: filepath.Join(chartDir, HelmValuesYamlName),
-						data: "Version: [[ .Version ]]",
+						data: "Branch: [[ .Branch ]]\nVersion: [[ .Version ]]",
 					},
 				}
 
@@ -63,7 +65,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 					},
 					{
 						path: filepath.Join(chartDir, HelmValuesYamlName),
-						data: "Version: mad-hatter",
+						data: "Branch: beamish-boy\nVersion: mad-hatter",
 					},
 				}
 
@@ -87,6 +89,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 		task, err := NewTemplateHelmChartTask(Config{
 			Fs:       fs,
 			ChartDir: test.chartDir,
+			Branch:   test.branch,
 			Sha:      test.sha,
 			Version:  test.version,
 		})

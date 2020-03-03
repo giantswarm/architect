@@ -26,6 +26,7 @@ type TemplateHelmChartTask struct {
 	fs afero.Fs
 
 	chartDir string
+	branch   string
 	sha      string
 	version  string
 }
@@ -35,6 +36,7 @@ type Config struct {
 	Fs afero.Fs
 
 	ChartDir string
+	Branch   string
 	Sha      string
 	Version  string
 }
@@ -49,6 +51,7 @@ func (t TemplateHelmChartTask) Run() error {
 		}
 
 		buildInfo := BuildInfo{
+			Branch:  t.branch,
 			SHA:     t.sha,
 			Version: t.version,
 		}
@@ -84,6 +87,10 @@ func NewTemplateHelmChartTask(config Config) (*TemplateHelmChartTask, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.ChartDir must not be empty", config)
 	}
 
+	if config.Branch == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Branch must not be empty", config)
+	}
+
 	if config.Sha == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Sha must not be empty", config)
 	}
@@ -95,6 +102,7 @@ func NewTemplateHelmChartTask(config Config) (*TemplateHelmChartTask, error) {
 	t := &TemplateHelmChartTask{
 		fs:       config.Fs,
 		chartDir: config.ChartDir,
+		branch:   config.Branch,
 		sha:      config.Sha,
 		version:  config.Version,
 	}
