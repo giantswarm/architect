@@ -13,6 +13,7 @@ import (
 func runTemplateError(cmd *cobra.Command, args []string) error {
 	var (
 		chartDir = cmd.Flag("dir").Value.String()
+		branch   = cmd.Flag("branch").Value.String()
 		sha      = cmd.Flag("sha").Value.String()
 		tag      = cmd.Flag("tag").Value.String()
 		version  = cmd.Flag("version").Value.String()
@@ -28,6 +29,7 @@ func runTemplateError(cmd *cobra.Command, args []string) error {
 		c := helmtemplate.Config{
 			Fs:       fs,
 			ChartDir: chartDir,
+			Branch:   branch,
 			Sha:      sha,
 			Version:  version,
 		}
