@@ -58,7 +58,7 @@ func PreRunE(cmd *cobra.Command, args []string) error {
 		return microerror.Mask(err)
 	}
 
-	srcVersion, err := getProjectVersion(repo)
+	appVersion, err := getProjectVersion(repo)
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -67,7 +67,7 @@ func PreRunE(cmd *cobra.Command, args []string) error {
 	cmd.PersistentFlags().String("sha", defaultSha, "git SHA1 being built")
 	cmd.PersistentFlags().String("tag", defaultTag, "git tag being built")
 	cmd.PersistentFlags().String("version", gitVersion, "version found in git")
-	cmd.PersistentFlags().String("source-version", srcVersion, "version found in source code")
+	cmd.PersistentFlags().String("app-version", appVersion, "version found in source code")
 
 	return nil
 }
