@@ -108,6 +108,7 @@ func parseString(r ast.Node, varName string) (value string, err error) {
 					v := id.Obj.Decl.(*ast.ValueSpec).Values[0].(*ast.BasicLit)
 					if v.Kind == token.STRING {
 						value, err = strconv.Unquote(v.Value)
+						return false
 					}
 				}
 			}
