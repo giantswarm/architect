@@ -74,12 +74,6 @@ github.com/giantswarm/apiextensions v0.0.0-20191005094604-efa5c38da056 h1:vaoTmv
 github.com/giantswarm/apiextensions v0.0.0-20191005094604-efa5c38da056/go.mod h1:zHLSgCszRMdZUzwmfOibzcyfRC89ygwAQlpXcukgZuc=
 github.com/giantswarm/app v0.0.0-20200108121642-98786417f1e1 h1:EwAhLBzmB/a/t3JUIq/CTzJEI6iZUALEp12Lui5Ez3I=
 github.com/giantswarm/app v0.0.0-20200108121642-98786417f1e1/go.mod h1:FbNnL5ix7xsvgV793ZBQMpu7Dy3l/09XhINhImjznRQ=
-github.com/giantswarm/gitrepo v0.0.0-20200310120849-544dc51a1302 h1:8Ho4WmZ7WkgbHwTNz8vraqXWBfHesnFPvmIVFxSBXm0=
-github.com/giantswarm/gitrepo v0.0.0-20200310120849-544dc51a1302/go.mod h1:V80tQA1a3SjFDQKXSiiA5F3k/0A3VK5SwGzkoV2RwlI=
-github.com/giantswarm/gitrepo v0.0.0-20200313102026-3b2bba16f3b7 h1:ZZSWIV4bcdyhBJMm8fKL0HgTAlV/3hKXXhpR1/PATgI=
-github.com/giantswarm/gitrepo v0.0.0-20200313102026-3b2bba16f3b7/go.mod h1:V80tQA1a3SjFDQKXSiiA5F3k/0A3VK5SwGzkoV2RwlI=
-github.com/giantswarm/gitrepo v0.0.0-20200313104337-396b7eb459ed h1:/aAUeV4+9ycqO93zPGCU4jMstxPmIKkRuhrONUXkxYE=
-github.com/giantswarm/gitrepo v0.0.0-20200313104337-396b7eb459ed/go.mod h1:V80tQA1a3SjFDQKXSiiA5F3k/0A3VK5SwGzkoV2RwlI=
 github.com/giantswarm/gitrepo v0.0.0-20200313111457-4716250a594f h1:ceFZWPre/W6voyFp927yDa9m/78Ur4aB0IHchYHCHGU=
 github.com/giantswarm/gitrepo v0.0.0-20200313111457-4716250a594f/go.mod h1:V80tQA1a3SjFDQKXSiiA5F3k/0A3VK5SwGzkoV2RwlI=
 github.com/giantswarm/microerror v0.0.0-20190815145748-cb07ec533b50 h1:QvSOi2v0Ks/B4chcyvlcb7RTZOQEebaHgdXEfunT9Mk=
