@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/giantswarm/gitrepo/pkg/gitrepo"
 	repo "github.com/giantswarm/gitrepo/pkg/gitrepo"
 )
 
@@ -59,7 +58,7 @@ func TestGetProjectVersion(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			version, err := getProjectVersion(repo, gitrepo.CheckoutOptions{Tag: tc.tag})
+			version, err := getProjectVersion(repo, tc.tag)
 
 			switch {
 			case err == nil && tc.errorMatcher == nil:

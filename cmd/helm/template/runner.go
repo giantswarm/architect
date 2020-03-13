@@ -44,7 +44,7 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 			return microerror.Mask(err)
 		}
 
-		appVersion, err = getProjectVersion(repo, gitrepo.CheckoutOptions{})
+		appVersion, err = getProjectVersion(repo, "origin/master")
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -80,11 +80,11 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 // getProjectVersion retrieves version stored in project's Go source code.
 // It looks up the value of variable `version` in `pkg/project/project.go` file
 // on version defined in options.
-func getProjectVersion(repo *gitrepo.Repo, options gitrepo.CheckoutOptions) (string, error) {
+func getProjectVersion(repo *gitrepo.Repo, ref string) (string, error) {
 	filePath := "pkg/project/project.go"
 	varName := "version"
 
-	content, err := repo.GetFileContent(filePath, options)
+	content, err := repo.GetFileContent(filePath, ref)
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
