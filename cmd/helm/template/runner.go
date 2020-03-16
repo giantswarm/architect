@@ -79,7 +79,7 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 
 // getProjectVersion retrieves version stored in project's Go source code.
 // It looks up the value of variable `version` in `pkg/project/project.go` file
-// on version defined in options.
+// on version defined in ref.
 func getProjectVersion(repo *gitrepo.Repo, ref string) (string, error) {
 	filePath := "pkg/project/project.go"
 	varName := "version"
