@@ -25,20 +25,22 @@ const (
 type TemplateHelmChartTask struct {
 	fs afero.Fs
 
-	chartDir string
-	branch   string
-	sha      string
-	version  string
+	chartDir     string
+	branch       string
+	sha          string
+	chartVersion string
+	appVersion   string
 }
 
 // Config holds configuration for building a new TemplateHelmChartTask
 type Config struct {
 	Fs afero.Fs
 
-	ChartDir string
-	Branch   string
-	Sha      string
-	Version  string
+	ChartDir     string
+	Branch       string
+	Sha          string
+	ChartVersion string
+	AppVersion   string
 }
 
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
@@ -74,7 +76,7 @@ func (t TemplateHelmChartTask) Run() error {
 }
 
 func (t TemplateHelmChartTask) String() string {
-	return fmt.Sprintf("%s:\t%s sha:%s version:%s", "template-helm-chart", t.chartDir, t.sha, t.version)
+	return fmt.Sprintf("%s:\t%s sha:%s chartVersion:%s appVersion:%s", "template-helm-chart", t.chartDir, t.sha, t.chartVersion, t.appVersion)
 }
 
 // NewTemplateHelmChartTask creates a new TemplateHelmChartTask
@@ -95,16 +97,21 @@ func NewTemplateHelmChartTask(config Config) (*TemplateHelmChartTask, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Sha must not be empty", config)
 	}
 
-	if config.Version == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.Version must not be empty", config)
+	if config.ChartVersion == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.ChartVersion must not be empty", config)
+	}
+
+	if config.AppVersion == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.AppVersion must not be empty", config)
 	}
 
 	t := &TemplateHelmChartTask{
-		fs:       config.Fs,
-		chartDir: config.ChartDir,
-		branch:   config.Branch,
-		sha:      config.Sha,
-		version:  config.Version,
+		fs:           config.Fs,
+		chartDir:     config.ChartDir,
+		branch:       config.Branch,
+		sha:          config.Sha,
+		chartVersion: config.ChartVersion,
+		appVersion:   config.AppVersion,
 	}
 
 	return t, nil
