@@ -12,19 +12,21 @@ import (
 // TestTemplateHelmChartTask tests the TemplateHelmChartTask.
 func TestTemplateHelmChartTask(t *testing.T) {
 	tests := []struct {
-		chartDir string
-		branch   string
-		sha      string
-		version  string
-		setUp    func(afero.Fs, string) error
-		check    func(afero.Fs, string) error
+		chartDir     string
+		branch       string
+		sha          string
+		chartVersion string
+		appVersion   string
+		setUp        func(afero.Fs, string) error
+		check        func(afero.Fs, string) error
 	}{
 		// Test that a chart is templated correctly.
 		{
-			chartDir: "/helm/test-chart",
-			branch:   "beamish-boy",
-			sha:      "jabberwocky",
-			version:  "mad-hatter",
+			chartDir:     "/helm/test-chart",
+			branch:       "beamish-boy",
+			sha:          "jabberwocky",
+			chartVersion: "mad-hatter",
+			appVersion:   "1.0.0",
 			setUp: func(fs afero.Fs, chartDir string) error {
 				files := []struct {
 					path string
@@ -32,7 +34,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 				}{
 					{
 						path: filepath.Join(chartDir, HelmChartYamlName),
-						data: "version: 1.0.0-[[ .SHA ]]",
+						data: "version: [[ .AppVersion ]]-[[ .SHA ]]",
 					},
 					{
 						path: filepath.Join(chartDir, HelmValuesYamlName),
@@ -87,11 +89,12 @@ func TestTemplateHelmChartTask(t *testing.T) {
 	for index, test := range tests {
 		fs := afero.NewMemMapFs()
 		task, err := NewTemplateHelmChartTask(Config{
-			Fs:       fs,
-			ChartDir: test.chartDir,
-			Branch:   test.branch,
-			Sha:      test.sha,
-			Version:  test.version,
+			Fs:           fs,
+			ChartDir:     test.chartDir,
+			Branch:       test.branch,
+			Sha:          test.sha,
+			ChartVersion: test.chartVersion,
+			AppVersion:   test.appVersion,
 		})
 
 		if err != nil {
