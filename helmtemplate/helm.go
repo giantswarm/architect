@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"path"
+	"regexp"
 	"text/template"
 
 	"github.com/giantswarm/microerror"
@@ -19,6 +20,9 @@ const (
 	// HelmTemplateDirectoryName is the name of the directory that stores
 	// Kubernetes resources inside a chart.
 	HelmTemplateDirectoryName = "templates"
+	// keyValuePattern helps build regexp patterns which fit YAML's key-value
+	// formatting for string values
+	keyValuePattern = `%s:\s*["']?(%s)["']?`
 )
 
 // TemplateHelmChartTask is used to run a template-helm-chart command
@@ -44,12 +48,19 @@ type Config struct {
 }
 
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
-func (t TemplateHelmChartTask) Run() error {
+func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
 	for _, file := range []string{HelmChartYamlName, HelmValuesYamlName} {
 		path := path.Join(t.chartDir, file)
 		contents, err := afero.ReadFile(t.fs, path)
 		if err != nil {
 			return microerror.Mask(err)
+		}
+
+		if validate && taggedBuild && t.chartVersion != t.appVersion {
+			return microerror.Newf(
+				"version in the tag does not match version defined in project.go: %q != %q",
+				t.chartVersion, t.appVersion,
+			)
 		}
 
 		buildInfo := BuildInfo{
@@ -69,10 +80,30 @@ func (t TemplateHelmChartTask) Run() error {
 			return microerror.Mask(err)
 		}
 
+		if validate && ValidateChart(buildInfo.Version, buildInfo.AppVersion, buf) != nil {
+			return microerror.Mask(err)
+		}
+
 		if err := afero.WriteFile(t.fs, path, buf.Bytes(), permission); err != nil {
 			return microerror.Mask(err)
 		}
 	}
+	return nil
+}
+
+// ValidateChart makes sure version fields and values made it into the
+// chart when executing the template.
+func ValidateChart(version, appVersion string, chart bytes.Buffer) error {
+	chartVersionPattern := regexp.MustCompile(fmt.Sprintf(keyValuePattern, "version", version))
+	if !chartVersionPattern.Match(chart.Bytes()) {
+		return microerror.Newf("validation error: chart does not contain \"version\": %q", version)
+	}
+
+	appVersionPattern := regexp.MustCompile(fmt.Sprintf(keyValuePattern, "appVersion", appVersion))
+	if !appVersionPattern.Match(chart.Bytes()) {
+		return microerror.Newf("validation error: chart does not contain \"appVersion\": %q", appVersion)
+	}
+
 	return nil
 }
 
