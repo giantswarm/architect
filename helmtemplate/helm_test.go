@@ -89,12 +89,12 @@ func TestTemplateHelmChartTask(t *testing.T) {
 	for index, test := range tests {
 		fs := afero.NewMemMapFs()
 		task, err := NewTemplateHelmChartTask(Config{
-			Fs:           fs,
-			ChartDir:     test.chartDir,
-			Branch:       test.branch,
-			Sha:          test.sha,
-			ChartVersion: test.chartVersion,
-			AppVersion:   test.appVersion,
+			Fs:         fs,
+			ChartDir:   test.chartDir,
+			Branch:     test.branch,
+			Sha:        test.sha,
+			Version:    test.chartVersion,
+			AppVersion: test.appVersion,
 		})
 
 		if err != nil {

@@ -36,11 +36,11 @@ type TemplateHelmChartTask struct {
 type Config struct {
 	Fs afero.Fs
 
-	ChartDir     string
-	Branch       string
-	Sha          string
-	ChartVersion string
-	AppVersion   string
+	ChartDir   string
+	Branch     string
+	Sha        string
+	Version    string
+	AppVersion string
 }
 
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
@@ -98,8 +98,8 @@ func NewTemplateHelmChartTask(config Config) (*TemplateHelmChartTask, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Sha must not be empty", config)
 	}
 
-	if config.ChartVersion == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.ChartVersion must not be empty", config)
+	if config.Version == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Version must not be empty", config)
 	}
 
 	if config.AppVersion == "" {
@@ -111,7 +111,7 @@ func NewTemplateHelmChartTask(config Config) (*TemplateHelmChartTask, error) {
 		chartDir:     config.ChartDir,
 		branch:       config.Branch,
 		sha:          config.Sha,
-		chartVersion: config.ChartVersion,
+		chartVersion: config.Version,
 		appVersion:   config.AppVersion,
 	}
 

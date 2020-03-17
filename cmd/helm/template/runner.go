@@ -55,12 +55,12 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 	var s *helmtemplate.TemplateHelmChartTask
 	{
 		c := helmtemplate.Config{
-			Fs:           fs,
-			ChartDir:     chartDir,
-			Branch:       branch,
-			Sha:          sha,
-			ChartVersion: version,
-			AppVersion:   appVersion,
+			Fs:         fs,
+			ChartDir:   chartDir,
+			Branch:     branch,
+			Sha:        sha,
+			Version:    version,
+			AppVersion: appVersion,
 		}
 
 		s, err = helmtemplate.NewTemplateHelmChartTask(c)
