@@ -53,9 +53,10 @@ func (t TemplateHelmChartTask) Run() error {
 		}
 
 		buildInfo := BuildInfo{
-			Branch:  t.branch,
-			SHA:     t.sha,
-			Version: t.version,
+			Branch:     t.branch,
+			SHA:        t.sha,
+			Version:    t.chartVersion,
+			AppVersion: t.appVersion,
 		}
 
 		tmpl, err := template.New(path).Delims("[[", "]]").Parse(string(contents))
