@@ -49,7 +49,7 @@ func PreRunE(cmd *cobra.Command, args []string) error {
 	}
 
 	// Define the version we are building.
-	gitVersion, err := repo.ResolveVersion(ctx, "HEAD")
+	defaultVersion, err := repo.ResolveVersion(ctx, "HEAD")
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -57,7 +57,7 @@ func PreRunE(cmd *cobra.Command, args []string) error {
 	cmd.PersistentFlags().String("branch", defaultBranch, "git branch being built")
 	cmd.PersistentFlags().String("sha", defaultSha, "git SHA1 being built")
 	cmd.PersistentFlags().String("tag", defaultTag, "git tag being built")
-	cmd.PersistentFlags().String("version", gitVersion, "version found in git")
+	cmd.PersistentFlags().String("version", defaultVersion, "project version being built")
 
 	return nil
 }

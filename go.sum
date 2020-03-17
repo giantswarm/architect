@@ -74,8 +74,8 @@ github.com/giantswarm/apiextensions v0.0.0-20191005094604-efa5c38da056 h1:vaoTmv
 github.com/giantswarm/apiextensions v0.0.0-20191005094604-efa5c38da056/go.mod h1:zHLSgCszRMdZUzwmfOibzcyfRC89ygwAQlpXcukgZuc=
 github.com/giantswarm/app v0.0.0-20200108121642-98786417f1e1 h1:EwAhLBzmB/a/t3JUIq/CTzJEI6iZUALEp12Lui5Ez3I=
 github.com/giantswarm/app v0.0.0-20200108121642-98786417f1e1/go.mod h1:FbNnL5ix7xsvgV793ZBQMpu7Dy3l/09XhINhImjznRQ=
-github.com/giantswarm/gitrepo v0.1.1 h1:ihFZ632VNFLQDOEgV17zc+8K43ZSJ59yY5wb+7JnhT4=
-github.com/giantswarm/gitrepo v0.1.1/go.mod h1:V80tQA1a3SjFDQKXSiiA5F3k/0A3VK5SwGzkoV2RwlI=
+github.com/giantswarm/gitrepo v0.0.0-20191202170843-422800b3c4bb h1:C2NzTpfc1pWyOkeUSHcPgYRHj2iOlmotst585wzUbdM=
+github.com/giantswarm/gitrepo v0.0.0-20191202170843-422800b3c4bb/go.mod h1:TWX7nZvRMVHBYXYzqxPLCFPUYd9D4DOYE273AAfTKW4=
 github.com/giantswarm/microerror v0.0.0-20190815145748-cb07ec533b50 h1:QvSOi2v0Ks/B4chcyvlcb7RTZOQEebaHgdXEfunT9Mk=
 github.com/giantswarm/microerror v0.0.0-20190815145748-cb07ec533b50/go.mod h1://Lo9dKJ8P2TBciuky5fDHEItccyvZOWE+B/0JiJT8A=
 github.com/gliderlabs/ssh v0.2.2 h1:6zsha5zo/TWhRhwqCD3+EarCAgZ2yN28ipRnGPnwkI0=
