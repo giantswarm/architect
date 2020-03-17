@@ -10,6 +10,13 @@ var (
 	permission os.FileMode = 0644
 )
 
+const (
+	BranchTag     = "[[ .Branch ]]"
+	SHATag        = "[[ .SHA ]]"
+	VersionTag    = "[[ .version ]]"
+	AppVersionTag = "[[ .AppVersion ]]"
+)
+
 // BuildInfo holds information concerning the current build.
 type BuildInfo struct {
 	// Branch is the name of the branch we're building.

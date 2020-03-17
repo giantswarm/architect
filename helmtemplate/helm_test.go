@@ -34,11 +34,11 @@ func TestTemplateHelmChartTask(t *testing.T) {
 				}{
 					{
 						path: filepath.Join(chartDir, HelmChartYamlName),
-						data: "version: [[ .version ]]\nappVersion: [[ .AppVersion ]]",
+						data: fmt.Sprintf("version: %s\nappVersion: %s", VersionTag, AppVersionTag),
 					},
 					{
 						path: filepath.Join(chartDir, HelmValuesYamlName),
-						data: "branch: [[ .Branch ]]\ncommit: [[ .SHA ]]",
+						data: fmt.Sprintf("branch: %s\ncommit: %s", BranchTag, SHATag),
 					},
 				}
 
