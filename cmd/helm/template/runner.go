@@ -18,12 +18,25 @@ import (
 
 func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 	var (
-		chartDir = cmd.Flag("dir").Value.String()
-		branch   = cmd.Flag("branch").Value.String()
-		sha      = cmd.Flag("sha").Value.String()
-		tag      = cmd.Flag("tag").Value.String()
-		version  = cmd.Flag("version").Value.String()
+		chartDir    = cmd.Flag("dir").Value.String()
+		branch      = cmd.Flag("branch").Value.String()
+		sha         = cmd.Flag("sha").Value.String()
+		tag         = cmd.Flag("tag").Value.String()
+		version     = cmd.Flag("version").Value.String()
+		validate    bool
+		taggedBuild bool
 	)
+	{
+		var err error
+		validate, err = strconv.ParseBool(cmd.Flag("validate").Value.String())
+		if err != nil {
+			return microerror.Mask(err)
+		}
+		taggedBuild, err = strconv.ParseBool(cmd.Flag("tagged-build").Value.String())
+		if err != nil {
+			return microerror.Mask(err)
+		}
+	}
 
 	fs := afero.NewOsFs()
 	ctx := context.Background()
@@ -69,7 +82,7 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 		}
 	}
 
-	if err := s.Run(); err != nil {
+	if err := s.Run(validate, taggedBuild); err != nil {
 		return microerror.Mask(err)
 	}
 
