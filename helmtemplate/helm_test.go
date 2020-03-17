@@ -34,11 +34,11 @@ func TestTemplateHelmChartTask(t *testing.T) {
 				}{
 					{
 						path: filepath.Join(chartDir, HelmChartYamlName),
-						data: "version: [[ .AppVersion ]]-[[ .SHA ]]",
+						data: "version: [[ .version ]]\nappVersion: [[ .AppVersion ]]",
 					},
 					{
 						path: filepath.Join(chartDir, HelmValuesYamlName),
-						data: "Branch: [[ .Branch ]]\nVersion: [[ .Version ]]",
+						data: "branch: [[ .Branch ]]\ncommit: [[ .SHA ]]",
 					},
 				}
 
@@ -63,11 +63,11 @@ func TestTemplateHelmChartTask(t *testing.T) {
 				}{
 					{
 						path: filepath.Join(chartDir, HelmChartYamlName),
-						data: "version: 1.0.0-jabberwocky",
+						data: "version: mad-hatter\nappVersion: 1.0.0",
 					},
 					{
 						path: filepath.Join(chartDir, HelmValuesYamlName),
-						data: "Branch: beamish-boy\nVersion: mad-hatter",
+						data: "branch: beamish-boy\ncommit: jabberwocky",
 					},
 				}
 
