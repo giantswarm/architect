@@ -12,21 +12,25 @@ import (
 // TestTemplateHelmChartTask tests the TemplateHelmChartTask.
 func TestTemplateHelmChartTask(t *testing.T) {
 	tests := []struct {
-		chartDir     string
-		branch       string
-		sha          string
-		chartVersion string
-		appVersion   string
-		setUp        func(afero.Fs, string) error
-		check        func(afero.Fs, string) error
+		validateFlag    bool
+		taggedBuildFlag bool
+		chartDir        string
+		branch          string
+		sha             string
+		chartVersion    string
+		appVersion      string
+		setUp           func(afero.Fs, string) error
+		check           func(afero.Fs, string) error
 	}{
 		// Test that a chart is templated correctly.
 		{
-			chartDir:     "/helm/test-chart",
-			branch:       "beamish-boy",
-			sha:          "jabberwocky",
-			chartVersion: "mad-hatter",
-			appVersion:   "1.0.0",
+			validateFlag:    false,
+			taggedBuildFlag: false,
+			chartDir:        "/helm/test-chart",
+			branch:          "beamish-boy",
+			sha:             "jabberwocky",
+			chartVersion:    "mad-hatter",
+			appVersion:      "1.0.0",
 			setUp: func(fs afero.Fs, chartDir string) error {
 				files := []struct {
 					path string
@@ -105,7 +109,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 			t.Fatalf("%v: unexpected error during setup: %v\n", index, err)
 		}
 
-		if err := task.Run(); err != nil {
+		if err := task.Run(test.validateFlag, test.taggedBuildFlag); err != nil {
 			t.Fatalf("%v: unexpected error during templating: %v\n", index, err)
 		}
 

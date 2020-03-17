@@ -13,7 +13,7 @@ var (
 const (
 	BranchTag     = "[[ .Branch ]]"
 	SHATag        = "[[ .SHA ]]"
-	VersionTag    = "[[ .version ]]"
+	VersionTag    = "[[ .Version ]]"
 	AppVersionTag = "[[ .AppVersion ]]"
 )
 
