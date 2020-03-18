@@ -19,7 +19,7 @@ type BuildInfo struct {
 	// Version is the version of the commit being built.
 	Version string
 	// AppVersion is the version read from pkg/project/project.go if it
-	// exsitsts or set to the same value as Version otherwise.
+	// exists or set to the same value as Version otherwise.
 	AppVersion string
 }
 
