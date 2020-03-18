@@ -46,7 +46,9 @@ type Config struct {
 
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
 func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
-	// We expect versions to match for a tagged build if project.go has been found.
+	// We expect versions to match for a tagged build if pkg/project/project.go
+	// file has been found. Otherwise (project.go not found) t.appVersion will
+	// be empty.
 	if validate && taggedBuild && t.appVersion != "" && t.chartVersion != t.appVersion {
 		return microerror.Maskf(
 			executionFailedError,
@@ -78,7 +80,7 @@ func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
 			return microerror.Mask(err)
 		}
 
-		if file == HelmChartYamlName && validate && ValidateChart(buildInfo.Version, buildInfo.AppVersion, buf) != nil {
+		if file == HelmChartYamlName && validate && validateChart(buildInfo.Version, buildInfo.AppVersion, buf) != nil {
 			return microerror.Mask(err)
 		}
 
@@ -89,9 +91,9 @@ func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
 	return nil
 }
 
-// ValidateChart makes sure version fields and values made it into the
+// validateChart makes sure version fields and values made it into the
 // chart when executing the template.
-func ValidateChart(version, appVersion string, chartBuf bytes.Buffer) error {
+func validateChart(version, appVersion string, chartBuf bytes.Buffer) error {
 	chart := renderedChart{}
 	err := yaml.Unmarshal(chartBuf.Bytes(), &chart)
 	if err != nil {
