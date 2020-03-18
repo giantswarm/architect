@@ -56,7 +56,7 @@ func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
 	// We expect versions to match for a tagged build if project.go has been found.
 	if validate && taggedBuild && t.appVersion != "" && t.chartVersion != t.appVersion {
 		return microerror.Maskf(
-			versionMismatchError,
+			executionFailedError,
 			"version in git tag must be equal to version in pkg/project/project.go: %q != %q",
 			t.chartVersion, t.appVersion,
 		)
@@ -107,7 +107,7 @@ func ValidateChart(version, appVersion string, chartBuf bytes.Buffer) error {
 
 	if chart.Version != version {
 		return microerror.Maskf(
-			versionValidationError,
+			executionFailedError,
 			"wrong value for \"version\" in chart: got %#q, expected %#q",
 			chart.Version, version,
 		)
@@ -117,7 +117,7 @@ func ValidateChart(version, appVersion string, chartBuf bytes.Buffer) error {
 	// i.e. appVersion is non-empty.
 	if appVersion != "" && chart.AppVersion != appVersion {
 		return microerror.Maskf(
-			versionValidationError,
+			executionFailedError,
 			"wrong value for \"appVersion\" in chart: got %#q, expected %#q",
 			chart.AppVersion, appVersion,
 		)
