@@ -8,6 +8,7 @@ import (
 
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/afero"
+	"sigs.k8s.io/yaml"
 )
 
 const (
@@ -25,24 +26,36 @@ const (
 type TemplateHelmChartTask struct {
 	fs afero.Fs
 
-	chartDir string
-	branch   string
-	sha      string
-	version  string
+	chartDir     string
+	branch       string
+	sha          string
+	chartVersion string
+	appVersion   string
 }
 
 // Config holds configuration for building a new TemplateHelmChartTask
 type Config struct {
 	Fs afero.Fs
 
-	ChartDir string
-	Branch   string
-	Sha      string
-	Version  string
+	ChartDir   string
+	Branch     string
+	Sha        string
+	Version    string
+	AppVersion string
 }
 
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
-func (t TemplateHelmChartTask) Run() error {
+func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
+	// We expect versions to match for a tagged build if pkg/project/project.go
+	// file has been found. Otherwise (project.go not found) t.appVersion will
+	// be empty.
+	if validate && taggedBuild && t.appVersion != "" && t.chartVersion != t.appVersion {
+		return microerror.Maskf(
+			executionFailedError,
+			"version in git tag must be equal to version in pkg/project/project.go: %q != %q",
+			t.chartVersion, t.appVersion,
+		)
+	}
 	for _, file := range []string{HelmChartYamlName, HelmValuesYamlName} {
 		path := path.Join(t.chartDir, file)
 		contents, err := afero.ReadFile(t.fs, path)
@@ -51,9 +64,10 @@ func (t TemplateHelmChartTask) Run() error {
 		}
 
 		buildInfo := BuildInfo{
-			Branch:  t.branch,
-			SHA:     t.sha,
-			Version: t.version,
+			Branch:     t.branch,
+			SHA:        t.sha,
+			Version:    t.chartVersion,
+			AppVersion: t.appVersion,
 		}
 
 		tmpl, err := template.New(path).Delims("[[", "]]").Parse(string(contents))
@@ -66,6 +80,10 @@ func (t TemplateHelmChartTask) Run() error {
 			return microerror.Mask(err)
 		}
 
+		if file == HelmChartYamlName && validate && validateChart(buildInfo.Version, buildInfo.AppVersion, buf) != nil {
+			return microerror.Mask(err)
+		}
+
 		if err := afero.WriteFile(t.fs, path, buf.Bytes(), permission); err != nil {
 			return microerror.Mask(err)
 		}
@@ -73,8 +91,38 @@ func (t TemplateHelmChartTask) Run() error {
 	return nil
 }
 
+// validateChart makes sure version fields and values made it into the
+// chart when executing the template.
+func validateChart(version, appVersion string, chartBuf bytes.Buffer) error {
+	chart := renderedChart{}
+	err := yaml.Unmarshal(chartBuf.Bytes(), &chart)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	if chart.Version != version {
+		return microerror.Maskf(
+			executionFailedError,
+			"wrong value for \"version\" in chart: got %#q, expected %#q",
+			chart.Version, version,
+		)
+	}
+
+	// We want to validate appVersion only when the project.go has been found,
+	// i.e. appVersion is non-empty.
+	if appVersion != "" && chart.AppVersion != appVersion {
+		return microerror.Maskf(
+			executionFailedError,
+			"wrong value for \"appVersion\" in chart: got %#q, expected %#q",
+			chart.AppVersion, appVersion,
+		)
+	}
+
+	return nil
+}
+
 func (t TemplateHelmChartTask) String() string {
-	return fmt.Sprintf("%s:\t%s sha:%s version:%s", "template-helm-chart", t.chartDir, t.sha, t.version)
+	return fmt.Sprintf("%s:\t%s sha:%s chartVersion:%s appVersion:%s", "template-helm-chart", t.chartDir, t.sha, t.chartVersion, t.appVersion)
 }
 
 // NewTemplateHelmChartTask creates a new TemplateHelmChartTask
@@ -100,11 +148,12 @@ func NewTemplateHelmChartTask(config Config) (*TemplateHelmChartTask, error) {
 	}
 
 	t := &TemplateHelmChartTask{
-		fs:       config.Fs,
-		chartDir: config.ChartDir,
-		branch:   config.Branch,
-		sha:      config.Sha,
-		version:  config.Version,
+		fs:           config.Fs,
+		chartDir:     config.ChartDir,
+		branch:       config.Branch,
+		sha:          config.Sha,
+		chartVersion: config.Version,
+		appVersion:   config.AppVersion,
 	}
 
 	return t, nil

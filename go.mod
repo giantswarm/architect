@@ -22,4 +22,5 @@ require (
 	gopkg.in/yaml.v2 v2.2.4
 	k8s.io/apiextensions-apiserver v0.0.0-20191010201825-9f952bb60442 // indirect
 	k8s.io/helm v2.14.3+incompatible
+	sigs.k8s.io/yaml v1.1.0
 )

@@ -9,22 +9,35 @@ import (
 	"github.com/spf13/afero"
 )
 
+const (
+	BranchTag     = "[[ .Branch ]]"
+	SHATag        = "[[ .SHA ]]"
+	VersionTag    = "[[ .Version ]]"
+	AppVersionTag = "[[ .AppVersion ]]"
+)
+
 // TestTemplateHelmChartTask tests the TemplateHelmChartTask.
 func TestTemplateHelmChartTask(t *testing.T) {
 	tests := []struct {
-		chartDir string
-		branch   string
-		sha      string
-		version  string
-		setUp    func(afero.Fs, string) error
-		check    func(afero.Fs, string) error
+		validateFlag    bool
+		taggedBuildFlag bool
+		chartDir        string
+		branch          string
+		sha             string
+		chartVersion    string
+		appVersion      string
+		setUp           func(afero.Fs, string) error
+		check           func(afero.Fs, string) error
 	}{
 		// Test that a chart is templated correctly.
 		{
-			chartDir: "/helm/test-chart",
-			branch:   "beamish-boy",
-			sha:      "jabberwocky",
-			version:  "mad-hatter",
+			validateFlag:    false,
+			taggedBuildFlag: false,
+			chartDir:        "/helm/test-chart",
+			branch:          "beamish-boy",
+			sha:             "jabberwocky",
+			chartVersion:    "mad-hatter",
+			appVersion:      "1.0.0",
 			setUp: func(fs afero.Fs, chartDir string) error {
 				files := []struct {
 					path string
@@ -32,11 +45,11 @@ func TestTemplateHelmChartTask(t *testing.T) {
 				}{
 					{
 						path: filepath.Join(chartDir, HelmChartYamlName),
-						data: "version: 1.0.0-[[ .SHA ]]",
+						data: fmt.Sprintf("version: %s\nappVersion: %s", VersionTag, AppVersionTag),
 					},
 					{
 						path: filepath.Join(chartDir, HelmValuesYamlName),
-						data: "Branch: [[ .Branch ]]\nVersion: [[ .Version ]]",
+						data: fmt.Sprintf("branch: %s\ncommit: %s", BranchTag, SHATag),
 					},
 				}
 
@@ -61,11 +74,11 @@ func TestTemplateHelmChartTask(t *testing.T) {
 				}{
 					{
 						path: filepath.Join(chartDir, HelmChartYamlName),
-						data: "version: 1.0.0-jabberwocky",
+						data: "version: mad-hatter\nappVersion: 1.0.0",
 					},
 					{
 						path: filepath.Join(chartDir, HelmValuesYamlName),
-						data: "Branch: beamish-boy\nVersion: mad-hatter",
+						data: "branch: beamish-boy\ncommit: jabberwocky",
 					},
 				}
 
@@ -87,11 +100,12 @@ func TestTemplateHelmChartTask(t *testing.T) {
 	for index, test := range tests {
 		fs := afero.NewMemMapFs()
 		task, err := NewTemplateHelmChartTask(Config{
-			Fs:       fs,
-			ChartDir: test.chartDir,
-			Branch:   test.branch,
-			Sha:      test.sha,
-			Version:  test.version,
+			Fs:         fs,
+			ChartDir:   test.chartDir,
+			Branch:     test.branch,
+			Sha:        test.sha,
+			Version:    test.chartVersion,
+			AppVersion: test.appVersion,
 		})
 
 		if err != nil {
@@ -102,7 +116,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 			t.Fatalf("%v: unexpected error during setup: %v\n", index, err)
 		}
 
-		if err := task.Run(); err != nil {
+		if err := task.Run(test.validateFlag, test.taggedBuildFlag); err != nil {
 			t.Fatalf("%v: unexpected error during templating: %v\n", index, err)
 		}
 
