@@ -62,7 +62,8 @@ func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
 
 		// We expect versions to match for a tagged build if project.go has been found.
 		if validate && taggedBuild && t.appVersion != "" && t.chartVersion != t.appVersion {
-			return microerror.Newf(
+			return microerror.Maskf(
+				versionMismatchError,
 				"version in git tag must be equal to version in pkg/project/project.go: %q != %q",
 				t.chartVersion, t.appVersion,
 			)

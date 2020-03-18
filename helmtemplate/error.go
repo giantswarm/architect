@@ -11,6 +11,9 @@ var (
 	versionValidationError = &microerror.Error{
 		Kind: "versionValidationError",
 	}
+	versionMismatchError = &microerror.Error{
+		Kind: "versionMismatchError",
+	}
 )
 
 // IsInvalidConfig asserts invalidValueError.
@@ -21,4 +24,9 @@ func IsInvalidConfig(err error) bool {
 // IsVersionValidationError asserts versionValidationError
 func IsVersionValidationError(err error) bool {
 	return microerror.Cause(err) == versionValidationError
+}
+
+// IsVersionMismatchError asserts versionMismatchError
+func IsVersionMismatchError(err error) bool {
+	return microerror.Cause(err) == versionMismatchError
 }
