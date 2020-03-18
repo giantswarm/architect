@@ -20,8 +20,6 @@ const (
 	// HelmTemplateDirectoryName is the name of the directory that stores
 	// Kubernetes resources inside a chart.
 	HelmTemplateDirectoryName = "templates"
-	// keyValuePattern helps build regexp patterns which fit YAML's key-value
-	// formatting for string values
 )
 
 // TemplateHelmChartTask is used to run a template-helm-chart command
