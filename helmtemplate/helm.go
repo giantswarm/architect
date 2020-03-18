@@ -53,20 +53,19 @@ type renderedChart struct {
 
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
 func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
+	// We expect versions to match for a tagged build if project.go has been found.
+	if validate && taggedBuild && t.appVersion != "" && t.chartVersion != t.appVersion {
+		return microerror.Maskf(
+			versionMismatchError,
+			"version in git tag must be equal to version in pkg/project/project.go: %q != %q",
+			t.chartVersion, t.appVersion,
+		)
+	}
 	for _, file := range []string{HelmChartYamlName, HelmValuesYamlName} {
 		path := path.Join(t.chartDir, file)
 		contents, err := afero.ReadFile(t.fs, path)
 		if err != nil {
 			return microerror.Mask(err)
-		}
-
-		// We expect versions to match for a tagged build if project.go has been found.
-		if validate && taggedBuild && t.appVersion != "" && t.chartVersion != t.appVersion {
-			return microerror.Maskf(
-				versionMismatchError,
-				"version in git tag must be equal to version in pkg/project/project.go: %q != %q",
-				t.chartVersion, t.appVersion,
-			)
 		}
 
 		buildInfo := BuildInfo{
@@ -86,7 +85,7 @@ func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
 			return microerror.Mask(err)
 		}
 
-		if validate && ValidateChart(buildInfo.Version, buildInfo.AppVersion, buf) != nil {
+		if file == HelmChartYamlName && validate && ValidateChart(buildInfo.Version, buildInfo.AppVersion, buf) != nil {
 			return microerror.Mask(err)
 		}
 
