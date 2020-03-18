@@ -9,6 +9,13 @@ import (
 	"github.com/spf13/afero"
 )
 
+const (
+	BranchTag     = "[[ .Branch ]]"
+	SHATag        = "[[ .SHA ]]"
+	VersionTag    = "[[ .Version ]]"
+	AppVersionTag = "[[ .AppVersion ]]"
+)
+
 // TestTemplateHelmChartTask tests the TemplateHelmChartTask.
 func TestTemplateHelmChartTask(t *testing.T) {
 	tests := []struct {

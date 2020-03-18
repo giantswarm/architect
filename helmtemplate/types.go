@@ -10,13 +10,6 @@ var (
 	permission os.FileMode = 0644
 )
 
-const (
-	BranchTag     = "[[ .Branch ]]"
-	SHATag        = "[[ .SHA ]]"
-	VersionTag    = "[[ .Version ]]"
-	AppVersionTag = "[[ .AppVersion ]]"
-)
-
 // BuildInfo holds information concerning the current build.
 type BuildInfo struct {
 	// Branch is the name of the branch we're building.
@@ -28,4 +21,11 @@ type BuildInfo struct {
 	// AppVersion is the version read from pkg/project/project.go if it
 	// exsitsts or set to the same value as Version otherwise.
 	AppVersion string
+}
+
+// renderedChart is used for chart validation after it has been filled with
+// values
+type renderedChart struct {
+	Version    string `json:"version,omitempty"`
+	AppVersion string `json:"appVersion,omitempty"`
 }

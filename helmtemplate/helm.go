@@ -44,13 +44,6 @@ type Config struct {
 	AppVersion string
 }
 
-// renderedChart is used for chart validation after it has been filled with
-// values
-type renderedChart struct {
-	Version    string `json:"version,omitempty"`
-	AppVersion string `json:"appVersion,omitempty"`
-}
-
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
 func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
 	// We expect versions to match for a tagged build if project.go has been found.
