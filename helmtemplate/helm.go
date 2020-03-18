@@ -63,7 +63,7 @@ func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
 		// We expect versions to match for a tagged build if project.go has been found.
 		if validate && taggedBuild && t.appVersion != "" && t.chartVersion != t.appVersion {
 			return microerror.Newf(
-				"version in the tag does not match version defined in project.go: %q != %q",
+				"version in git tag must be equal to version in pkg/project/project.go: %q != %q",
 				t.chartVersion, t.appVersion,
 			)
 		}
@@ -148,10 +148,6 @@ func NewTemplateHelmChartTask(config Config) (*TemplateHelmChartTask, error) {
 
 	if config.Version == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Version must not be empty", config)
-	}
-
-	if config.AppVersion == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.AppVersion must not be empty", config)
 	}
 
 	t := &TemplateHelmChartTask{
