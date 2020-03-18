@@ -16,17 +16,17 @@ var (
 	}
 )
 
-// IsInvalidConfig asserts invalidValueError.
+// IsInvalidConfig asserts invalidConfigError.
 func IsInvalidConfig(err error) bool {
 	return microerror.Cause(err) == invalidConfigError
 }
 
-// IsVersionValidationError asserts versionValidationError
+// IsVersionValidationError asserts versionValidationError.
 func IsVersionValidationError(err error) bool {
 	return microerror.Cause(err) == versionValidationError
 }
 
-// IsVersionMismatchError asserts versionMismatchError
+// IsVersionMismatchError asserts versionMismatchError.
 func IsVersionMismatchError(err error) bool {
 	return microerror.Cause(err) == versionMismatchError
 }
