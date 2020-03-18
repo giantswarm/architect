@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"fmt"
 	"path"
-	"regexp"
 	"text/template"
 
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/afero"
+	"sigs.k8s.io/yaml"
 )
 
 const (
@@ -22,7 +22,6 @@ const (
 	HelmTemplateDirectoryName = "templates"
 	// keyValuePattern helps build regexp patterns which fit YAML's key-value
 	// formatting for string values
-	keyValuePattern = `%s:\s*["']?(%s)["']?`
 )
 
 // TemplateHelmChartTask is used to run a template-helm-chart command
@@ -47,6 +46,13 @@ type Config struct {
 	AppVersion string
 }
 
+// renderedChart is used for chart validation after it has been filled with
+// values
+type renderedChart struct {
+	Version    string `json:"version,omitempty"`
+	AppVersion string `json:"appVersion,omitempty"`
+}
+
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
 func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
 	for _, file := range []string{HelmChartYamlName, HelmValuesYamlName} {
@@ -56,7 +62,8 @@ func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
 			return microerror.Mask(err)
 		}
 
-		if validate && taggedBuild && t.chartVersion != t.appVersion {
+		// We expect versions to match for a tagged build if project.go has been found.
+		if validate && taggedBuild && t.appVersion != "" && t.chartVersion != t.appVersion {
 			return microerror.Newf(
 				"version in the tag does not match version defined in project.go: %q != %q",
 				t.chartVersion, t.appVersion,
@@ -93,15 +100,27 @@ func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
 
 // ValidateChart makes sure version fields and values made it into the
 // chart when executing the template.
-func ValidateChart(version, appVersion string, chart bytes.Buffer) error {
-	chartVersionPattern := regexp.MustCompile(fmt.Sprintf(keyValuePattern, "version", version))
-	if !chartVersionPattern.Match(chart.Bytes()) {
-		return microerror.Newf("validation error: chart does not contain \"version\": %q", version)
+func ValidateChart(version, appVersion string, chartBuf bytes.Buffer) error {
+	chart := renderedChart{}
+	err := yaml.Unmarshal(chartBuf.Bytes(), &chart)
+	if err != nil {
+		return microerror.Mask(err)
 	}
 
-	appVersionPattern := regexp.MustCompile(fmt.Sprintf(keyValuePattern, "appVersion", appVersion))
-	if !appVersionPattern.Match(chart.Bytes()) {
-		return microerror.Newf("validation error: chart does not contain \"appVersion\": %q", appVersion)
+	if chart.Version != version {
+		return microerror.Maskf(
+			versionValidationError,
+			"validation error: chart does not contain \"version\": %q", version,
+		)
+	}
+
+	// We want to validate appVersion only when the project.go has been found,
+	// i.e. appVersion is non-empty.
+	if appVersion != "" && chart.AppVersion != appVersion {
+		return microerror.Maskf(
+			versionValidationError,
+			"validation error: chart does not contain \"appVersion\": %q", appVersion,
+		)
 	}
 
 	return nil
