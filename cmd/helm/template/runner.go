@@ -45,7 +45,10 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 		}
 
 		appVersion, err = getProjectVersion(repo, "origin/master")
-		if err != nil {
+		if gitrepo.IsFileNotFound(err) {
+			// do not fail in case project.go is missing.
+			// it is fine to leave appVersion empty in this case.
+		} else if err != nil {
 			return microerror.Mask(err)
 		}
 	}

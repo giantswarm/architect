@@ -33,6 +33,11 @@ func TestGetProjectVersion(t *testing.T) {
 			tag:             "v3.0.0",
 			expectedVersion: "3.0.0",
 		},
+		{
+			name:         "case 2: file not found",
+			repoURL:      "git@github.com:giantswarm/gitrepo-test.git",
+			errorMatcher: repo.IsFileNotFound,
+		},
 	}
 
 	for i, tc := range testCases {
