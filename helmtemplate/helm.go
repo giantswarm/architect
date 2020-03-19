@@ -51,7 +51,7 @@ func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
 	// be empty.
 	if validate && taggedBuild && t.appVersion != "" && t.chartVersion != t.appVersion {
 		return microerror.Maskf(
-			executionFailedError,
+			validationFailedError,
 			"version in git tag must be equal to version in pkg/project/project.go: %q != %q",
 			t.chartVersion, t.appVersion,
 		)
