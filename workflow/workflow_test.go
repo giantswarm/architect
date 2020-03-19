@@ -387,7 +387,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 		if err != nil {
 			t.Fatalf("test %d received unexpected error creating a test directory: %#v", i, err)
 		}
-		defer fs.RemoveAll(testDir)
+		defer fs.RemoveAll(testDir) //nolint:errcheck
 
 		if err := tc.setUp(fs, testDir); err != nil {
 			t.Fatalf("test %d received unexpected error during setup: %#v", i, err)

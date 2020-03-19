@@ -41,7 +41,7 @@ func init() {
 	var defaultDockerUsername string
 	var defaultDockerPassword string
 
-	if os.Getenv("CIRCLECI") == "true" {
+	if os.Getenv("CIRCLECI") {
 		defaultDockerUsername = os.Getenv("QUAY_USERNAME")
 		defaultDockerPassword = os.Getenv("QUAY_PASSWORD")
 
