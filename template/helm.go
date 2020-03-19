@@ -45,6 +45,9 @@ func (t TemplateHelmChartTask) Run() error {
 			return microerror.Mask(err)
 		}
 
+		if info != nil && info.IsDir() {
+			return nil
+		}
 		if info != nil && strings.HasSuffix(info.Name(), ".tgz") {
 			return nil
 		}
