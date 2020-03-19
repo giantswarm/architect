@@ -1,11 +1,14 @@
 package helmtemplate
 
 import (
+	"bytes"
 	"fmt"
+	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/giantswarm/microerror"
+	"github.com/google/go-cmp/cmp"
 	"github.com/spf13/afero"
 )
 
@@ -18,110 +21,187 @@ const (
 
 // TestTemplateHelmChartTask tests the TemplateHelmChartTask.
 func TestTemplateHelmChartTask(t *testing.T) {
-	tests := []struct {
-		validateFlag    bool
-		taggedBuildFlag bool
-		chartDir        string
-		branch          string
-		sha             string
-		chartVersion    string
-		appVersion      string
-		setUp           func(afero.Fs, string) error
-		check           func(afero.Fs, string) error
+	testCases := []struct {
+		name             string
+		config           Config
+		files            map[string]string
+		validateFlag     bool
+		taggedBuildFlag  bool
+		expectedChartDir string
+		errorMatcher     func(err error) bool
 	}{
-		// Test that a chart is templated correctly.
 		{
-			validateFlag:    false,
-			taggedBuildFlag: false,
-			chartDir:        "/helm/test-chart",
-			branch:          "beamish-boy",
-			sha:             "jabberwocky",
-			chartVersion:    "mad-hatter",
-			appVersion:      "1.0.0",
-			setUp: func(fs afero.Fs, chartDir string) error {
-				files := []struct {
-					path string
-					data string
-				}{
-					{
-						path: filepath.Join(chartDir, HelmChartYamlName),
-						data: fmt.Sprintf("version: %s\nappVersion: %s", VersionTag, AppVersionTag),
-					},
-					{
-						path: filepath.Join(chartDir, HelmValuesYamlName),
-						data: fmt.Sprintf("branch: %s\ncommit: %s", BranchTag, SHATag),
-					},
-				}
-
-				for _, file := range files {
-					dir := filepath.Base(file.path)
-					if dir != "." && dir != "/" {
-						if err := fs.MkdirAll(dir, permission); err != nil {
-							return microerror.Mask(err)
-						}
-					}
-					if err := afero.WriteFile(fs, file.path, []byte(file.data), permission); err != nil {
-						return microerror.Mask(err)
-					}
-				}
-
-				return nil
+			name: "case 0: chart templating",
+			config: Config{
+				Branch:     "master",
+				Sha:        "ea82e754178bb2b8065aca0a0760e77ce3733649",
+				Version:    "1.2.3",
+				AppVersion: "1.0.0",
 			},
-			check: func(fs afero.Fs, chartDir string) error {
-				files := []struct {
-					path string
-					data string
-				}{
-					{
-						path: filepath.Join(chartDir, HelmChartYamlName),
-						data: "version: mad-hatter\nappVersion: 1.0.0",
-					},
-					{
-						path: filepath.Join(chartDir, HelmValuesYamlName),
-						data: "branch: beamish-boy\ncommit: jabberwocky",
-					},
-				}
-
-				for _, file := range files {
-					bytes, err := afero.ReadFile(fs, file.path)
-					if err != nil {
-						return microerror.Mask(err)
-					}
-					if string(bytes) != file.data {
-						return microerror.Maskf(invalidConfigError, fmt.Sprintf("%v, found: %v, expected: %v", file.path, string(bytes), file.data))
-					}
-				}
-
-				return nil
+			files: map[string]string{
+				HelmChartYamlName:  "version: [[ .Version ]]\nappVersion: [[ .AppVersion ]]\n",
+				HelmValuesYamlName: "branch: [[ .Branch ]]\ncommit: [[ .SHA ]]\n",
 			},
+			expectedChartDir: "test0",
+		},
+		{
+			name: "case 1: chart templating + validation",
+			config: Config{
+				Branch:     "master",
+				Sha:        "ea82e754178bb2b8065aca0a0760e77ce3733649",
+				Version:    "1.2.3",
+				AppVersion: "1.2.3",
+			},
+			files: map[string]string{
+				HelmChartYamlName:  "version: [[ .Version ]]\nappVersion: [[ .AppVersion ]]\n",
+				HelmValuesYamlName: "branch: [[ .Branch ]]\ncommit: [[ .SHA ]]\n",
+			},
+			validateFlag:     true,
+			taggedBuildFlag:  true,
+			expectedChartDir: "test1",
+		},
+		{
+			name: "case 2: validate version",
+			config: Config{
+				Branch:  "master",
+				Sha:     "ea82e754178bb2b8065aca0a0760e77ce3733649",
+				Version: "1.2.3",
+			},
+			files: map[string]string{
+				HelmChartYamlName: "version: 2.0.0\n",
+			},
+			validateFlag: true,
+			errorMatcher: IsValidationFailedError,
+		},
+		{
+			name: "case 3: validate appVersion",
+			config: Config{
+				Branch:     "master",
+				Sha:        "ea82e754178bb2b8065aca0a0760e77ce3733649",
+				Version:    "1.2.3",
+				AppVersion: "1.0.0",
+			},
+			files: map[string]string{
+				HelmChartYamlName: "version: [[ .Version ]]\nappVersion: 2.0.0\n",
+			},
+			validateFlag: true,
+			errorMatcher: IsValidationFailedError,
+		},
+		{
+			name: "case 4: validate tagged build",
+			config: Config{
+				Branch:     "master",
+				Sha:        "ea82e754178bb2b8065aca0a0760e77ce3733649",
+				Version:    "1.2.3",
+				AppVersion: "1.0.0",
+			},
+			validateFlag:    true,
+			taggedBuildFlag: true,
+			errorMatcher:    IsValidationFailedError,
 		},
 	}
 
-	for index, test := range tests {
-		fs := afero.NewMemMapFs()
-		task, err := NewTemplateHelmChartTask(Config{
-			Fs:         fs,
-			ChartDir:   test.chartDir,
-			Branch:     test.branch,
-			Sha:        test.sha,
-			Version:    test.chartVersion,
-			AppVersion: test.appVersion,
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			tc.config.ChartDir = "/tmp/architect-testtemplatehelmcharttask"
+			tc.config.Fs = afero.NewMemMapFs()
+
+			err := setup(tc.config, tc.files)
+			if err != nil {
+				t.Fatalf("unexpected error during setup: %v\n", err)
+			}
+
+			task, err := NewTemplateHelmChartTask(tc.config)
+			if err != nil {
+				t.Fatalf("unexpected error when creating NewTemplateHelmChartTask: %v\n", err)
+			}
+
+			err = task.Run(tc.validateFlag, tc.taggedBuildFlag)
+			switch {
+			case err == nil && tc.errorMatcher == nil:
+				err = check(tc.config, tc.expectedChartDir)
+				if err != nil {
+					t.Fatalf("unexpected error during check: %v\n", err)
+				}
+			case err != nil && tc.errorMatcher == nil:
+				t.Fatalf("error == %#v, want nil", err)
+			case err == nil && tc.errorMatcher != nil:
+				t.Fatalf("error == nil, want non-nil")
+			case !tc.errorMatcher(err):
+				t.Fatalf("error == %#v, want matching", err)
+			}
+
 		})
+	}
+}
 
+// setup create files inside the config.Fs filesystem at config.ChartDir.
+func setup(config Config, files map[string]string) error {
+	err := config.Fs.MkdirAll(config.ChartDir, permission)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	for fpath, data := range files {
+		path := filepath.Join(config.ChartDir, fpath)
+		dir := filepath.Base(path)
+		err := config.Fs.MkdirAll(dir, permission)
 		if err != nil {
-			t.Fatalf("%v: unexpected error when creating NewTemplateHelmChartTask: %v\n", index, err)
+			return microerror.Mask(err)
 		}
 
-		if err := test.setUp(fs, test.chartDir); err != nil {
-			t.Fatalf("%v: unexpected error during setup: %v\n", index, err)
-		}
-
-		if err := task.Run(test.validateFlag, test.taggedBuildFlag); err != nil {
-			t.Fatalf("%v: unexpected error during templating: %v\n", index, err)
-		}
-
-		if err := test.check(fs, test.chartDir); err != nil {
-			t.Fatalf("%v: unexpected error during check: %v\n", index, err)
+		err = afero.WriteFile(config.Fs, path, []byte(data), permission)
+		if err != nil {
+			return microerror.Mask(err)
 		}
 	}
+
+	return nil
+}
+
+// check compare all files inside config.Fs filesystem at config.ChartDir directory with files inside expectedChartDir directory.
+func check(config Config, expectedChartDir string) error {
+	dir := filepath.Join("testdata", expectedChartDir)
+
+	// create a file system using the test golden folder as root directory.
+	expectedFs := afero.NewBasePathFs(afero.NewOsFs(), dir)
+	// create a file system using the test result folder as root directory.
+	resultFs := afero.NewBasePathFs(config.Fs, config.ChartDir)
+
+	err := afero.Walk(expectedFs, "", func(path string, info os.FileInfo, err error) error {
+		// stop in case an error happens while walking files.
+		if err != nil {
+			return microerror.Mask(err)
+		}
+
+		isDir, err := afero.IsDir(expectedFs, path)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+		// continue walking down directories.
+		if isDir {
+			return nil
+		}
+
+		expectedData, err := afero.ReadFile(expectedFs, path)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+
+		data, err := afero.ReadFile(resultFs, path)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+
+		if !bytes.Equal(expectedData, data) {
+			return microerror.Maskf(invalidConfigError, fmt.Sprintf("%v, diff\n%s\n", path, cmp.Diff(string(expectedData), string(data))))
+		}
+
+		return nil
+	})
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	return nil
 }
