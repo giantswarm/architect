@@ -23,7 +23,7 @@ func TestGetProjectVersion(t *testing.T) {
 		errorMatcher    func(err error) bool
 	}{
 		{
-			name:            "case 0: aws-operator@v8.1.1",
+			name:            "case 0",
 			expectedVersion: project.Version(),
 		},
 	}
