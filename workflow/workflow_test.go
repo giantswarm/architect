@@ -54,7 +54,7 @@ func TestWorkflowString(t *testing.T) {
 	}
 
 	for index, test := range tests {
-		returnedString := fmt.Sprintf("%s", test.workflow)
+		returnedString := test.workflow.String()
 		if returnedString != test.expectedString {
 			t.Fatalf(
 				"%v: returned string did not match expected string.\nexpected: %v\nreturned: %v\n",
