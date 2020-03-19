@@ -11,6 +11,8 @@ import (
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
+	"github.com/giantswarm/microerror"
+
 	"github.com/giantswarm/architect/cmd/hook"
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/workflow"
@@ -139,6 +141,6 @@ func runBuild(cmd *cobra.Command, args []string) {
 	}
 
 	if workflowErr != nil {
-		log.Fatalf("could not execute workflow: %v", workflowErr)
+		log.Fatalf("could not execute workflow: %#q", microerror.JSON(workflowErr))
 	}
 }
