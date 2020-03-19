@@ -1,7 +1,6 @@
 package tasks
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -41,7 +40,7 @@ func TestExecTaskString(t *testing.T) {
 	}
 
 	for index, test := range tests {
-		returnedString := fmt.Sprintf("%s", test.execTask)
+		returnedString := test.execTask.String()
 
 		if returnedString != test.expectedString {
 			t.Fatalf(

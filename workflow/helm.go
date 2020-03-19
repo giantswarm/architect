@@ -7,9 +7,10 @@ import (
 
 	"github.com/spf13/afero"
 
+	"github.com/giantswarm/microerror"
+
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/template"
-	"github.com/giantswarm/microerror"
 )
 
 const (
