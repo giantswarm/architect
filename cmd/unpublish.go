@@ -28,7 +28,7 @@ func init() {
 	var defaultDockerUsername string
 	var defaultDockerPassword string
 
-	if _, ok := os.LookupEnv("CIRCLECI"); ok {
+	if os.Getenv("CIRCLECI") == "true" { // nolint:goconst
 		defaultDockerUsername = os.Getenv("QUAY_USERNAME")
 		defaultDockerPassword = os.Getenv("QUAY_PASSWORD")
 	}
