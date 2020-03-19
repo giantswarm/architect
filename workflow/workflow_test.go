@@ -54,7 +54,7 @@ func TestWorkflowString(t *testing.T) {
 	}
 
 	for index, test := range tests {
-		returnedString := fmt.Sprintf("%s", test.workflow)
+		returnedString := test.workflow.String()
 		if returnedString != test.expectedString {
 			t.Fatalf(
 				"%v: returned string did not match expected string.\nexpected: %v\nreturned: %v\n",
@@ -387,7 +387,7 @@ func TestGetBuildWorkflow(t *testing.T) {
 		if err != nil {
 			t.Fatalf("test %d received unexpected error creating a test directory: %#v", i, err)
 		}
-		defer fs.RemoveAll(testDir)
+		defer fs.RemoveAll(testDir) //nolint:errcheck
 
 		if err := tc.setUp(fs, testDir); err != nil {
 			t.Fatalf("test %d received unexpected error during setup: %#v", i, err)

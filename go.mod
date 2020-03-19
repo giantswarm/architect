@@ -9,8 +9,8 @@ require (
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/giantswarm/apiextensions v0.0.0-20191005094604-efa5c38da056 // indirect
 	github.com/giantswarm/app v0.0.0-20200108121642-98786417f1e1
-	github.com/giantswarm/gitrepo v0.1.1 // master
-	github.com/giantswarm/microerror v0.0.0-20190815145748-cb07ec533b50
+	github.com/giantswarm/gitrepo v0.1.1
+	github.com/giantswarm/microerror v0.2.0
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/go-querystring v1.0.0 // indirect
@@ -22,4 +22,5 @@ require (
 	gopkg.in/yaml.v2 v2.2.4
 	k8s.io/apiextensions-apiserver v0.0.0-20191010201825-9f952bb60442 // indirect
 	k8s.io/helm v2.14.3+incompatible
+	sigs.k8s.io/yaml v1.1.0
 )

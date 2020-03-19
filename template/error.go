@@ -17,7 +17,7 @@ var incorrectValueError = &microerror.Error{
 	Kind: "incorrectValueError",
 }
 
-// IsIncorrectValueError asserts incorrectValueError.
+// IsIncorrectValue asserts incorrectValueError.
 func IsIncorrectValue(err error) bool {
 	return microerror.Cause(err) == incorrectValueError
 }

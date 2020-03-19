@@ -2,11 +2,14 @@ package template
 
 import (
 	"context"
-	"os"
+	"path"
 	"strconv"
 	"testing"
 
-	repo "github.com/giantswarm/gitrepo/pkg/gitrepo"
+	"github.com/giantswarm/gitrepo/pkg/gitrepo"
+	"github.com/giantswarm/microerror"
+
+	"github.com/giantswarm/architect/pkg/project"
 )
 
 // TestGetProjectVersions tests getProjectversion method which retrieves
@@ -14,24 +17,27 @@ import (
 func TestGetProjectVersion(t *testing.T) {
 	t.Parallel()
 
+	ctx := context.Background()
+	architectGitTopLevelDir, err := gitrepo.TopLevel(ctx, ".")
+	if err != nil {
+		t.Fatalf("err = %#q, want %#v", microerror.JSON(err), nil)
+	}
+
 	testCases := []struct {
 		name            string
-		repoURL         string
-		tag             string
+		inputDir        string
 		expectedVersion string
 		errorMatcher    func(err error) bool
 	}{
 		{
-			name:            "case 0: aws-operator@v8.1.1",
-			repoURL:         "git@github.com:giantswarm/aws-operator.git",
-			tag:             "v8.1.1",
-			expectedVersion: "n/a",
+			name:            "case 0",
+			inputDir:        architectGitTopLevelDir,
+			expectedVersion: project.Version(),
 		},
 		{
-			name:            "case 1: azure-operator@v3.0.0",
-			repoURL:         "git@github.com:giantswarm/azure-operator.git",
-			tag:             "v3.0.0",
-			expectedVersion: "3.0.0",
+			name:            "case 1",
+			inputDir:        path.Join(architectGitTopLevelDir, "non-exitent"),
+			expectedVersion: "",
 		},
 		{
 			name:         "case 2: file not found",
@@ -44,26 +50,7 @@ func TestGetProjectVersion(t *testing.T) {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			t.Log(tc.name)
 
-			dir := "/tmp/architect-test-getprojectversion"
-			defer os.RemoveAll(dir)
-
-			c := repo.Config{
-				Dir: dir,
-				URL: tc.repoURL,
-			}
-			repo, err := repo.New(c)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			ctx := context.Background()
-
-			err = repo.EnsureUpToDate(ctx)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			version, err := getProjectVersion(repo, tc.tag)
+			version, err := getProjectVersion(tc.inputDir)
 
 			switch {
 			case err == nil && tc.errorMatcher == nil:

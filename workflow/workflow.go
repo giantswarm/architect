@@ -8,9 +8,10 @@ import (
 	"time"
 
 	"github.com/cenk/backoff"
-	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/microerror"
 	"github.com/google/go-github/github"
+
+	"github.com/giantswarm/architect/tasks"
 
 	"github.com/spf13/afero"
 )

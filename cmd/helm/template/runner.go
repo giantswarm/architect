@@ -5,7 +5,10 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"io/ioutil"
 	"log"
+	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/giantswarm/gitrepo/pkg/gitrepo"
@@ -18,12 +21,25 @@ import (
 
 func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 	var (
-		chartDir = cmd.Flag("dir").Value.String()
-		branch   = cmd.Flag("branch").Value.String()
-		sha      = cmd.Flag("sha").Value.String()
-		tag      = cmd.Flag("tag").Value.String()
-		version  = cmd.Flag("version").Value.String()
+		chartDir    = cmd.Flag("dir").Value.String()
+		branch      = cmd.Flag("branch").Value.String()
+		sha         = cmd.Flag("sha").Value.String()
+		tag         = cmd.Flag("tag").Value.String()
+		version     = cmd.Flag("version").Value.String()
+		validate    bool
+		taggedBuild bool
 	)
+	{
+		var err error
+		validate, err = strconv.ParseBool(cmd.Flag("validate").Value.String())
+		if err != nil {
+			return microerror.Mask(err)
+		}
+		taggedBuild, err = strconv.ParseBool(cmd.Flag("tagged-build").Value.String())
+		if err != nil {
+			return microerror.Mask(err)
+		}
+	}
 
 	fs := afero.NewOsFs()
 	ctx := context.Background()
@@ -35,20 +51,8 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 			return microerror.Mask(err)
 		}
 
-		c := gitrepo.Config{
-			Dir: dir,
-		}
-
-		repo, err := gitrepo.New(c)
+		appVersion, err = getProjectVersion(dir)
 		if err != nil {
-			return microerror.Mask(err)
-		}
-
-		appVersion, err = getProjectVersion(repo, "origin/master")
-		if gitrepo.IsFileNotFound(err) {
-			// do not fail in case project.go is missing.
-			// it is fine to leave appVersion empty in this case.
-		} else if err != nil {
 			return microerror.Mask(err)
 		}
 	}
@@ -58,11 +62,12 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 	var s *helmtemplate.TemplateHelmChartTask
 	{
 		c := helmtemplate.Config{
-			Fs:       fs,
-			ChartDir: chartDir,
-			Branch:   branch,
-			Sha:      sha,
-			Version:  version,
+			Fs:         fs,
+			ChartDir:   chartDir,
+			Branch:     branch,
+			Sha:        sha,
+			Version:    version,
+			AppVersion: appVersion,
 		}
 
 		s, err = helmtemplate.NewTemplateHelmChartTask(c)
@@ -71,7 +76,7 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 		}
 	}
 
-	if err := s.Run(); err != nil {
+	if err := s.Run(validate, taggedBuild); err != nil {
 		return microerror.Mask(err)
 	}
 
@@ -80,15 +85,17 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 	return nil
 }
 
-// getProjectVersion retrieves version stored in project's Go source code.
-// It looks up the value of variable `version` in `pkg/project/project.go` file
-// on version defined in ref.
-func getProjectVersion(repo *gitrepo.Repo, ref string) (string, error) {
+// getProjectVersion retrieves version stored in project's Go source code. It
+// looks up the value of variable `version` in `pkg/project/project.go`. If the
+// file doesn't exist it returns an empty string.
+func getProjectVersion(repoDir string) (string, error) {
 	filePath := "pkg/project/project.go"
 	varName := "version"
 
-	content, err := repo.GetFileContent(filePath, ref)
-	if err != nil {
+	content, err := ioutil.ReadFile(filepath.Join(repoDir, filePath))
+	if os.IsNotExist(err) {
+		return "", nil
+	} else if err != nil {
 		return "", microerror.Mask(err)
 	}
 

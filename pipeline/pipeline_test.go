@@ -5,8 +5,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/giantswarm/architect/pipeline"
 	"github.com/spf13/afero"
+
+	"github.com/giantswarm/architect/pipeline"
 )
 
 func TestStartChannel(t *testing.T) {

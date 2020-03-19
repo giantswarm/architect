@@ -40,14 +40,14 @@ type TemplateHelmChartTask struct {
 
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
 func (t TemplateHelmChartTask) Run() error {
-	err := afero.Walk(t.fs, t.chartDir, func(path string, info os.FileInfo, err error) error {
+	err := afero.Walk(t.fs, t.chartDir, func(path string, info os.FileInfo, _ error) error {
 		if info != nil && strings.HasSuffix(info.Name(), ".tgz") {
 			return nil
 		}
 
 		contents, err := afero.ReadFile(t.fs, path)
 		if err != nil {
-			microerror.Mask(err)
+			return microerror.Mask(err)
 		}
 
 		buildInfo := BuildInfo{
@@ -57,16 +57,16 @@ func (t TemplateHelmChartTask) Run() error {
 
 		tmpl, err := template.New(path).Delims("[[", "]]").Parse(string(contents))
 		if err != nil {
-			microerror.Mask(err)
+			return microerror.Mask(err)
 		}
 
 		var buf bytes.Buffer
 		if err := tmpl.Execute(&buf, buildInfo); err != nil {
-			microerror.Mask(err)
+			return microerror.Mask(err)
 		}
 
 		if err := afero.WriteFile(t.fs, path, buf.Bytes(), permission); err != nil {
-			microerror.Mask(err)
+			return microerror.Mask(err)
 		}
 		return nil
 	})
