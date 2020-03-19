@@ -139,6 +139,6 @@ func runBuild(cmd *cobra.Command, args []string) {
 	}
 
 	if workflowErr != nil {
-		log.Fatalf("could not execute workflow: %v", err)
+		log.Fatalf("could not execute workflow: %v", workflowErr)
 	}
 }
