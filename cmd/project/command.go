@@ -1,8 +1,9 @@
 package project
 
 import (
-	"github.com/giantswarm/architect/cmd/project/version"
 	"github.com/spf13/cobra"
+
+	"github.com/giantswarm/architect/cmd/project/version"
 )
 
 var (
