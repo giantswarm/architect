@@ -168,7 +168,7 @@ func CreateDeploymentEvent(client *github.Client, environment Environment, organ
 		&deploymentRequest,
 	)
 	if err != nil {
-		return microerror.Maskf(err, "could not create deployment event for %v", environment)
+		return microerror.Maskf(executionFailedError, "failed to create deployment event for %v with error %#q", environment, err)
 	}
 
 	log.Printf("created deployment event for %v for %v for %v", project, environment, sha)
