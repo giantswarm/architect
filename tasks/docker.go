@@ -24,10 +24,7 @@ func NewDockerTask(name string, config DockerTaskConfig) ExecTask {
 
 	args = append(args, "-w", config.WorkingDirectory)
 	args = append(args, config.Image)
-
-	for _, arg := range config.Args {
-		args = append(args, arg)
-	}
+	args = append(args, config.Args...)
 
 	newDockerTask := NewExecTask(name, args)
 
