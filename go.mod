@@ -10,7 +10,7 @@ require (
 	github.com/giantswarm/apiextensions v0.0.0-20191005094604-efa5c38da056 // indirect
 	github.com/giantswarm/app v0.0.0-20200108121642-98786417f1e1
 	github.com/giantswarm/gitrepo v0.1.1 // master
-	github.com/giantswarm/microerror v0.0.0-20190815145748-cb07ec533b50
+	github.com/giantswarm/microerror v0.2.0
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/google/go-querystring v1.0.0 // indirect
