@@ -37,7 +37,7 @@ func TestGetProjectVersion(t *testing.T) {
 
 			dir, err := gitrepo.TopLevel(ctx, ".")
 			if err != nil {
-				t.Fatalf("err = %v, want %v", microerror.Stack(err), nil)
+				t.Fatalf("err = %#q, want %#v", microerror.JSON(err), nil)
 			}
 
 			version, err := getProjectVersion(ctx, dir)
