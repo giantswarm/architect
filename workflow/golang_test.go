@@ -5,8 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/giantswarm/architect/tasks"
 	"github.com/spf13/afero"
+
+	"github.com/giantswarm/architect/tasks"
 )
 
 func TestNewGoBuildTask(t *testing.T) {
