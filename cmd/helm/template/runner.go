@@ -7,6 +7,7 @@ import (
 	"go/token"
 	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 	"strconv"
 
@@ -84,16 +85,17 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 	return nil
 }
 
-// getProjectVersion retrieves version stored in project's Go source code.
-// It looks up the value of variable `version` in `pkg/project/project.go` file
-// on version defined in ref.
+// getProjectVersion retrieves version stored in project's Go source code. It
+// looks up the value of variable `version` in `pkg/project/project.go`. If the
+// file doesn't exist it returns an empty string.
 func getProjectVersion(repoDir string) (string, error) {
 	filePath := "pkg/project/project.go"
 	varName := "version"
 
-	// TODO handle the case when the file doesn't exist.
 	content, err := ioutil.ReadFile(filepath.Join(repoDir, filePath))
-	if err != nil {
+	if os.IsNotExist(err) {
+		return "", nil
+	} else if err != nil {
 		return "", microerror.Mask(err)
 	}
 

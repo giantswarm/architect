@@ -2,6 +2,7 @@ package template
 
 import (
 	"context"
+	"path"
 	"strconv"
 	"testing"
 
@@ -16,16 +17,27 @@ import (
 func TestGetProjectVersion(t *testing.T) {
 	t.Parallel()
 
+	ctx := context.Background()
+	architectGitTopLevelDir, err := gitrepo.TopLevel(ctx, ".")
+	if err != nil {
+		t.Fatalf("err = %#q, want %#v", microerror.JSON(err), nil)
+	}
+
 	testCases := []struct {
 		name            string
-		repoURL         string
-		tag             string
+		inputDir        string
 		expectedVersion string
 		errorMatcher    func(err error) bool
 	}{
 		{
 			name:            "case 0",
+			inputDir:        architectGitTopLevelDir,
 			expectedVersion: project.Version(),
+		},
+		{
+			name:            "case 1",
+			inputDir:        path.Join(architectGitTopLevelDir, "non-exitent"),
+			expectedVersion: "",
 		},
 	}
 
@@ -33,14 +45,7 @@ func TestGetProjectVersion(t *testing.T) {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			t.Log(tc.name)
 
-			ctx := context.Background()
-
-			dir, err := gitrepo.TopLevel(ctx, ".")
-			if err != nil {
-				t.Fatalf("err = %#q, want %#v", microerror.JSON(err), nil)
-			}
-
-			version, err := getProjectVersion(dir)
+			version, err := getProjectVersion(tc.inputDir)
 
 			switch {
 			case err == nil && tc.errorMatcher == nil:
