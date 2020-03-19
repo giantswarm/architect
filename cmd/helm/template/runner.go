@@ -91,6 +91,7 @@ func getProjectVersion(ctx context.Context, repoDir string) (string, error) {
 	filePath := "pkg/project/project.go"
 	varName := "version"
 
+	// TODO handle the case when the file doesn't exist.
 	content, err := ioutil.ReadFile(filepath.Join(repoDir, filePath))
 	if err != nil {
 		return "", microerror.Mask(err)
