@@ -1,9 +1,10 @@
 package workflow
 
 import (
+	"github.com/spf13/afero"
+
 	"github.com/giantswarm/architect/pack"
 	"github.com/giantswarm/architect/tasks"
-	"github.com/spf13/afero"
 )
 
 // NewPackageHelmChartTaskCreator returns a closure with pre-defined dst directory.

@@ -1,8 +1,9 @@
 package helm
 
 import (
-	"github.com/giantswarm/architect/cmd/helm/template"
 	"github.com/spf13/cobra"
+
+	"github.com/giantswarm/architect/cmd/helm/template"
 )
 
 var (

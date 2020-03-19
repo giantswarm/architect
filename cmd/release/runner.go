@@ -11,9 +11,10 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"
 
+	"github.com/giantswarm/microerror"
+
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/workflow"
-	"github.com/giantswarm/microerror"
 )
 
 func runReleaseError(cmd *cobra.Command, args []string) error {

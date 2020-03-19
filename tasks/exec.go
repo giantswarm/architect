@@ -18,7 +18,7 @@ type ExecTask struct {
 }
 
 func (t ExecTask) Run() error {
-	cmd := exec.Command(t.Args[0], t.Args[1:]...)
+	cmd := exec.Command(t.Args[0], t.Args[1:]...) //nolint:gosec
 
 	outputFile := path.Join(os.TempDir(), fmt.Sprintf("architect-%s", t.name))
 

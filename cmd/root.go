@@ -37,7 +37,7 @@ func init() {
 
 	var defaultOrganisation string
 	var defaultProject string
-	if os.Getenv("CIRCLECI") == "true" {
+	if os.Getenv("CIRCLECI") == "true" { // nolint:goconst
 		// If we're running on CircleCI, we can be smart with the organisation and project values.
 		defaultOrganisation = os.Getenv("CIRCLE_PROJECT_USERNAME")
 		defaultProject = os.Getenv("CIRCLE_PROJECT_REPONAME")
