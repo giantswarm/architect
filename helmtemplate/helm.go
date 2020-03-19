@@ -80,8 +80,10 @@ func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
 			return microerror.Mask(err)
 		}
 
-		if file == HelmChartYamlName && validate && validateChart(buildInfo.Version, buildInfo.AppVersion, buf) != nil {
-			return microerror.Mask(err)
+		if file == HelmChartYamlName && validate {
+			if err := validateChart(buildInfo.Version, buildInfo.AppVersion, buf); err != nil {
+				return microerror.Mask(err)
+			}
 		}
 
 		if err := afero.WriteFile(t.fs, path, buf.Bytes(), permission); err != nil {
