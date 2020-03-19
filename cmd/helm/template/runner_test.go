@@ -40,7 +40,7 @@ func TestGetProjectVersion(t *testing.T) {
 				t.Fatalf("err = %#q, want %#v", microerror.JSON(err), nil)
 			}
 
-			version, err := getProjectVersion(ctx, dir)
+			version, err := getProjectVersion(dir)
 
 			switch {
 			case err == nil && tc.errorMatcher == nil:
