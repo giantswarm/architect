@@ -11,10 +11,11 @@ import (
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
+	"github.com/giantswarm/microerror"
+
 	"github.com/giantswarm/architect/cmd/hook"
 	"github.com/giantswarm/architect/tasks"
 	"github.com/giantswarm/architect/workflow"
-	"github.com/giantswarm/microerror"
 )
 
 var (
