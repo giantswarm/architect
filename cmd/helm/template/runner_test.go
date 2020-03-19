@@ -5,9 +5,10 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/giantswarm/architect/pkg/project"
 	"github.com/giantswarm/gitrepo/pkg/gitrepo"
 	"github.com/giantswarm/microerror"
+
+	"github.com/giantswarm/architect/pkg/project"
 )
 
 // TestGetProjectVersions tests getProjectversion method which retrieves

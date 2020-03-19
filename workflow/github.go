@@ -3,9 +3,10 @@ package workflow
 import (
 	"github.com/google/go-github/github"
 
+	"github.com/giantswarm/microerror"
+
 	"github.com/giantswarm/architect/release"
 	"github.com/giantswarm/architect/tasks"
-	"github.com/giantswarm/microerror"
 )
 
 func NewReleaseGithubTask(client *github.Client, dir string, projectInfo ProjectInfo) (tasks.Task, error) {
