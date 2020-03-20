@@ -18,4 +18,14 @@ type BuildInfo struct {
 	SHA string
 	// Version is the version of the commit being built.
 	Version string
+	// AppVersion is the version read from pkg/project/project.go if it
+	// exists or set to the same value as Version otherwise.
+	AppVersion string
+}
+
+// renderedChart is used for chart validation after it has been filled with
+// values
+type renderedChart struct {
+	Version    string `json:"version,omitempty"`
+	AppVersion string `json:"appVersion,omitempty"`
 }
