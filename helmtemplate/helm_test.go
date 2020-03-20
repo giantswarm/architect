@@ -24,7 +24,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 		errorMatcher     func(err error) bool
 	}{
 		{
-			name: "case 0: chart templating",
+			name: "case 0: template variables",
 			config: Config{
 				Branch:     "master",
 				Sha:        "ea82e754178bb2b8065aca0a0760e77ce3733649",
@@ -38,7 +38,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 			expectedChartDir: "test0",
 		},
 		{
-			name: "case 1: chart templating + validation",
+			name: "case 1: validate version == appversion",
 			config: Config{
 				Branch:     "master",
 				Sha:        "ea82e754178bb2b8065aca0a0760e77ce3733649",
@@ -54,7 +54,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 			expectedChartDir: "test1",
 		},
 		{
-			name: "case 2: validate version",
+			name: "case 2: version validation failure",
 			config: Config{
 				Branch:  "master",
 				Sha:     "ea82e754178bb2b8065aca0a0760e77ce3733649",
@@ -67,7 +67,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 			errorMatcher: IsValidationFailedError,
 		},
 		{
-			name: "case 3: validate appVersion",
+			name: "case 3: appversion validation failure",
 			config: Config{
 				Branch:     "master",
 				Sha:        "ea82e754178bb2b8065aca0a0760e77ce3733649",
@@ -81,7 +81,7 @@ func TestTemplateHelmChartTask(t *testing.T) {
 			errorMatcher: IsValidationFailedError,
 		},
 		{
-			name: "case 4: validate tagged build",
+			name: "case 4: version == appversion validation failure",
 			config: Config{
 				Branch:     "master",
 				Sha:        "ea82e754178bb2b8065aca0a0760e77ce3733649",
