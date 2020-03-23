@@ -45,11 +45,11 @@ type Config struct {
 }
 
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
-func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
+func (t TemplateHelmChartTask) Run(validate, tagBuild bool) error {
 	// We expect versions to match for a tagged build if pkg/project/project.go
 	// file has been found. Otherwise (project.go not found) t.appVersion will
 	// be empty.
-	if validate && taggedBuild && t.appVersion != "" && t.chartVersion != t.appVersion {
+	if validate && tagBuild && t.appVersion != "" && t.chartVersion != t.appVersion {
 		return microerror.Maskf(
 			validationFailedError,
 			"version in git tag must be equal to version in pkg/project/project.go: %q != %q",
