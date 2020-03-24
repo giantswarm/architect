@@ -21,13 +21,13 @@ import (
 
 func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 	var (
-		chartDir    = cmd.Flag("dir").Value.String()
-		branch      = cmd.Flag("branch").Value.String()
-		sha         = cmd.Flag("sha").Value.String()
-		tag         = cmd.Flag("tag").Value.String()
-		version     = cmd.Flag("version").Value.String()
-		validate    bool
-		taggedBuild bool
+		chartDir = cmd.Flag("dir").Value.String()
+		branch   = cmd.Flag("branch").Value.String()
+		sha      = cmd.Flag("sha").Value.String()
+		tag      = cmd.Flag("tag").Value.String()
+		version  = cmd.Flag("version").Value.String()
+		validate bool
+		tagBuild bool
 	)
 	{
 		var err error
@@ -35,7 +35,7 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		taggedBuild, err = strconv.ParseBool(cmd.Flag("tagged-build").Value.String())
+		tagBuild, err = strconv.ParseBool(cmd.Flag("tag-build").Value.String())
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -76,7 +76,7 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 		}
 	}
 
-	if err := s.Run(validate, taggedBuild); err != nil {
+	if err := s.Run(validate, tagBuild); err != nil {
 		return microerror.Mask(err)
 	}
 
