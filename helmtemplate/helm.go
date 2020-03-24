@@ -105,7 +105,7 @@ func validateChart(version, appVersion string, chartBuf bytes.Buffer) error {
 	if chart.Version != version {
 		return microerror.Maskf(
 			validationFailedError,
-			"wrong value for \"version\" in chart: got %#q, expected %#q",
+			"wrong value for \"version\" in chart: got %#q, expected %#q, consider setting `version: \"[[ .Version ]]\"` in your Chart.yaml",
 			chart.Version, version,
 		)
 	}
@@ -115,7 +115,7 @@ func validateChart(version, appVersion string, chartBuf bytes.Buffer) error {
 	if appVersion != "" && chart.AppVersion != appVersion {
 		return microerror.Maskf(
 			validationFailedError,
-			"wrong value for \"appVersion\" in chart: got %#q, expected %#q",
+			"wrong value for \"appVersion\" in chart: got %#q, expected %#q, consider setting `appVersion: \"[[ .AppVersion ]]\"` in your Chart.yaml",
 			chart.AppVersion, appVersion,
 		)
 	}
