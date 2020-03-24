@@ -22,6 +22,6 @@ require (
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
 	gopkg.in/yaml.v2 v2.2.4
 	k8s.io/apiextensions-apiserver v0.0.0-20191010201825-9f952bb60442 // indirect
-	k8s.io/helm v2.14.3+incompatible
+	k8s.io/helm v2.16.4+incompatible
 	sigs.k8s.io/yaml v1.1.0
 )
