@@ -52,7 +52,7 @@ func (t TemplateHelmChartTask) Run(validate, tagBuild bool) error {
 	if validate && tagBuild && t.appVersion != "" && t.chartVersion != t.appVersion {
 		return microerror.Maskf(
 			validationFailedError,
-			"version in git tag must be equal to version in pkg/project/project.go: %q != %q",
+			"version in git tag must be equal to version in pkg/project/project.go: %#q != %#q, this release is **broken**, create another one",
 			t.chartVersion, t.appVersion,
 		)
 	}
