@@ -45,14 +45,14 @@ type Config struct {
 }
 
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
-func (t TemplateHelmChartTask) Run(validate, taggedBuild bool) error {
+func (t TemplateHelmChartTask) Run(validate, tagBuild bool) error {
 	// We expect versions to match for a tagged build if pkg/project/project.go
 	// file has been found. Otherwise (project.go not found) t.appVersion will
 	// be empty.
-	if validate && taggedBuild && t.appVersion != "" && t.chartVersion != t.appVersion {
+	if validate && tagBuild && t.appVersion != "" && t.chartVersion != t.appVersion {
 		return microerror.Maskf(
 			validationFailedError,
-			"version in git tag must be equal to version in pkg/project/project.go: %q != %q",
+			"version in git tag must be equal to version in pkg/project/project.go: %#q != %#q, this release is **broken**, create another one",
 			t.chartVersion, t.appVersion,
 		)
 	}
@@ -105,7 +105,7 @@ func validateChart(version, appVersion string, chartBuf bytes.Buffer) error {
 	if chart.Version != version {
 		return microerror.Maskf(
 			validationFailedError,
-			"wrong value for \"version\" in chart: got %#q, expected %#q",
+			"wrong value for \"version\" in chart: got %#q, expected %#q, consider setting `version: \"[[ .Version ]]\"` in your Chart.yaml",
 			chart.Version, version,
 		)
 	}
@@ -115,7 +115,7 @@ func validateChart(version, appVersion string, chartBuf bytes.Buffer) error {
 	if appVersion != "" && chart.AppVersion != appVersion {
 		return microerror.Maskf(
 			validationFailedError,
-			"wrong value for \"appVersion\" in chart: got %#q, expected %#q",
+			"wrong value for \"appVersion\" in chart: got %#q, expected %#q, consider setting `appVersion: \"[[ .AppVersion ]]\"` in your Chart.yaml",
 			chart.AppVersion, appVersion,
 		)
 	}
