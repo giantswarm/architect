@@ -4,7 +4,7 @@ RUN pip freeze > /helm-chart-testing-py-requirements.txt
 
 FROM quay.io/giantswarm/golang:1.13.1-alpine3.10 AS golang
 
-FROM instrumenta/conftest:v0.18.1 AS conftest
+FROM quay.io/giantswarm/conftest:v0.18.1 AS conftest
 
 # Build Image
 FROM quay.io/giantswarm/alpine:3.10
