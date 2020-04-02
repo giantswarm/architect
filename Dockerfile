@@ -2,7 +2,7 @@ FROM quay.io/giantswarm/helm-chart-testing:v2.4.0 AS ct
 
 RUN pip freeze > /helm-chart-testing-py-requirements.txt
 
-FROM quay.io/giantswarm/golang:1.14.0-alpine3.11 AS golang
+FROM quay.io/giantswarm/golang:1.14.1-alpine3.11 AS golang
 
 # Build Image
 FROM quay.io/giantswarm/alpine:3.11
