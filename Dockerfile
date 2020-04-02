@@ -2,12 +2,12 @@ FROM quay.io/giantswarm/helm-chart-testing:v2.4.0 AS ct
 
 RUN pip freeze > /helm-chart-testing-py-requirements.txt
 
-FROM quay.io/giantswarm/golang:1.13.1-alpine3.10 AS golang
+FROM quay.io/giantswarm/golang:1.14.1-alpine3.11 AS golang
 
 FROM quay.io/giantswarm/conftest:v0.18.1 AS conftest
 
 # Build Image
-FROM quay.io/giantswarm/alpine:3.10
+FROM quay.io/giantswarm/alpine:3.11
 
 # Copy go from golang image.
 COPY --from=golang /usr/local/go /usr/local/go
@@ -23,7 +23,7 @@ COPY --from=conftest /usr/local/bin/conftest /usr/local/bin/conftest
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
-ARG HELM_VERSION=v2.14.3
+ARG HELM_VERSION=v2.16.3
 ARG GOLANGCI_LINT_VERSION=v1.23.8
 
 RUN apk add --no-cache \
