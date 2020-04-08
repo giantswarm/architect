@@ -14,6 +14,7 @@ func NewCommand() *cobra.Command {
 	cmd.Flags().String("catalog", "", "app catalog name")
 	cmd.Flags().String("name", "", "cr name")
 	cmd.Flags().String("app-name", "", "app name")
+	cmd.Flags().String("app-namespace", "giantswarm", "app namespace")
 	cmd.Flags().StringP("output", "o", "yaml", "output format. allowed: yaml,json")
 	cmd.Flags().String("app-version", "", "app version")
 
