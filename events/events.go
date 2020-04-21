@@ -25,7 +25,6 @@ var (
 		"g8s-efk",
 		"g8s-grafana",
 		"g8s-oauth2-proxy",
-		"g8s-prometheus",
 		"happa",
 		"kubernetesd",
 		"net-exporter",
