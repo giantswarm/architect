@@ -16,7 +16,6 @@ var (
 		"app-operator",
 		"cert-exporter",
 		"cert-operator",
-		"chart-operator",
 		"cluster-operator",
 		"cluster-service",
 		"companyd",
