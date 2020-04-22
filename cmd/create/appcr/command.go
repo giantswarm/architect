@@ -17,6 +17,7 @@ func NewCommand() *cobra.Command {
 	cmd.Flags().String("app-namespace", "giantswarm", "app namespace")
 	cmd.Flags().StringP("output", "o", "yaml", "output format. allowed: yaml,json")
 	cmd.Flags().String("app-version", "", "app version")
+	cmd.Flags().Bool("disable-force-upgrade", false, "disable helm chart force upgrade")
 
 	return cmd
 }
