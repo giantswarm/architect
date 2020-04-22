@@ -22,7 +22,6 @@ var (
 		"credentiald",
 		"draughtsman",
 		"etcd-backup",
-		"g8s-efk",
 		"g8s-grafana",
 		"g8s-oauth2-proxy",
 		"happa",
