@@ -3,7 +3,7 @@
 TAG=$1
 PERSONAL_ACCESS_TOKEN=$2
 
-echo "Creating GitHub Release"
+echo "Get GitHub Release for tag: $TAG"
 release_output=$(curl \
     --request GET \
     --header "Authorization: token ${PERSONAL_ACCESS_TOKEN}" \
