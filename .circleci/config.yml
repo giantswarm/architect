@@ -10,7 +10,7 @@ jobs:
       - attach_workspace:
           at: .
       - run: |
-          ./github-release.sh $CIRCLE_SHA1 $PERSONAL_ACCESS_TOKEN
+          ./github-release.sh $CIRCLE_TAG $PERSONAL_ACCESS_TOKEN
 
 workflows:
   go-build:
@@ -40,6 +40,6 @@ workflows:
             - push-architect-to-docker
           filters:
             branches:
-              only: master
+              ignore: /.*/
             tags:
               only: /^v.*/
