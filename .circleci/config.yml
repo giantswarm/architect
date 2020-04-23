@@ -39,5 +39,7 @@ workflows:
           requires:
             - push-architect-to-docker
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^v.*/
