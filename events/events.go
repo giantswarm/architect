@@ -14,7 +14,6 @@ var (
 	baseProjectList = []string{
 		"api",
 		"cert-exporter",
-		"cert-operator",
 		"cluster-operator",
 		"cluster-service",
 		"companyd",
