@@ -20,7 +20,6 @@ var (
 		"credentiald",
 		"draughtsman",
 		"etcd-backup",
-		"g8s-oauth2-proxy",
 		"happa",
 		"kubernetesd",
 		"net-exporter",
