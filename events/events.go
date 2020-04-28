@@ -40,7 +40,6 @@ var (
 	)
 	// kvm project list + kvm specific services
 	kvmProjectList = append(baseProjectList,
-		"bridge-operator",
 		"flannel-operator",
 		"ingress-exporter",
 		"kvm-operator",
