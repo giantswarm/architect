@@ -23,7 +23,6 @@ var (
 		"happa",
 		"kubernetesd",
 		"net-exporter",
-		"node-operator",
 		"passage",
 		"tokend",
 		"userd",
