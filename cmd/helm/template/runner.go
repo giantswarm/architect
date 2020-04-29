@@ -55,6 +55,11 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 		if err != nil {
 			return microerror.Mask(err)
 		}
+
+		// for repositories without pkg/project/project.go
+		if appVersion == "" {
+			appVersion = version
+		}
 	}
 
 	log.Printf("templating helm chart\ndir: %s\nsha: %s\ntag: %s\napp-version: %s\nversion: %s\n", chartDir, sha, tag, appVersion, version)
