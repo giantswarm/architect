@@ -15,7 +15,6 @@ var (
 		"api",
 		"cert-exporter",
 		"cluster-operator",
-		"cluster-service",
 		"companyd",
 		"credentiald",
 		"draughtsman",
