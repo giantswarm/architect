@@ -23,7 +23,6 @@ var (
 		"net-exporter",
 		"passage",
 		"tokend",
-		"userd",
 		"vault-exporter",
 	}
 	awsProjectList = append(baseProjectList,
