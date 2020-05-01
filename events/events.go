@@ -20,7 +20,6 @@ var (
 		"draughtsman",
 		"etcd-backup",
 		"happa",
-		"kubernetesd",
 		"net-exporter",
 		"passage",
 		"tokend",
