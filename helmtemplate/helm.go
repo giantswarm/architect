@@ -26,22 +26,24 @@ const (
 type TemplateHelmChartTask struct {
 	fs afero.Fs
 
-	chartDir     string
-	branch       string
-	sha          string
-	chartVersion string
-	appVersion   string
+	chartDir            string
+	branch              string
+	sha                 string
+	chartVersion        string
+	appVersion          string
+	skipAppVersionCheck bool
 }
 
 // Config holds configuration for building a new TemplateHelmChartTask
 type Config struct {
 	Fs afero.Fs
 
-	ChartDir   string
-	Branch     string
-	Sha        string
-	Version    string
-	AppVersion string
+	ChartDir            string
+	Branch              string
+	Sha                 string
+	Version             string
+	AppVersion          string
+	SkipAppVersionCheck bool
 }
 
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
@@ -49,7 +51,7 @@ func (t TemplateHelmChartTask) Run(validate, tagBuild bool) error {
 	// We expect versions to match for a tagged build if pkg/project/project.go
 	// file has been found. Otherwise (project.go not found) t.appVersion will
 	// be empty.
-	if validate && tagBuild && t.appVersion != "" && t.chartVersion != t.appVersion {
+	if validate && tagBuild && t.appVersion != "" && t.chartVersion != t.appVersion && !t.skipAppVersionCheck {
 		return microerror.Maskf(
 			validationFailedError,
 			"version in git tag must be equal to version in pkg/project/project.go: %#q != %#q, this release is **broken**, create another one",
@@ -81,7 +83,7 @@ func (t TemplateHelmChartTask) Run(validate, tagBuild bool) error {
 		}
 
 		if file == HelmChartYamlName && validate {
-			if err := validateChart(buildInfo.Version, buildInfo.AppVersion, buf); err != nil {
+			if err := validateChart(t.skipAppVersionCheck, buildInfo.Version, buildInfo.AppVersion, buf); err != nil {
 				return microerror.Mask(err)
 			}
 		}
@@ -95,7 +97,7 @@ func (t TemplateHelmChartTask) Run(validate, tagBuild bool) error {
 
 // validateChart makes sure version fields and values made it into the
 // chart when executing the template.
-func validateChart(version, appVersion string, chartBuf bytes.Buffer) error {
+func validateChart(skipAppVersionCheck bool, version, appVersion string, chartBuf bytes.Buffer) error {
 	chart := renderedChart{}
 	err := yaml.Unmarshal(chartBuf.Bytes(), &chart)
 	if err != nil {
@@ -112,7 +114,7 @@ func validateChart(version, appVersion string, chartBuf bytes.Buffer) error {
 
 	// We want to validate appVersion only when the project.go has been found,
 	// i.e. appVersion is non-empty.
-	if appVersion != "" && chart.AppVersion != appVersion {
+	if appVersion != "" && chart.AppVersion != appVersion && !skipAppVersionCheck {
 		return microerror.Maskf(
 			validationFailedError,
 			"wrong value for \"appVersion\" in chart: got %#q, expected %#q, consider setting `appVersion: \"[[ .AppVersion ]]\"` in your Chart.yaml",
@@ -150,12 +152,13 @@ func NewTemplateHelmChartTask(config Config) (*TemplateHelmChartTask, error) {
 	}
 
 	t := &TemplateHelmChartTask{
-		fs:           config.Fs,
-		chartDir:     config.ChartDir,
-		branch:       config.Branch,
-		sha:          config.Sha,
-		chartVersion: config.Version,
-		appVersion:   config.AppVersion,
+		fs:                  config.Fs,
+		chartDir:            config.ChartDir,
+		branch:              config.Branch,
+		sha:                 config.Sha,
+		chartVersion:        config.Version,
+		appVersion:          config.AppVersion,
+		skipAppVersionCheck: config.SkipAppVersionCheck,
 	}
 
 	return t, nil

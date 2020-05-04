@@ -45,6 +45,7 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 	ctx := context.Background()
 
 	var appVersion string
+	skipAppVersionCheck := false
 	{
 		dir, err := gitrepo.TopLevel(ctx, ".")
 		if err != nil {
@@ -59,6 +60,7 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 		// for repositories without pkg/project/project.go
 		if appVersion == "" {
 			appVersion = version
+			skipAppVersionCheck = true
 		}
 	}
 
@@ -67,12 +69,13 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 	var s *helmtemplate.TemplateHelmChartTask
 	{
 		c := helmtemplate.Config{
-			Fs:         fs,
-			ChartDir:   chartDir,
-			Branch:     branch,
-			Sha:        sha,
-			Version:    version,
-			AppVersion: appVersion,
+			Fs:                  fs,
+			ChartDir:            chartDir,
+			Branch:              branch,
+			Sha:                 sha,
+			Version:             version,
+			AppVersion:          appVersion,
+			SkipAppVersionCheck: skipAppVersionCheck,
 		}
 
 		s, err = helmtemplate.NewTemplateHelmChartTask(c)
