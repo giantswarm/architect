@@ -22,7 +22,6 @@ var (
 		"happa",
 		"net-exporter",
 		"passage",
-		"tokend",
 		"vault-exporter",
 	}
 	awsProjectList = append(baseProjectList,
