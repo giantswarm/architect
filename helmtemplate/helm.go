@@ -50,7 +50,8 @@ type Config struct {
 func (t TemplateHelmChartTask) Run(validate, tagBuild bool) error {
 	// We expect versions to match for a tagged build if pkg/project/project.go
 	// file has been found. Otherwise (project.go not found) t.appVersion will
-	// be empty.
+	// be empty, which will always be the case for Managed Apps as appVersion will
+	// refer to the version of the application being installed.
 	if validate && tagBuild && t.appVersion != "" && t.chartVersion != t.appVersion && !t.skipAppVersionCheck {
 		return microerror.Maskf(
 			validationFailedError,
