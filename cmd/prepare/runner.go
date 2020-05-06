@@ -31,7 +31,7 @@ func runPrepareRelease(cmd *cobra.Command, args []string) error {
 
 	version := cmd.Flag("version").Value.String()
 	if version == "" {
-		return microerror.Maskf(executionFailedError, "'version' can't be empty")
+		return microerror.Maskf(executionFailedError, "'version' parameter can't be empty")
 	}
 
 	_, err = os.Stat(versionFile)
@@ -65,7 +65,7 @@ func replaceVersionInFile(file, version string) error {
 	versionRegex := regexp.MustCompile(`(version\s*=\s*)("[0-9]+\.[0-9]+\.[0-9]+-dev")`)
 	currentVersion := versionRegex.FindSubmatch(filecontents)
 	if len(currentVersion) < 1 {
-		return microerror.Maskf(executionFailedError, "no version was found")
+		return microerror.Maskf(executionFailedError, "there is a 'project.go' file but no version was found in it")
 	}
 	updatedFileContents := versionRegex.ReplaceAllString(versionFileContents, fmt.Sprintf("${1}\"%s\"", version))
 	err = ioutil.WriteFile(file, []byte(updatedFileContents), 0)
@@ -88,7 +88,7 @@ func addReleaseToChangelog(date, currentVersion, repository string) error {
 	tagname := fmt.Sprintf("v%s", currentVersion)
 	search := "## [Unreleased]"
 	if !strings.Contains(changelogContents, search) {
-		return microerror.Maskf(executionFailedError, "no '[Unreleased]' work was found")
+		return microerror.Maskf(executionFailedError, "no '[Unreleased]' work was found in changelog")
 	}
 
 	// Add new entry to the top of the changelog
