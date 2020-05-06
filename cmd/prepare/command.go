@@ -8,9 +8,9 @@ import (
 
 var (
 	Cmd = &cobra.Command{
-		Use:     "prepare",
+		Use:     "prepare-release",
 		Short:   "prepare changelog and operator version to be released",
-		RunE:    runReleaseError,
+		RunE:    runPrepareRelease,
 		PreRunE: hook.PreRunE,
 	}
 )

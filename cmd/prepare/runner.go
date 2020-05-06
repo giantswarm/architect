@@ -18,16 +18,29 @@ const (
 	VersionFile   = "pkg/project/project.go"
 )
 
-func runReleaseError(cmd *cobra.Command, args []string) error {
+func runPrepareRelease(cmd *cobra.Command, args []string) error {
+	var err error
+
 	absoluteCurrentFolder, _ := filepath.Abs(filepath.Dir(os.Args[0]))
 	repositoryName := fmt.Sprintf("%s/%s", filepath.Base(filepath.Dir(absoluteCurrentFolder)), filepath.Base(absoluteCurrentFolder))
+	version := cmd.Flag("version").Value.String()
+	if version == "" {
+		return microerror.Maskf(executionFailedError, "'version' can't be empty")
+	}
 
-	currentVersion, err := replaceVersionInFile(VersionFile)
-	if err != nil {
+	_, err = os.Stat(VersionFile)
+	if err != nil && !os.IsNotExist(err) {
 		return microerror.Mask(err)
 	}
 
-	err = addReleaseToChangelog(time.Now().Format("2006-01-02"), currentVersion, repositoryName)
+	if err == nil {
+		err = replaceVersionInFile(VersionFile, version)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+	}
+
+	err = addReleaseToChangelog(time.Now().Format("2006-01-02"), version, repositoryName)
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -35,26 +48,26 @@ func runReleaseError(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func replaceVersionInFile(file string) (string, error) {
+func replaceVersionInFile(file, version string) error {
 	// Read contents of the file containing current version
 	filecontents, err := ioutil.ReadFile(file)
 	if err != nil {
-		return "", microerror.Mask(err)
+		return microerror.Mask(err)
 	}
 	versionFileContents := string(filecontents)
 
-	versionRegex := regexp.MustCompile(`version\s*=\s*"([0-9]+\.[0-9]+\.[0-9]+)-dev"`)
+	versionRegex := regexp.MustCompile(`(version\s*=\s*)("[0-9]+\.[0-9]+\.[0-9]+-dev")`)
 	currentVersion := versionRegex.FindSubmatch(filecontents)
 	if len(currentVersion) < 1 {
-		return "", microerror.Maskf(executionFailedError, "No version was found")
+		return microerror.Maskf(executionFailedError, "No version was found")
 	}
-	updatedFileContents := versionRegex.ReplaceAllString(versionFileContents, "$1")
+	updatedFileContents := versionRegex.ReplaceAllString(versionFileContents, fmt.Sprintf("${1}\"%s\"", version))
 	err = ioutil.WriteFile(file, []byte(updatedFileContents), 0)
 	if err != nil {
-		return "", microerror.Mask(err)
+		return microerror.Mask(err)
 	}
 
-	return string(currentVersion[1]), nil
+	return nil
 }
 
 func addReleaseToChangelog(date, currentVersion, repository string) error {

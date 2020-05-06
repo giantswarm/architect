@@ -1,6 +1,8 @@
-package chart
+package release
 
-import "os"
+import (
+	"os"
+)
 
 func init() {
 	defaultDockerUsername := os.Getenv("QUAY_USERNAME")

@@ -9,6 +9,7 @@ import (
 
 	"github.com/giantswarm/architect/cmd/create"
 	"github.com/giantswarm/architect/cmd/helm"
+	"github.com/giantswarm/architect/cmd/prepare"
 	cmdProject "github.com/giantswarm/architect/cmd/project"
 	"github.com/giantswarm/architect/cmd/release"
 )
@@ -66,4 +67,5 @@ func init() {
 	RootCmd.AddCommand(helm.Cmd)
 	RootCmd.AddCommand(cmdProject.Cmd)
 	RootCmd.AddCommand(create.Cmd)
+	RootCmd.AddCommand(prepare.Cmd)
 }
