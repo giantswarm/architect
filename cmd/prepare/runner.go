@@ -65,7 +65,7 @@ func replaceVersionInFile(file, version string) error {
 	versionRegex := regexp.MustCompile(`(version\s*=\s*)("[0-9]+\.[0-9]+\.[0-9]+-dev")`)
 	currentVersion := versionRegex.FindSubmatch(filecontents)
 	if len(currentVersion) < 1 {
-		return microerror.Maskf(executionFailedError, "No version was found")
+		return microerror.Maskf(executionFailedError, "no version was found")
 	}
 	updatedFileContents := versionRegex.ReplaceAllString(versionFileContents, fmt.Sprintf("${1}\"%s\"", version))
 	err = ioutil.WriteFile(file, []byte(updatedFileContents), 0)
@@ -88,7 +88,7 @@ func addReleaseToChangelog(date, currentVersion, repository string) error {
 	tagname := fmt.Sprintf("v%s", currentVersion)
 	search := "## [Unreleased]"
 	if !strings.Contains(changelogContents, search) {
-		return microerror.Maskf(executionFailedError, "No '[Unreleased]' work was found")
+		return microerror.Maskf(executionFailedError, "no '[Unreleased]' work was found")
 	}
 
 	// Add new entry to the top of the changelog
