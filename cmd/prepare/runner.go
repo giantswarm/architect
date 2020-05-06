@@ -16,8 +16,8 @@ import (
 )
 
 const (
-	ChangelogFile = "CHANGELOG.md"
-	VersionFile   = "pkg/project/project.go"
+	changelogFile = "CHANGELOG.md"
+	versionFile   = "pkg/project/project.go"
 )
 
 func runPrepareRelease(cmd *cobra.Command, args []string) error {
@@ -34,13 +34,13 @@ func runPrepareRelease(cmd *cobra.Command, args []string) error {
 		return microerror.Maskf(executionFailedError, "'version' can't be empty")
 	}
 
-	_, err = os.Stat(VersionFile)
+	_, err = os.Stat(versionFile)
 	if err != nil && !os.IsNotExist(err) {
 		return microerror.Mask(err)
 	}
 
 	if err == nil {
-		err = replaceVersionInFile(VersionFile, version)
+		err = replaceVersionInFile(versionFile, version)
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -78,7 +78,7 @@ func replaceVersionInFile(file, version string) error {
 
 func addReleaseToChangelog(date, currentVersion, repository string) error {
 	// Read Changelog contents
-	filecontents, err := ioutil.ReadFile(ChangelogFile)
+	filecontents, err := ioutil.ReadFile(changelogFile)
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -99,7 +99,7 @@ func addReleaseToChangelog(date, currentVersion, repository string) error {
 	bottomLinks := regexp.MustCompile(`(\[Unreleased]:)(.*)(v[0-9]+\.[0-9]+\.[0-9]+)(...HEAD)\n`)
 	updatedFileContents = bottomLinks.ReplaceAllString(updatedFileContents, fmt.Sprintf("$1${2}%s...HEAD\n\n[%s]: https://github.com/%s/compare/${3}...%s", tagname, currentVersion, repository, tagname))
 
-	err = ioutil.WriteFile(ChangelogFile, []byte(updatedFileContents), 0)
+	err = ioutil.WriteFile(changelogFile, []byte(updatedFileContents), 0)
 	if err != nil {
 		return microerror.Mask(err)
 	}
