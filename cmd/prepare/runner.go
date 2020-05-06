@@ -1,6 +1,7 @@
 package prepare
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -9,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/giantswarm/gitrepo/pkg/gitrepo"
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/cobra"
 )
@@ -21,8 +23,12 @@ const (
 func runPrepareRelease(cmd *cobra.Command, args []string) error {
 	var err error
 
-	absoluteCurrentFolder, _ := filepath.Abs(filepath.Dir(os.Args[0]))
+	absoluteCurrentFolder, err := gitrepo.TopLevel(context.Background(), ".")
+	if err != nil {
+		return microerror.Mask(err)
+	}
 	repositoryName := fmt.Sprintf("%s/%s", filepath.Base(filepath.Dir(absoluteCurrentFolder)), filepath.Base(absoluteCurrentFolder))
+
 	version := cmd.Flag("version").Value.String()
 	if version == "" {
 		return microerror.Maskf(executionFailedError, "'version' can't be empty")
