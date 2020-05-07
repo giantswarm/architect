@@ -25,7 +25,7 @@ func runPrepareRelease(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func wrappedRunPrepareRelease(cmd *cobra.Command, args []string) error {
+func wrappedRunPrepareRelease(cmd *cobra.Command, _ []string) error {
 	var err error
 
 	var repositoryName string
