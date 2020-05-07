@@ -18,6 +18,14 @@ const (
 )
 
 func runPrepareRelease(cmd *cobra.Command, args []string) error {
+	err := wrappedRunPrepareRelease(cmd, args)
+	if err != nil {
+		panic(microerror.JSON(err))
+	}
+	return nil
+}
+
+func wrappedRunPrepareRelease(cmd *cobra.Command, args []string) error {
 	var err error
 
 	var repositoryName string
