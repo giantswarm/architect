@@ -1,16 +1,13 @@
 package prepare
 
 import (
-	"context"
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
 
-	"github.com/giantswarm/gitrepo/pkg/gitrepo"
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/cobra"
 )
@@ -23,11 +20,12 @@ const (
 func runPrepareRelease(cmd *cobra.Command, args []string) error {
 	var err error
 
-	absoluteCurrentFolder, err := gitrepo.TopLevel(context.Background(), ".")
-	if err != nil {
-		return microerror.Mask(err)
+	var repositoryName string
+	{
+		o := cmd.Flag("organisation").Value.String()
+		p := cmd.Flag("project").Value.String()
+		repositoryName = o + "/" + p
 	}
-	repositoryName := fmt.Sprintf("%s/%s", filepath.Base(filepath.Dir(absoluteCurrentFolder)), filepath.Base(absoluteCurrentFolder))
 
 	version := cmd.Flag("version").Value.String()
 	if version == "" {
