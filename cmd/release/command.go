@@ -9,7 +9,7 @@ import (
 var (
 	Cmd = &cobra.Command{
 		Use:     "release",
-		Short:   "release operator versions or charts",
+		Short:   "release chart as github release",
 		RunE:    runReleaseError,
 		PreRunE: hook.PreRunE,
 	}
