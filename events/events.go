@@ -69,6 +69,7 @@ var environmentProjects = map[Environment][]string{
 	"davis":    azureProjectList,
 	"dinosaur": kvmProjectList,
 	"dragon":   kvmProjectList,
+	"gaia":     awsProjectList,
 	"gauss":    awsProjectList,
 	"geckon":   kvmProjectList,
 	"ghost":    azureProjectList,
@@ -94,6 +95,7 @@ var environmentProjects = map[Environment][]string{
 // testingGroup is a specific grouping of environments that are considered
 // testing environments.
 var testingGroup = []Environment{
+	"gaia",
 	"gauss",
 	"geckon",
 	"ghost",
