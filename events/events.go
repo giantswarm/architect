@@ -19,7 +19,6 @@ var (
 		"draughtsman",
 		"etcd-backup",
 		"happa",
-		"net-exporter",
 		"passage",
 		"vault-exporter",
 	}
