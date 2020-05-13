@@ -9,14 +9,6 @@ import (
 )
 
 func PreRunE(cmd *cobra.Command, args []string) error {
-	err := preRunE(cmd, args)
-	if err != nil {
-		panic(microerror.JSON(err))
-	}
-	return nil
-}
-
-func preRunE(cmd *cobra.Command, _ []string) error {
 	ctx := context.Background()
 
 	var err error
