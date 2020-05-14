@@ -13,7 +13,6 @@ var (
 	// services used in all our installations
 	baseProjectList = []string{
 		"api",
-		"cert-exporter",
 		"cluster-operator",
 		"credentiald",
 		"draughtsman",
