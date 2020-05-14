@@ -16,7 +16,6 @@ var (
 		"cluster-operator",
 		"credentiald",
 		"draughtsman",
-		"etcd-backup",
 		"happa",
 		"passage",
 		"vault-exporter",
