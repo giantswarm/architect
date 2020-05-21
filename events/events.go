@@ -17,7 +17,6 @@ var (
 		"credentiald",
 		"draughtsman",
 		"happa",
-		"passage",
 	}
 	awsProjectList = append(baseProjectList,
 		"aws-operator",
