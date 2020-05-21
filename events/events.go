@@ -13,16 +13,11 @@ var (
 	// services used in all our installations
 	baseProjectList = []string{
 		"api",
-		"cert-exporter",
 		"cluster-operator",
-		"companyd",
 		"credentiald",
 		"draughtsman",
-		"etcd-backup",
 		"happa",
-		"net-exporter",
 		"passage",
-		"vault-exporter",
 	}
 	awsProjectList = append(baseProjectList,
 		"aws-operator",
@@ -35,14 +30,8 @@ var (
 	)
 	// kvm project list + kvm specific services
 	kvmProjectList = append(baseProjectList,
-		"ingress-exporter",
 		"kvm-operator",
 		"kvm-app-collection",
-	)
-	// awsChinaProjectList adds route53-manager to awsProjectList. This is
-	// required until route53 is available on AWS China.
-	awsChinaProjectList = append(awsProjectList,
-		"route53-manager",
 	)
 )
 
@@ -62,18 +51,19 @@ var environmentProjects = map[Environment][]string{
 	"atlantis": awsProjectList,
 	"antelope": awsProjectList,
 	"avatar":   awsProjectList,
-	"argali":   awsChinaProjectList,
-	"axolotl":  awsChinaProjectList,
+	"argali":   awsProjectList,
+	"axolotl":  awsProjectList,
 	"buffalo":  kvmProjectList,
 	"centaur":  append(kvmProjectList, "pv-cleaner-operator"),
 	"davis":    azureProjectList,
 	"dinosaur": kvmProjectList,
 	"dragon":   kvmProjectList,
+	"gaia":     awsProjectList,
 	"gauss":    awsProjectList,
 	"geckon":   kvmProjectList,
 	"ghost":    azureProjectList,
 	"ginger":   awsProjectList,
-	"giraffe":  awsChinaProjectList,
+	"giraffe":  awsProjectList,
 	"godsmack": azureProjectList,
 	"gollum":   azureProjectList,
 	"goku":     azureProjectList,
@@ -94,6 +84,7 @@ var environmentProjects = map[Environment][]string{
 // testingGroup is a specific grouping of environments that are considered
 // testing environments.
 var testingGroup = []Environment{
+	"gaia",
 	"gauss",
 	"geckon",
 	"ghost",
