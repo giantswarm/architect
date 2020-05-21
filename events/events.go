@@ -18,7 +18,6 @@ var (
 		"draughtsman",
 		"happa",
 		"passage",
-		"vault-exporter",
 	}
 	awsProjectList = append(baseProjectList,
 		"aws-operator",
