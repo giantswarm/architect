@@ -14,7 +14,6 @@ var (
 	baseProjectList = []string{
 		"api",
 		"cluster-operator",
-		"credentiald",
 		"draughtsman",
 		"happa",
 	}
