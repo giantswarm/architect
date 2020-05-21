@@ -33,11 +33,6 @@ var (
 		"kvm-operator",
 		"kvm-app-collection",
 	)
-	// awsChinaProjectList adds route53-manager to awsProjectList. This is
-	// required until route53 is available on AWS China.
-	awsChinaProjectList = append(awsProjectList,
-		"route53-manager",
-	)
 )
 
 // Environment is a name of an installation.
@@ -56,8 +51,8 @@ var environmentProjects = map[Environment][]string{
 	"atlantis": awsProjectList,
 	"antelope": awsProjectList,
 	"avatar":   awsProjectList,
-	"argali":   awsChinaProjectList,
-	"axolotl":  awsChinaProjectList,
+	"argali":   awsProjectList,
+	"axolotl":  awsProjectList,
 	"buffalo":  kvmProjectList,
 	"centaur":  append(kvmProjectList, "pv-cleaner-operator"),
 	"davis":    azureProjectList,
@@ -68,7 +63,7 @@ var environmentProjects = map[Environment][]string{
 	"geckon":   kvmProjectList,
 	"ghost":    azureProjectList,
 	"ginger":   awsProjectList,
-	"giraffe":  awsChinaProjectList,
+	"giraffe":  awsProjectList,
 	"godsmack": azureProjectList,
 	"gollum":   azureProjectList,
 	"goku":     azureProjectList,
