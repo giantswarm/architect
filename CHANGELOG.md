@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated `giantswarm/app` dependency to 0.2.1 (first go-modules version).
+- `architect project version`: reads version from `project.go` file if it exists, uses git if it doesn't.
 
 ## [1.0.0] 2020-04-23
 

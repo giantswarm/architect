@@ -19,3 +19,7 @@ var gitNoBranchError = &microerror.Error{
 func IsGitNoBranchError(err error) bool {
 	return microerror.Cause(err) == gitNoBranchError
 }
+
+var executionFailedError = &microerror.Error{
+	Kind: "executionFailedError",
+}
