@@ -12,12 +12,9 @@ import (
 var (
 	// services used in all our installations
 	baseProjectList = []string{
-		"api",
 		"cluster-operator",
-		"credentiald",
 		"draughtsman",
 		"happa",
-		"passage",
 	}
 	awsProjectList = append(baseProjectList,
 		"aws-operator",
