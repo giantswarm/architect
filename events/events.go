@@ -14,7 +14,6 @@ var (
 	baseProjectList = []string{
 		"cluster-operator",
 		"draughtsman",
-		"happa",
 	}
 	awsProjectList = append(baseProjectList,
 		"aws-operator",
