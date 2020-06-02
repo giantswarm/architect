@@ -1,7 +1,7 @@
-package prepare
+package preparerelease
 
 import (
-	"github.com/giantswarm/architect/cmd/prepare/internal"
+	"github.com/giantswarm/architect/cmd/preparerelease/internal"
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/cobra"
 )

@@ -1,4 +1,4 @@
-package prepare
+package preparerelease
 
 import (
 	"github.com/spf13/cobra"

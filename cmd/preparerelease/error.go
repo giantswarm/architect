@@ -1,4 +1,4 @@
-package prepare
+package preparerelease
 
 import (
 	"github.com/giantswarm/microerror"
