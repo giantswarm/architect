@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+-  Update giantswarm/app to 0.2.2 and use 0.0.0 as version for app CRs. 
+
 ## [1.1.0] 2020-05-28
 
 ### Changed
