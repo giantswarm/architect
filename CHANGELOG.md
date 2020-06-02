@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] 2020-06-02
+
 ### Changed
 
 -  Update giantswarm/app to 0.2.2 and use 0.0.0 as version for app CRs. 
@@ -62,6 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v1.1.0...HEAD
-[1.1.0]: https://github.com/giantswarm/architect/releases/tag/v1.1.0
+[Unreleased]: https://github.com/giantswarm/architect/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/giantswarm/architect/compare/v1.1.0...v1.1.1
+[1.1.0]: https://github.com/giantswarm/architect/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/giantswarm/architect/releases/tag/v1.0.0
