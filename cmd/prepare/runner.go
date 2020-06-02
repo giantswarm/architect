@@ -1,6 +1,7 @@
 package prepare
 
 import (
+	"github.com/giantswarm/architect/cmd/prepare/internal"
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/cobra"
 )
@@ -27,15 +28,15 @@ func runPrepareRelease(cmd *cobra.Command, args []string) error {
 		return microerror.Maskf(executionFailedError, "--version flag can't be empty")
 	}
 
-	var m *modifier
+	var m *internal.Modifier
 	{
-		c := modifierConfig{
+		c := internal.ModifierConfig{
 			NewVersion: version,
 			Repo:       repo,
 			WorkingDir: workingDir,
 		}
 
-		m, err = newModifier(c)
+		m, err = internal.NewModifier(c)
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -44,11 +45,17 @@ func runPrepareRelease(cmd *cobra.Command, args []string) error {
 	err = m.AddReleaseToChangelogMd()
 	if err != nil {
 		return microerror.Mask(err)
+	} else {
+		cmd.Printf("File CHANGELOG.md updated.\n")
 	}
 
 	err = m.UpdateVersionInProjectGo()
-	if err != nil {
+	if internal.IsFileNotFound(err) {
+		// Fall trough. Some projects do not have project.go file.
+	} else if err != nil {
 		return microerror.Mask(err)
+	} else {
+		cmd.Printf("File project.go updated.\n")
 	}
 
 	return nil

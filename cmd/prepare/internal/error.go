@@ -1,4 +1,4 @@
-package prepare
+package internal
 
 import (
 	"github.com/giantswarm/microerror"
@@ -15,4 +15,13 @@ var invalidConfigError = &microerror.Error{
 // IsInvalidConfig asserts invalidConfigError.
 func IsInvalidConfig(err error) bool {
 	return microerror.Cause(err) == invalidConfigError
+}
+
+var fileNotFoundError = &microerror.Error{
+	Kind: "fileNotFoundError",
+}
+
+// IsFileNotFound asserts fileNotFoundError.
+func IsFileNotFound(err error) bool {
+	return microerror.Cause(err) == fileNotFoundError
 }

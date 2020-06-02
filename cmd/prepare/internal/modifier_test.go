@@ -1,4 +1,4 @@
-package prepare
+package internal
 
 import "testing"
 

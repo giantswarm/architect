@@ -1,4 +1,4 @@
-package prepare
+package internal
 
 import (
 	"fmt"
@@ -7,23 +7,24 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/giantswarm/microerror"
 )
 
-type modifierConfig struct {
+type ModifierConfig struct {
 	NewVersion string
 	Repo       string
 	WorkingDir string
 }
 
-type modifier struct {
+type Modifier struct {
 	newVersion string
 	repo       string
 	workingDir string
 }
 
-func newModifier(config modifierConfig) (*modifier, error) {
+func NewModifier(config ModifierConfig) (*Modifier, error) {
 	if config.NewVersion == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.NewVersion must not be empty", config)
 	}
@@ -34,7 +35,7 @@ func newModifier(config modifierConfig) (*modifier, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.WorkingDir must not be empty", config)
 	}
 
-	m := &modifier{
+	m := &Modifier{
 		newVersion: config.NewVersion,
 		repo:       config.Repo,
 		workingDir: config.WorkingDir,
@@ -43,7 +44,7 @@ func newModifier(config modifierConfig) (*modifier, error) {
 	return m, nil
 }
 
-func (m *modifier) AddReleaseToChangelogMd() error {
+func (m *Modifier) AddReleaseToChangelogMd() error {
 	file := "CHANGELOG.md"
 	modifyFunc := m.addReleaseToChangelogMd
 
@@ -55,34 +56,40 @@ func (m *modifier) AddReleaseToChangelogMd() error {
 	return nil
 }
 
-func (m *modifier) addReleaseToChangelogMd(content []byte) ([]byte, error) {
+func (m *Modifier) addReleaseToChangelogMd(content []byte) ([]byte, error) {
+	var err error
+
+	date := time.Now().Format("2006-01-02")
+
 	// Define replacements.
 
 	unreleasedHeader := regexp.MustCompile(regexp.QuoteMeta("## [Unreleased]"))
 	unreleasedHeaderReplacement := strings.Join([]string{
 		"## [Unreleased]",
 		"",
-		fmt.Sprintf("## [%s] - %s", currentVersion, date),
+		fmt.Sprintf("## [%s] - %s", m.newVersion, date),
 	}, "\n")
 
 	// To match strings like:
 	//
 	//	[Unreleased]: https://github.com/giantswarm/REPOSITORY_NAME/compare/v1.2.3...HEAD
 	//
-	bottomLinks := regexp.MustCompile(`^\[Unreleased]:\s+https://github.com/\S+/compare/v(\d+\.\d+\.\d+)\.\.\.HEAD\s*$`)
+	bottomLinks := regexp.MustCompile(`\[Unreleased\]:\s+https://github.com/\S+/compare/v(\d+\.\d+\.\d+)\.\.\.HEAD\s*`)
 	bottomLinksReplacement := strings.Join([]string{
-		fmt.Sprintf("[Unreleased]: https://github.com/%s/compare/v%s...HEAD", repository, currentVersion),
-		fmt.Sprintf("[%s]: https://github.com/%s/compare/v${1}...v%s", currentVersion, repository, currentVersion),
+		fmt.Sprintf("[Unreleased]: https://github.com/%s/compare/v%s...HEAD", m.repo, m.newVersion),
+		fmt.Sprintf("[%s]: https://github.com/%s/compare/v${1}...v%s", m.newVersion, m.repo, m.newVersion),
+		"",
 	}, "\n")
 
 	// To match strings like:
 	//
 	//	[Unreleased]: https://github.com//REPOSITORY_NAME/tree/master
 	//
-	bottomLinksFirstRelease := regexp.MustCompile(`^\[Unreleased]:\s+https://github.com/\S+/tree/master\s*$`)
+	bottomLinksFirstRelease := regexp.MustCompile(`\[Unreleased\]:\s+https://github.com/\S+/tree/master\s*`)
 	bottomLinksFirstReleaseReplacement := strings.Join([]string{
-		fmt.Sprintf("[Unreleased]: https://github.com/%s/compare/v%s...HEAD", repository, currentVersion),
-		fmt.Sprintf("[%s]: https://github.com/%s/releases/tag/v%s", currentVersion, repository, currentVersion),
+		fmt.Sprintf("[Unreleased]: https://github.com/%s/compare/v%s...HEAD", m.repo, m.newVersion),
+		fmt.Sprintf("[%s]: https://github.com/%s/releases/tag/v%s", m.newVersion, m.repo, m.newVersion),
+		"",
 	}, "\n")
 
 	// Validate.
@@ -105,7 +112,7 @@ func (m *modifier) addReleaseToChangelogMd(content []byte) ([]byte, error) {
 	return content, nil
 }
 
-func (m *modifier) UpdateVersionInProjectGo() error {
+func (m *Modifier) UpdateVersionInProjectGo() error {
 	file := "pkg/project/project.go"
 	modifyFunc := m.updateVersionInProjectGo
 
@@ -117,7 +124,9 @@ func (m *modifier) UpdateVersionInProjectGo() error {
 	return nil
 }
 
-func (m *modifier) updateVersionInProjectGo(content []byte) ([]byte, error) {
+func (m *Modifier) updateVersionInProjectGo(content []byte) ([]byte, error) {
+	var err error
+
 	// Define replacements.
 
 	// To match strings like:
@@ -125,8 +134,8 @@ func (m *modifier) updateVersionInProjectGo(content []byte) ([]byte, error) {
 	//	version = "1.2.3"
 	//	version = "1.2.3-any-suffix"
 	//
-	version := regexp.MustCompile(`version\s*=\s*"[0-9]+\.[0-9]+\.[0-9]+\S*"`)
-	versionReplacement := fmt.Sprintf(`version = "%s"`, version)
+	version := regexp.MustCompile(`(version\s*=\s*)"[0-9]+\.[0-9]+\.[0-9]+\S*"`)
+	versionReplacement := fmt.Sprintf(`$1"%s"`, m.newVersion)
 
 	// Validate.
 
@@ -145,14 +154,14 @@ func modifyFile(path string, modifyFunc func([]byte) ([]byte, error)) error {
 	// Make sure file exists and it's not a directory.
 	info, err := os.Stat(path)
 	if os.IsNotExist(err) {
-		return microerror.Maskf("file %#q not found", relPath)
+		return microerror.Maskf(fileNotFoundError, "file %#q not found", path)
 	} else if err != nil {
 		return microerror.Mask(err)
 	} else if info.IsDir() {
-		return microerror.Maskf("file %#q is a directory, expected regular file", relPath)
+		return microerror.Maskf(executionFailedError, "file %#q is a directory, expected regular file", path)
 	}
 
-	content, err := ioutil.ReadFile(relPath)
+	content, err := ioutil.ReadFile(path)
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -162,40 +171,9 @@ func modifyFile(path string, modifyFunc func([]byte) ([]byte, error)) error {
 		return microerror.Mask(err)
 	}
 
-	err = ioutil.WriteFile(changelogFile, content, 0)
+	err = ioutil.WriteFile(path, content, 0)
 	if err != nil {
 		return microerror.Mask(err)
-	}
-
-	return nil
-}
-
-func validateSingleOccurence(data []byte, regexps ...*regexp.Regexp) error {
-	matches := 0
-	for _, re := range regexps {
-		matches += len(re.FindAllIndex(data, -1))
-	}
-
-	var combined *regexp.Regexp
-	if len(regexps) == 1 {
-		combined = regexps[0]
-	} else {
-		var patterns []string
-
-		for _, re := range regexps {
-			patterns = append(patterns, re.String())
-		}
-
-		pattern = fmt.Sprintf("(?:%s)", strings.Join(patterns, ") | (?:"))
-
-		combined = regexp.MustCompile(pattern)
-	}
-
-	if matches == 0 {
-		return nil, microerror.Maskf(executionFailedError, "no match for pattern %#q match found in project.go", combined)
-	}
-	if matches > 1 {
-		return nil, microerror.Maskf(executionFailedError, "%d pattern %#q matches found in project.go, expected 1", matches, combined)
 	}
 
 	return nil
