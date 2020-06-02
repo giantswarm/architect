@@ -15,7 +15,7 @@ func Test_validateSingleOccurence(t *testing.T) {
 		expectedError bool
 	}{
 		{
-			name: "case 0",
+			name: "case 0: single occurrence",
 			inputData: strings.Join([]string{
 				"line 1",
 				"line 2",
@@ -30,7 +30,7 @@ func Test_validateSingleOccurence(t *testing.T) {
 			expectedError: false,
 		},
 		{
-			name: "case 0",
+			name: "case 1: no occurrence",
 			inputData: strings.Join([]string{
 				"line 1",
 				"line 2",
@@ -42,13 +42,27 @@ func Test_validateSingleOccurence(t *testing.T) {
 			},
 			expectedError: true,
 		},
+		{
+			name: "case 2: multiple occurrences",
+			inputData: strings.Join([]string{
+				"line 1",
+				"line 2",
+				`[Unreleased]: https://github.com/giantswarm/architect/compare/v1.0.0...HEAD`,
+				`[1.0.0]: https://github.com/giantswarm/architect/releases/tag/v1.0.0`,
+			}, "\n"),
+			inputRegexps: []*regexp.Regexp{
+				regexp.MustCompile(`line 1`),
+				regexp.MustCompile(`line 2`),
+			},
+			expectedError: true,
+		},
 	}
 
 	for i, tc := range testCases {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			t.Log(tc.name)
 
-			err := validateSingleOccurence([]byte(tc.inputData), tc.inputRegexps...)
+			err := validateSingleOccurrence([]byte(tc.inputData), tc.inputRegexps...)
 
 			if tc.expectedError && err == nil {
 				t.Fatalf("actual = %s, expected non-nil", err)

@@ -94,12 +94,12 @@ func (m *Modifier) addReleaseToChangelogMd(content []byte) ([]byte, error) {
 
 	// Validate.
 
-	err = validateSingleOccurence(content, unreleasedHeader)
+	err = validateSingleOccurrence(content, unreleasedHeader)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	err = validateSingleOccurence(content, bottomLinks, bottomLinksFirstRelease)
+	err = validateSingleOccurrence(content, bottomLinks, bottomLinksFirstRelease)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -139,7 +139,7 @@ func (m *Modifier) updateVersionInProjectGo(content []byte) ([]byte, error) {
 
 	// Validate.
 
-	err = validateSingleOccurence(content, version)
+	err = validateSingleOccurrence(content, version)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}

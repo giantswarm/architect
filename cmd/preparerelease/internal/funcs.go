@@ -8,7 +8,7 @@ import (
 	"github.com/giantswarm/microerror"
 )
 
-func validateSingleOccurence(data []byte, regexps ...*regexp.Regexp) error {
+func validateSingleOccurrence(data []byte, regexps ...*regexp.Regexp) error {
 	matches := 0
 	for _, re := range regexps {
 		matches += len(re.FindAllIndex(data, -1))
