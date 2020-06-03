@@ -1,9 +1,10 @@
 package preparerelease
 
 import (
-	"github.com/giantswarm/architect/cmd/preparerelease/internal"
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/cobra"
+
+	"github.com/giantswarm/architect/cmd/preparerelease/internal"
 )
 
 func runPrepareRelease(cmd *cobra.Command, args []string) error {
