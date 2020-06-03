@@ -45,9 +45,9 @@ func runPrepareRelease(cmd *cobra.Command, args []string) error {
 	err = m.AddReleaseToChangelogMd()
 	if err != nil {
 		return microerror.Mask(err)
-	} else {
-		cmd.Printf("File CHANGELOG.md updated.\n")
 	}
+	
+      cmd.Printf("File %#q updated.\n", changelogFile)
 
 	err = m.UpdateVersionInProjectGo()
 	if internal.IsFileNotFound(err) {
@@ -55,7 +55,7 @@ func runPrepareRelease(cmd *cobra.Command, args []string) error {
 	} else if err != nil {
 		return microerror.Mask(err)
 	} else {
-		cmd.Printf("File project.go updated.\n")
+		cmd.Printf("File %#q updated.\n", versionFile)
 	}
 
 	return nil
