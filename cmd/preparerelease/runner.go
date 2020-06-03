@@ -6,11 +6,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	changelogFile = "CHANGELOG.md"
-	versionFile   = "pkg/project/project.go"
-)
-
 func runPrepareRelease(cmd *cobra.Command, args []string) error {
 	var err error
 
@@ -46,7 +41,7 @@ func runPrepareRelease(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return microerror.Mask(err)
 	}
-	cmd.Printf("File %#q updated.\n", changelogFile)
+	cmd.Printf("File %#q updated.\n", internal.FileChangelogMd)
 
 	err = m.UpdateVersionInProjectGo()
 	if internal.IsFileNotFound(err) {
@@ -54,7 +49,7 @@ func runPrepareRelease(cmd *cobra.Command, args []string) error {
 	} else if err != nil {
 		return microerror.Mask(err)
 	} else {
-		cmd.Printf("File %#q updated.\n", versionFile)
+		cmd.Printf("File %#q updated.\n", internal.FileProjectGo)
 	}
 
 	return nil

@@ -45,7 +45,7 @@ func NewModifier(config ModifierConfig) (*Modifier, error) {
 }
 
 func (m *Modifier) AddReleaseToChangelogMd() error {
-	file := "CHANGELOG.md"
+	file := FileChangelogMd
 	modifyFunc := m.addReleaseToChangelogMd
 
 	err := modifyFile(filepath.Join(m.workingDir, file), modifyFunc)
@@ -113,7 +113,7 @@ func (m *Modifier) addReleaseToChangelogMd(content []byte) ([]byte, error) {
 }
 
 func (m *Modifier) UpdateVersionInProjectGo() error {
-	file := "pkg/project/project.go"
+	file := FileProjectGo
 	modifyFunc := m.updateVersionInProjectGo
 
 	err := modifyFile(filepath.Join(m.workingDir, file), modifyFunc)
