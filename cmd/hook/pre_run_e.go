@@ -15,8 +15,8 @@ func PreRunE(cmd *cobra.Command, args []string) error {
 
 	var repo *gitrepo.Repo
 	{
-
-		dir, err := gitrepo.TopLevel(ctx, ".")
+		cwd := cmd.Flag("working-directory").Value.String()
+		dir, err := gitrepo.TopLevel(ctx, cwd)
 		if err != nil {
 			return microerror.Mask(err)
 		}
