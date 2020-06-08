@@ -24,7 +24,7 @@ func validateSingleOccurrence(data []byte, regexps ...*regexp.Regexp) error {
 			patterns = append(patterns, re.String())
 		}
 
-		pattern := fmt.Sprintf("(?:%s)", strings.Join(patterns, ") | (?:"))
+		pattern := fmt.Sprintf("(?:%s)", strings.Join(patterns, ")|(?:"))
 
 		combined = regexp.MustCompile(pattern)
 	}
