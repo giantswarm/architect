@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Support "Unreleased" link update for first release on non-master branches in
+  `prepare-release` command.
+
 ## [1.2.0] - 2020-06-08
 
 ### Added
