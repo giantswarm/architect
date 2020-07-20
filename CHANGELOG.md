@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update module line in go.mod file (if it exists) when major version is bigger
   than 1 in `prepare-release` command.
 
+### Fixed
+
+- Support "Unreleased" link update for first release on non-master branches in
+  `prepare-release` command.
+
 ## [1.2.0] - 2020-06-08
 
 ### Added

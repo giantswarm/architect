@@ -85,7 +85,7 @@ func (m *Modifier) addReleaseToChangelogMd(content []byte) ([]byte, error) {
 	//
 	//	[Unreleased]: https://github.com//REPOSITORY_NAME/tree/master
 	//
-	bottomLinksFirstRelease := regexp.MustCompile(`\[Unreleased\]:\s+https://github.com/\S+/tree/master\s*`)
+	bottomLinksFirstRelease := regexp.MustCompile(`\[Unreleased\]:\s+https://github.com/\S+/tree/\S+\s*`)
 	bottomLinksFirstReleaseReplacement := strings.Join([]string{
 		fmt.Sprintf("[Unreleased]: https://github.com/%s/compare/v%s...HEAD", m.repo, m.newVersion),
 		fmt.Sprintf("[%s]: https://github.com/%s/releases/tag/v%s", m.newVersion, m.repo, m.newVersion),
