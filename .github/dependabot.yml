@@ -2,14 +2,14 @@
 #
 #    devctl gen dependabot
 #
+version: 2
+updates:
 - package-ecosystem: docker
   directory: "/"
   schedule:
     interval: weekly
     time: "04:00"
   target-branch: master
-version: 2
-updates:
 - package-ecosystem: gomod
   directory: "/"
   schedule:
