@@ -6,7 +6,6 @@ require (
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/cenk/backoff v2.2.1+incompatible
 	github.com/cyphar/filepath-securejoin v0.2.2 // indirect
-	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/giantswarm/app v0.2.2
 	github.com/giantswarm/gitrepo v0.1.1
 	github.com/giantswarm/microerror v0.2.0
@@ -16,7 +15,7 @@ require (
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/jstemmer/go-junit-report v0.9.1
 	github.com/spf13/afero v1.2.2
-	github.com/spf13/cobra v0.0.5
+	github.com/spf13/cobra v0.0.7
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
 	gopkg.in/yaml.v2 v2.3.0
