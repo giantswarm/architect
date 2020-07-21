@@ -30,7 +30,7 @@ func validateSingleOccurrence(data []byte, regexps ...*regexp.Regexp) error {
 	}
 
 	if matches == 0 {
-		return microerror.Maskf(executionFailedError, "no match for pattern %#q match found in data:\n---\n%s\n---", combined, data)
+		return microerror.Maskf(executionFailedError, "no match for pattern %#q found in data:\n---\n%s\n---", combined, data)
 	}
 	if matches > 1 {
 		return microerror.Maskf(executionFailedError, "%d pattern %#q matches found, expected 1 in data:\n---\n%s\n---", matches, combined, data)

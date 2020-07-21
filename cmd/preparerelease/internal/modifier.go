@@ -85,7 +85,7 @@ func (m *Modifier) addReleaseToChangelogMd(content []byte) ([]byte, error) {
 	//
 	//	[Unreleased]: https://github.com//REPOSITORY_NAME/tree/master
 	//
-	bottomLinksFirstRelease := regexp.MustCompile(`\[Unreleased\]:\s+https://github.com/\S+/tree/master\s*`)
+	bottomLinksFirstRelease := regexp.MustCompile(`\[Unreleased\]:\s+https://github.com/\S+/tree/\S+\s*`)
 	bottomLinksFirstReleaseReplacement := strings.Join([]string{
 		fmt.Sprintf("[Unreleased]: https://github.com/%s/compare/v%s...HEAD", m.repo, m.newVersion),
 		fmt.Sprintf("[%s]: https://github.com/%s/releases/tag/v%s", m.newVersion, m.repo, m.newVersion),
@@ -108,6 +108,49 @@ func (m *Modifier) addReleaseToChangelogMd(content []byte) ([]byte, error) {
 	content = unreleasedHeader.ReplaceAll(content, []byte(unreleasedHeaderReplacement))
 	content = bottomLinks.ReplaceAll(content, []byte(bottomLinksReplacement))
 	content = bottomLinksFirstRelease.ReplaceAll(content, []byte(bottomLinksFirstReleaseReplacement))
+
+	return content, nil
+}
+
+func (m *Modifier) UpdateVersionInGoMod() error {
+	file := FileGoMod
+	modifyFunc := m.updateVersionInGoMod
+
+	err := modifyFile(filepath.Join(m.workingDir, file), modifyFunc)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	return nil
+}
+
+func (m *Modifier) updateVersionInGoMod(content []byte) ([]byte, error) {
+	var err error
+
+	moduleSuffix := "/v" + strings.Split(m.newVersion, ".")[0]
+	if moduleSuffix == "/v0" || moduleSuffix == "/v1" {
+		moduleSuffix = ""
+	}
+
+	// Define replacements.
+
+	// To match strings like:
+	//
+	//	module github.com/giantswarm/architect
+	//	module github.com/giantswarm/architect/v2
+	//
+	module := regexp.MustCompile(`(?m)^(module \S+)(?:/v\d+)?(\s+)$`)
+	moduleReplacement := fmt.Sprintf(`$1%s$2`, moduleSuffix)
+
+	// Validate.
+
+	err = validateSingleOccurrence(content, module)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	// Execute replacements.
+	content = module.ReplaceAll(content, []byte(moduleReplacement))
 
 	return content, nil
 }
