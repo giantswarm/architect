@@ -2,16 +2,6 @@ version: 2.1
 orbs:
   architect: giantswarm/architect@0.8.3
 
-jobs:
-  release:
-    machine: true
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run: |
-          ./github-release.sh $CIRCLE_TAG $PERSONAL_ACCESS_TOKEN
-
 workflows:
   go-build:
     jobs:
@@ -32,14 +22,5 @@ workflows:
             - go-build-architect
           filters:
             # Needed to trigger job also on git tag.
-            tags:
-              only: /^v.*/
-
-      - release:
-          requires:
-            - push-architect-to-docker
-          filters:
-            branches:
-              ignore: /.*/
             tags:
               only: /^v.*/
