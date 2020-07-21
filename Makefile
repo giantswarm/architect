@@ -13,8 +13,7 @@ SOURCES        := $(shell find . -name '*.go')
 VERSION        := $(shell architect project version)
 LDFLAGS        ?= -w -linkmode 'auto' -extldflags '-static' \
   -X '$(shell go list .)/pkg/project.buildTimestamp=${BUILDTIMESTAMP}' \
-  -X '$(shell go list .)/pkg/project.gitSHA=${GITSHA1}' \
-  -X '$(shell go list .)/pkg/project.version=${VERSION}'
+  -X '$(shell go list .)/pkg/project.gitSHA=${GITSHA1}'
 .DEFAULT_GOAL := build
 
 .PHONY: build build-darwin build-linux
