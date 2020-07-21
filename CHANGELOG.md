@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `camel` installation to `deploy` command.
 - Update module line in go.mod file (if it exists) when major version is bigger
   than 1 in `prepare-release` command.
 
