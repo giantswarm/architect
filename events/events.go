@@ -75,6 +75,7 @@ var environmentProjects = map[Environment][]string{
 	"talos":    azureProjectList,
 	"victory":  azureProjectList,
 	"viking":   awsProjectList,
+	"visitor":  awsProjectList,
 }
 
 // testingGroup is a specific grouping of environments that are considered
