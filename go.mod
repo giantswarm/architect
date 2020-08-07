@@ -7,7 +7,7 @@ require (
 	github.com/cenk/backoff v2.2.1+incompatible
 	github.com/cyphar/filepath-securejoin v0.2.2 // indirect
 	github.com/giantswarm/app v0.2.3
-	github.com/giantswarm/gitrepo v0.1.1
+	github.com/giantswarm/gitrepo v0.1.2
 	github.com/giantswarm/microerror v0.2.1
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/google/go-cmp v0.5.1
