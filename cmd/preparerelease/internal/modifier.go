@@ -174,10 +174,23 @@ func (m *Modifier) updateVersionInProjectGo(content []byte) ([]byte, error) {
 
 	// To match strings like:
 	//
+	// version = "1.2.3-1"
+	//
+	// Skip version update as it must stay the same
+
+	version := regexp.MustCompile(`[0-9]+\.[0-9]+\.[0-9]+-([0-9])+`)
+	if version.MatchString(m.newVersion) {
+		return content, nil
+	}
+
+	fmt.Println("no match")
+
+	// To match strings like:
+	//
 	//	version = "1.2.3"
 	//	version = "1.2.3-any-suffix"
 	//
-	version := regexp.MustCompile(`(version\s*=\s*)"[0-9]+\.[0-9]+\.[0-9]+\S*"`)
+	version = regexp.MustCompile(`(version\s*=\s*)"[0-9]+\.[0-9]+\.[0-9]+\S*"`)
 	versionReplacement := fmt.Sprintf(`$1"%s"`, m.newVersion)
 
 	// Validate.
