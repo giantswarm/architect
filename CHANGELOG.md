@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Chagned
+### Fixed
 
-- Ignore reference versions in `helm template` command.
+- Fix `helm template` rendering for reference versions in.
 
 ## [2.1.2] - 2020-08-11
 
