@@ -55,7 +55,7 @@ func (t TemplateHelmChartTask) Run(validate, tagBuild bool) error {
 	var refVersion bool
 	{
 		version := regexp.MustCompile(`[0-9]+\.[0-9]+\.[0-9]+-[0-9]+`)
-		if version.MatchString(t.appVersion) {
+		if version.MatchString(t.chartVersion) {
 			refVersion = true
 		}
 	}
