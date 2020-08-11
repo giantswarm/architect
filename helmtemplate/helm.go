@@ -54,7 +54,7 @@ func (t TemplateHelmChartTask) Run(validate, tagBuild bool) error {
 	// Reference version is version like `v0.1.0-1`
 	var refVersion bool
 	{
-		version := regexp.MustCompile(`[0-9]+\.[0-9]+\.[0-9]+-([0-9])+`)
+		version := regexp.MustCompile(`[0-9]+\.[0-9]+\.[0-9]+-[0-9]+`)
 		if version.MatchString(t.appVersion) {
 			refVersion = true
 		}
