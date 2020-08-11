@@ -74,7 +74,7 @@ func (m *Modifier) addReleaseToChangelogMd(content []byte) ([]byte, error) {
 	//
 	//	[Unreleased]: https://github.com/giantswarm/REPOSITORY_NAME/compare/v1.2.3...HEAD
 	//
-	bottomLinks := regexp.MustCompile(`\[Unreleased\]:\s+https://github.com/\S+/compare/v(\d+\.\d+\.\d+)\.\.\.HEAD\s*`)
+	bottomLinks := regexp.MustCompile(`\[Unreleased\]:\s+https://github.com/\S+/compare/v(\d+\.\d+\.\d(-\d+)?)\.\.\.HEAD\s*`)
 	bottomLinksReplacement := strings.Join([]string{
 		fmt.Sprintf("[Unreleased]: https://github.com/%s/compare/v%s...HEAD", m.repo, m.newVersion),
 		fmt.Sprintf("[%s]: https://github.com/%s/compare/v${1}...v%s", m.newVersion, m.repo, m.newVersion),
@@ -174,10 +174,21 @@ func (m *Modifier) updateVersionInProjectGo(content []byte) ([]byte, error) {
 
 	// To match strings like:
 	//
+	// version = "1.2.3-1"
+	//
+	// Skip version update as it must stay the same
+
+	version := regexp.MustCompile(`[0-9]+\.[0-9]+\.[0-9]+-([0-9])+`)
+	if version.MatchString(m.newVersion) {
+		return content, nil
+	}
+
+	// To match strings like:
+	//
 	//	version = "1.2.3"
 	//	version = "1.2.3-any-suffix"
 	//
-	version := regexp.MustCompile(`(version\s*=\s*)"[0-9]+\.[0-9]+\.[0-9]+\S*"`)
+	version = regexp.MustCompile(`(version\s*=\s*)"[0-9]+\.[0-9]+\.[0-9]+\S*"`)
 	versionReplacement := fmt.Sprintf(`$1"%s"`, m.newVersion)
 
 	// Validate.

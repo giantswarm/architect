@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Handle release versions like `0.1.0-1` in `prepare-release` command.
+- Do not update version in `project.go` file for replacement releases (versions `0.1.0-x`).
+
 ## [2.1.1] - 2020-08-05
 
 ### Added
