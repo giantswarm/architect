@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix `helm template` rendering for reference versions in.
+
 ## [2.1.2] - 2020-08-11
 
 ### Added
