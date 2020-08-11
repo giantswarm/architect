@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"path"
+	"regexp"
 	"text/template"
 
 	"github.com/giantswarm/microerror"
@@ -48,11 +49,22 @@ type Config struct {
 
 // Run templates the chart's Chart.yaml and templates/deployment.yaml.
 func (t TemplateHelmChartTask) Run(validate, tagBuild bool) error {
+	// Check if version is the reference version
+	//
+	// Reference version is version like `v0.1.0-1`
+	var refVersion bool
+	{
+		version := regexp.MustCompile(`[0-9]+\.[0-9]+\.[0-9]+-([0-9])+`)
+		if version.MatchString(t.appVersion) {
+			refVersion = true
+		}
+	}
+
 	// We expect versions to match for a tagged build if pkg/project/project.go
 	// file has been found. Otherwise (project.go not found) t.appVersion will
 	// be empty, which will always be the case for Managed Apps as appVersion will
 	// refer to the version of the application being installed.
-	if validate && tagBuild && t.appVersion != "" && t.chartVersion != t.appVersion && !t.skipAppVersionCheck {
+	if validate && tagBuild && t.appVersion != "" && t.chartVersion != t.appVersion && !t.skipAppVersionCheck && !refVersion {
 		return microerror.Maskf(
 			validationFailedError,
 			"version in git tag must be equal to version in pkg/project/project.go: %#q != %#q, this release is **broken**, create another one",
