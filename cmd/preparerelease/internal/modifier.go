@@ -183,8 +183,6 @@ func (m *Modifier) updateVersionInProjectGo(content []byte) ([]byte, error) {
 		return content, nil
 	}
 
-	fmt.Println("no match")
-
 	// To match strings like:
 	//
 	//	version = "1.2.3"
