@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Remove `panther` installation from `deploy` command.
+- Remove `platypus` installation from `deploy` command.
+
+### Added
+
+- Add `bandicoot` installation to `deploy` command.
+
 ## [2.1.4] - 2020-08-12
 
 ### Fixed
