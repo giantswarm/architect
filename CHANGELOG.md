@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Remove `avatar` installation from `deploy` command.
 - Remove `panther` installation from `deploy` command.
 - Remove `platypus` installation from `deploy` command.
 
