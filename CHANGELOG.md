@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `nancy` binary to image to use for vulnerability scanning.
+
 ## [2.1.5] - 2020-08-13
 
 ### Changed
