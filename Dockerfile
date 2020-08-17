@@ -39,7 +39,7 @@ RUN apk add --no-cache \
             tar -C /usr/bin --strip-components 1 -xvzf - linux-amd64/helm && \
         curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
             sh -s -- -b $GOPATH/bin ${GOLANGCI_LINT_VERSION} && \
-        curl -L -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-linux.amd64-${NANCY_VERSION} && \
+        curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-linux.amd64-${NANCY_VERSION} && \
         chmod +x /usr/bin/nancy
 
 # Setup ssh config for github.com
