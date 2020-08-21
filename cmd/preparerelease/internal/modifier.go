@@ -112,49 +112,6 @@ func (m *Modifier) addReleaseToChangelogMd(content []byte) ([]byte, error) {
 	return content, nil
 }
 
-func (m *Modifier) UpdateVersionInGoMod() error {
-	file := FileGoMod
-	modifyFunc := m.updateVersionInGoMod
-
-	err := modifyFile(filepath.Join(m.workingDir, file), modifyFunc)
-	if err != nil {
-		return microerror.Mask(err)
-	}
-
-	return nil
-}
-
-func (m *Modifier) updateVersionInGoMod(content []byte) ([]byte, error) {
-	var err error
-
-	moduleSuffix := "/v" + strings.Split(m.newVersion, ".")[0]
-	if moduleSuffix == "/v0" || moduleSuffix == "/v1" {
-		moduleSuffix = ""
-	}
-
-	// Define replacements.
-
-	// To match strings like:
-	//
-	//	module github.com/giantswarm/architect
-	//	module github.com/giantswarm/architect/v2
-	//
-	module := regexp.MustCompile(`(?m)^(module \S+)(?:/v\d+)?(\s+)$`)
-	moduleReplacement := fmt.Sprintf(`$1%s$2`, moduleSuffix)
-
-	// Validate.
-
-	err = validateSingleOccurrence(content, module)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	// Execute replacements.
-	content = module.ReplaceAll(content, []byte(moduleReplacement))
-
-	return content, nil
-}
-
 func (m *Modifier) UpdateVersionInProjectGo() error {
 	file := FileProjectGo
 	modifyFunc := m.updateVersionInProjectGo
