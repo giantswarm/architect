@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Move `deploy` to `legacy deploy` and strip down the functionality to only
+  creating GitHub deployment events.
+
 ### Removed
 
 - Remove legacy commands:
