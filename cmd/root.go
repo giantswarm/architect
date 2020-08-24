@@ -41,6 +41,10 @@ func init() {
 		c := micrologger.Config{}
 
 		logger, err = micrologger.New(c)
+		if err != nil {
+			panic(microerror.Pretty(microerror.Mask(err), true))
+		}
+
 	}
 
 	var stderr, stdout io.Writer
