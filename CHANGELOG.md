@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove legacy commands:
+    - build
+    - publish
+    - release
+    - unpublish
+
 ## [2.1.6] - 2020-08-18
 
 ### Added
