@@ -4,10 +4,11 @@ import (
 	"io"
 	"os"
 
-	"github.com/giantswarm/architect/cmd/legacy/deploy"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/cobra"
+
+	"github.com/giantswarm/architect/cmd/legacy/deploy"
 )
 
 const (
