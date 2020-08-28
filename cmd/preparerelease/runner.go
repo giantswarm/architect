@@ -44,15 +44,6 @@ func runPrepareRelease(cmd *cobra.Command, args []string) error {
 	}
 	cmd.Printf("File %#q updated.\n", internal.FileChangelogMd)
 
-	err = m.UpdateVersionInGoMod()
-	if internal.IsFileNotFound(err) {
-		// Fall trough. Some projects do not have project.go file.
-	} else if err != nil {
-		return microerror.Mask(err)
-	} else {
-		cmd.Printf("File %#q updated.\n", internal.FileProjectGo)
-	}
-
 	err = m.UpdateVersionInProjectGo()
 	if internal.IsFileNotFound(err) {
 		// Fall trough. Some projects do not have project.go file.
