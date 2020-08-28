@@ -19,7 +19,7 @@ require (
 	golang.org/x/net v0.0.0-20200520004742-59133d7f0dd7 // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
-	golang.org/x/sys v0.0.0-20200615200032-f1bc736245b1 // indirect
+	golang.org/x/sys v0.0.0-20200828161417-c663848e9a16 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/yaml.v2 v2.3.0
@@ -27,3 +27,5 @@ require (
 	k8s.io/utils v0.0.0-20200619165400-6e3d28b6ed19 // indirect
 	sigs.k8s.io/yaml v1.2.0
 )
+
+replace github.com/gorilla/websocket v1.4.0 => github.com/gorilla/websocket v1.4.2
