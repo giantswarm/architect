@@ -1,17 +1,21 @@
 package cmd
 
 import (
+	"io"
 	"log"
 	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
 
+	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/micrologger"
+
 	"github.com/giantswarm/architect/cmd/create"
 	"github.com/giantswarm/architect/cmd/helm"
+	"github.com/giantswarm/architect/cmd/legacy"
 	"github.com/giantswarm/architect/cmd/preparerelease"
 	cmdProject "github.com/giantswarm/architect/cmd/project"
-	"github.com/giantswarm/architect/cmd/release"
 )
 
 var (
@@ -30,6 +34,39 @@ var (
 )
 
 func init() {
+	var err error
+
+	var logger micrologger.Logger
+	{
+		c := micrologger.Config{}
+
+		logger, err = micrologger.New(c)
+		if err != nil {
+			panic(microerror.Pretty(microerror.Mask(err), true))
+		}
+
+	}
+
+	var stderr, stdout io.Writer
+	{
+		stderr = os.Stderr
+		stdout = os.Stdout
+	}
+
+	var legacyCmd *cobra.Command
+	{
+		c := legacy.Config{
+			Logger: logger,
+			Stderr: stderr,
+			Stdout: stdout,
+		}
+
+		legacyCmd, err = legacy.New(c)
+		if err != nil {
+			panic(microerror.Pretty(microerror.Mask(err), true))
+		}
+	}
+
 	// Get the current working directory, to use as a default.
 	defaultWorkingDirectory, err := os.Getwd()
 	if err != nil {
@@ -63,9 +100,9 @@ func init() {
 
 	RootCmd.PersistentFlags().BoolVar(&dryRun, "dry-run", dryRun, "show what would be executed, but take no action")
 
-	RootCmd.AddCommand(release.Cmd)
-	RootCmd.AddCommand(helm.Cmd)
 	RootCmd.AddCommand(cmdProject.Cmd)
 	RootCmd.AddCommand(create.Cmd)
+	RootCmd.AddCommand(helm.Cmd)
+	RootCmd.AddCommand(legacyCmd)
 	RootCmd.AddCommand(preparerelease.Cmd)
 }
