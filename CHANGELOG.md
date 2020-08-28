@@ -7,11 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Move `deploy` to `legacy deploy` and strip down the functionality to only
+  creating GitHub deployment events.
+
 ### Removed
 
 - Remove updating module line in go.mod file (if it exists) when major version
   is bigger than 1 in `prepare-release` command added in 2.1.0. It was buggy.
   Expectation is to have a validation instead.
+- Remove legacy commands:
+    - build
+    - publish
+    - release
+    - unpublish
 
 ## [2.1.6] - 2020-08-18
 

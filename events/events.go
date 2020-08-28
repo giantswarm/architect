@@ -9,6 +9,13 @@ import (
 	"github.com/giantswarm/microerror"
 )
 
+type Group string
+
+const (
+	GroupAll     Group = "all"
+	GroupTesting Group = "testing"
+)
+
 var (
 	// services used in all our installations
 	baseProjectList = []string{
@@ -101,13 +108,13 @@ func isTestingEnvironment(environment Environment) bool {
 // GetEnvironments takes a project name, and returns a list of environments
 // where this project should be deployed to. If group is 'testing', then it
 // only considers environments in the testingGroup.
-func GetEnvironments(project string, group string) []Environment {
+func GetEnvironments(project string, group Group) []Environment {
 	environments := []Environment{}
 
 	for environment, projects := range environmentProjects {
 		// Skip environments that are not testing environments
 		// if we are requesting deploys to the testing group
-		if group == "testing" && !isTestingEnvironment(environment) {
+		if group == GroupTesting && !isTestingEnvironment(environment) {
 			continue
 		}
 
