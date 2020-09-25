@@ -1,6 +1,6 @@
 module github.com/giantswarm/architect
 
-go 1.14
+go 1.15
 
 require (
 	github.com/cenk/backoff v2.2.1+incompatible

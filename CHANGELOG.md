@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Move `deploy` to `legacy deploy` and strip down the functionality to only
   creating GitHub deployment events.
+- Update `go` version to `v1.15.2`.
 
 ### Removed
 
