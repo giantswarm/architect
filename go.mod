@@ -14,7 +14,7 @@ require (
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/spf13/afero v1.4.0
+	github.com/spf13/afero v1.4.1
 	github.com/spf13/cobra v1.0.0
 	golang.org/x/net v0.0.0-20200520004742-59133d7f0dd7 // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
