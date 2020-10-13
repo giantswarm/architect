@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Accept alphanumeric strings for release suffix rather than only numbers in prepare-release command.
+
 ## [3.0.1] - 2020-10-07
 
 ### Added
