@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.3] - 2020-10-14
+
+## [3.0.2] - 2020-10-14
+
+### Fixed
+
+- Accept alphanumeric strings for release suffix rather than only numbers in prepare-release command.
+
+## [3.0.1] - 2020-10-07
+
+### Added
+
+- Added `orion` installation.
+
 ## [3.0.0] - 2020-09-24
 
 ### Changed
@@ -162,7 +176,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v3.0.3...HEAD
+[3.0.3]: https://github.com/giantswarm/architect/compare/v3.0.2...v3.0.3
+[3.0.2]: https://github.com/giantswarm/architect/compare/v3.0.1...v3.0.2
+[3.0.1]: https://github.com/giantswarm/architect/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/giantswarm/architect/compare/v2.1.6...v3.0.0
 [2.1.6]: https://github.com/giantswarm/architect/compare/v2.1.5...v2.1.6
 [2.1.5]: https://github.com/giantswarm/architect/compare/v2.1.4...v2.1.5
