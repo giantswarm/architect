@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.6] - 2020-11-13
+
+### Added
+
+- Added `exodus` installation.
+
+## [3.0.5] - 2020-10-20
+
+### Added
+
+- Added `gremlin` installation.
+
+## [3.0.4] - 2020-10-16
+
+### Fixed
+
+- Fix `prepare-release` when running on multi-digit patch version.
+
 ## [3.0.3] - 2020-10-14
 
 ## [3.0.2] - 2020-10-14
@@ -176,7 +194,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v3.0.3...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v3.0.6...HEAD
+[3.0.6]: https://github.com/giantswarm/architect/compare/v3.0.5...v3.0.6
+[3.0.5]: https://github.com/giantswarm/architect/compare/v3.0.4...v3.0.5
+[3.0.4]: https://github.com/giantswarm/architect/compare/v3.0.3...v3.0.4
 [3.0.3]: https://github.com/giantswarm/architect/compare/v3.0.2...v3.0.3
 [3.0.2]: https://github.com/giantswarm/architect/compare/v3.0.1...v3.0.2
 [3.0.1]: https://github.com/giantswarm/architect/compare/v3.0.0...v3.0.1
