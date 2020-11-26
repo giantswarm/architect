@@ -22,7 +22,7 @@ require (
 	golang.org/x/sys v0.0.0-20200615200032-f1bc736245b1 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
-	gopkg.in/yaml.v2 v2.3.0
+	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/apiextensions-apiserver v0.18.5 // indirect
 	k8s.io/utils v0.0.0-20200619165400-6e3d28b6ed19 // indirect
 	sigs.k8s.io/yaml v1.2.0
