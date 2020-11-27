@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.1] - 2020-11-27
+
 ### Fixed
 
 - Fix app CR configmap and secret flags.
@@ -204,7 +206,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v3.1.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v3.1.1...HEAD
+[3.1.1]: https://github.com/giantswarm/architect/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/giantswarm/architect/compare/v3.0.6...v3.1.0
 [3.0.6]: https://github.com/giantswarm/architect/compare/v3.0.5...v3.0.6
 [3.0.5]: https://github.com/giantswarm/architect/compare/v3.0.4...v3.0.5
