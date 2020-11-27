@@ -4,6 +4,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var flag struct {
+	AppName             string
+	AppNamespace        string
+	AppVersion          string
+	Catalog             string
+	DisableForceUpgrade bool
+	Name                string
+	Output              string
+	UserConfigMapName   string
+	UserSecretName      string
+}
+
 func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "appcr",
@@ -11,15 +23,15 @@ func NewCommand() *cobra.Command {
 		RunE:  runAppCRError,
 	}
 
-	cmd.Flags().String("app-name", "", "app name")
-	cmd.Flags().String("app-namespace", "giantswarm", "app namespace")
-	cmd.Flags().String("app-version", "", "app version")
-	cmd.Flags().String("catalog", "", "app catalog name")
-	cmd.Flags().Bool("disable-force-upgrade", false, "disable helm chart force upgrade")
-	cmd.Flags().String("name", "", "cr name")
-	cmd.Flags().StringP("output", "o", "yaml", "output format. allowed: yaml,json")
-	cmd.Flags().String("user-configmap-name", "", "user configmap name")
-	cmd.Flags().String("user-secret-name", "", "user secret name")
+	cmd.Flags().StringVar(&flag.AppName, "app-name", "", "app name")
+	cmd.Flags().StringVar(&flag.AppNamespace, "app-namespace", "giantswarm", "app namespace")
+	cmd.Flags().StringVar(&flag.AppVersion, "app-version", "", "app version")
+	cmd.Flags().StringVar(&flag.Catalog, "catalog", "", "app catalog name")
+	cmd.Flags().BoolVar(&flag.DisableForceUpgrade, "disable-force-upgrade", false, "disable helm chart force upgrade")
+	cmd.Flags().StringVar(&flag.Name, "name", "", "cr name")
+	cmd.Flags().StringVarP(&flag.Output, "output", "o", "yaml", "output format. allowed: yaml,json")
+	cmd.Flags().StringVar(&flag.UserConfigMapName, "user-configmap-name", "", "user configmap name")
+	cmd.Flags().StringVar(&flag.UserSecretName, "user-secret-name", "", "user secret name")
 
 	return cmd
 }
