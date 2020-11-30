@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/cenk/backoff v2.2.1+incompatible
-	github.com/giantswarm/app/v3 v3.4.0
+	github.com/giantswarm/app/v3 v3.5.0
 	github.com/giantswarm/gitrepo v0.1.2
 	github.com/giantswarm/microerror v0.2.1
 	github.com/giantswarm/micrologger v0.3.4
