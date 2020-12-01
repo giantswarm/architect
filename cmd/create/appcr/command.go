@@ -5,7 +5,6 @@ import (
 )
 
 var flag struct {
-	Annotations         []string
 	AppName             string
 	AppNamespace        string
 	AppVersion          string
@@ -25,7 +24,6 @@ func NewCommand() *cobra.Command {
 		RunE:  runAppCRError,
 	}
 
-	cmd.Flags().StringSliceVar(&flag.Annotations, "annotations", nil, "list of annotations to add to the generated App CR in `name=value,...` format")
 	cmd.Flags().StringVar(&flag.AppName, "app-name", "", "app name")
 	cmd.Flags().StringVar(&flag.AppNamespace, "app-namespace", "giantswarm", "app namespace")
 	cmd.Flags().StringVar(&flag.AppVersion, "app-version", "", "app version")
