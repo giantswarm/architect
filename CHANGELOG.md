@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `--config-major-version` flag to the `create appcr` command.
+
 ## [3.1.1] - 2020-11-27
 
 ### Fixed

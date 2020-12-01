@@ -15,6 +15,7 @@ func runAppCRError(cmd *cobra.Command, args []string) error {
 		AppNamespace:        flag.AppNamespace,
 		AppCatalog:          flag.Catalog,
 		AppVersion:          flag.AppVersion,
+		ConfigMajorVersion:  flag.ConfigMajorVersion,
 		DisableForceUpgrade: flag.DisableForceUpgrade,
 		Name:                flag.Name,
 		UserConfigMapName:   flag.UserConfigMapName,
