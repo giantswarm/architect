@@ -22,17 +22,22 @@ func Test_validateConfigVersion(t *testing.T) {
 			errorMatcher:       nil,
 		},
 		{
-			name:               "case 2: invalid - provided minor",
+			name:               "case 2: valid empty string",
+			inputConfigVersion: "",
+			errorMatcher:       nil,
+		},
+		{
+			name:               "case 3: invalid - provided minor",
 			inputConfigVersion: "1.2.x",
 			errorMatcher:       func(err error) bool { return err != nil },
 		},
 		{
-			name:               "case 3: invalid - provided minor and patch",
+			name:               "case 4: invalid - provided minor and patch",
 			inputConfigVersion: "1.2.3",
 			errorMatcher:       func(err error) bool { return err != nil },
 		},
 		{
-			name:               "case 3: invalid - starts with number and dot",
+			name:               "case 5: invalid - starts with number and dot",
 			inputConfigVersion: "100.not-x.x",
 			errorMatcher:       func(err error) bool { return err != nil },
 		},
