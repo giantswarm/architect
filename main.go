@@ -1,13 +1,19 @@
 package main
 
 import (
-	"log"
+	"fmt"
+	"os"
+
+	"github.com/giantswarm/microerror"
 
 	"github.com/giantswarm/architect/cmd"
 )
 
 func main() {
+	cmd.RootCmd.SilenceErrors = true
+	cmd.RootCmd.SilenceUsage = true
 	if err := cmd.RootCmd.Execute(); err != nil {
-		log.Fatalf("%v\n", err)
+		fmt.Fprintf(os.Stderr, "Error: %s\n", microerror.Pretty(err, true))
+		os.Exit(2)
 	}
 }
