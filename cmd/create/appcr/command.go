@@ -9,7 +9,7 @@ var flag struct {
 	AppNamespace        string
 	AppVersion          string
 	Catalog             string
-	ConfigMajorVersion  int
+	ConfigVersion       string
 	DisableForceUpgrade bool
 	Name                string
 	Output              string
@@ -28,7 +28,7 @@ func NewCommand() *cobra.Command {
 	cmd.Flags().StringVar(&flag.AppNamespace, "app-namespace", "giantswarm", "app namespace")
 	cmd.Flags().StringVar(&flag.AppVersion, "app-version", "", "app version")
 	cmd.Flags().StringVar(&flag.Catalog, "catalog", "", "app catalog name")
-	cmd.Flags().IntVar(&flag.ConfigMajorVersion, "config-major-version", 0, "major version of giantswarm/config to use for this App CR")
+	cmd.Flags().StringVar(&flag.ConfigVersion, "config-version", "", "major version of giantswarm/config to use for this App CR")
 	cmd.Flags().BoolVar(&flag.DisableForceUpgrade, "disable-force-upgrade", false, "disable helm chart force upgrade")
 	cmd.Flags().StringVar(&flag.Name, "name", "", "CR name")
 	cmd.Flags().StringVarP(&flag.Output, "output", "o", "yaml", "output format. allowed: yaml,json")
