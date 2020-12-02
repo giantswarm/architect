@@ -118,6 +118,7 @@ github.com/containerd/go-runc v0.0.0-20180907222934-5a6d9f37cfa3/go.mod h1:IV7qH
 github.com/containerd/ttrpc v0.0.0-20190828154514-0e0f228740de/go.mod h1:PvCDdDGpgqzQIzDW1TphrGLssLDZp2GuS+X5DkEJB8o=
 github.com/containerd/typeurl v0.0.0-20180627222232-a93fcdb778cd/go.mod h1:Cm3kwCdlkCfMSHURc+r6fwoGH6/F1hH3S4sg0rLFWPc=
 github.com/coredns/corefile-migration v1.0.10/go.mod h1:RMy/mXdeDlYwzt0vdMEJvT2hGJ2I86/eO0UdXmH9XNI=
+github.com/coredns/corefile-migration v1.0.11/go.mod h1:RMy/mXdeDlYwzt0vdMEJvT2hGJ2I86/eO0UdXmH9XNI=
 github.com/coreos/bbolt v1.3.2/go.mod h1:iRUV2dpdMOn7Bo10OQBFzIJO9kkE559Wcmn+qkEiiKk=
 github.com/coreos/etcd v3.3.10+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
 github.com/coreos/etcd v3.3.13+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
@@ -196,10 +197,10 @@ github.com/garyburd/redigo v0.0.0-20150301180006-535138d7bcd7/go.mod h1:NR3MbYis
 github.com/ghodss/yaml v0.0.0-20150909031657-73d445a93680/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/giantswarm/apiextensions/v3 v3.4.0/go.mod h1:MMLkRJta4mbTbrikP9LewADiCL+55LmsagyhdTU7XAY=
-github.com/giantswarm/apiextensions/v3 v3.8.0 h1:gRqlNE62k49EdXYKBaShH0jkFBoOuGPxIgEnD5SZCx4=
-github.com/giantswarm/apiextensions/v3 v3.8.0/go.mod h1:MMLkRJta4mbTbrikP9LewADiCL+55LmsagyhdTU7XAY=
-github.com/giantswarm/app/v3 v3.5.0 h1:/L8CFLKYo4Fx9yv98XE4qLWKD04jUFleekhPoDLUlhs=
-github.com/giantswarm/app/v3 v3.5.0/go.mod h1:WAPynam+MGDQ6mOnbW51omef+2eubgEYBCZYnB3BPcI=
+github.com/giantswarm/apiextensions/v3 v3.10.0 h1:PTnggmPA9negFaxgFfsAhtpgZ12jCTtoMsjOIHwbjC4=
+github.com/giantswarm/apiextensions/v3 v3.10.0/go.mod h1:f+dFUDLroK50aCGzvpqPw/jCFCCgJqdEMf/xNSJBI+A=
+github.com/giantswarm/app/v3 v3.6.0 h1:QibLpJ2P0fWGHJpAe5m05F/7Gv5EcvfDdqz4MQrS2Vg=
+github.com/giantswarm/app/v3 v3.6.0/go.mod h1:MaipQT4HHincwXssQBxYFBGHlXjHMF/uopIJhMmYyAY=
 github.com/giantswarm/backoff v0.2.0/go.mod h1:Z3WRsFilSJ5H5VlFa4XhraoPr+9pmZgYasoY2OSfNOk=
 github.com/giantswarm/gitrepo v0.1.2 h1:EJhWyRGm17VvjGz1rMjI3LLGNyQlofrcwLiaB7AuktY=
 github.com/giantswarm/gitrepo v0.1.2/go.mod h1:V80tQA1a3SjFDQKXSiiA5F3k/0A3VK5SwGzkoV2RwlI=
@@ -331,8 +332,8 @@ github.com/google/go-cmp v0.3.1/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMyw
 github.com/google/go-cmp v0.4.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.4.1/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-cmp v0.5.2/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
-github.com/google/go-cmp v0.5.3 h1:x95R7cp+rSeeqAMI2knLtQ0DKlaBhv2NrtrOvafPHRo=
-github.com/google/go-cmp v0.5.3/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
+github.com/google/go-cmp v0.5.4 h1:L8R9j+yAqZuZjsqh/z+F1NCffTKKLShY6zXTItVIZ8M=
+github.com/google/go-cmp v0.5.4/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/go-github v17.0.0+incompatible h1:N0LgJ1j65A7kfXrZnUDaYCs/Sf4rEjNlfyDHW9dolSY=
 github.com/google/go-github v17.0.0+incompatible/go.mod h1:zLgOLi98H3fifZn+44m+umXrS52loVEgC2AApnigrVQ=
 github.com/google/go-querystring v1.0.0 h1:Xkwi/a1rcvNg1PPYe5vI8GbeBY/jrVuDX5ASuANWTrk=
@@ -1079,6 +1080,7 @@ rsc.io/binaryregexp v0.2.0/go.mod h1:qTv7/COck+e2FymRvadv62gMdZztPaShugOCi3I+8D8
 rsc.io/letsencrypt v0.0.3/go.mod h1:buyQKZ6IXrRnB7TdkHP0RyEybLx18HHyOSoTyoOLqNY=
 sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.0.7/go.mod h1:PHgbrJT7lCHcxMU+mDHEm+nx46H4zuuHZkDP6icnhu0=
 sigs.k8s.io/cluster-api v0.3.10/go.mod h1:XBBDBiaczcyNlH4D7FNjSKc5bBofYRppfg0ZgaP2x1U=
+sigs.k8s.io/cluster-api v0.3.11/go.mod h1:bKh9AXgYRu5d3483NpEVlcVJujDN+rBqMXpG5o69Xss=
 sigs.k8s.io/controller-runtime v0.5.11/go.mod h1:OTqxLuz7gVcrq+BHGUgedRu6b2VIKCEc7Pu4Jbwui0A=
 sigs.k8s.io/controller-runtime v0.6.3/go.mod h1:WlZNXcM0++oyaQt4B7C2lEE5JYRs8vJUzRP4N4JpdAY=
 sigs.k8s.io/kind v0.7.1-0.20200303021537-981bd80d3802/go.mod h1:HIZ3PWUezpklcjkqpFbnYOqaqsAE1JeCTEwkgvPLXjk=
