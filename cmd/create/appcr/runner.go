@@ -10,11 +10,19 @@ import (
 )
 
 func runAppCRError(cmd *cobra.Command, args []string) error {
+	var err error
+
+	err = validateConfigVersion(flag.ConfigVersion)
+	if err != nil {
+		return err
+	}
+
 	config := app.Config{
 		AppName:             flag.AppName,
 		AppNamespace:        flag.AppNamespace,
 		AppCatalog:          flag.Catalog,
 		AppVersion:          flag.AppVersion,
+		ConfigVersion:       flag.ConfigVersion,
 		DisableForceUpgrade: flag.DisableForceUpgrade,
 		Name:                flag.Name,
 		UserConfigMapName:   flag.UserConfigMapName,
@@ -23,7 +31,7 @@ func runAppCRError(cmd *cobra.Command, args []string) error {
 
 	appCR := app.NewCR(config)
 
-	err := app.Print(os.Stdout, flag.Output, appCR)
+	err = app.Print(os.Stdout, flag.Output, appCR)
 	if err != nil {
 		return microerror.Mask(err)
 	}
