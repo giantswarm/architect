@@ -10,7 +10,7 @@ require (
 	github.com/giantswarm/micrologger v0.4.0
 	github.com/google/go-cmp v0.5.4
 	github.com/google/go-github v17.0.0+incompatible
-	github.com/spf13/afero v1.5.0
+	github.com/spf13/afero v1.5.1
 	github.com/spf13/cobra v1.1.1
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
