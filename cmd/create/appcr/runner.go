@@ -18,16 +18,16 @@ func runAppCRError(cmd *cobra.Command, args []string) error {
 	}
 
 	config := app.Config{
-		AppName:              flag.AppName,
-		AppNamespace:         flag.AppNamespace,
-		AppCatalog:           flag.Catalog,
-		AppVersion:           flag.AppVersion,
-		ConfigVersion:        flag.ConfigVersion,
-		DisableForceUpgrade:  flag.DisableForceUpgrade,
-		Name:                 flag.Name,
-		PauseReconcilliation: flag.PauseReconcilliation,
-		UserConfigMapName:    flag.UserConfigMapName,
-		UserSecretName:       flag.UserSecretName,
+		AppName:             flag.AppName,
+		AppNamespace:        flag.AppNamespace,
+		AppCatalog:          flag.Catalog,
+		AppVersion:          flag.AppVersion,
+		ConfigVersion:       flag.ConfigVersion,
+		DisableForceUpgrade: flag.DisableForceUpgrade,
+		Name:                flag.Name,
+		PauseReconciliation: flag.PauseReconciliation,
+		UserConfigMapName:   flag.UserConfigMapName,
+		UserSecretName:      flag.UserSecretName,
 	}
 
 	appCR := app.NewCR(config)
