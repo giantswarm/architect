@@ -46,7 +46,6 @@ type Environment string
 // We use codenames for installations to not expose customer information.
 var environmentProjects = map[Environment][]string{
 	"alpaca":    awsProjectList,
-	"amagon":    kvmProjectList,
 	"anteater":  awsProjectList,
 	"antelope":  awsProjectList,
 	"anubis":    kvmProjectList,
