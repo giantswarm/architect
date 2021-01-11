@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.2.1] - 2021-01-11
 
+### Added
+
+- Prevent deployment to `amagon` (decommissioned).
+
 ## [3.2.0] - 2020-12-03
 
 ### Added
