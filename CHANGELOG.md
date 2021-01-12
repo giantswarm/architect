@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update `giantswarm/app` to `v4.2.0`.
+
 ## [3.2.1] - 2021-01-11
 
 ### Added
