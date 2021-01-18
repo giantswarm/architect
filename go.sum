@@ -141,8 +141,8 @@ github.com/giantswarm/apiextensions/v3 v3.14.1 h1:P9jBH8T4bgtq1e+2aFbSb4hmJZ6OFT
 github.com/giantswarm/apiextensions/v3 v3.14.1/go.mod h1:4XD4M9+H2xhalpdXPB8x0MIA6NhYzXGIS5eb7Q7pMz0=
 github.com/giantswarm/app/v4 v4.2.0 h1:IIBWCBL9g5kPpp8o9M/PKdYeuNeL2/gO5QU7wh6C+jk=
 github.com/giantswarm/app/v4 v4.2.0/go.mod h1:c2sChS2Tp2mRihew0cNIVYmnlYFMSiK+1MfLlucHY2E=
-github.com/giantswarm/gitrepo v0.1.2 h1:EJhWyRGm17VvjGz1rMjI3LLGNyQlofrcwLiaB7AuktY=
-github.com/giantswarm/gitrepo v0.1.2/go.mod h1:V80tQA1a3SjFDQKXSiiA5F3k/0A3VK5SwGzkoV2RwlI=
+github.com/giantswarm/gitrepo v0.2.0 h1:OE7pt9xenVRDJ75HhLoiCdnUcVyDkm9VpwqX5joVeeQ=
+github.com/giantswarm/gitrepo v0.2.0/go.mod h1:V80tQA1a3SjFDQKXSiiA5F3k/0A3VK5SwGzkoV2RwlI=
 github.com/giantswarm/microerror v0.0.0-20190815145748-cb07ec533b50/go.mod h1://Lo9dKJ8P2TBciuky5fDHEItccyvZOWE+B/0JiJT8A=
 github.com/giantswarm/microerror v0.3.0 h1:V/9cXlIEddNGaRYiA0vYJmgM2+sTQy+k8M7kVjOy4XM=
 github.com/giantswarm/microerror v0.3.0/go.mod h1:g8oCEMFAoEs70riRRmj9+6eiz7SqNxYl+2OfxFh1po0=
