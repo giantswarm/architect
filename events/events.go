@@ -53,7 +53,6 @@ var environmentProjects = map[Environment][]string{
 	"argali":    awsProjectList,
 	"asgard":    awsProjectList,
 	"atlantis":  awsProjectList,
-	"axolotl":   awsProjectList,
 	"bandicoot": awsProjectList,
 	"buffalo":   kvmProjectList,
 	"davis":     azureProjectList,
