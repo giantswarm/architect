@@ -5,17 +5,6 @@
 
 PACKAGE_DIR    := ./bin-dist
 
-<<<<<<< HEAD
-APPLICATION    := $(shell basename $(shell go list .))
-BUILDTIMESTAMP := $(shell date -u '+%FT%TZ')
-GITSHA1        := $(shell git rev-parse --verify HEAD)
-OS             := $(shell go env GOOS)
-SOURCES        := $(shell find . -name '*.go')
-VERSION        := $(shell architect project version)
-LDFLAGS        ?= -w -linkmode 'auto' -extldflags '-static' \
-  -X '$(shell go list .)/pkg/project.buildTimestamp=${BUILDTIMESTAMP}' \
-  -X '$(shell go list .)/pkg/project.gitSHA=${GITSHA1}'
-=======
 APPLICATION    := $(shell go list -m | cut -d '/' -f 3)
 BUILDTIMESTAMP := $(shell date -u '+%FT%TZ')
 GITSHA1        := $(shell git rev-parse --verify HEAD)
@@ -30,7 +19,6 @@ LDFLAGS        ?= -w -linkmode 'auto' -extldflags '$(EXTLDFLAGS)' \
   -X '$(shell go list -m)/pkg/project.buildTimestamp=${BUILDTIMESTAMP}' \
   -X '$(shell go list -m)/pkg/project.gitSHA=${GITSHA1}'
 
->>>>>>> master
 .DEFAULT_GOAL := build
 
 .PHONY: build build-darwin build-linux
@@ -58,11 +46,7 @@ $(APPLICATION)-linux: $(APPLICATION)-v$(VERSION)-linux-amd64
 
 $(APPLICATION)-v$(VERSION)-%-amd64: $(SOURCES)
 	@echo "====> $@"
-<<<<<<< HEAD
-	GOOS=$* GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -o $@ .
-=======
 	CGO_ENABLED=0 GOOS=$* GOARCH=amd64 go build -ldflags "$(LDFLAGS)" -o $@ .
->>>>>>> master
 
 .PHONY: package-darwin package-linux
 ## package-darwin: prepares a packaged darwin/amd64 version
@@ -105,11 +89,7 @@ clean:
 ## imports: runs goimports
 imports:
 	@echo "====> $@"
-<<<<<<< HEAD
-	goimports -local $(shell go list .) -w .
-=======
 	goimports -local $(MODULE) -w .
->>>>>>> master
 
 .PHONY: lint
 ## lint: runs golangci-lint
@@ -127,8 +107,5 @@ test:
 ## build-docker: builds docker image to registry
 build-docker: build-linux
 	@echo "====> $@"
-<<<<<<< HEAD
-=======
 	cp -a $(APPLICATION)-linux $(APPLICATION)
->>>>>>> master
 	docker build -t ${APPLICATION}:${VERSION} .
