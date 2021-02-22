@@ -136,10 +136,10 @@ github.com/franela/goreq v0.0.0-20171204163338-bcd34c9993f8/go.mod h1:ZhphrRTfi2
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/ghodss/yaml v0.0.0-20150909031657-73d445a93680/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
-github.com/giantswarm/apiextensions/v3 v3.16.1 h1:cbTW/poa7XOfk64/IUOPxd/0sF16I0qctypPJkLWwFg=
-github.com/giantswarm/apiextensions/v3 v3.16.1/go.mod h1:N4SS083wjVR3GEL/pqWycva4yUtYrlU5lUKhRtZJ7EY=
-github.com/giantswarm/app/v4 v4.3.0 h1:ey1foODGS7ScpXVHcKwUpWzdQoe/IKL5RkOu8szQAWo=
-github.com/giantswarm/app/v4 v4.3.0/go.mod h1:GrY88JvjWI/S5Ysh/tc6+vMWHmLKuLvnQxsNS42OFXU=
+github.com/giantswarm/apiextensions/v3 v3.18.1 h1:vbGH0u9MyPIum2QGm+ehTGm/9B1Na5zVCrCV5BMxCjg=
+github.com/giantswarm/apiextensions/v3 v3.18.1/go.mod h1:N4SS083wjVR3GEL/pqWycva4yUtYrlU5lUKhRtZJ7EY=
+github.com/giantswarm/app/v4 v4.4.0 h1:F7flM5nLkO6OxJDhjlh9AQlr7iFOauI9LYTf4yOcuGQ=
+github.com/giantswarm/app/v4 v4.4.0/go.mod h1:YMuNejBvWQnJIlQ8QViDY4TDyRZULx8/ecLFKKfo9Zc=
 github.com/giantswarm/gitrepo v0.2.1 h1:FjdCmipOY6NdzHyVP3tnfSYpwplWTUG9HCy2KXvaZ40=
 github.com/giantswarm/gitrepo v0.2.1/go.mod h1:V80tQA1a3SjFDQKXSiiA5F3k/0A3VK5SwGzkoV2RwlI=
 github.com/giantswarm/microerror v0.0.0-20190815145748-cb07ec533b50/go.mod h1://Lo9dKJ8P2TBciuky5fDHEItccyvZOWE+B/0JiJT8A=
