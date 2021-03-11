@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update `giantswarm/app` to `v4.7.0`.
+- Update `github.com/google/go-cmp` to `v0.5.5`.
+
 ## [3.3.0] - 2021-02-19
 
 ### Changed
