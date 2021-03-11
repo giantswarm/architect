@@ -4,11 +4,11 @@ go 1.15
 
 require (
 	github.com/cenk/backoff v2.2.1+incompatible
-	github.com/giantswarm/app/v4 v4.3.0
+	github.com/giantswarm/app/v4 v4.7.0
 	github.com/giantswarm/gitrepo v0.2.1
 	github.com/giantswarm/microerror v0.3.0
 	github.com/giantswarm/micrologger v0.5.0
-	github.com/google/go-cmp v0.5.4
+	github.com/google/go-cmp v0.5.5
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/spf13/afero v1.5.1
 	github.com/spf13/cobra v1.1.3
