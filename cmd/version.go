@@ -27,6 +27,10 @@ func runVersion(cmd *cobra.Command, args []string) {
 		os.Exit(0)
 	}
 
-	fmt.Printf("Git Commit Hash: %s\n", pkgproject.GitSHA())
-	fmt.Printf("Build Timestamp: %s\n", pkgproject.BuildTimestamp())
+	fmt.Printf(
+		"Version: %s\nGit Commit Hash: %s\nBuild Timestamp: %s\n",
+		pkgproject.Version(),
+		pkgproject.GitSHA(),
+		pkgproject.BuildTimestamp(),
+	)
 }
