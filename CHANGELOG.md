@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update `go` version to `v1.16.2`.
+- Update `helm` version to `v3.5.3`.
+- Update `alpine` version to `3.13`.
+- Update `conftest` version to `v0.21.0`.
+- Update `golangci-lint` version to `v1.38.0`.
+- Update `nancy` version to `v1.0.17`.
+- Update `helm-chart-testing` to `v3.3.1`.
+- Print version in `architect version`.
+
 ## [3.3.1] - 2021-03-11
 
 ### Changed
