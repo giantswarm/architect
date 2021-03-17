@@ -49,7 +49,7 @@ RUN mkdir ~/.ssh &&\
     printf "Host github.com\n IdentitiesOnly yes\n IdentityFile ~/.ssh/id_rsa\n" >> ~/.ssh/config &&\
     chmod 600 ~/.ssh/*
 
-RUN pip install -r /helm-chart-testing-py-requirements.txt
+RUN pip install --ignore-installed -r /helm-chart-testing-py-requirements.txt
 
 ADD ./architect /usr/bin/architect
 ENTRYPOINT ["/usr/bin/architect"]
