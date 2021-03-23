@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added kubebuilder to the image to be able to run integration tests based on
+  controller-runtime `envtest`.
+
 ## [3.4.0] - 2021-03-17
 
 ### Changed
