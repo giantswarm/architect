@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.4.1] - 2021-03-24
+
 ### Added
 
 - Added kubebuilder to the image to be able to run integration tests based on
@@ -260,7 +262,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v3.4.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v3.4.1...HEAD
+[3.4.1]: https://github.com/giantswarm/architect/compare/v3.4.0...v3.4.1
 [3.4.0]: https://github.com/giantswarm/architect/compare/v3.3.1...v3.4.0
 [3.3.1]: https://github.com/giantswarm/architect/compare/v3.3.0...v3.3.1
 [3.3.0]: https://github.com/giantswarm/architect/compare/v3.2.2...v3.3.0
