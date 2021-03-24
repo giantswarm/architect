@@ -2,6 +2,8 @@ FROM quay.io/giantswarm/helm-chart-testing:v3.3.1 AS ct
 
 RUN pip freeze > /helm-chart-testing-py-requirements.txt
 
+FROM quay.io/giantswarm/app-build-suite:0.2.2 AS abs
+
 FROM quay.io/giantswarm/golang:1.16.2-alpine3.13 AS golang
 
 FROM quay.io/giantswarm/conftest:v0.21.0 AS conftest
@@ -15,7 +17,7 @@ COPY --from=golang /usr/local/go /usr/local/go
 # Copy files needed for Helm Chart testing
 COPY --from=ct /helm-chart-testing-py-requirements.txt /helm-chart-testing-py-requirements.txt
 COPY --from=ct /usr/local/bin/ct /usr/local/bin/ct
-COPY --from=ct /etc/ct/chart_schema.yaml /etc/ct/chart_schema.yaml
+COPY --from=abs /abs/resources/ct_schemas/gs_metadata_chart_schema.yaml /etc/ct/chart_schema.yaml
 COPY --from=ct /etc/ct/lintconf.yaml /etc/ct/lintconf.yaml
 
 COPY --from=conftest /usr/local/bin/conftest /usr/local/bin/conftest
