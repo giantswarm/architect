@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.4.3] - 2021-04-28
+
 ### Added
 
 - Add Eagle.
@@ -272,7 +274,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v3.4.2...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v3.4.3...HEAD
+[3.4.3]: https://github.com/giantswarm/architect/compare/v3.4.2...v3.4.3
 [3.4.2]: https://github.com/giantswarm/architect/compare/v3.4.1...v3.4.2
 [3.4.1]: https://github.com/giantswarm/architect/compare/v3.4.0...v3.4.1
 [3.4.0]: https://github.com/giantswarm/architect/compare/v3.3.1...v3.4.0
