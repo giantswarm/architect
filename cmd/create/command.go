@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/giantswarm/architect/cmd/create/appcr"
+	"github.com/giantswarm/architect/cmd/create/argoapp"
 )
 
 var (
@@ -15,4 +16,5 @@ var (
 
 func init() {
 	Cmd.AddCommand(appcr.NewCommand())
+	Cmd.AddCommand(argoapp.NewCommand())
 }
