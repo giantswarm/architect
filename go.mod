@@ -5,11 +5,10 @@ go 1.15
 require (
 	github.com/cenk/backoff v2.2.1+incompatible
 	github.com/giantswarm/app/v4 v4.11.0
-	github.com/giantswarm/argoapp v0.0.0-20210510150419-4c81f7a3636b // indirect
+	github.com/giantswarm/argoapp v0.0.0-20210510150419-4c81f7a3636b
 	github.com/giantswarm/gitrepo v0.2.2
 	github.com/giantswarm/microerror v0.3.0
 	github.com/giantswarm/micrologger v0.5.0
-	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/google/go-cmp v0.5.5
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/spf13/afero v1.6.0
