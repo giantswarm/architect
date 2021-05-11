@@ -140,8 +140,8 @@ github.com/giantswarm/apiextensions/v3 v3.22.0 h1:Nkn0POdMBks58zDVCaDJ4HDkbDC0qU
 github.com/giantswarm/apiextensions/v3 v3.22.0/go.mod h1:6KBexBTOZJ+amkorxw722t2HS57f+rf/8LeSSFfQNmo=
 github.com/giantswarm/app/v4 v4.11.0 h1:tzwyq4y7vp1X1O0648TZamoM9ZuTjTVl0dEIGrTQlcQ=
 github.com/giantswarm/app/v4 v4.11.0/go.mod h1:5Sku0gVZw8id9U/G2RJ1A//ntikvU8YGgU7NpyO6sgg=
-github.com/giantswarm/argoapp v0.0.0-20210511144642-dfe58da75a68 h1:QxW5b1i/ZOsSU1M1nkAKyVrDIbpiQB0cKYVjW+weQuM=
-github.com/giantswarm/argoapp v0.0.0-20210511144642-dfe58da75a68/go.mod h1:DNSEOowr/r+/5fbkmm2ijMHH7Z42AHVuLww7DRbdNsU=
+github.com/giantswarm/argoapp v0.1.0 h1:3tmPlQUYBU+cP03z7s90QHCDXKfLp1O2VTj7tKSx6Es=
+github.com/giantswarm/argoapp v0.1.0/go.mod h1:DNSEOowr/r+/5fbkmm2ijMHH7Z42AHVuLww7DRbdNsU=
 github.com/giantswarm/gitrepo v0.2.2 h1:OD72B1pTzkapoNmH5ISRljiIFPCuQhdemgKlIgg2p98=
 github.com/giantswarm/gitrepo v0.2.2/go.mod h1:V80tQA1a3SjFDQKXSiiA5F3k/0A3VK5SwGzkoV2RwlI=
 github.com/giantswarm/microerror v0.0.0-20190815145748-cb07ec533b50/go.mod h1://Lo9dKJ8P2TBciuky5fDHEItccyvZOWE+B/0JiJT8A=
