@@ -24,7 +24,7 @@ func NewCommand() *cobra.Command {
 
 	cmd.Flags().StringVar(&flag.AppName, "app-name", "", "App name.")
 	cmd.MarkFlagRequired("app-name")
-	cmd.Flags().StringVar(&flag.AppDestinationNamespace, "app-destination-namespace", "giantswarm", "Destination namespace where the app should be installed.")
+	cmd.Flags().StringVar(&flag.AppDestinationNamespace, "app-destination-namespace", "", "Destination namespace where the app should be installed.")
 	cmd.MarkFlagRequired("app-destination-namespace")
 	cmd.Flags().StringVar(&flag.AppVersion, "app-version", "", "App version.")
 	cmd.MarkFlagRequired("app-version")
