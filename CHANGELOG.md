@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `create argoapp` command.
+
 ## [3.4.4] - 2021-05-06
 
 ### Added
