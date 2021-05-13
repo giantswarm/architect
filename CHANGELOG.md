@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.1] - 2021-05-13
+
 ### Added
 
 - Add Beaver.
@@ -291,7 +293,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v3.5.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v3.5.1...HEAD
+[3.5.1]: https://github.com/giantswarm/architect/compare/v3.5.0...v3.5.1
 [3.5.0]: https://github.com/giantswarm/architect/compare/v3.4.4...v3.5.0
 [3.4.4]: https://github.com/giantswarm/architect/compare/v3.4.3...v3.4.4
 [3.4.3]: https://github.com/giantswarm/architect/compare/v3.4.2...v3.4.3
