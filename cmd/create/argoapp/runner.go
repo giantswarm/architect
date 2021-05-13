@@ -2,7 +2,12 @@ package argoapp
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
 
 	"github.com/giantswarm/argoapp/pkg/argoapp"
 	"github.com/giantswarm/microerror"
@@ -10,8 +15,48 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
+var (
+	configVersionRangeRegexp = regexp.MustCompile(`\d+\.x\.x`)
+)
+
 func runAppCRError(cmd *cobra.Command, args []string) error {
-	var err error
+	err := validateFlags()
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	var configRef string
+	if flag.ConfigRef != "" {
+		configRef = flag.ConfigRef
+	} else {
+		dir := strings.TrimSuffix(flag.ConfigRefFromChart, "Chart.yaml")
+		path := filepath.Join(dir, "Chart.yaml")
+		content, err := os.ReadFile(path)
+		if errors.Is(err, os.ErrNotExist) {
+			return microerror.Mask(fmt.Errorf("file %q does not exist", path))
+		}
+
+		var chartYaml struct {
+			Annotations map[string]string `json:"annotations"`
+		}
+
+		err = yaml.Unmarshal(content, &chartYaml)
+		if err != nil {
+			return microerror.Mask(fmt.Errorf("failed to parse yaml file %q: %s", path, err))
+		}
+
+		annotation := "config.giantswarm.io/version"
+		if chartYaml.Annotations == nil || chartYaml.Annotations[annotation] == "" {
+			return microerror.Mask(fmt.Errorf("annotation %q in file %q not found", annotation, path))
+		}
+
+		configRef = chartYaml.Annotations[annotation]
+
+		if configVersionRangeRegexp.MatchString(configRef) {
+			major := strings.SplitN(configRef, ".", 2)[0]
+			configRef = "v" + major
+		}
+	}
 
 	config := argoapp.ApplicationConfig{
 		Name: flag.Name,
@@ -21,7 +66,7 @@ func runAppCRError(cmd *cobra.Command, args []string) error {
 		AppCatalog:              flag.AppCatalog,
 		AppDestinationNamespace: flag.AppDestinationNamespace,
 
-		ConfigRef:           flag.ConfigRef,
+		ConfigRef:           configRef,
 		DisableForceUpgrade: flag.DisableForceUpgrade,
 	}
 
