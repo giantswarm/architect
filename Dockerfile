@@ -37,7 +37,8 @@ RUN apk add --no-cache \
         docker \
         git \
         py-pip \
-        openssh-client &&\
+        openssh-client \
+        yq &&\
         curl -SL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | \
             tar -C /usr/bin --strip-components 1 -xvzf - linux-amd64/helm && \
         curl -sSfL https://go.kubebuilder.io/dl/${KUBEBUILDER_VERSION}/$(go env GOOS)/$(go env GOARCH) | \
