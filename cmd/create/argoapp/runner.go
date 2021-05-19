@@ -47,7 +47,16 @@ func runAppCRError(cmd *cobra.Command, args []string) error {
 
 		annotation := "config.giantswarm.io/version"
 		if chartYaml.Annotations == nil || chartYaml.Annotations[annotation] == "" {
-			return microerror.Mask(fmt.Errorf("annotation %q in file %q not found", annotation, path))
+			// TODO(kopiczko): When all unique apps are migrated
+			// uncomment the code below and delete everything else
+			// in this if statement.
+			//
+			//	return microerror.Mask(fmt.Errorf("annotation %q in file %q not found", annotation, path))
+			//
+			if chartYaml.Annotations == nil {
+				chartYaml.Annotations = map[string]string{}
+			}
+			chartYaml.Annotations[annotation] = "FIXME"
 		}
 
 		configRef = chartYaml.Annotations[annotation]
