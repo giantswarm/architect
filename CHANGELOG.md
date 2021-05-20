@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.6.0] - 2021-05-20
+
 ### Added
 
 - Add `selfHeal: true` and `allowEmpty: true` to the generated Application CR sync policy in `architect create argoapp` (See [argoapp@v0.1.2](https://github.com/giantswarm/argoapp/blob/main/CHANGELOG.md#012---2021-05-20).
@@ -308,7 +310,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v3.5.2...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v3.6.0...HEAD
+[3.6.0]: https://github.com/giantswarm/architect/compare/v3.5.2...v3.6.0
 [3.5.2]: https://github.com/giantswarm/architect/compare/v3.5.1...v3.5.2
 [3.5.1]: https://github.com/giantswarm/architect/compare/v3.5.0...v3.5.1
 [3.5.0]: https://github.com/giantswarm/architect/compare/v3.4.4...v3.5.0
