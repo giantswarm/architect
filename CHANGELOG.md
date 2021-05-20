@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `selfHeal: true` and `allowEmpty: true` to the generated Application CR sync policy in `architect create argoapp` (See [argoapp@v0.1.2](https://github.com/giantswarm/argoapp/blob/main/CHANGELOG.md#012---2021-05-20).
+
 ### Fixed
 
 - Temporarily don't fail when Chart.yaml doesn't have the config annotation in `architect create argoapp`.
