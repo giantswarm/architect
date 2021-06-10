@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Removed decommissioned installations (`archon`, `davis`, `dinosaur`, `dragon`).
+
 ## [3.6.0] - 2021-05-20
 
 ### Added
