@@ -1,4 +1,4 @@
-FROM quay.io/giantswarm/helm-chart-testing:v3.3.1 AS ct
+FROM quay.io/giantswarm/helm-chart-testing:v3.4.0 AS ct
 
 RUN pip freeze > /helm-chart-testing-py-requirements.txt
 
