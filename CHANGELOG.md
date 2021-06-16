@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.7.0] - 2021-06-16
+
 ### Changed
 
 - Removed decommissioned installations (`archon`, `davis`, `dinosaur`, `dragon`).
@@ -314,7 +316,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v3.6.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v3.7.0...HEAD
+[3.7.0]: https://github.com/giantswarm/architect/compare/v3.6.0...v3.7.0
 [3.6.0]: https://github.com/giantswarm/architect/compare/v3.5.2...v3.6.0
 [3.5.2]: https://github.com/giantswarm/architect/compare/v3.5.1...v3.5.2
 [3.5.1]: https://github.com/giantswarm/architect/compare/v3.5.0...v3.5.1
