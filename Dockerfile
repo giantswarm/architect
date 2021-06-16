@@ -1,7 +1,5 @@
 FROM quay.io/giantswarm/helm-chart-testing:v3.4.0 AS ct
 
-RUN pip freeze > /helm-chart-testing-py-requirements.txt
-
 FROM quay.io/giantswarm/app-build-suite:0.2.2 AS abs
 
 FROM quay.io/giantswarm/golang:1.16.2-alpine3.13 AS golang
@@ -15,7 +13,6 @@ FROM quay.io/giantswarm/alpine:3.13
 COPY --from=golang /usr/local/go /usr/local/go
 
 # Copy files needed for Helm Chart testing
-COPY --from=ct /helm-chart-testing-py-requirements.txt /helm-chart-testing-py-requirements.txt
 COPY --from=ct /usr/local/bin/ct /usr/local/bin/ct
 COPY --from=abs /abs/resources/ct_schemas/gs_metadata_chart_schema.yaml /etc/ct/chart_schema.yaml
 COPY --from=ct /etc/ct/lintconf.yaml /etc/ct/lintconf.yaml
@@ -29,6 +26,8 @@ ARG HELM_VERSION=v3.5.3
 ARG KUBEBUILDER_VERSION=2.3.1
 ARG GOLANGCI_LINT_VERSION=v1.38.0
 ARG NANCY_VERSION=v1.0.17
+ARG CT_YAMALE_VER=3.0.6
+ARG CT_YAMLLINT_VER=1.26.1
 
 RUN apk add --no-cache \
         bash \
@@ -56,7 +55,7 @@ RUN mkdir ~/.ssh &&\
     printf "Host github.com\n IdentitiesOnly yes\n IdentityFile ~/.ssh/id_rsa\n" >> ~/.ssh/config &&\
     chmod 600 ~/.ssh/*
 
-RUN pip install --ignore-installed -r /helm-chart-testing-py-requirements.txt
+RUN pip install yamllint==${CT_YAMLLINT_VER} yamale==${CT_YAMALE_VER}
 
 ADD ./architect /usr/bin/architect
 ENTRYPOINT ["/usr/bin/architect"]
