@@ -12,9 +12,9 @@ require (
 	github.com/google/go-cmp v0.5.6
 	github.com/google/go-github v17.0.0+incompatible
 	github.com/spf13/afero v1.6.0
-	github.com/spf13/cobra v1.1.3
-	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
-	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
+	github.com/spf13/cobra v1.2.1
+	golang.org/x/oauth2 v0.0.0-20210402161424-2e8d93401602
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	gopkg.in/yaml.v2 v2.4.0
 	sigs.k8s.io/yaml v1.2.0
 )
