@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.0] - 2021-07-12
+
 ### Added
 
 - Install `make`.
@@ -331,7 +333,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v3.7.1...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/giantswarm/architect/compare/v3.7.1...v4.0.0
 [3.7.1]: https://github.com/giantswarm/architect/compare/v3.7.0...v3.7.1
 [3.7.0]: https://github.com/giantswarm/architect/compare/v3.6.0...v3.7.0
 [3.6.0]: https://github.com/giantswarm/architect/compare/v3.5.2...v3.6.0
