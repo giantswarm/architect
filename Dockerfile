@@ -23,7 +23,7 @@ ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
 ARG HELM_VERSION=v3.5.3
-ARG KUBEBUILDER_VERSION=2.3.1
+ARG KUBEBUILDER_VERSION=3.1.0
 ARG GOLANGCI_LINT_VERSION=v1.38.0
 ARG NANCY_VERSION=v1.0.17
 ARG CT_YAMALE_VER=3.0.6
@@ -37,12 +37,11 @@ RUN apk add --no-cache \
         git \
         py-pip \
         openssh-client \
+        make \
         yq &&\
         curl -SL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | \
             tar -C /usr/bin --strip-components 1 -xvzf - linux-amd64/helm && \
-        curl -sSfL https://go.kubebuilder.io/dl/${KUBEBUILDER_VERSION}/$(go env GOOS)/$(go env GOARCH) | \
-            tar -xz -C /tmp/ && \
-            mv /tmp/kubebuilder_${KUBEBUILDER_VERSION}_$(go env GOOS)_$(go env GOARCH) /usr/local/kubebuilder && \
+        curl -sSfL -o /usr/local/kubebuilder https://go.kubebuilder.io/dl/${KUBEBUILDER_VERSION}/$(go env GOOS)/$(go env GOARCH) && \
         curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
             sh -s -- -b $GOPATH/bin ${GOLANGCI_LINT_VERSION} && \
         curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-linux-amd64 && \
