@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `gopher` installation.
+
 ## [4.0.0] - 2021-07-12
 
 ### Added
