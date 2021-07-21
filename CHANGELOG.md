@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.1] - 2021-07-21
+
 ### Added
 
 - Add `gopher` installation.
@@ -337,7 +339,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v4.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v4.0.1...HEAD
+[4.0.1]: https://github.com/giantswarm/architect/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/giantswarm/architect/compare/v3.7.1...v4.0.0
 [3.7.1]: https://github.com/giantswarm/architect/compare/v3.7.0...v3.7.1
 [3.7.0]: https://github.com/giantswarm/architect/compare/v3.6.0...v3.7.0
