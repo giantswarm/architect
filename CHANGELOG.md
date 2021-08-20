@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove `architect legacy deploy` as draughtsman is retired now.
+
 ## [4.0.1] - 2021-07-21
 
 ### Added
