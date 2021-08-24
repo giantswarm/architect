@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.0.0] - 2021-08-24
+
 ### Removed
 
 - Remove `architect legacy deploy` as draughtsman is retired now.
@@ -343,7 +345,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v4.0.1...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v5.0.0...HEAD
+[5.0.0]: https://github.com/giantswarm/architect/compare/v4.0.1...v5.0.0
 [4.0.1]: https://github.com/giantswarm/architect/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/giantswarm/architect/compare/v3.7.1...v4.0.0
 [3.7.1]: https://github.com/giantswarm/architect/compare/v3.7.0...v3.7.1
