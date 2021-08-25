@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.0] - 2021-08-25
+
 ### Changed
 
 - Update `argoapp` version to `v0.1.4` with cascading deletion enabled.
@@ -349,7 +351,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v5.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v5.1.0...HEAD
+[5.1.0]: https://github.com/giantswarm/architect/compare/v5.0.0...v5.1.0
 [5.0.0]: https://github.com/giantswarm/architect/compare/v4.0.1...v5.0.0
 [4.0.1]: https://github.com/giantswarm/architect/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/giantswarm/architect/compare/v3.7.1...v4.0.0
