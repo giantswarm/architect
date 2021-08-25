@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update `argoapp` version to `v0.1.4` with cascading deletion enabled.
+
 ## [5.0.0] - 2021-08-24
 
 ### Removed

@@ -5,7 +5,7 @@ go 1.15
 require (
 	github.com/cenk/backoff v2.2.1+incompatible
 	github.com/giantswarm/app/v4 v4.13.0
-	github.com/giantswarm/argoapp v0.1.3
+	github.com/giantswarm/argoapp v0.1.4
 	github.com/giantswarm/gitrepo v0.2.2
 	github.com/giantswarm/microerror v0.3.0
 	github.com/google/go-cmp v0.5.6
