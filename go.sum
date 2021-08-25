@@ -142,6 +142,8 @@ github.com/giantswarm/app/v4 v4.13.0 h1:xu3ygXZLS/anWAVywvWdxw0rAa8Ao/Hgz693PPbN
 github.com/giantswarm/app/v4 v4.13.0/go.mod h1:lMUF+mMi7fdmg4CK7Is1SZwk8TAp7cl943puu+OXZ4A=
 github.com/giantswarm/argoapp v0.1.3 h1:qGyOHxPVnUgdB7rPYQOFi0E2lh4aPZTBGSCtD9w6cCU=
 github.com/giantswarm/argoapp v0.1.3/go.mod h1:DNSEOowr/r+/5fbkmm2ijMHH7Z42AHVuLww7DRbdNsU=
+github.com/giantswarm/argoapp v0.1.4 h1:boBqGrkqQVW7ozYbw2DXSTfqZ/JpVKyiiRDUJhbm6Qo=
+github.com/giantswarm/argoapp v0.1.4/go.mod h1:DNSEOowr/r+/5fbkmm2ijMHH7Z42AHVuLww7DRbdNsU=
 github.com/giantswarm/gitrepo v0.2.2 h1:OD72B1pTzkapoNmH5ISRljiIFPCuQhdemgKlIgg2p98=
 github.com/giantswarm/gitrepo v0.2.2/go.mod h1:V80tQA1a3SjFDQKXSiiA5F3k/0A3VK5SwGzkoV2RwlI=
 github.com/giantswarm/k8smetadata v0.3.0 h1:ZMsKgWAZ/ZYNG15DVKclgGrH6VeENC/cSGiAb4r2H60=
