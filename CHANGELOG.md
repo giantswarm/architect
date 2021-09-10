@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update `go` version to `v1.17.1`.
 - Update `alpine` version to `3.14.2`.
+- Update `golangci-lint` to `v1.42.1`.
 
 ## [5.1.0] - 2021-08-25
 
