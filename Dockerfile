@@ -2,12 +2,12 @@ FROM quay.io/giantswarm/helm-chart-testing:v3.4.0 AS ct
 
 FROM quay.io/giantswarm/app-build-suite:0.2.3 AS abs
 
-FROM quay.io/giantswarm/golang:1.16.2-alpine3.13 AS golang
+FROM quay.io/giantswarm/golang:1.17.1-alpine3.14 AS golang
 
 FROM quay.io/giantswarm/conftest:v0.21.0 AS conftest
 
 # Build Image
-FROM quay.io/giantswarm/alpine:3.13
+FROM quay.io/giantswarm/alpine:3.14.2
 
 # Copy go from golang image.
 COPY --from=golang /usr/local/go /usr/local/go
