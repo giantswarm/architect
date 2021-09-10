@@ -3,17 +3,13 @@ module github.com/giantswarm/architect
 go 1.15
 
 require (
-	github.com/cenk/backoff v2.2.1+incompatible
 	github.com/giantswarm/app/v4 v4.13.0
 	github.com/giantswarm/argoapp v0.1.4
 	github.com/giantswarm/gitrepo v0.2.2
 	github.com/giantswarm/microerror v0.3.0
 	github.com/google/go-cmp v0.5.6
-	github.com/google/go-github v17.0.0+incompatible
 	github.com/spf13/afero v1.6.0
 	github.com/spf13/cobra v1.1.3
-	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
-	gopkg.in/yaml.v2 v2.4.0
 	sigs.k8s.io/yaml v1.2.0
 )
 
