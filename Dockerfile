@@ -26,6 +26,7 @@ ARG HELM_VERSION=v3.5.3
 ARG KUBEBUILDER_VERSION=3.1.0
 ARG GOLANGCI_LINT_VERSION=v1.42.1
 ARG NANCY_VERSION=v1.0.17
+ARG KUBEVAL_VERSION=v0.16.1
 ARG CT_YAMALE_VER=3.0.6
 ARG CT_YAMLLINT_VER=1.26.1
 
@@ -45,7 +46,9 @@ RUN apk add --no-cache \
         curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
             sh -s -- -b $GOPATH/bin ${GOLANGCI_LINT_VERSION} && \
         curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-linux-amd64 && \
-        chmod +x /usr/bin/nancy
+            chmod +x /usr/bin/nancy && \
+        curl -sSL https://github.com/instrumenta/kubeval/releases/download/${KUBEVAL_VERSION}/kubeval-$(go env GOOS)-$(go env GOARCH).tar.gz | \
+            tar -C /usr/bin -xvzf - kubeval
 
 # Setup ssh config for github.com
 RUN mkdir ~/.ssh &&\
