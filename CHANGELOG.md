@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `diff` helm plugin `v3.1.3`.
+
 ## [5.2.0] - 2021-09-10
 
 ### Changed
