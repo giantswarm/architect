@@ -23,6 +23,7 @@ ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
 ARG HELM_VERSION=v3.5.3
+ARG HELM_DIFF_VERSION=v3.1.3
 ARG KUBEBUILDER_VERSION=3.1.0
 ARG GOLANGCI_LINT_VERSION=v1.42.1
 ARG NANCY_VERSION=v1.0.17
@@ -41,6 +42,7 @@ RUN apk add --no-cache \
         yq &&\
         curl -SL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | \
             tar -C /usr/bin --strip-components 1 -xvzf - linux-amd64/helm && \
+        helm plugin install https://github.com/databus23/helm-diff --version ${HELM_DIFF_VERSION} && \
         curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_$(go env GOOS)_$(go env GOARCH) && \
         curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
             sh -s -- -b $GOPATH/bin ${GOLANGCI_LINT_VERSION} && \
