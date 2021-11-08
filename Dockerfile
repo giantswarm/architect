@@ -4,7 +4,7 @@ FROM quay.io/giantswarm/app-build-suite:0.2.3 AS abs
 
 FROM quay.io/giantswarm/golang:1.17.1-alpine3.14 AS golang
 
-FROM quay.io/giantswarm/conftest:v0.21.0 AS conftest
+FROM quay.io/giantswarm/conftest:v0.28.3 AS conftest
 
 # Build Image
 FROM quay.io/giantswarm/alpine:3.14.2
