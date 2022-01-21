@@ -1,4 +1,4 @@
-FROM quay.io/giantswarm/helm-chart-testing:v3.4.0 AS ct
+FROM quay.io/giantswarm/helm-chart-testing:v3.5.0 AS ct
 
 FROM quay.io/giantswarm/app-build-suite:0.2.3 AS abs
 
