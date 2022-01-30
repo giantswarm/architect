@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `--update-changelog` flag to `prepare-release` command to allow disabling changelog update.
+
 ## [5.3.0] - 2021-09-29
 
 ### Added
