@@ -24,9 +24,9 @@ func runPrepareRelease(cmd *cobra.Command, args []string) error {
 		return microerror.Maskf(executionFailedError, "--version flag can't be empty")
 	}
 
-	updateChangelog := cmd.Flag("update-changelog").Value.String()
-	if updateChangelog != "" && updateChangelog != "true" && updateChangelog != "false" {
-		return microerror.Maskf(executionFailedError, "--update-changelog flag must be true or false")
+	updateChangelog, err := cmd.Flags().GetBool("update-changelog")
+	if err != nil {
+		return microerror.Mask(err)
 	}
 
 	var m *internal.Modifier
@@ -43,7 +43,7 @@ func runPrepareRelease(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	if updateChangelog != "false" {
+	if updateChangelog {
 		err = m.AddReleaseToChangelogMd()
 		if err != nil {
 			return microerror.Mask(err)
