@@ -10,7 +10,6 @@ require (
 	github.com/google/go-cmp v0.5.6
 	github.com/spf13/afero v1.8.0
 	github.com/spf13/cobra v1.1.3
-	k8s.io/apimachinery v0.18.18
 	sigs.k8s.io/yaml v1.2.0
 )
 
