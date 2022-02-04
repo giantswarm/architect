@@ -11,7 +11,6 @@ import (
 
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/cobra"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 )
 
@@ -27,17 +26,22 @@ const (
   path: /plugins/konfigure`
 )
 
-type FluxGenerator struct {
+type fluxGenerator struct {
 	ApiVersion string `json:"api_version,omitempty"`
 	Kind       string `json:"kind,omitempty"`
 
-	Metadata metav1.ObjectMeta `json:"metadata,omitempty"`
+	Metadata fluxGeneratorMetadata `json:"metadata,omitempty"`
 
 	Name                    string `json:"name,omitempty"`
 	AppCatalog              string `json:"app_catalog,omitempty"`
 	AppDestinationNamespace string `json:"app_destination_namespace,omitempty"`
 	AppName                 string `json:"app_name,omitempty"`
 	AppVersion              string `json:"app_version,omitempty"`
+}
+
+type fluxGeneratorMetadata struct {
+	Name        string            `json:"name,omitempty"`
+	Annotations map[string]string `json:"annotations,omitempty"`
 }
 
 func runFluxGeneratorError(cmd *cobra.Command, args []string) error {
@@ -88,10 +92,10 @@ func runFluxGeneratorError(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	generator := FluxGenerator{
+	generator := fluxGenerator{
 		ApiVersion: fluxGeneratorApiVersion,
 		Kind:       fluxGeneratorKind,
-		Metadata: metav1.ObjectMeta{
+		Metadata: fluxGeneratorMetadata{
 			Name: flag.Name,
 			Annotations: map[string]string{
 				annotationKey: annotationValue,
