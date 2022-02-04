@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Add `architect create fluxgenerator` and `architect create kustomization` for App collections managed by Flux.
+
 ## [5.3.0] - 2021-09-29
 
 ### Added
