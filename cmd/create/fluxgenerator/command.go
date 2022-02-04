@@ -34,7 +34,7 @@ func NewCommand() *cobra.Command {
 	cmd.Flags().StringVar(&flag.ConfigRef, "config-ref", "", "Configuration version which is a git ref of giantswarm/config repository. Usually major version tag in \"v1\" format.")
 	cmd.Flags().StringVar(&flag.ConfigRefFromChart, "config-ref-from-chart", "", "Path to the chart directory to extract the configuration ref from. See --config-ref for details.")
 	cmd.Flags().BoolVar(&flag.DisableForceUpgrade, "disable-force-upgrade", false, "Disable helm chart force upgrade.")
-	cmd.Flags().StringVar(&flag.Name, "name", "", "Generated Argo Application CR name.")
+	cmd.Flags().StringVar(&flag.Name, "name", "", "Generated Application CR name.")
 	cmd.Flags().StringVarP(&flag.Output, "output", "o", "yaml", "Output format. Allowed values: yaml, json.")
 
 	return cmd
