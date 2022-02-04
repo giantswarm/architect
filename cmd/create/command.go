@@ -5,6 +5,7 @@ import (
 
 	"github.com/giantswarm/architect/cmd/create/appcr"
 	"github.com/giantswarm/architect/cmd/create/argoapp"
+	"github.com/giantswarm/architect/cmd/create/fluxgenerator"
 )
 
 var (
@@ -17,4 +18,5 @@ var (
 func init() {
 	Cmd.AddCommand(appcr.NewCommand())
 	Cmd.AddCommand(argoapp.NewCommand())
+	Cmd.AddCommand(fluxgenerator.NewCommand())
 }
