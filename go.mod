@@ -7,7 +7,7 @@ require (
 	github.com/giantswarm/argoapp v0.1.4
 	github.com/giantswarm/gitrepo v0.2.2
 	github.com/giantswarm/microerror v0.3.0
-	github.com/google/go-cmp v0.5.6
+	github.com/google/go-cmp v0.5.7
 	github.com/spf13/afero v1.8.0
 	github.com/spf13/cobra v1.1.3
 	sigs.k8s.io/yaml v1.2.0
