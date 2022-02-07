@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `--update-changelog` flag to `prepare-release` command to allow disabling changelog update.
+
 ## [6.0.0] - 2022-02-07
 
 - Add `architect create fluxgenerator` and `architect create kustomization` for App collections managed by Flux.

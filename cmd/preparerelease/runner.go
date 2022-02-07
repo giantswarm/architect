@@ -24,6 +24,11 @@ func runPrepareRelease(cmd *cobra.Command, args []string) error {
 		return microerror.Maskf(executionFailedError, "--version flag can't be empty")
 	}
 
+	updateChangelog, err := cmd.Flags().GetBool("update-changelog")
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
 	var m *internal.Modifier
 	{
 		c := internal.ModifierConfig{
@@ -38,11 +43,13 @@ func runPrepareRelease(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	err = m.AddReleaseToChangelogMd()
-	if err != nil {
-		return microerror.Mask(err)
+	if updateChangelog {
+		err = m.AddReleaseToChangelogMd()
+		if err != nil {
+			return microerror.Mask(err)
+		}
+		cmd.Printf("File %#q updated.\n", internal.FileChangelogMd)
 	}
-	cmd.Printf("File %#q updated.\n", internal.FileChangelogMd)
 
 	err = m.UpdateVersionInProjectGo()
 	if internal.IsFileNotFound(err) {
