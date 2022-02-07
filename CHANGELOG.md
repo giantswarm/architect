@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.0.0] - 2022-02-07
+
 - Add `architect create fluxgenerator` and `architect create kustomization` for App collections managed by Flux.
 
 ## [5.3.0] - 2021-09-29
@@ -367,7 +369,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v5.3.0...HEAD
+[Unreleased]: https://github.com/giantswarm/giantswarm/compare/v6.0.0...HEAD
+[6.0.0]: https://github.com/giantswarm/giantswarm/compare/v5.3.0...v6.0.0
 [5.3.0]: https://github.com/giantswarm/architect/compare/v5.2.0...v5.3.0
 [5.2.0]: https://github.com/giantswarm/architect/compare/v5.1.0...v5.2.0
 [5.1.0]: https://github.com/giantswarm/architect/compare/v5.0.0...v5.1.0
