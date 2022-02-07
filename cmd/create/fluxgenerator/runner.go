@@ -3,15 +3,10 @@ package fluxgenerator
 import (
 	"encoding/json"
 	"fmt"
-	"regexp"
 
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/cobra"
 	"sigs.k8s.io/yaml"
-)
-
-var (
-	configVersionRangeRegexp = regexp.MustCompile(`\d+\.x\.x`)
 )
 
 const (
