@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.1.1] - 2022-02-09
+
+### Fixed
+
+- Skip `kustomization.yaml` when running `architect create kustomization`.
+
 ## [6.1.0] - 2022-02-07
 
 ### Changed
@@ -379,7 +385,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/giantswarm/compare/v6.1.0...HEAD
+[Unreleased]: https://github.com/giantswarm/giantswarm/compare/v6.1.1...HEAD
+[6.1.1]: https://github.com/giantswarm/giantswarm/compare/v6.1.0...v6.1.1
 [6.1.0]: https://github.com/giantswarm/giantswarm/compare/v6.0.0...v6.1.0
 [6.0.0]: https://github.com/giantswarm/giantswarm/compare/v5.3.0...v6.0.0
 [5.3.0]: https://github.com/giantswarm/architect/compare/v5.2.0...v5.3.0
