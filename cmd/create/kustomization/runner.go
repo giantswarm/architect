@@ -36,6 +36,9 @@ func runKustomizationError(cmd *cobra.Command, args []string) error {
 		if !strings.HasSuffix(entry.Name(), ".yaml") {
 			continue
 		}
+		if entry.Name() == "kustomization.yaml" {
+			continue
+		}
 		k.Generators = append(k.Generators, entry.Name())
 	}
 
