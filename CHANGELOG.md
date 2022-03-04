@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Update `go` version to `v1.17.8`.
+
 ### Removed
 
 - Remove `create argoapp` as Argo is replaced by Flux.
