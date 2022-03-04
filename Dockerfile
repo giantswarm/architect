@@ -2,7 +2,7 @@ FROM quay.io/giantswarm/helm-chart-testing:v3.5.0 AS ct
 
 FROM quay.io/giantswarm/app-build-suite:0.2.3 AS abs
 
-FROM quay.io/giantswarm/golang:1.17.7-alpine3.14 AS golang
+FROM quay.io/giantswarm/golang:1.17.8-alpine3.14 AS golang
 
 FROM quay.io/giantswarm/conftest:v0.30.0 AS conftest
 
