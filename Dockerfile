@@ -22,7 +22,7 @@ COPY --from=conftest /usr/local/bin/conftest /usr/local/bin/conftest
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
-ARG HELM_VERSION=v3.5.3
+ARG HELM_VERSION=v3.8.1
 ARG KUBEBUILDER_VERSION=3.1.0
 ARG GOLANGCI_LINT_VERSION=v1.42.1
 ARG NANCY_VERSION=v1.0.17
