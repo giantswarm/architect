@@ -2,7 +2,7 @@ FROM quay.io/giantswarm/helm-chart-testing:v3.5.0 AS ct
 
 FROM quay.io/giantswarm/app-build-suite:0.2.3 AS abs
 
-FROM quay.io/giantswarm/golang:1.17.8-alpine3.14 AS golang
+FROM quay.io/giantswarm/golang:1.18.1-alpine3.15 AS golang
 
 FROM quay.io/giantswarm/conftest:v0.30.0 AS conftest
 
@@ -24,7 +24,7 @@ ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
 ARG HELM_VERSION=v3.8.1
 ARG KUBEBUILDER_VERSION=3.1.0
-ARG GOLANGCI_LINT_VERSION=v1.42.1
+ARG GOLANGCI_LINT_VERSION=v1.46.0
 ARG NANCY_VERSION=v1.0.17
 ARG KUBEVAL_VERSION=v0.16.1
 ARG CT_YAMALE_VER=3.0.6
