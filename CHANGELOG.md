@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update `helm` version to `v3.8.1`.
+- Update Go to 1.18.1.
 
 ## [6.3.0] - 2022-03-04
 
