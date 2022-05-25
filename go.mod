@@ -6,9 +6,9 @@ require (
 	github.com/giantswarm/app/v4 v4.13.0
 	github.com/giantswarm/gitrepo v0.2.2
 	github.com/giantswarm/microerror v0.4.0
-	github.com/google/go-cmp v0.5.7
-	github.com/spf13/afero v1.8.1
-	github.com/spf13/cobra v1.3.0
+	github.com/google/go-cmp v0.5.8
+	github.com/spf13/afero v1.8.2
+	github.com/spf13/cobra v1.4.0
 	sigs.k8s.io/yaml v1.3.0
 )
 
@@ -49,6 +49,7 @@ require (
 replace (
 	github.com/aws/aws-sdk-go => github.com/aws/aws-sdk-go v1.44.22
 	github.com/gorilla/websocket => github.com/gorilla/websocket v1.4.2
+	github.com/miekg/dns => github.com/miekg/dns v1.1.49
 	github.com/nats-io/jwt => github.com/nats-io/jwt/v2 v2.2.0
 	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.8.3
 	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.12.2
