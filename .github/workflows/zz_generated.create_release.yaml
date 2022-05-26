@@ -1,6 +1,6 @@
 # DO NOT EDIT. Generated with:
 #
-#    devctl@5.2.0
+#    devctl@5.3.0
 #
 name: Create Release
 on:
@@ -260,7 +260,7 @@ jobs:
           - windows-amd64
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      GO_VERSION: 1.17.8
+      GO_VERSION: 1.18.1
       ARTIFACT_DIR: bin-dist
       TAG: v${{ needs.gather_facts.outputs.version }}
       CODE_SIGNING_CERT_BUNDLE_BASE64: ${{ secrets.CODE_SIGNING_CERT_BUNDLE_BASE64 }}
@@ -273,7 +273,7 @@ jobs:
         uses: giantswarm/install-binary-action@v1.0.0
         with:
           binary: "architect"
-          version: "6.3.0"
+          version: "6.4.0"
       - name: Set up Go ${{ env.GO_VERSION }}
         uses: actions/setup-go@v2.2.0
         with:
