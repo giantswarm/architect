@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.5.0] - 2022-05-26
 
+### Changed
+
+- Use go 1.18 for the `architect` module.
+- Update `nancy` to `v1.0.33`.
+
 ## [6.4.0] - 2022-05-10
 
 ### Changed
