@@ -1,6 +1,6 @@
 # DO NOT EDIT. Generated with:
 #
-#    devctl@5.3.0
+#    devctl@5.7.0
 #
 name: Create Release
 on:
@@ -251,6 +251,7 @@ jobs:
     name: Create and upload build artifacts
     runs-on: ubuntu-20.04
     strategy:
+      fail-fast: false
       matrix:
         platform:
           - darwin-amd64
