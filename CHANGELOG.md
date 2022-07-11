@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update `nancy` to `v1.0.37`.
+
 ## [6.5.0] - 2022-05-26
 
 ### Changed
