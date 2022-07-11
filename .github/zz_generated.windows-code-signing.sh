@@ -2,7 +2,7 @@
 
 # DO NOT EDIT. Generated with:
 #
-#    devctl@5.3.0
+#    devctl@5.7.0
 #
 
 APPLICATION=$1
@@ -14,14 +14,16 @@ echo "APPLICATION=${APPLICATION}"
 echo "VERSION=${VERSION}"
 echo "PWD=${PWD}"
 
+NO_CODE_SIGNING="Skipping Windows binary signing. In order to create a signed Windows binary, set the environment variables CODE_SIGNING_CERT_BUNDLE_PASSWORD and CODE_SIGNING_CERT_BUNDLE_BASE64."
+
 if [ "${CODE_SIGNING_CERT_BUNDLE_PASSWORD}" = "" ]; then
-	echo "Variable CODE_SIGNING_CERT_BUNDLE_PASSWORD not set."
-	exit 1
+	echo "Variable CODE_SIGNING_CERT_BUNDLE_PASSWORD not set. ${NO_CODE_SIGNING}"
+	exit 0
 fi;
 
 if [ "${CODE_SIGNING_CERT_BUNDLE_BASE64}" = "" ]; then
-	echo "Variable CODE_SIGNING_CERT_BUNDLE_BASE64 not set."
-	exit 1
+	echo "Variable CODE_SIGNING_CERT_BUNDLE_BASE64 not set.  ${NO_CODE_SIGNING}"
+	exit 0
 fi;
 
 echo "Signing the Windows binary"
