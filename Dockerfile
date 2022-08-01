@@ -7,7 +7,7 @@ FROM quay.io/giantswarm/golang:1.18.1-alpine3.15 AS golang
 FROM quay.io/giantswarm/conftest:v0.33.1 AS conftest
 
 # Build Image
-FROM quay.io/giantswarm/alpine:3.14.2
+FROM quay.io/giantswarm/alpine:3.16.1
 
 # Copy go from golang image.
 COPY --from=golang /usr/local/go /usr/local/go
