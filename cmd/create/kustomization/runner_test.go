@@ -30,6 +30,11 @@ func Test_runKustomizationError(t *testing.T) {
 			inputPath: "testdata/input/flux-manifests_2",
 			expected:  "testdata/expected/kustomization.yaml_1",
 		},
+		{
+			name:      "empty dir",
+			inputPath: "testdata/input/flux-manifests_3",
+			expected:  "testdata/expected/kustomization.yaml_2",
+		},
 	}
 
 	for i, tc := range testCases {
