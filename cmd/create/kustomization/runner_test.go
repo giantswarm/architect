@@ -35,6 +35,11 @@ func Test_runKustomizationError(t *testing.T) {
 			inputPath: "testdata/input/flux-manifests_3",
 			expected:  "testdata/expected/kustomization.yaml_2",
 		},
+		{
+			name:      "existing and complicated kustomization.yaml",
+			inputPath: "testdata/input/flux-manifests_4",
+			expected:  "testdata/expected/kustomization.yaml_3",
+		},
 	}
 
 	for i, tc := range testCases {
