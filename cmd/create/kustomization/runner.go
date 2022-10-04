@@ -10,10 +10,6 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-type kustomization struct {
-	Generators []string `json:"generators,omitempty"`
-}
-
 func runKustomizationError(cmd *cobra.Command, args []string) error {
 	err := validateFlags()
 	if err != nil {
@@ -25,10 +21,19 @@ func runKustomizationError(cmd *cobra.Command, args []string) error {
 		return microerror.Mask(err)
 	}
 
-	k := kustomization{
-		Generators: []string{},
+	kusRaw, err := os.ReadFile(fmt.Sprintf("%s/kustomization.yaml", flag.Dir))
+	if err != nil && !os.IsNotExist(err) {
+		return microerror.Mask(err)
 	}
 
+	kus := make(map[string]interface{})
+
+	err = yaml.Unmarshal(kusRaw, &kus)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	generators := make([]string, 0)
 	for _, entry := range dirEntries {
 		if !entry.Type().IsRegular() {
 			continue
@@ -39,10 +44,12 @@ func runKustomizationError(cmd *cobra.Command, args []string) error {
 		if entry.Name() == "kustomization.yaml" {
 			continue
 		}
-		k.Generators = append(k.Generators, entry.Name())
+		generators = append(generators, entry.Name())
 	}
 
-	data, err := yaml.Marshal(&k)
+	kus["generators"] = generators
+
+	data, err := yaml.Marshal(&kus)
 	if err != nil {
 		return microerror.Mask(err)
 	}

@@ -1,0 +1,4 @@
+generators:
+- hello-world.yaml
+- kyverno.yaml
+- security-pack.yaml

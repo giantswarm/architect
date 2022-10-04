@@ -1,0 +1,9 @@
+generators:
+- app-exporter.yaml
+- app-operator.yaml
+- chart-operator.yaml
+- hello-world.yaml
+- kyverno.yaml
+- security-pack.yaml
+patchesStrategicMerge:
+- patches/test_patch.yaml
