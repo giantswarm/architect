@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update Go to 1.19.1.
+- Update Alpine to 3.16.2.
+- Update Go CI linter to 1.49.0.
+
 ## [6.6.0] - 2022-07-11
 
 ### Changed
