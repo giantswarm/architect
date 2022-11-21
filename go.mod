@@ -6,9 +6,9 @@ require (
 	github.com/giantswarm/app/v4 v4.13.0
 	github.com/giantswarm/gitrepo v0.2.2
 	github.com/giantswarm/microerror v0.4.0
-	github.com/google/go-cmp v0.5.8
-	github.com/spf13/afero v1.8.2
-	github.com/spf13/cobra v1.5.0
+	github.com/google/go-cmp v0.5.9
+	github.com/spf13/afero v1.9.3
+	github.com/spf13/cobra v1.6.1
 	sigs.k8s.io/yaml v1.3.0
 )
 
@@ -19,7 +19,7 @@ require (
 	github.com/go-errors/errors v1.0.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
-	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kevinburke/ssh_config v0.0.0-20190725054713-01f96b0aa0cd // indirect
