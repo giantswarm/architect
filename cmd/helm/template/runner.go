@@ -5,7 +5,6 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -100,7 +99,7 @@ func getProjectVersion(repoDir string) (string, error) {
 	filePath := "pkg/project/project.go"
 	varName := "version"
 
-	content, err := ioutil.ReadFile(filepath.Join(repoDir, filePath))
+	content, err := os.ReadFile(filepath.Join(repoDir, filePath))
 	if os.IsNotExist(err) {
 		return "", nil
 	} else if err != nil {
