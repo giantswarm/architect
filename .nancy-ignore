@@ -8,3 +8,10 @@ CVE-2022-29718 until=2023-05-26
 
 # pkg:golang/github.com/lucas-clemente/quic-go@v0.10.2
 CVE-2022-30591 until=2023-05-26
+
+# pkg:golang/github.com/nats-io/nats-server/v2@v2.8.3
+CVE-2022-42709 until=2023-01-01
+CVE-2022-42708 until=2023-01-01
+
+# pkg:golang/golang.org/x/text@v0.3.7
+CVE-2022-32149 until=2023-01-01
