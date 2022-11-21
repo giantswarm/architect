@@ -2,7 +2,6 @@ package internal
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -178,7 +177,7 @@ func modifyFile(path string, modifyFunc func([]byte) ([]byte, error)) error {
 		return microerror.Maskf(executionFailedError, "file %#q is a directory, expected regular file", path)
 	}
 
-	content, err := ioutil.ReadFile(path)
+	content, err := os.ReadFile(path)
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -188,7 +187,7 @@ func modifyFile(path string, modifyFunc func([]byte) ([]byte, error)) error {
 		return microerror.Mask(err)
 	}
 
-	err = ioutil.WriteFile(path, content, 0)
+	err = os.WriteFile(path, content, 0)
 	if err != nil {
 		return microerror.Mask(err)
 	}
