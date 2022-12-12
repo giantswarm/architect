@@ -1,6 +1,6 @@
 FROM quay.io/giantswarm/helm-chart-testing:v3.7.1 AS ct
 
-FROM quay.io/giantswarm/app-build-suite:1.1.3 AS abs
+FROM quay.io/giantswarm/app-build-suite:1.1.4 AS abs
 
 FROM quay.io/giantswarm/golang:1.19.1-alpine3.16 AS golang
 
