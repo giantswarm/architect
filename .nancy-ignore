@@ -6,6 +6,10 @@ CVE-2022-24687 until=2023-05-26
 # pkg:golang/github.com/caddyserver/caddy@v1.0.3
 CVE-2022-29718 until=2023-05-26
 
+# pkg:golang/k8s.io/apiserver@v0.18.9
+# This is present in the current latest v0.26.0 as well
+sonatype-2022-6522 until=2023-02-01
+
 # pkg:golang/github.com/lucas-clemente/quic-go@v0.10.2
 CVE-2022-30591 until=2023-05-26
 
