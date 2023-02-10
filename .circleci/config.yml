@@ -16,6 +16,7 @@ workflows:
       - architect/push-to-docker:
           name: "push-architect-to-docker"
           image: "quay.io/giantswarm/architect"
+          context: architect
           username_envar: "QUAY_USERNAME"
           password_envar: "QUAY_PASSWORD"
           requires:
