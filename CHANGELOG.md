@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.9.0] - 2023-02-15
 
+## [6.9.0] - 2023-02-15
+
 ### Changed
 
 - Switched from kubeval to kubeconform 0.4.13
@@ -438,7 +440,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v6.8.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v6.9.0...HEAD
+[6.9.0]: https://github.com/giantswarm/architect/compare/v6.8.0...v6.9.0
 [6.8.0]: https://github.com/giantswarm/architect/compare/v6.7.0...v6.8.0
 [6.7.0]: https://github.com/giantswarm/architect/compare/v6.6.0...v6.7.0
 [6.6.0]: https://github.com/giantswarm/architect/compare/v6.5.0...v6.6.0
