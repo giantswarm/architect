@@ -9,8 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.9.0] - 2023-02-15
 
-## [6.9.0] - 2023-02-15
-
 ### Changed
 
 - Switched from kubeval to kubeconform 0.4.13
