@@ -72,8 +72,10 @@ func (m *Modifier) addReleaseToChangelogMd(content []byte) ([]byte, error) {
 	// To match strings like:
 	//
 	//	[Unreleased]: https://github.com/giantswarm/REPOSITORY_NAME/compare/v1.2.3...HEAD
+	//	[Unreleased]: https://github.com/giantswarm/REPOSITORY_NAME/compare/v1.2.3-gsalpha1...HEAD
+	//	[Unreleased]: https://github.com/giantswarm/REPOSITORY_NAME/compare/v1.2.3-gs.alpha.1...HEAD
 	//
-	bottomLinks := regexp.MustCompile(`\[Unreleased\]:\s+https://github.com/\S+/compare/v(\d+\.\d+\.\d+(-\w+)?)\.\.\.HEAD\s*`)
+	bottomLinks := regexp.MustCompile(`\[Unreleased\]:\s+https://github.com/\S+/compare/v(\d+\.\d+\.\d+(-(\w|\.)+)?)\.\.\.HEAD\s*`)
 	bottomLinksReplacement := strings.Join([]string{
 		fmt.Sprintf("[Unreleased]: https://github.com/%s/compare/v%s...HEAD", m.repo, m.newVersion),
 		fmt.Sprintf("[%s]: https://github.com/%s/compare/v${1}...v%s", m.newVersion, m.repo, m.newVersion),
