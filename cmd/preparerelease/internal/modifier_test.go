@@ -2,9 +2,9 @@ package internal
 
 import (
 	"fmt"
-	"time"
 	"strconv"
 	"testing"
+	"time"
 )
 
 const (
@@ -56,7 +56,7 @@ func Test_modifier_addReleaseToChangelogMd(t *testing.T) {
 
 			m := Modifier{
 				newVersion: tc.newVersion,
-				repo: "REPOSITORY_NAME",
+				repo:       "REPOSITORY_NAME",
 			}
 
 			// Current MD for Changelog before a new release is published
