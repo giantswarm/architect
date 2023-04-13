@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.11.0] - 2023-04-13
+
 ### Changed
 
 - Support dots in version suffix when generating PR Releases [#797](https://github.com/giantswarm/architect/pull/797)
@@ -448,7 +450,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v6.10.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v6.11.0...HEAD
+[6.11.0]: https://github.com/giantswarm/architect/compare/v6.10.0...v6.11.0
 [6.10.0]: https://github.com/giantswarm/architect/compare/v6.9.0...v6.10.0
 [6.9.0]: https://github.com/giantswarm/architect/compare/v6.8.0...v6.9.0
 [6.8.0]: https://github.com/giantswarm/architect/compare/v6.7.0...v6.8.0
