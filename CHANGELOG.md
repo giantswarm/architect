@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Support dots in version suffix when generating PR Releases [#797](https://github.com/giantswarm/architect/pull/797)
+
 ## [6.10.0] - 2023-02-21
 
 ### Changed
