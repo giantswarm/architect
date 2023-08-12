@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.12.1] - 2023-07-20
+
+### Changed
+
+- Update `golangci-lint` to `v1.53.3`.
+
+## [6.12.0] - 2023-07-20
+
+### Changed
+
+- Update Go to v1.20.6
+
 ## [6.11.0] - 2023-04-13
 
 ### Changed
@@ -450,7 +462,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v6.11.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v6.12.1...HEAD
+[6.12.1]: https://github.com/giantswarm/architect/compare/v6.12.0...v6.12.1
+[6.12.0]: https://github.com/giantswarm/architect/compare/v6.11.0...v6.12.0
 [6.11.0]: https://github.com/giantswarm/architect/compare/v6.10.0...v6.11.0
 [6.10.0]: https://github.com/giantswarm/architect/compare/v6.9.0...v6.10.0
 [6.9.0]: https://github.com/giantswarm/architect/compare/v6.8.0...v6.9.0
