@@ -6,9 +6,9 @@ require (
 	github.com/giantswarm/app/v4 v4.13.0
 	github.com/giantswarm/gitrepo v0.2.2
 	github.com/giantswarm/microerror v0.4.0
-	github.com/google/go-cmp v0.5.9
-	github.com/spf13/afero v1.9.4
-	github.com/spf13/cobra v1.6.1
+	github.com/google/go-cmp v0.6.0
+	github.com/spf13/afero v1.10.0
+	github.com/spf13/cobra v1.7.0
 	sigs.k8s.io/yaml v1.3.0
 )
 
@@ -50,13 +50,13 @@ require (
 )
 
 replace (
-	github.com/aws/aws-sdk-go => github.com/aws/aws-sdk-go v1.44.22
-	github.com/gorilla/websocket => github.com/gorilla/websocket v1.4.2
-	github.com/miekg/dns => github.com/miekg/dns v1.1.49
-	github.com/nats-io/jwt => github.com/nats-io/jwt/v2 v2.2.0
-	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.9.14
-	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.12.2
-	go.mongodb.org/mongo-driver => go.mongodb.org/mongo-driver v1.9.1
+	github.com/aws/aws-sdk-go => github.com/aws/aws-sdk-go v1.46.4
+	github.com/gorilla/websocket => github.com/gorilla/websocket v1.5.0
+	github.com/miekg/dns => github.com/miekg/dns v1.1.56
+	github.com/nats-io/jwt => github.com/nats-io/jwt/v2 v2.5.2
+	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.3
+	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.17.0
+	go.mongodb.org/mongo-driver => go.mongodb.org/mongo-driver v1.12.1
 
 	golang.org/x/net => golang.org/x/net v0.14.0
 )
