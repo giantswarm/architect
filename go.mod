@@ -50,7 +50,7 @@ require (
 )
 
 replace (
-	github.com/aws/aws-sdk-go => github.com/aws/aws-sdk-go v1.44.22
+	github.com/aws/aws-sdk-go => github.com/aws/aws-sdk-go v1.46.6
 	github.com/gorilla/websocket => github.com/gorilla/websocket v1.4.2
 	github.com/miekg/dns => github.com/miekg/dns v1.1.56
 	github.com/nats-io/jwt => github.com/nats-io/jwt/v2 v2.2.0
