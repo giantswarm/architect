@@ -27,7 +27,6 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	github.com/sergi/go-diff v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/src-d/gcfg v1.4.0 // indirect
@@ -55,7 +54,7 @@ replace (
 	github.com/miekg/dns => github.com/miekg/dns v1.1.56
 	github.com/nats-io/jwt => github.com/nats-io/jwt/v2 v2.2.0
 	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.4
-	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.12.2
+	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.17.0
 	go.mongodb.org/mongo-driver => go.mongodb.org/mongo-driver v1.12.1
 
 	golang.org/x/net => golang.org/x/net v0.17.0
