@@ -58,5 +58,5 @@ replace (
 	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.12.2
 	go.mongodb.org/mongo-driver => go.mongodb.org/mongo-driver v1.9.1
 
-	golang.org/x/net => golang.org/x/net v0.14.0
+	golang.org/x/net => golang.org/x/net v0.17.0
 )
