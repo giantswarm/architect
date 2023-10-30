@@ -32,10 +32,10 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/src-d/gcfg v1.4.0 // indirect
 	github.com/xanzy/ssh-agent v0.2.1 // indirect
-	golang.org/x/crypto v0.12.0 // indirect
+	golang.org/x/crypto v0.14.0 // indirect
 	golang.org/x/net v0.14.0 // indirect
-	golang.org/x/sys v0.11.0 // indirect
-	golang.org/x/text v0.12.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/src-d/go-billy.v4 v4.3.2 // indirect
 	gopkg.in/src-d/go-git.v4 v4.13.1 // indirect
@@ -54,7 +54,7 @@ replace (
 	github.com/gorilla/websocket => github.com/gorilla/websocket v1.4.2
 	github.com/miekg/dns => github.com/miekg/dns v1.1.49
 	github.com/nats-io/jwt => github.com/nats-io/jwt/v2 v2.2.0
-	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.9.14
+	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.4
 	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.12.2
 	go.mongodb.org/mongo-driver => go.mongodb.org/mongo-driver v1.9.1
 
