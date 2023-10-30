@@ -33,7 +33,7 @@ require (
 	github.com/src-d/gcfg v1.4.0 // indirect
 	github.com/xanzy/ssh-agent v0.2.1 // indirect
 	golang.org/x/crypto v0.14.0 // indirect
-	golang.org/x/net v0.14.0 // indirect
+	golang.org/x/net v0.15.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
@@ -52,7 +52,7 @@ require (
 replace (
 	github.com/aws/aws-sdk-go => github.com/aws/aws-sdk-go v1.44.22
 	github.com/gorilla/websocket => github.com/gorilla/websocket v1.4.2
-	github.com/miekg/dns => github.com/miekg/dns v1.1.49
+	github.com/miekg/dns => github.com/miekg/dns v1.1.56
 	github.com/nats-io/jwt => github.com/nats-io/jwt/v2 v2.2.0
 	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.4
 	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.12.2
