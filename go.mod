@@ -8,7 +8,7 @@ require (
 	github.com/giantswarm/microerror v0.4.0
 	github.com/google/go-cmp v0.6.0
 	github.com/spf13/afero v1.10.0
-	github.com/spf13/cobra v1.7.0
+	github.com/spf13/cobra v1.8.0
 	sigs.k8s.io/yaml v1.4.0
 )
 
