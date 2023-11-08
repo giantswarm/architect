@@ -2,12 +2,12 @@ FROM quay.io/giantswarm/helm-chart-testing:v3.7.1 AS ct
 
 FROM quay.io/giantswarm/app-build-suite:1.1.5 AS abs
 
-FROM quay.io/giantswarm/golang:1.20.6-alpine3.17 AS golang
+FROM quay.io/giantswarm/golang:1.21.3-alpine3.18 AS golang
 
 FROM quay.io/giantswarm/conftest:v0.37.0 AS conftest
 
 # Build Image
-FROM quay.io/giantswarm/alpine:3.17
+FROM quay.io/giantswarm/alpine:3.18
 
 # Copy go from golang image.
 COPY --from=golang /usr/local/go /usr/local/go
@@ -24,11 +24,11 @@ ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
 ARG HELM_VERSION=v3.8.1
 ARG KUBEBUILDER_VERSION=3.1.0
-ARG GOLANGCI_LINT_VERSION=v1.53.3
-ARG NANCY_VERSION=v1.0.37
+ARG GOLANGCI_LINT_VERSION=v1.55.2
+ARG NANCY_VERSION=v1.0.45
 ARG KUBECONFORM_VERSION=v0.4.13
 ARG CT_YAMALE_VER=3.0.6
-ARG CT_YAMLLINT_VER=1.26.1
+ARG CT_YAMLLINT_VER=1.32.0
 
 RUN apk add --no-cache \
         bash \

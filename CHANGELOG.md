@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update Go to v1.21.3, golangci-lint to v1.55.2, nancy to v1.0.45, yamllint to v1.32.0
+
 ## [6.12.1] - 2023-07-20
 
 ### Changed
