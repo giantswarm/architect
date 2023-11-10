@@ -52,8 +52,8 @@ replace (
 	github.com/aws/aws-sdk-go => github.com/aws/aws-sdk-go v1.47.7
 	github.com/gorilla/websocket => github.com/gorilla/websocket v1.5.1
 	github.com/miekg/dns => github.com/miekg/dns v1.1.56
-	github.com/nats-io/jwt => github.com/nats-io/jwt/v2 v2.5.3
-	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.4
+	github.com/nats-io/jwt/v2 => github.com/nats-io/jwt/v2 v2.5.3
+	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.5
 	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.17.0
 	go.mongodb.org/mongo-driver => go.mongodb.org/mongo-driver v1.12.1
 
