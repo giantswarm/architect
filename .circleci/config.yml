@@ -13,12 +13,9 @@ workflows:
             tags:
               only: /^v.*/
 
-      - architect/push-to-docker:
-          name: "push-architect-to-docker"
-          image: "quay.io/giantswarm/architect"
+      - architect/push-to-registries:
           context: architect
-          username_envar: "QUAY_USERNAME"
-          password_envar: "QUAY_PASSWORD"
+          name: push-to-registries
           requires:
             - go-build-architect
           filters:
