@@ -65,7 +65,7 @@ replace (
 	github.com/nats-io/jwt/v2 => github.com/nats-io/jwt/v2 v2.5.3
 	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.7
 	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.17.0
-	go.mongodb.org/mongo-driver => go.mongodb.org/mongo-driver v1.12.1
+	go.mongodb.org/mongo-driver => go.mongodb.org/mongo-driver v1.13.1
 
 	golang.org/x/net => golang.org/x/net v0.19.0
 )
