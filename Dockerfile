@@ -39,7 +39,8 @@ RUN apk add --no-cache \
         py-pip \
         openssh-client \
         make \
-        yq &&\
+        yq \
+        jq &&\
         curl -SL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | \
             tar -C /usr/bin --strip-components 1 -xvzf - linux-amd64/helm && \
         curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_$(go env GOOS)_$(go env GOARCH) && \
