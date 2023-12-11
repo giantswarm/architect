@@ -31,30 +31,31 @@ ARG CT_YAMALE_VER=3.0.6
 ARG CT_YAMLLINT_VER=1.32.0
 
 RUN apk add --no-cache \
-        bash \
-        ca-certificates \
-        curl \
-        docker \
-        git \
-        py-pip \
-        openssh-client \
-        make \
-        yq &&\
-        curl -SL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | \
-            tar -C /usr/bin --strip-components 1 -xvzf - linux-amd64/helm && \
-        curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_$(go env GOOS)_$(go env GOARCH) && \
-        curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
-            sh -s -- -b $GOPATH/bin ${GOLANGCI_LINT_VERSION} && \
-        curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-linux-amd64 && \
-            chmod +x /usr/bin/nancy && \
-        go install github.com/yannh/kubeconform/cmd/kubeconform@${KUBECONFORM_VERSION}
+  bash \
+  ca-certificates \
+  curl \
+  docker \
+  git \
+  jq \
+  py-pip \
+  openssh-client \
+  make \
+  yq &&\
+  curl -SL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | \
+  tar -C /usr/bin --strip-components 1 -xvzf - linux-amd64/helm && \
+  curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_$(go env GOOS)_$(go env GOARCH) && \
+  curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
+  sh -s -- -b $GOPATH/bin ${GOLANGCI_LINT_VERSION} && \
+  curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-linux-amd64 && \
+  chmod +x /usr/bin/nancy && \
+  go install github.com/yannh/kubeconform/cmd/kubeconform@${KUBECONFORM_VERSION}
 
 # Setup ssh config for github.com
 RUN mkdir ~/.ssh &&\
-    chmod 700 ~/.ssh &&\
-    ssh-keyscan github.com >> ~/.ssh/known_hosts &&\
-    printf "Host github.com\n IdentitiesOnly yes\n IdentityFile ~/.ssh/id_rsa\n" >> ~/.ssh/config &&\
-    chmod 600 ~/.ssh/*
+  chmod 700 ~/.ssh &&\
+  ssh-keyscan github.com >> ~/.ssh/known_hosts &&\
+  printf "Host github.com\n IdentitiesOnly yes\n IdentityFile ~/.ssh/id_rsa\n" >> ~/.ssh/config &&\
+  chmod 600 ~/.ssh/*
 
 RUN pip install yamllint==${CT_YAMLLINT_VER} yamale==${CT_YAMALE_VER}
 
