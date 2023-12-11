@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- added `jq` util to the image
+
 ## [6.13.0] - 2023-11-08
 
 ### Changed
