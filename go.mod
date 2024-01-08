@@ -41,7 +41,7 @@ require (
 	github.com/skeema/knownhosts v1.2.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
-	golang.org/x/crypto v0.16.0 // indirect
+	golang.org/x/crypto v0.17.0 // indirect
 	golang.org/x/mod v0.12.0 // indirect
 	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/sys v0.15.0 // indirect
@@ -64,7 +64,7 @@ replace (
 	github.com/miekg/dns => github.com/miekg/dns v1.1.57
 	github.com/nats-io/jwt/v2 => github.com/nats-io/jwt/v2 v2.5.3
 	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.7
-	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.17.0
+	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.18.0
 	go.mongodb.org/mongo-driver => go.mongodb.org/mongo-driver v1.13.1
 
 	golang.org/x/net => golang.org/x/net v0.19.0
