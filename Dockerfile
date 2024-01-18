@@ -40,6 +40,7 @@ RUN apk add --no-cache \
   py-pip \
   openssh-client \
   make \
+  yamllint \
   yq &&\
   curl -SL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | \
   tar -C /usr/bin --strip-components 1 -xvzf - linux-amd64/helm && \
@@ -56,6 +57,8 @@ RUN mkdir ~/.ssh &&\
   ssh-keyscan github.com >> ~/.ssh/known_hosts &&\
   printf "Host github.com\n IdentitiesOnly yes\n IdentityFile ~/.ssh/id_rsa\n" >> ~/.ssh/config &&\
   chmod 600 ~/.ssh/*
+
+RUN find / -type f -n "EXTERNALLY-MANAGED"
 
 RUN pip install yamllint==${CT_YAMLLINT_VER} yamale==${CT_YAMALE_VER}
 
