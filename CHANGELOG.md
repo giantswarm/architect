@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update Go to v1.21.6
+- Access base images from `gsoci.azurecr.io`
+
 ## [6.14.0] - 2023-12-11
 
 - added `jq` util to the image
