@@ -7,7 +7,7 @@ FROM gsoci.azurecr.io/giantswarm/golang:1.21.6-alpine3.18 AS golang
 FROM gsoci.azurecr.io/giantswarm/conftest:v0.48.0 AS conftest
 
 # Build Image
-FROM gsoci.azurecr.io/giantswarm/alpine:3.18
+FROM gsoci.azurecr.io/giantswarm/alpine:3.19
 
 # Copy go from golang image.
 COPY --from=golang /usr/local/go /usr/local/go
@@ -56,6 +56,10 @@ RUN mkdir ~/.ssh &&\
   ssh-keyscan github.com >> ~/.ssh/known_hosts &&\
   printf "Host github.com\n IdentitiesOnly yes\n IdentityFile ~/.ssh/id_rsa\n" >> ~/.ssh/config &&\
   chmod 600 ~/.ssh/*
+
+# Allow installing python modules in the global context.
+# See https://peps.python.org/pep-0668/
+RUN rm -f /usr/lib/python3.11/EXTERNALLY-MANAGED
 
 RUN pip install yamllint==${CT_YAMLLINT_VER} yamale==${CT_YAMALE_VER}
 
