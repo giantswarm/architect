@@ -62,7 +62,7 @@ replace (
 	github.com/gorilla/websocket => github.com/gorilla/websocket v1.5.1
 	github.com/miekg/dns => github.com/miekg/dns v1.1.58
 	github.com/nats-io/jwt/v2 => github.com/nats-io/jwt/v2 v2.5.3
-	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.9
+	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.10
 	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.18.0
 	go.mongodb.org/mongo-driver => go.mongodb.org/mongo-driver v1.13.1
 
