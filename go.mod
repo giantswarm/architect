@@ -58,7 +58,6 @@ require (
 )
 
 replace (
-	github.com/gorilla/websocket => github.com/gorilla/websocket v1.5.1
 	github.com/miekg/dns => github.com/miekg/dns v1.1.58
 	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.11
 	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.18.0
