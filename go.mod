@@ -57,8 +57,4 @@ require (
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
 )
 
-replace (
-	go.mongodb.org/mongo-driver => go.mongodb.org/mongo-driver v1.14.0
-
-	golang.org/x/net => golang.org/x/net v0.21.0
-)
+replace golang.org/x/net => golang.org/x/net v0.21.0
