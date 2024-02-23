@@ -58,7 +58,6 @@ require (
 )
 
 replace (
-	github.com/prometheus/client_golang => github.com/prometheus/client_golang v1.18.0
 	go.mongodb.org/mongo-driver => go.mongodb.org/mongo-driver v1.14.0
 
 	golang.org/x/net => golang.org/x/net v0.21.0
