@@ -2,7 +2,7 @@ module github.com/giantswarm/architect
 
 go 1.21
 
-toolchain go1.22.2
+toolchain go1.22.3
 
 require (
 	github.com/giantswarm/app/v7 v7.0.1
