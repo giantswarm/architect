@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.15.1] - 2024-07-26
 
+### Changed
+
+- Bump base image to `golang:1.21.12-alpine3.19` to fix reported CVEs.
+
 ## [6.15.0] - 2024-07-18
 
 ### Changed
