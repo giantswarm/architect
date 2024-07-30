@@ -2,6 +2,7 @@ package hook
 
 import (
 	"context"
+
 	"github.com/pkg/errors"
 
 	"github.com/giantswarm/gitrepo/pkg/gitrepo"
