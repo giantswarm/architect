@@ -6,9 +6,10 @@ toolchain go1.22.5
 
 require (
 	github.com/giantswarm/app/v7 v7.0.2
-	github.com/giantswarm/gitrepo v0.2.4
+	github.com/giantswarm/gitrepo v0.3.0
 	github.com/giantswarm/microerror v0.4.1
 	github.com/google/go-cmp v0.6.0
+	github.com/pkg/errors v0.9.1
 	github.com/spf13/afero v1.11.0
 	github.com/spf13/cobra v1.8.1
 	sigs.k8s.io/yaml v1.4.0

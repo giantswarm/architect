@@ -3,6 +3,8 @@ package hook
 import (
 	"context"
 
+	"github.com/pkg/errors"
+
 	"github.com/giantswarm/gitrepo/pkg/gitrepo"
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/cobra"
@@ -37,7 +39,7 @@ func PreRunE(cmd *cobra.Command, args []string) error {
 	}
 
 	defaultTag, err := repo.HeadTag(ctx)
-	if gitrepo.IsReferenceNotFound(err) {
+	if errors.Is(err, &gitrepo.ReferenceNotFoundError{}) {
 		defaultTag = ""
 	} else if err != nil {
 		return microerror.Mask(err)
