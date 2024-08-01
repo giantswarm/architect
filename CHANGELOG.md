@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.16.0] - 2024-08-01
 
+### Changed
+
+- Bump `github.com/giantswarm/gitrepo` to `v0.3.0` to add git tag prefix support. See: https://github.com/giantswarm/gitrepo/releases/tag/v0.3.0.
+
 ## [6.15.1] - 2024-07-26
 
 ### Changed
