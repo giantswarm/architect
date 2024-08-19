@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Upgrade `golangci-lint` to `1.60.1`
+
 ## [6.16.0] - 2024-08-01
 
 ### Changed
