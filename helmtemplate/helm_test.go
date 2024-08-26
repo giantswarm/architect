@@ -2,7 +2,6 @@ package helmtemplate
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -187,7 +186,7 @@ func check(config Config, expectedChartDir string) error {
 		}
 
 		if !bytes.Equal(expectedData, data) {
-			return microerror.Maskf(invalidConfigError, fmt.Sprintf("%v, diff\n%s\n", path, cmp.Diff(string(expectedData), string(data))))
+			return microerror.Maskf(invalidConfigError, "%v, diff\n%s\n", path, cmp.Diff(string(expectedData), string(data)))
 		}
 
 		return nil
