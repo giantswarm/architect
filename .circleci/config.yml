@@ -5,20 +5,24 @@ orbs:
 workflows:
   go-build:
     jobs:
-      - architect/go-build:
-          name: go-build-architect
-          binary: architect
+    - architect/go-build:
+        name: go-build-architect
+        binary: architect
           # Needed to trigger job also on git tag.
-          filters:
-            tags:
-              only: /^v.*/
+        filters:
+          tags:
+            only: /^v.*/
 
-      - architect/push-to-registries:
-          context: architect
-          name: push-to-registries
-          requires:
-            - go-build-architect
-          filters:
+    - architect/push-to-registries:
+        context: architect
+        name: push-to-registries
+        requires:
+        - go-build-architect
+        filters:
             # Needed to trigger job also on git tag.
-            tags:
-              only: /^v.*/
+          tags:
+            only: /^v.*/
+          branches:
+            ignore:
+            - main
+            - master
