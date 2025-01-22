@@ -9,4 +9,4 @@ The latest release is fetched automatically during builds (running on CircleCI),
 and then executed to perform the build. This allows us to update one tool,
 and affect all builds.
 
-architect runs all build steps in containers, to allow for portability and reproducibility.
+Architect runs all build steps in containers, to allow for portability and reproducibility.
