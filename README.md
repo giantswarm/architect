@@ -1,23 +1,12 @@
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/giantswarm/architect/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/giantswarm/architect/tree/master)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/giantswarm/architect/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/giantswarm/architect/tree/main)
 
 # architect
 
-architect is a highly opinionated tool used at Giant Swarm for building and deploying services.
+A highly opinionated tool used at Giant Swarm for building services.
 
-architect is used as part of the Giant Swarm release workflow, to **build services**.
-The latest release is fetched automatically during builds (running on CircleCI),
+Architect is used as part of the Giant Swarm release workflow, to **build services**.
+A release is fetched during builds (running on CircleCI),
 and then executed to perform the build. This allows us to update one tool,
 and affect all builds.
 
-On master merges, architect is also used to **trigger a deployment** of the built
-service. It creates an event that is picked up by a companion tool
-[draughtsman](https://github.com/giantswarm/draughtsman), which runs inside an
-installation and pulls and deploys the service.
-
-architect runs all build steps in Docker containers, to allow for portability and reproducibility.
-
-To download the latest build of architect, run:
-
-```nohighlight
-wget -q $(curl -sS https://api.github.com/repos/giantswarm/architect/releases/latest | grep browser_download_url | head -n 1 | cut -d '"' -f 4)
-```
+Architect runs all build steps in containers, to allow for portability and reproducibility.
