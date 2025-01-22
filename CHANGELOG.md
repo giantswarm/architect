@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [6.18.1] - 2025-01-22
 
 - Dependency updates
+  - helm-chart-testing v3.12.0
+  - app-build-suite v1.2.8
+  - golang 1.23.4
+  - conftest v0.56.0
 
 ## [6.18.0] - 2024-08-26
 
