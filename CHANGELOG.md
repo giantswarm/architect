@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.18.1] - 2025-01-22
+
+- Dependency updates
+  - helm-chart-testing v3.12.0
+  - app-build-suite v1.2.8
+  - golang 1.23.4
+  - conftest v0.56.0
+
 ## [6.18.0] - 2024-08-26
 
 ### Changed
@@ -512,7 +520,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v6.18.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v6.18.1...HEAD
+[6.18.1]: https://github.com/giantswarm/architect/compare/v6.18.0...v6.18.1
 [6.18.0]: https://github.com/giantswarm/architect/compare/v6.17.0...v6.18.0
 [6.17.0]: https://github.com/giantswarm/architect/compare/v6.16.0...v6.17.0
 [6.16.0]: https://github.com/giantswarm/architect/compare/v6.15.1...v6.16.0
