@@ -22,12 +22,19 @@ COPY --from=conftest /usr/local/bin/conftest /usr/local/bin/conftest
 ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
+# renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=v3.8.1
+# renovate: datasource=github-releases depName=kubernetes-sigs/kubebuilder
 ARG KUBEBUILDER_VERSION=3.1.0
+# renovate: datasource=github-releases depName=golangci/golangci-lint
 ARG GOLANGCI_LINT_VERSION=v1.60.3
+# renovate: datasource=github-releases depName=sonatype-nexus-community/nancy
 ARG NANCY_VERSION=v1.0.46
+# renovate: datasource=github-releases depName=yannh/kubeconform
 ARG KUBECONFORM_VERSION=v0.4.14
+# renovate: datasource=pypi depName=yamale
 ARG CT_YAMALE_VER=3.0.6
+# renovate: datasource=pypi depName=yamllint
 ARG CT_YAMLLINT_VER=1.32.0
 
 RUN apk add --no-cache \
