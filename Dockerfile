@@ -35,7 +35,7 @@ ARG KUBECONFORM_VERSION=v0.4.14
 # renovate: datasource=pypi depName=yamale
 ARG CT_YAMALE_VER=3.0.8
 # renovate: datasource=pypi depName=yamllint
-ARG CT_YAMLLINT_VER=1.32.0
+ARG CT_YAMLLINT_VER=1.35.1
 
 RUN apk add --no-cache \
   bash \
