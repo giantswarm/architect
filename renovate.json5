@@ -5,4 +5,16 @@
     // Go specific config - https://github.com/giantswarm/renovate-presets/blob/main/lang-go.json5
     "github>giantswarm/renovate-presets:lang-go.json5",
   ],
+  customManagers: [
+    // Detect versions in Dockerfile ARGs
+    {
+      customType: 'regex',
+      fileMatch: ['Dockerfile.*'],
+      matchStrings: [
+        // for the version on the right part, ignoring the left
+        '# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\sARG [A-Z_]+=(?<currentValue>\\S+)',
+      ],
+      versioningTemplate: '{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}',
+    },
+  ],
 }
