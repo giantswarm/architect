@@ -27,7 +27,7 @@ ARG HELM_VERSION=v3.8.1
 # renovate: datasource=github-releases depName=kubernetes-sigs/kubebuilder
 ARG KUBEBUILDER_VERSION=3.1.0
 # renovate: datasource=github-releases depName=golangci/golangci-lint
-ARG GOLANGCI_LINT_VERSION=v1.63.4
+ARG GOLANGCI_LINT_VERSION=v1.64.2
 # renovate: datasource=github-releases depName=sonatype-nexus-community/nancy
 ARG NANCY_VERSION=v1.0.46
 # renovate: datasource=github-releases depName=yannh/kubeconform
