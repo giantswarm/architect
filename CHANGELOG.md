@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.18.2] - 2025-02-13
 
+- Dependency updates
+  - golangci-lint v1.64.4
+  - yamllint v1.35.1
+  - yamale v3.0.8
+
 ## [6.18.1] - 2025-01-22
 
 - Dependency updates
