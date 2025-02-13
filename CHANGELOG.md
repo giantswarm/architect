@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.18.2] - 2025-02-13
+
+- Dependency updates
+  - golangci-lint v1.64.4
+  - yamllint v1.35.1
+  - yamale v3.0.8
+
 ## [6.18.1] - 2025-01-22
 
 - Dependency updates
@@ -520,7 +527,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v6.18.1...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v6.18.2...HEAD
+[6.18.2]: https://github.com/giantswarm/architect/compare/v6.18.1...v6.18.2
 [6.18.1]: https://github.com/giantswarm/architect/compare/v6.18.0...v6.18.1
 [6.18.0]: https://github.com/giantswarm/architect/compare/v6.17.0...v6.18.0
 [6.17.0]: https://github.com/giantswarm/architect/compare/v6.16.0...v6.17.0
