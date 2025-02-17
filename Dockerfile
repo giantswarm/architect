@@ -33,7 +33,7 @@ ARG NANCY_VERSION=v1.0.46
 # renovate: datasource=github-releases depName=yannh/kubeconform
 ARG KUBECONFORM_VERSION=v0.4.14
 # renovate: datasource=pypi depName=yamale
-ARG CT_YAMALE_VER=3.0.8
+ARG CT_YAMALE_VER=6.0.0
 # renovate: datasource=pypi depName=yamllint
 ARG CT_YAMLLINT_VER=1.35.1
 
