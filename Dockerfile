@@ -31,7 +31,7 @@ ARG GOLANGCI_LINT_VERSION=v1.64.5
 # renovate: datasource=github-releases depName=sonatype-nexus-community/nancy
 ARG NANCY_VERSION=v1.0.46
 # renovate: datasource=github-releases depName=yannh/kubeconform
-ARG KUBECONFORM_VERSION=v0.4.14
+ARG KUBECONFORM_VERSION=v0.6.7
 # renovate: datasource=pypi depName=yamale
 ARG CT_YAMALE_VER=3.0.8
 # renovate: datasource=pypi depName=yamllint
