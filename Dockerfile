@@ -30,8 +30,13 @@ ARG KUBEBUILDER_VERSION=3.1.0
 ARG GOLANGCI_LINT_VERSION=v1.64.5
 # renovate: datasource=github-releases depName=sonatype-nexus-community/nancy
 ARG NANCY_VERSION=v1.0.46
+# The `kubeconform` tool is used only when Helm Chart is build and published
+# with the `architect` executor, which for majority of the project is not the
+# case anymore, for they are build and published with the ABS.
 # renovate: datasource=github-releases depName=yannh/kubeconform
 ARG KUBECONFORM_VERSION=v0.6.7
+# The `yamale` tool does not seem to be used anymore, it is still here just in case
+# some CI magic somewhere still relies on it.
 # renovate: datasource=pypi depName=yamale
 ARG CT_YAMALE_VER=6.0.0
 # renovate: datasource=pypi depName=yamllint
