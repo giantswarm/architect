@@ -4,7 +4,7 @@ FROM gsoci.azurecr.io/giantswarm/app-build-suite:1.2.8 AS abs
 
 FROM gsoci.azurecr.io/giantswarm/golang:1.23.4-alpine3.19 AS golang
 
-FROM gsoci.azurecr.io/giantswarm/conftest:v0.56.0 AS conftest
+FROM gsoci.azurecr.io/giantswarm/conftest:v0.57.0 AS conftest
 
 # Build Image
 FROM gsoci.azurecr.io/giantswarm/alpine:3.19
@@ -27,7 +27,7 @@ ARG HELM_VERSION=v3.17.1
 # renovate: datasource=github-releases depName=kubernetes-sigs/kubebuilder
 ARG KUBEBUILDER_VERSION=3.1.0
 # renovate: datasource=github-releases depName=golangci/golangci-lint
-ARG GOLANGCI_LINT_VERSION=v1.64.4
+ARG GOLANGCI_LINT_VERSION=v1.64.5
 # renovate: datasource=github-releases depName=sonatype-nexus-community/nancy
 ARG NANCY_VERSION=v1.0.46
 # renovate: datasource=github-releases depName=yannh/kubeconform
