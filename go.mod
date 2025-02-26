@@ -1,11 +1,11 @@
 module github.com/giantswarm/architect
 
-go 1.22.0
+go 1.23.0
 
 toolchain go1.24.0
 
 require (
-	github.com/giantswarm/app/v7 v7.0.4
+	github.com/giantswarm/app/v7 v7.1.0
 	github.com/giantswarm/gitrepo v0.3.1
 	github.com/giantswarm/microerror v0.4.1
 	github.com/google/go-cmp v0.7.0
