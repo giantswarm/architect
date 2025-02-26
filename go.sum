@@ -24,8 +24,8 @@ github.com/emirpasic/gods v1.18.1 h1:FXtiHYKDGKCW2KzwZKx0iC0PQmdlorYgdFG9jPXJ1Bc
 github.com/emirpasic/gods v1.18.1/go.mod h1:8tpGGwCnJ5H4r6BWwaV6OrWmMoPhUl5jm/FMNAnJvWQ=
 github.com/giantswarm/apiextensions-application v0.6.2 h1:XL86OrpprWl5Wp38EUvUXt3ztTo25+V63oDVlFwDpNg=
 github.com/giantswarm/apiextensions-application v0.6.2/go.mod h1:8ylqSmDSzFblCppRQTFo8v9s/F6MX6RTusVVoDDfWso=
-github.com/giantswarm/app/v7 v7.0.4 h1:JBFKsUKhxtbduPVdBHjhGclg+czK7N7ITx4e3s9s4oQ=
-github.com/giantswarm/app/v7 v7.0.4/go.mod h1:szBwpNxf8NcxEGgmR+3ljEJEdKqe3Mfy5IcY5TEyf+s=
+github.com/giantswarm/app/v7 v7.1.0 h1:Az26fpOTe8YzYEWepBmfQSxP8zk1owXBj/jBTNUmyx8=
+github.com/giantswarm/app/v7 v7.1.0/go.mod h1:vgv51aLIWIugQhIVaeP1f5qYxO+0tpnw4bXRFXzoDE8=
 github.com/giantswarm/gitrepo v0.3.1 h1:1cuvaPixdKHYHgymUaTiZyrGaoNeRVLltBhN6Qqn2Yo=
 github.com/giantswarm/gitrepo v0.3.1/go.mod h1:vv3qTGKdfX5hLZZVg8WXEAgVDS+BI0EgNREu7q2bgSI=
 github.com/giantswarm/k8smetadata v0.25.0 h1:6mKmmm4xHPuBvxDMAkIhU5oj6KJkJSaR2s5esIsnHs4=
