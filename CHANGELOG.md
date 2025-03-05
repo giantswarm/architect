@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.19.0] - 2025-03-05
 
+- Dependency updates
+  - Base image: golang:1.24.0-alpine3.21
+  - Helm v3.17.1
+  - kubeconform v0.6.7
+  - yamale v6.0.0
+
 ## [6.18.2] - 2025-02-13
 
 - Dependency updates
