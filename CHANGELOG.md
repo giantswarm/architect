@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.18.3] - 2025-03-05
+
 ## [6.18.2] - 2025-02-13
 
 - Dependency updates
@@ -527,7 +529,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v6.18.2...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v6.18.3...HEAD
+[6.18.3]: https://github.com/giantswarm/architect/compare/v6.18.2...v6.18.3
 [6.18.2]: https://github.com/giantswarm/architect/compare/v6.18.1...v6.18.2
 [6.18.1]: https://github.com/giantswarm/architect/compare/v6.18.0...v6.18.1
 [6.18.0]: https://github.com/giantswarm/architect/compare/v6.17.0...v6.18.0
