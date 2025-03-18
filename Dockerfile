@@ -27,7 +27,7 @@ ARG HELM_VERSION=v3.17.2
 # renovate: datasource=github-releases depName=kubernetes-sigs/kubebuilder
 ARG KUBEBUILDER_VERSION=3.1.0
 # renovate: datasource=github-releases depName=golangci/golangci-lint
-ARG GOLANGCI_LINT_VERSION=v1.64.7
+ARG GOLANGCI_LINT_VERSION=v1.64.8
 # renovate: datasource=github-releases depName=sonatype-nexus-community/nancy
 ARG NANCY_VERSION=v1.0.48
 # The `kubeconform` tool is used only when Helm Chart is build and published
