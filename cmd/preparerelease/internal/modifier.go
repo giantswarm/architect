@@ -179,6 +179,7 @@ func modifyFile(path string, modifyFunc func([]byte) ([]byte, error)) error {
 		return microerror.Maskf(executionFailedError, "file %#q is a directory, expected regular file", path)
 	}
 
+	path = filepath.Clean(path)
 	content, err := os.ReadFile(path)
 	if err != nil {
 		return microerror.Mask(err)
