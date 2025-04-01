@@ -99,7 +99,9 @@ func getProjectVersion(repoDir string) (string, error) {
 	filePath := "pkg/project/project.go"
 	varName := "version"
 
-	content, err := os.ReadFile(filepath.Join(repoDir, filePath))
+	path := filepath.Join(repoDir, filePath)
+	path = filepath.Clean(path)
+	content, err := os.ReadFile(path)
 	if os.IsNotExist(err) {
 		return "", nil
 	} else if err != nil {

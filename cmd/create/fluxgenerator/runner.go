@@ -76,6 +76,6 @@ func runFluxGeneratorError(cmd *cobra.Command, args []string) error {
 		return microerror.Maskf(executionFailedError, "unknown output format %q", flag.Output)
 	}
 
-	fmt.Fprintf(cmd.OutOrStdout(), "%s", data)
+	_, _ = fmt.Fprintf(cmd.OutOrStdout(), "%s", data)
 	return nil
 }

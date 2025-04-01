@@ -54,6 +54,6 @@ func runKustomizationError(cmd *cobra.Command, args []string) error {
 		return microerror.Mask(err)
 	}
 
-	fmt.Fprintf(cmd.OutOrStdout(), "%s", data)
+	_, _ = fmt.Fprintf(cmd.OutOrStdout(), "%s", data)
 	return nil
 }
