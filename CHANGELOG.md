@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.20.0] - 2025-04-16
+
 ## [6.19.1] - 2025-03-14
 
 ## [6.19.0] - 2025-03-05
@@ -537,7 +539,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v6.19.1...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v6.20.0...HEAD
+[6.20.0]: https://github.com/giantswarm/architect/compare/v6.19.1...v6.20.0
 [6.19.1]: https://github.com/giantswarm/architect/compare/v6.19.0...v6.19.1
 [6.19.0]: https://github.com/giantswarm/architect/compare/v6.18.2...v6.19.0
 [6.18.2]: https://github.com/giantswarm/architect/compare/v6.18.1...v6.18.2
