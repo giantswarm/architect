@@ -33,7 +33,7 @@ func runKustomizationError(cmd *cobra.Command, args []string) error {
 		return microerror.Mask(err)
 	}
 
-	generators := make([]string, 0)
+	files := make([]string, 0)
 	for _, entry := range dirEntries {
 		if !entry.Type().IsRegular() {
 			continue
@@ -44,10 +44,14 @@ func runKustomizationError(cmd *cobra.Command, args []string) error {
 		if entry.Name() == "kustomization.yaml" {
 			continue
 		}
-		generators = append(generators, entry.Name())
+		files = append(files, entry.Name())
 	}
 
-	kus["generators"] = generators
+	if flag.Generators {
+		kus["generators"] = files
+	} else {
+		kus["resources"] = files
+	}
 
 	data, err := yaml.Marshal(&kus)
 	if err != nil {
