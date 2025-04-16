@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.20.0] - 2025-04-16
 
+- Add `generators` flag to `create kustomization` command, defaults to `true` for backward compatibility.
+  - When set to `false`, the YAML files in the target directory are assumed to be normal resources
+    and will update `.resources` with the list in the `kustomization.yaml`.
+
 ## [6.19.1] - 2025-03-14
 
 ## [6.19.0] - 2025-03-05
