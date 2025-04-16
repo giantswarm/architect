@@ -1,0 +1,5 @@
+resources:
+- app-exporter.yaml
+- app-operator.yaml
+- chart-operator.yaml
+- kyverno.yaml

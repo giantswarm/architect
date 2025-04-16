@@ -11,34 +11,46 @@ import (
 
 func Test_runKustomizationError(t *testing.T) {
 	testCases := []struct {
-		name      string
-		inputPath string
-		expected  string
+		name       string
+		inputPath  string
+		generators bool
+		expected   string
 	}{
 		{
-			name:      "flawless",
-			inputPath: "testdata/input/flux-manifests_0",
-			expected:  "testdata/expected/kustomization.yaml_0",
+			name:       "flawless",
+			inputPath:  "testdata/input/flux-manifests_0",
+			generators: true,
+			expected:   "testdata/expected/kustomization.yaml_0",
 		},
 		{
-			name:      "flawless with existing kustomization.yaml",
-			inputPath: "testdata/input/flux-manifests_1",
-			expected:  "testdata/expected/kustomization.yaml_0",
+			name:       "flawless with existing kustomization.yaml",
+			inputPath:  "testdata/input/flux-manifests_1",
+			generators: true,
+			expected:   "testdata/expected/kustomization.yaml_0",
 		},
 		{
-			name:      "flawless with patches",
-			inputPath: "testdata/input/flux-manifests_2",
-			expected:  "testdata/expected/kustomization.yaml_1",
+			name:       "flawless with patches",
+			inputPath:  "testdata/input/flux-manifests_2",
+			generators: true,
+			expected:   "testdata/expected/kustomization.yaml_1",
 		},
 		{
-			name:      "empty dir",
-			inputPath: "testdata/input/flux-manifests_3",
-			expected:  "testdata/expected/kustomization.yaml_2",
+			name:       "empty dir",
+			inputPath:  "testdata/input/flux-manifests_3",
+			generators: true,
+			expected:   "testdata/expected/kustomization.yaml_2",
 		},
 		{
-			name:      "existing and complicated kustomization.yaml",
-			inputPath: "testdata/input/flux-manifests_4",
-			expected:  "testdata/expected/kustomization.yaml_3",
+			name:       "existing and complicated kustomization.yaml",
+			inputPath:  "testdata/input/flux-manifests_4",
+			generators: true,
+			expected:   "testdata/expected/kustomization.yaml_3",
+		},
+		{
+			name:       "list under resources",
+			inputPath:  "testdata/input/flux-manifests_5",
+			generators: false,
+			expected:   "testdata/expected/kustomization.yaml_5",
 		},
 	}
 
@@ -52,6 +64,7 @@ func Test_runKustomizationError(t *testing.T) {
 			cmd.SetOut(out)
 
 			flag.Dir = tc.inputPath
+			flag.Generators = tc.generators
 
 			err = runKustomizationError(cmd, []string{})
 			if err != nil {
