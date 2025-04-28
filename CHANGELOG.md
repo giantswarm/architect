@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.20.1] - 2025-04-28
 
+- Downgrade golangci-lint v1.64.8 to v1.64.7, to be able to handle v2 configuration files with v1 keys in them.
+
 ## [6.20.0] - 2025-04-16
 
 - Add `generators` flag to `create kustomization` command, defaults to `true` for backward compatibility.
