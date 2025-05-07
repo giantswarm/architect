@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.0] - 2025-05-07
+
 ### Removed
 
 - Remove `golangci-lint` and the `make lint` target
@@ -551,7 +553,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v6.20.1...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v7.0.0...HEAD
+[7.0.0]: https://github.com/giantswarm/architect/compare/v6.20.1...v7.0.0
 [6.20.1]: https://github.com/giantswarm/architect/compare/v6.20.0...v6.20.1
 [6.20.0]: https://github.com/giantswarm/architect/compare/v6.19.1...v6.20.0
 [6.19.1]: https://github.com/giantswarm/architect/compare/v6.19.0...v6.19.1

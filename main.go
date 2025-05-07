@@ -6,7 +6,7 @@ import (
 
 	"github.com/giantswarm/microerror"
 
-	"github.com/giantswarm/architect/cmd"
+	"github.com/giantswarm/architect/v2/cmd"
 )
 
 func main() {
