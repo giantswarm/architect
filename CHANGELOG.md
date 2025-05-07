@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove `golangci-lint` and the `make lint` target
+
 ## [6.20.1] - 2025-04-28
 
 - Downgrade golangci-lint v1.64.8 to v1.64.7, to be able to handle v2 configuration files with v1 keys in them.
