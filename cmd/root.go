@@ -7,10 +7,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/giantswarm/architect/v2/cmd/create"
-	"github.com/giantswarm/architect/v2/cmd/helm"
-	"github.com/giantswarm/architect/v2/cmd/preparerelease"
-	cmdProject "github.com/giantswarm/architect/v2/cmd/project"
+	"github.com/giantswarm/architect/cmd/create"
+	"github.com/giantswarm/architect/cmd/helm"
+	"github.com/giantswarm/architect/cmd/preparerelease"
+	cmdProject "github.com/giantswarm/architect/cmd/project"
 )
 
 var (

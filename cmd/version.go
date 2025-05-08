@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	pkgproject "github.com/giantswarm/architect/v2/pkg/project"
+	pkgproject "github.com/giantswarm/architect/pkg/project"
 )
 
 var (

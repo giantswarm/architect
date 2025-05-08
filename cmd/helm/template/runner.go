@@ -15,7 +15,7 @@ import (
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
-	"github.com/giantswarm/architect/v2/helmtemplate"
+	"github.com/giantswarm/architect/helmtemplate"
 )
 
 func runTemplateError(cmd *cobra.Command, args []string) (err error) {

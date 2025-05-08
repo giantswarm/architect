@@ -3,7 +3,7 @@ package helm
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/giantswarm/architect/v2/cmd/helm/template"
+	"github.com/giantswarm/architect/cmd/helm/template"
 )
 
 var (

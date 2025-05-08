@@ -9,7 +9,7 @@ import (
 	"github.com/giantswarm/gitrepo/pkg/gitrepo"
 	"github.com/giantswarm/microerror"
 
-	"github.com/giantswarm/architect/v2/pkg/project"
+	"github.com/giantswarm/architect/pkg/project"
 )
 
 // TestGetProjectVersions tests getProjectversion method which retrieves

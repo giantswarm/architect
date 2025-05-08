@@ -3,9 +3,9 @@ package create
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/giantswarm/architect/v2/cmd/create/appcr"
-	"github.com/giantswarm/architect/v2/cmd/create/fluxgenerator"
-	"github.com/giantswarm/architect/v2/cmd/create/kustomization"
+	"github.com/giantswarm/architect/cmd/create/appcr"
+	"github.com/giantswarm/architect/cmd/create/fluxgenerator"
+	"github.com/giantswarm/architect/cmd/create/kustomization"
 )
 
 var (

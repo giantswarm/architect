@@ -1,4 +1,4 @@
-module github.com/giantswarm/architect/v2
+module github.com/giantswarm/architect
 
 go 1.23.0
 
