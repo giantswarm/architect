@@ -140,6 +140,11 @@ imports: ## Runs goimports.
 	@echo "====> $@"
 	goimports -local $(MODULE) -w .
 
+.PHONY: lint
+lint: ## Runs golangci-lint.
+	@echo "====> $@"
+	golangci-lint run -E gosec -E goconst --timeout=15m ./...
+
 .PHONY: nancy
 nancy: ## Runs nancy (requires v1.0.37 or newer).
 	@echo "====> $@"
