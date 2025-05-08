@@ -3,7 +3,7 @@ package template
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/giantswarm/architect/cmd/hook"
+	"github.com/giantswarm/architect/v2/cmd/hook"
 )
 
 var (
