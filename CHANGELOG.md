@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.1] - 2025-06-03
+
+- Dependency updates:
+  - helm-chart-testing v3.13
+  - conftest v0.61.0
+  - helm v3.18.2
+  - kubeconform v0.7.0
+
 ## [7.0.0] - 2025-05-08
 
 ### Removed
@@ -553,7 +561,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v7.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v7.0.1...HEAD
+[7.0.1]: https://github.com/giantswarm/architect/compare/v7.0.0...v7.0.1
 [7.0.0]: https://github.com/giantswarm/architect/compare/v6.20.1...v7.0.0
 [6.20.1]: https://github.com/giantswarm/architect/compare/v6.20.0...v6.20.1
 [6.20.0]: https://github.com/giantswarm/architect/compare/v6.19.1...v6.20.0
