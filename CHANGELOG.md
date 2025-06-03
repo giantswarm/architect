@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.0.1] - 2025-06-03
 
-- Dependency updates
+- Dependency updates:
+  - helm-chart-testing v3.13
+  - conftest v0.61.0
+  - helm v3.18.2
+  - kubeconform v0.7.0
 
 ## [7.0.0] - 2025-05-08
 
