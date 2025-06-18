@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [7.0.2] - 2025-06-18
 
 - Dependency updates:
-  - nancy v1.0.49
+  - nancy v1.0.51
 
 ## [7.0.1] - 2025-06-03
 
