@@ -9,8 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.0.3] - 2025-08-06
 
+### Changed
+
 - Upgrade Go to 1.24.5
 - Upgrade conftest to 0.62.0
+- Upgrade app-build-suite to v1.2.9
 
 ## [7.0.2] - 2025-06-18
 
