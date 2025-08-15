@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update Go to v1.24.6
+- Update Go to v1.25.0
+- Upgrade base image to alpine v3.22
 
 ## [7.0.3] - 2025-08-06
 

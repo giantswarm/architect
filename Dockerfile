@@ -2,12 +2,12 @@ FROM gsoci.azurecr.io/giantswarm/helm-chart-testing:v3.13.0 AS ct
 
 FROM gsoci.azurecr.io/giantswarm/app-build-suite:1.2.9 AS abs
 
-FROM gsoci.azurecr.io/giantswarm/golang:1.24.6-alpine3.22 AS golang
+FROM gsoci.azurecr.io/giantswarm/golang:1.25.0-alpine3.22 AS golang
 
 FROM gsoci.azurecr.io/giantswarm/conftest:v0.62.0 AS conftest
 
 # Build Image
-FROM gsoci.azurecr.io/giantswarm/alpine:3.19
+FROM gsoci.azurecr.io/giantswarm/alpine:3.22.1
 
 # Copy go from golang image.
 COPY --from=golang /usr/local/go /usr/local/go
@@ -69,7 +69,7 @@ RUN mkdir ~/.ssh &&\
 # See https://peps.python.org/pep-0668/
 RUN rm -f /usr/lib/python3.11/EXTERNALLY-MANAGED
 
-RUN pip install yamllint==${CT_YAMLLINT_VER} yamale==${CT_YAMALE_VER}
+RUN pip install --break-system-packages yamllint==${CT_YAMLLINT_VER} yamale==${CT_YAMALE_VER}
 
 ADD ./architect /usr/bin/architect
 ENTRYPOINT ["/usr/bin/architect"]
