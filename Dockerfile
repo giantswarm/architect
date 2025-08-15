@@ -69,7 +69,7 @@ RUN mkdir ~/.ssh &&\
 # See https://peps.python.org/pep-0668/
 RUN rm -f /usr/lib/python3.11/EXTERNALLY-MANAGED
 
-RUN pip install yamllint==${CT_YAMLLINT_VER} yamale==${CT_YAMALE_VER}
+RUN pip install --break-system-packages yamllint==${CT_YAMLLINT_VER} yamale==${CT_YAMALE_VER}
 
 ADD ./architect /usr/bin/architect
 ENTRYPOINT ["/usr/bin/architect"]
