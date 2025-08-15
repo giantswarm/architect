@@ -7,7 +7,7 @@ FROM gsoci.azurecr.io/giantswarm/golang:1.25.0-alpine3.22 AS golang
 FROM gsoci.azurecr.io/giantswarm/conftest:v0.62.0 AS conftest
 
 # Build Image
-FROM gsoci.azurecr.io/giantswarm/alpine:3.19
+FROM gsoci.azurecr.io/giantswarm/alpine:3.22
 
 # Copy go from golang image.
 COPY --from=golang /usr/local/go /usr/local/go
