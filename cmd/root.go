@@ -58,7 +58,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&workingDirectory, "working-directory", defaultWorkingDirectory, "working directory for architect")
 	RootCmd.PersistentFlags().String("github-token", githubToken, "github OAuth access token")
 
-	RootCmd.PersistentFlags().StringVar(&registry, "registry", "quay.io", "docker registry")
+	RootCmd.PersistentFlags().StringVar(&registry, "registry", "gsoci.azurecr.io", "container registry")
 	RootCmd.PersistentFlags().StringVar(&organisation, "organisation", defaultOrganisation, "organisation who owns the project")
 	RootCmd.PersistentFlags().StringVar(&project, "project", defaultProject, "name of the project")
 
