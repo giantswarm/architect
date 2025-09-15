@@ -23,7 +23,7 @@ ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v3.18.6
+ARG HELM_VERSION=v3.19.0
 # renovate: datasource=github-releases depName=kubernetes-sigs/kubebuilder
 ARG KUBEBUILDER_VERSION=3.1.0
 # renovate: datasource=github-releases depName=sonatype-nexus-community/nancy
