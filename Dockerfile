@@ -27,7 +27,7 @@ ARG HELM_VERSION=v3.19.0
 # renovate: datasource=github-releases depName=kubernetes-sigs/kubebuilder
 ARG KUBEBUILDER_VERSION=3.1.0
 # renovate: datasource=github-releases depName=sonatype-nexus-community/nancy
-ARG NANCY_VERSION=v1.0.51
+ARG NANCY_VERSION=v1.0.52
 # The `kubeconform` tool is used only when Helm Chart is build and published
 # with the `architect` executor, which for majority of the project is not the
 # case anymore, for they are build and published with the ABS.
