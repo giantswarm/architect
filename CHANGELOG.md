@@ -9,11 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.2.0] - 2025-09-29
 
-## [7.2.0] - 2025-09-29
-
 ### Added
 
 - The container image supports the arm64 architecture
+- Container images are only pushed to gsoci
 
 ## [7.1.0] - 2025-08-15
 
