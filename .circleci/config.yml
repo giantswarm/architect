@@ -23,6 +23,8 @@ workflows:
         requires:
           - architect/go-build
         platforms: "linux/amd64,linux/arm64"
+        registries-data: |-
+          public gsoci.azurecr.io ACR_GSOCI_USERNAME ACR_GSOCI_PASSWORD true
         filters:
             # Needed to trigger job also on git tag.
           tags:
