@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  architect: giantswarm/architect@6.6.1
+  architect: giantswarm/architect@dev:91eccd404d38ce6be97891fa8b71bfab12b34ce2
 
 workflows:
   go-build:
@@ -23,6 +23,8 @@ workflows:
         requires:
           - architect/go-build
         platforms: "linux/amd64,linux/arm64"
+        registries-data: |-
+          public gsoci.azurecr.io ACR_GSOCI_USERNAME ACR_GSOCI_PASSWORD true
         filters:
             # Needed to trigger job also on git tag.
           tags:
