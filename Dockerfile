@@ -19,8 +19,8 @@ COPY --from=ct /etc/ct/lintconf.yaml /etc/ct/lintconf.yaml
 
 COPY --from=conftest /usr/local/bin/conftest /usr/local/bin/conftest
 
-ENV GOPATH /go
-ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+ENV GOPATH=/go
+ENV PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 
 # renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=v3.19.0
