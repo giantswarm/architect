@@ -6,23 +6,28 @@ workflows:
   go-build:
     jobs:
     - architect/go-build:
-        name: go-build-architect
         binary: architect
-          # Needed to trigger job also on git tag.
+        matrix:
+          parameters:
+            architecture:
+              - linux/amd64
+              - linux/arm64
+        # Needed to trigger job also on git tag.
         filters:
           tags:
             only: /^v.*/
 
-    - architect/push-to-registries:
+    - architect/push-to-registries-multiarch:
         context: architect
         name: push-to-registries
         requires:
-        - go-build-architect
+          - architect/go-build
+        platforms: "linux/amd64,linux/arm64"
         filters:
             # Needed to trigger job also on git tag.
           tags:
             only: /^v.*/
           branches:
             ignore:
-            - main
-            - master
+              - main
+              - master
