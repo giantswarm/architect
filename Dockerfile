@@ -22,6 +22,9 @@ COPY --from=conftest /usr/local/bin/conftest /usr/local/bin/conftest
 ENV GOPATH=/go
 ENV PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 
+ARG TARGETARCH
+ARG TARGETOS
+
 # renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=v3.19.0
 # renovate: datasource=github-releases depName=kubernetes-sigs/kubebuilder
