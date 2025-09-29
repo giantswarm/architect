@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  architect: giantswarm/architect@6.6.1
+  architect: giantswarm/architect@dev:91eccd404d38ce6be97891fa8b71bfab12b34ce2
 
 workflows:
   go-build:
