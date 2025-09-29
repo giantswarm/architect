@@ -54,10 +54,10 @@ RUN apk add --no-cache \
   openssh-client \
   make \
   yq &&\
-  curl -SL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | \
-  tar -C /usr/bin --strip-components 1 -xvzf - linux-amd64/helm && \
-  curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_$(go env GOOS)_$(go env GOARCH) && \
-  curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-linux-amd64 && \
+  curl -SL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
+  tar -C /usr/bin --strip-components 1 -xvzf - ${TARGETOS}-${TARGETARCH}/helm && \
+  curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_${TARGETOS}_${TARGETARCH} && \
+  curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-${TARGETOS}-${TARGETARCH} && \
   chmod +x /usr/bin/nancy && \
   go install github.com/yannh/kubeconform/cmd/kubeconform@${KUBECONFORM_VERSION}
 
