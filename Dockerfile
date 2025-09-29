@@ -51,10 +51,10 @@ RUN apk add --no-cache \
   openssh-client \
   make \
   yq &&\
-  curl -SL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | \
-  tar -C /usr/bin --strip-components 1 -xvzf - linux-amd64/helm && \
+  curl -SL https://get.helm.sh/helm-${HELM_VERSION}-$(go env GOOS)-$(go env GOARCH).tar.gz | \
+  tar -C /usr/bin --strip-components 1 -xvzf - $(go env GOOS)-$(go env GOARCH)/helm && \
   curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_$(go env GOOS)_$(go env GOARCH) && \
-  curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-linux-amd64 && \
+  curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-$(go env GOOS)-$(go env GOARCH) && \
   chmod +x /usr/bin/nancy && \
   go install github.com/yannh/kubeconform/cmd/kubeconform@${KUBECONFORM_VERSION}
 
