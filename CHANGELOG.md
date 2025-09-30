@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.2.1] - 2025-09-30
 
+### Fixed
+
+- The `architect` binary in the arm64 image is now actually built for ARM.
+
 ## [7.2.0] - 2025-09-29
 
 ### Added
