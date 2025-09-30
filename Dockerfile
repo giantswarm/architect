@@ -19,8 +19,11 @@ COPY --from=ct /etc/ct/lintconf.yaml /etc/ct/lintconf.yaml
 
 COPY --from=conftest /usr/local/bin/conftest /usr/local/bin/conftest
 
-ENV GOPATH /go
-ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+ENV GOPATH=/go
+ENV PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
+
+ARG TARGETARCH
+ARG TARGETOS
 
 # renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=v3.19.0
@@ -51,10 +54,10 @@ RUN apk add --no-cache \
   openssh-client \
   make \
   yq &&\
-  curl -SL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | \
-  tar -C /usr/bin --strip-components 1 -xvzf - linux-amd64/helm && \
-  curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_$(go env GOOS)_$(go env GOARCH) && \
-  curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-linux-amd64 && \
+  curl -SL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
+  tar -C /usr/bin --strip-components 1 -xvzf - ${TARGETOS}-${TARGETARCH}/helm && \
+  curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_${TARGETOS}_${TARGETARCH} && \
+  curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-${TARGETOS}-${TARGETARCH} && \
   chmod +x /usr/bin/nancy && \
   go install github.com/yannh/kubeconform/cmd/kubeconform@${KUBECONFORM_VERSION}
 
@@ -71,5 +74,5 @@ RUN rm -f /usr/lib/python3.11/EXTERNALLY-MANAGED
 
 RUN pip install --break-system-packages yamllint==${CT_YAMLLINT_VER} yamale==${CT_YAMALE_VER}
 
-ADD ./architect /usr/bin/architect
+ADD ./architect-${TARGETOS}-${TARGETARCH} /usr/bin/architect
 ENTRYPOINT ["/usr/bin/architect"]
