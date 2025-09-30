@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.2.1] - 2025-09-30
+
 ## [7.2.0] - 2025-09-29
 
 ### Added
@@ -587,7 +589,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v7.2.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v7.2.1...HEAD
+[7.2.1]: https://github.com/giantswarm/architect/compare/v7.2.0...v7.2.1
 [7.2.0]: https://github.com/giantswarm/architect/compare/v7.1.0...v7.2.0
 [7.1.0]: https://github.com/giantswarm/architect/compare/v7.0.3...v7.1.0
 [7.0.3]: https://github.com/giantswarm/architect/compare/v7.0.2...v7.0.3
