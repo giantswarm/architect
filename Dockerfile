@@ -2,7 +2,7 @@ FROM gsoci.azurecr.io/giantswarm/helm-chart-testing:v3.13.0 AS ct
 
 FROM gsoci.azurecr.io/giantswarm/app-build-suite:1.2.9 AS abs
 
-FROM gsoci.azurecr.io/giantswarm/golang:1.25.1-alpine3.22 AS golang
+FROM gsoci.azurecr.io/giantswarm/golang:1.25.2-alpine3.22 AS golang
 
 FROM gsoci.azurecr.io/giantswarm/conftest:v0.63.0 AS conftest
 
