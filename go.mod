@@ -57,4 +57,4 @@ require (
 	sigs.k8s.io/structured-merge-diff/v4 v4.6.0 // indirect
 )
 
-replace golang.org/x/net => golang.org/x/net v0.44.0
+replace golang.org/x/net => golang.org/x/net v0.45.0
