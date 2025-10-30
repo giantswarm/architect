@@ -49,6 +49,7 @@ RUN apk add --no-cache \
   curl \
   docker \
   git \
+  github-cli \
   jq \
   py-pip \
   openssh-client \
