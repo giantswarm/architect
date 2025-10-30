@@ -63,7 +63,7 @@ RUN apk add --no-cache \
   go install github.com/yannh/kubeconform/cmd/kubeconform@${KUBECONFORM_VERSION}
 
 # Install gh-token that can generate temporary tokens to authenticate towards Github and use it to access the API
-RUN wget https://github.com/Link-/gh-token/releases/download/v2.0.6/linux-amd64 -O /usr/bin/gh-token && chmod 700 /usr/bin/gh-token
+RUN wget https://github.com/Link-/gh-token/releases/download/v2.0.6/${TARGETOS}-${TARGETARCH} -O /usr/bin/gh-token && chmod 700 /usr/bin/gh-token
 
 # Setup ssh config for github.com
 RUN mkdir ~/.ssh &&\
