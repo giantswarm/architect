@@ -49,10 +49,12 @@ RUN apk add --no-cache \
   curl \
   docker \
   git \
+  github-cli \
   jq \
   py-pip \
   openssh-client \
   make \
+  wget \
   yq &&\
   curl -SL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
   tar -C /usr/bin --strip-components 1 -xvzf - ${TARGETOS}-${TARGETARCH}/helm && \
@@ -60,6 +62,9 @@ RUN apk add --no-cache \
   curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-${TARGETOS}-${TARGETARCH} && \
   chmod +x /usr/bin/nancy && \
   go install github.com/yannh/kubeconform/cmd/kubeconform@${KUBECONFORM_VERSION}
+
+# Install gh-token that can generate temporary tokens to authenticate towards Github and use it to access the API
+RUN wget https://github.com/Link-/gh-token/releases/download/v2.0.6/${TARGETOS}-${TARGETARCH} -O /usr/bin/gh-token && chmod 700 /usr/bin/gh-token
 
 # Setup ssh config for github.com
 RUN mkdir ~/.ssh &&\
