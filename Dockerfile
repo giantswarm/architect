@@ -1,13 +1,13 @@
-FROM gsoci.azurecr.io/giantswarm/helm-chart-testing:v3.13.0 AS ct
+FROM gsoci.azurecr.io/giantswarm/helm-chart-testing:v3.14.0 AS ct
 
-FROM gsoci.azurecr.io/giantswarm/app-build-suite:1.2.9 AS abs
+FROM gsoci.azurecr.io/giantswarm/app-build-suite:1.3.0 AS abs
 
-FROM gsoci.azurecr.io/giantswarm/golang:1.25.0-alpine3.22 AS golang
+FROM gsoci.azurecr.io/giantswarm/golang:1.25.4-alpine3.22 AS golang
 
-FROM gsoci.azurecr.io/giantswarm/conftest:v0.62.0 AS conftest
+FROM gsoci.azurecr.io/giantswarm/conftest:v0.63.0 AS conftest
 
 # Build Image
-FROM gsoci.azurecr.io/giantswarm/alpine:3.22.1
+FROM gsoci.azurecr.io/giantswarm/alpine:3.22.2
 
 # Copy go from golang image.
 COPY --from=golang /usr/local/go /usr/local/go
@@ -19,15 +19,18 @@ COPY --from=ct /etc/ct/lintconf.yaml /etc/ct/lintconf.yaml
 
 COPY --from=conftest /usr/local/bin/conftest /usr/local/bin/conftest
 
-ENV GOPATH /go
-ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+ENV GOPATH=/go
+ENV PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
+
+ARG TARGETARCH
+ARG TARGETOS
 
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v3.18.5
+ARG HELM_VERSION=v3.19.0
 # renovate: datasource=github-releases depName=kubernetes-sigs/kubebuilder
 ARG KUBEBUILDER_VERSION=3.1.0
 # renovate: datasource=github-releases depName=sonatype-nexus-community/nancy
-ARG NANCY_VERSION=v1.0.51
+ARG NANCY_VERSION=v1.0.52
 # The `kubeconform` tool is used only when Helm Chart is build and published
 # with the `architect` executor, which for majority of the project is not the
 # case anymore, for they are build and published with the ABS.
@@ -46,17 +49,22 @@ RUN apk add --no-cache \
   curl \
   docker \
   git \
+  github-cli \
   jq \
   py-pip \
   openssh-client \
   make \
+  wget \
   yq &&\
-  curl -SL https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | \
-  tar -C /usr/bin --strip-components 1 -xvzf - linux-amd64/helm && \
-  curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_$(go env GOOS)_$(go env GOARCH) && \
-  curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-linux-amd64 && \
+  curl -SL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
+  tar -C /usr/bin --strip-components 1 -xvzf - ${TARGETOS}-${TARGETARCH}/helm && \
+  curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_${TARGETOS}_${TARGETARCH} && \
+  curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-${TARGETOS}-${TARGETARCH} && \
   chmod +x /usr/bin/nancy && \
   go install github.com/yannh/kubeconform/cmd/kubeconform@${KUBECONFORM_VERSION}
+
+# Install gh-token that can generate temporary tokens to authenticate towards Github and use it to access the API
+RUN wget https://github.com/Link-/gh-token/releases/download/v2.0.6/${TARGETOS}-${TARGETARCH} -O /usr/bin/gh-token && chmod 700 /usr/bin/gh-token
 
 # Setup ssh config for github.com
 RUN mkdir ~/.ssh &&\
@@ -71,5 +79,5 @@ RUN rm -f /usr/lib/python3.11/EXTERNALLY-MANAGED
 
 RUN pip install --break-system-packages yamllint==${CT_YAMLLINT_VER} yamale==${CT_YAMALE_VER}
 
-ADD ./architect /usr/bin/architect
+ADD ./architect-${TARGETOS}-${TARGETARCH} /usr/bin/architect
 ENTRYPOINT ["/usr/bin/architect"]

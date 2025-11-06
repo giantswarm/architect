@@ -1,28 +1,35 @@
 version: 2.1
 orbs:
-  architect: giantswarm/architect@6.4.0
+  architect: giantswarm/architect@dev:91eccd404d38ce6be97891fa8b71bfab12b34ce2
 
 workflows:
   go-build:
     jobs:
     - architect/go-build:
-        name: go-build-architect
         binary: architect
-          # Needed to trigger job also on git tag.
+        matrix:
+          parameters:
+            architecture:
+              - linux/amd64
+              - linux/arm64
+        # Needed to trigger job also on git tag.
         filters:
           tags:
             only: /^v.*/
 
-    - architect/push-to-registries:
+    - architect/push-to-registries-multiarch:
         context: architect
         name: push-to-registries
         requires:
-        - go-build-architect
+          - architect/go-build
+        platforms: "linux/amd64,linux/arm64"
+        registries-data: |-
+          public gsoci.azurecr.io ACR_GSOCI_USERNAME ACR_GSOCI_PASSWORD true
         filters:
             # Needed to trigger job also on git tag.
           tags:
             only: /^v.*/
           branches:
             ignore:
-            - main
-            - master
+              - main
+              - master
