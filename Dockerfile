@@ -39,7 +39,7 @@ ARG KUBECONFORM_VERSION=v0.7.0
 # The `yamale` tool does not seem to be used anymore, it is still here just in case
 # some CI magic somewhere still relies on it.
 # renovate: datasource=pypi depName=yamale
-ARG CT_YAMALE_VER=6.0.0
+ARG CT_YAMALE_VER=6.1.0
 # renovate: datasource=pypi depName=yamllint
 ARG CT_YAMLLINT_VER=1.37.1
 
