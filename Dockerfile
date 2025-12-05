@@ -47,7 +47,7 @@ ARG CT_YAMALE_VER=6.1.0
 # renovate: datasource=pypi depName=yamllint
 ARG CT_YAMLLINT_VER=1.37.1
 
-RUN apk add --no-cache \
+RUN apk update && apk add --no-cache \
   bash \
   ca-certificates \
   curl \
@@ -67,7 +67,7 @@ SHELL ["/bin/bash", "-c"]
 RUN set -o xtrace
 
 # Install Helm
-RUN curl -SL https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | \
+RUN curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | \
   tar -C /usr/bin --strip-components 1 -xvzf - linux-${TARGETARCH}/helm
 
 # Install kubebuilder
