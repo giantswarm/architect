@@ -43,6 +43,8 @@ ARG CT_YAMALE_VER=6.1.0
 # renovate: datasource=pypi depName=yamllint
 ARG CT_YAMLLINT_VER=1.37.1
 
+SHELL ["/bin/bash", "-c"]
+
 RUN apk add --no-cache \
   bash \
   ca-certificates \
