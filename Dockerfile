@@ -47,8 +47,6 @@ ARG CT_YAMALE_VER=6.1.0
 # renovate: datasource=pypi depName=yamllint
 ARG CT_YAMLLINT_VER=1.37.1
 
-SHELL ["/bin/bash", "-c"]
-
 RUN apk add --no-cache \
   bash \
   ca-certificates \
@@ -61,29 +59,42 @@ RUN apk add --no-cache \
   openssh-client \
   make \
   wget \
-  yq &&\
-  curl -SL https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | \
-  tar -C /usr/bin --strip-components 1 -xvzf - linux-${TARGETARCH}/helm && \
-  curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_linux_${TARGETARCH} && \
-  curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-linux-${TARGETARCH} && \
-  chmod +x /usr/bin/nancy && \
-  go install github.com/yannh/kubeconform/cmd/kubeconform@${KUBECONFORM_VERSION}
+  yq
+
+SHELL ["/bin/bash", "-c"]
+
+# Print command
+RUN set -o xtrace
+
+# Install Helm
+RUN curl -SL https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | \
+  tar -C /usr/bin --strip-components 1 -xvzf - linux-${TARGETARCH}/helm
+
+# Install kubebuilder
+RUN curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_linux_${TARGETARCH}
+
+# Install nancy
+RUN curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-linux-${TARGETARCH} && \
+  chmod +x /usr/bin/nancy
+
+# Install kubeconform
+RUN go install github.com/yannh/kubeconform/cmd/kubeconform@${KUBECONFORM_VERSION}
 
 # Install gh-token that can generate temporary tokens to authenticate towards Github and use it to access the API
-RUN wget https://github.com/Link-/gh-token/releases/download/v2.0.6/linux-${TARGETARCH} -O /usr/bin/gh-token && chmod 700 /usr/bin/gh-token
+RUN wget --no-verbose https://github.com/Link-/gh-token/releases/download/v2.0.6/linux-${TARGETARCH} -O /usr/bin/gh-token && chmod 700 /usr/bin/gh-token
 
 # Setup ssh config for github.com
-RUN mkdir ~/.ssh &&\
-  chmod 700 ~/.ssh &&\
+RUN mkdir ~/.ssh && \
+  chmod 700 ~/.ssh && \
   ssh-keyscan github.com >> ~/.ssh/known_hosts &&\
-  printf "Host github.com\n IdentitiesOnly yes\n IdentityFile ~/.ssh/id_rsa\n" >> ~/.ssh/config &&\
+  printf "Host github.com\n IdentitiesOnly yes\n IdentityFile ~/.ssh/id_rsa\n" >> ~/.ssh/config && \
   chmod 600 ~/.ssh/*
 
 # Allow installing python modules in the global context.
 # See https://peps.python.org/pep-0668/
 RUN rm -f /usr/lib/python3.11/EXTERNALLY-MANAGED
 
-RUN pip install --break-system-packages yamllint==${CT_YAMLLINT_VER} yamale==${CT_YAMALE_VER}
+RUN pip install --break-system-packages --root-user-action=ignore yamllint==${CT_YAMLLINT_VER} yamale==${CT_YAMALE_VER}
 
 ADD ./architect-linux-${TARGETARCH} /usr/bin/architect
 ENTRYPOINT ["/usr/bin/architect"]
