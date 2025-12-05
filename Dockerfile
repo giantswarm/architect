@@ -23,23 +23,27 @@ ENV GOPATH=/go
 ENV PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 
 ARG TARGETARCH
-ARG TARGETOS
 
 # renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=v3.19.2
+
 # renovate: datasource=github-releases depName=kubernetes-sigs/kubebuilder
 ARG KUBEBUILDER_VERSION=3.1.0
+
 # renovate: datasource=github-releases depName=sonatype-nexus-community/nancy
 ARG NANCY_VERSION=v1.0.52
+
 # The `kubeconform` tool is used only when Helm Chart is build and published
 # with the `architect` executor, which for majority of the project is not the
 # case anymore, for they are build and published with the ABS.
 # renovate: datasource=github-releases depName=yannh/kubeconform
 ARG KUBECONFORM_VERSION=v0.7.0
+
 # The `yamale` tool does not seem to be used anymore, it is still here just in case
 # some CI magic somewhere still relies on it.
 # renovate: datasource=pypi depName=yamale
 ARG CT_YAMALE_VER=6.1.0
+
 # renovate: datasource=pypi depName=yamllint
 ARG CT_YAMLLINT_VER=1.37.1
 
@@ -58,15 +62,15 @@ RUN apk add --no-cache \
   make \
   wget \
   yq &&\
-  curl -SL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
-  tar -C /usr/bin --strip-components 1 -xvzf - ${TARGETOS}-${TARGETARCH}/helm && \
-  curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_${TARGETOS}_${TARGETARCH} && \
-  curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-${TARGETOS}-${TARGETARCH} && \
+  curl -SL https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | \
+  tar -C /usr/bin --strip-components 1 -xvzf - linux-${TARGETARCH}/helm && \
+  curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_linux_${TARGETARCH} && \
+  curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-linux-${TARGETARCH} && \
   chmod +x /usr/bin/nancy && \
   go install github.com/yannh/kubeconform/cmd/kubeconform@${KUBECONFORM_VERSION}
 
 # Install gh-token that can generate temporary tokens to authenticate towards Github and use it to access the API
-RUN wget https://github.com/Link-/gh-token/releases/download/v2.0.6/${TARGETOS}-${TARGETARCH} -O /usr/bin/gh-token && chmod 700 /usr/bin/gh-token
+RUN wget https://github.com/Link-/gh-token/releases/download/v2.0.6/linux-${TARGETARCH} -O /usr/bin/gh-token && chmod 700 /usr/bin/gh-token
 
 # Setup ssh config for github.com
 RUN mkdir ~/.ssh &&\
@@ -81,5 +85,5 @@ RUN rm -f /usr/lib/python3.11/EXTERNALLY-MANAGED
 
 RUN pip install --break-system-packages yamllint==${CT_YAMLLINT_VER} yamale==${CT_YAMALE_VER}
 
-ADD ./architect-${TARGETOS}-${TARGETARCH} /usr/bin/architect
+ADD ./architect-linux-${TARGETARCH} /usr/bin/architect
 ENTRYPOINT ["/usr/bin/architect"]
