@@ -45,7 +45,7 @@ ARG KUBECONFORM_VERSION=v0.7.0
 ARG CT_YAMALE_VER=6.1.0
 
 # renovate: datasource=pypi depName=yamllint
-ARG CT_YAMLLINT_VER=1.37.1
+ARG CT_YAMLLINT_VER=1.38.0
 
 RUN apk update && apk add --no-cache --no-scripts \
   bash \
