@@ -31,7 +31,7 @@ ARG HELM_VERSION=v3.20.0
 ARG KUBEBUILDER_VERSION=3.15.1
 
 # renovate: datasource=github-releases depName=sonatype-nexus-community/nancy
-ARG NANCY_VERSION=v1.0.52
+ARG NANCY_VERSION=v1.2.0
 
 # The `kubeconform` tool is used only when Helm Chart is build and published
 # with the `architect` executor, which for majority of the project is not the
