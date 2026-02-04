@@ -28,7 +28,7 @@ jobs:
             --max-budget-usd=0.1
             --model=claude-haiku-4-5-20251001
             --max-turns=20
-            --permission-mode=dontAsk
+            --allow-dangerously-skip-permissions
             "If a CHANGELOG.md file exists in the repository root, check if the current pull
             request updates it.
 
