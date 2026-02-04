@@ -31,7 +31,10 @@ jobs:
             --max-turns=20
             --allowed-tools=Bash
             --allow-dangerously-skip-permissions
-            "If a CHANGELOG.md file exists in the repository root, check if the current pull
+            "You are executed in a Github action runner, in the context of a pull request.
+            Environment variables give you information about the repository etc.
+            
+            Your task: If a CHANGELOG.md file exists in the repository root, check if the current pull
             request updates it.
 
             If CHANGELOG.md exists but is not updated in this PR, update it with information
