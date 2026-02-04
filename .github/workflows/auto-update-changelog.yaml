@@ -1,0 +1,47 @@
+name: Auto-update changelog
+
+on:
+  pull_request: {}
+
+permissions: {}
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # To push commits
+      pull-requests: write # To comment in PR
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0 # We need the full history to compare changes
+          persist-credentials: true # For the next step
+
+      - name: Update changelog
+        uses: docker://gsoci.azurecr.io/giantswarm/claude-code:dev
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: >
+            --print
+            --max-budget-usd=0.2
+            --model=claude-haiku-4-5-20251001
+            --max-turns=20
+            --allowed-tools=Bash
+            --allow-dangerously-skip-permissions
+            "You are executed in a Github action runner, in the context of a pull request.
+            Environment variables give you information about the repository etc.
+            
+            Your task: If a CHANGELOG.md file exists in the repository root, check if the current pull
+            request updates it.
+
+            If CHANGELOG.md exists, but is not updated in this PR, update it with information
+            about the changes in this branch compared to the default branch.
+
+            Normally, dependency updates fall under the '### Changed' category. In some cases,
+            if they are security-related, they might fall under the '### Fixed' category. Check
+            the pull request title and description for hints.
+            
+            Do nothing else."
