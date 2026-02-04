@@ -37,11 +37,11 @@ jobs:
             Your task: If a CHANGELOG.md file exists in the repository root, check if the current pull
             request updates it.
 
-            If CHANGELOG.md exists but is not updated in this PR, update it with information
+            If CHANGELOG.md exists, but is not updated in this PR, update it with information
             about the changes in this branch compared to the default branch.
 
             Normally, dependency updates fall under the '### Changed' category. In some cases,
             if they are security-related, they might fall under the '### Fixed' category. Check
             the pull request title and description for hints.
-
-            Comment into the PR to inform the author about your updating of the changelog."
+            
+            Do nothing else."
