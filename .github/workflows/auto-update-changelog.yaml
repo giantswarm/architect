@@ -33,12 +33,14 @@ jobs:
             --allow-dangerously-skip-permissions
             "You are executed in a Github action runner, in the context of a pull request.
             Environment variables give you information about the repository etc.
+            You have the gh CLI available.
             
             Your task: If a CHANGELOG.md file exists in the repository root, check if the current pull
             request updates it.
 
             If CHANGELOG.md exists, but is not updated in this PR, update it with information
-            about the changes in this branch compared to the default branch.
+            about the changes in this branch compared to the default branch. Push a simple commit
+            to the PR's branch. Do not rebase.
 
             Normally, dependency updates fall under the '### Changed' category. In some cases,
             if they are security-related, they might fall under the '### Fixed' category. Check
