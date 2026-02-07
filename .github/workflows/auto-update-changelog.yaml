@@ -21,9 +21,15 @@ jobs:
       - name: Check if CHANGELOG.md is already modified
         id: check-changelog
         run: |
-          if git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD | grep -q '^CHANGELOG.md$'; then
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD)
+          if echo "$CHANGED_FILES" | grep -q '^CHANGELOG.md$'; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
+          {
+            echo "changed_files<<EOF"
+            echo "$CHANGED_FILES"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Set up git identity
         if: steps.check-changelog.outputs.skip != 'true'
@@ -70,7 +76,7 @@ jobs:
 
             **Changed files:**
 
-            ${{ toJSON(github.event.pull_request.changed_files) }}
+            ${{ toJSON(steps.check-changelog.outputs.changed_files) }}
 
             ---------------------------------
         with:
