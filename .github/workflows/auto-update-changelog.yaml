@@ -19,7 +19,7 @@ jobs:
           persist-credentials: true # For the next step
 
       - name: Update changelog
-        uses: docker://gsoci.azurecr.io/giantswarm/claude-code-ci:0.0.0-6f5ffbab0866222ac6305cb00f5b61c1b494d50c
+        uses: docker://gsoci.azurecr.io/giantswarm/claude-code-ci:0.0.0-5ba02644959b339eaca81a6d0dc293afdd0fd48b
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -72,4 +72,3 @@ jobs:
             --allowedTools "Bash(git *)"
             --allowedTools "Bash(gh *)"
             --allowedTools "Read(/github/workspace/**)"
-            "$CLAUDE_PROMPT"
