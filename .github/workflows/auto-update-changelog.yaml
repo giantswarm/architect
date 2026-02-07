@@ -1,0 +1,86 @@
+name: Auto-update changelog
+
+on:
+  pull_request: {}
+
+permissions: {}
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # To push commits
+      pull-requests: write # To comment in PR
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0 # We need the full history to compare changes
+          persist-credentials: true # For the next step
+
+      - name: Check if CHANGELOG.md is already modified
+        id: check-changelog
+        run: |
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD)
+          if echo "$CHANGED_FILES" | grep -q '^CHANGELOG.md$'; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+          {
+            echo "changed_files<<EOF"
+            echo "$CHANGED_FILES"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Set up git identity
+        if: steps.check-changelog.outputs.skip != 'true'
+        run: |
+          git config --local user.email "dev@giantswarm.io"
+          git config --local user.name "taylorbot"
+
+      - name: Update changelog
+        if: steps.check-changelog.outputs.skip != 'true'
+        uses: docker://gsoci.azurecr.io/giantswarm/claude-code-ci:0.0.0-1566f419cc86d0e5d3a1f7fa6f797ecf590d8d23
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLAUDE_TOOLS: "Read,Edit,Bash"
+          CLAUDE_ALLOWED_TOOLS: "Bash(gh *),Bash(git *),Bash(test *),Bash(cat *),Bash(echo *),Edit,Read(/github/workspace/**)"
+          CLAUDE_MAX_TURNS: 15
+          CLAUDE_PROMPT: |
+            You are executed in a Github action runner, in the context of a pull request.
+            You have the `gh` and `git` CLI available.
+
+            Your task: If a CHANGELOG.md file exists in the repository root, check if the current pull
+            request updates it.
+
+            If CHANGELOG.md exists, but is not updated in this PR, update it with information
+            about the changes in this branch compared to the default branch. Push a simple commit
+            to the PR's branch. Do not rebase.
+
+            Note: prepend `origin/` to the base branch name when checking for changes compared
+            to the base branch. Run git commands one at a time, not chained with &&.
+            Use single-line commit messages (no newlines in the -m argument).
+
+            Normally, dependency updates fall under the '### Changed' category. In some cases,
+            if they are security-related, they might fall under the '### Fixed' category.
+
+            Use the pull request details below, including the list of changed files.
+
+            Do nothing else. Do not recommend next actions. Finish the given task in one step.
+
+            ---------------------------------
+            Pull request details:
+
+            - **Title:** ${{ toJSON(github.event.pull_request.title) }}
+            - **Author:** ${{ toJSON(github.event.pull_request.user.login) }} (${{ toJSON(github.event.pull_request.user.name) }})
+            - **Branch:** ${{ toJSON(github.head_ref) }}
+            - **Base branch:** ${{ toJSON(github.event.pull_request.base.ref) }}
+            - **Base ref:** ${{ toJSON(github.event.pull_request.base.sha) }}
+            - **PR number:** ${{ toJSON(github.event.pull_request.number) }}
+            - **Repository:** ${{ toJSON(github.repository) }}
+
+            **Changed files:**
+
+            ${{ toJSON(steps.check-changelog.outputs.changed_files) }}
+
+            ---------------------------------
