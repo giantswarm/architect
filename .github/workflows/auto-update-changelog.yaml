@@ -19,22 +19,16 @@ jobs:
           persist-credentials: true # For the next step
 
       - name: Update changelog
-        uses: docker://gsoci.azurecr.io/giantswarm/claude-code:dev
+        uses: docker://gsoci.azurecr.io/giantswarm/claude-code-ci:0.0.0-6f5ffbab0866222ac6305cb00f5b61c1b494d50c
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           args: >
-            --print
-            --max-budget-usd=0.2
-            --model=claude-haiku-4-5-20251001
-            --max-turns=20
-            --allowed-tools=Bash
-            --allow-dangerously-skip-permissions
             "You are executed in a Github action runner, in the context of a pull request.
             Environment variables give you information about the repository etc.
             You have the gh CLI available.
-            
+
             Your task: If a CHANGELOG.md file exists in the repository root, check if the current pull
             request updates it.
 
@@ -43,7 +37,28 @@ jobs:
             to the PR's branch. Do not rebase.
 
             Normally, dependency updates fall under the '### Changed' category. In some cases,
-            if they are security-related, they might fall under the '### Fixed' category. Check
-            the pull request title and description for hints.
-            
-            Do nothing else."
+            if they are security-related, they might fall under the '### Fixed' category.
+
+            Use the pull request title and description for hints. Use `git diff` to find out details about file changes.
+
+            Do nothing else. Do not recommend next actions. Finish the given task in one step.
+
+            ---------------------------------
+            Pull request details:
+
+            - **Title:** '${{ github.event.pull_request.title }}'
+            - **Author:** '${{ github.event.pull_request.user.login }}' (${{ github.event.pull_request.user.name }})
+            - **Branch:** '${{ github.head_ref }}'
+            - **Base branch:** ${{ github.event.pull_request.base.ref }}
+            - **Repository:** ${{ github.repository }}
+            - **PR number:** ${{ github.event.pull_request.number }}
+
+            **Description:**
+
+            ${{ github.event.pull_request.body }}
+
+            **Changed files:**
+
+            ${{ join(github.event.pull_request.changed_files, ', ') }}
+
+            ---------------------------------"
