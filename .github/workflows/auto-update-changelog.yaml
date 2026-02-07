@@ -59,6 +59,7 @@ jobs:
 
             Note: prepend `origin/` to the base branch name when checking for changes compared
             to the base branch. Run git commands one at a time, not chained with &&.
+            Use single-line commit messages (no newlines in the -m argument).
 
             Normally, dependency updates fall under the '### Changed' category. In some cases,
             if they are security-related, they might fall under the '### Fixed' category.
