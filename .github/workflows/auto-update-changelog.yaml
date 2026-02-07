@@ -18,17 +18,27 @@ jobs:
           fetch-depth: 0 # We need the full history to compare changes
           persist-credentials: true # For the next step
 
+      - name: Check if CHANGELOG.md is already modified
+        id: check-changelog
+        run: |
+          if git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD | grep -q '^CHANGELOG.md$'; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Set up git identity
+        if: steps.check-changelog.outputs.skip != 'true'
         run: |
           git config --local user.email "dev@giantswarm.io"
           git config --local user.name "taylorbot"
 
       - name: Update changelog
+        if: steps.check-changelog.outputs.skip != 'true'
         uses: docker://gsoci.azurecr.io/giantswarm/claude-code-ci:0.0.0-5ba02644959b339eaca81a6d0dc293afdd0fd48b
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLAUDE_OUTPUT_FORMAT: stream-json
+          CLAUDE_MODEL: sonnet
           CLAUDE_PROMPT: |
             You are executed in a Github action runner, in the context of a pull request.
             You have the `gh` and `git` CLI available.
