@@ -43,7 +43,6 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CLAUDE_OUTPUT_FORMAT: stream-json
           CLAUDE_TOOLS: "Read,Edit,Bash"
           CLAUDE_PROMPT: |
             You are executed in a Github action runner, in the context of a pull request.
