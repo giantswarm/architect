@@ -23,7 +23,7 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CLAUDE_OUTPUT_FORMAT: text
+          CLAUDE_OUTPUT_FORMAT: stream-json
           PR_AUTHOR: ${{ github.event.pull_request.user.login }}
           PR_AUTHOR_NAME: ${{ github.event.pull_request.user.name }}
           PR_BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
@@ -55,9 +55,9 @@ jobs:
             ---------------------------------
             Pull request details:
 
-            - **Title:** '$PR_TITLE'
-            - **Author:** '$PR_AUTHOR_NAME' (@$PR_AUTHOR)
-            - **Branch:** '$PR_BRANCH'
+            - **Title:** $PR_TITLE
+            - **Author:** $PR_AUTHOR ($PR_AUTHOR_NAME)
+            - **Branch:** $PR_BRANCH
             - **Base branch:** $PR_BASE_BRANCH
             - **PR number:** $PR_NUMBER
             - **Repository:** $REPOSITORY
