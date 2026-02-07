@@ -26,7 +26,7 @@ jobs:
           CLAUDE_OUTPUT_FORMAT: stream-json
           CLAUDE_PROMPT: |
             You are executed in a Github action runner, in the context of a pull request.
-            You have the gh CLI available.
+            You have the `gh` CLI available.
 
             Your task: If a CHANGELOG.md file exists in the repository root, check if the current pull
             request updates it.
@@ -49,6 +49,7 @@ jobs:
             - **Author:** ${{ toJSON(github.event.pull_request.user.login) }} (${{ toJSON(github.event.pull_request.user.name) }})
             - **Branch:** ${{ toJSON(github.head_ref) }}
             - **Base branch:** ${{ toJSON(github.event.pull_request.base.ref) }}
+            - **Base ref:** ${{ toJSON(github.event.pull_request.base.sha) }}
             - **PR number:** ${{ toJSON(github.event.pull_request.number) }}
             - **Repository:** ${{ toJSON(github.repository) }}
 
@@ -59,7 +60,4 @@ jobs:
             ---------------------------------
         with:
           args: >-
-            --allowedTools "Edit(/github/workspace/CHANGELOG.md)"
-            --allowedTools "Bash(git *)"
-            --allowedTools "Bash(gh *)"
-            --allowedTools "Read(/github/workspace/**)"
+            --allowedTools "Edit(/github/workspace/CHANGELOG.md), Bash(git *), Bash(gh *), Read(/github/workspace/**)"
