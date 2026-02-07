@@ -39,7 +39,7 @@ jobs:
 
       - name: Update changelog
         if: steps.check-changelog.outputs.skip != 'true'
-        uses: docker://gsoci.azurecr.io/giantswarm/claude-code-ci:0.0.0-5ba02644959b339eaca81a6d0dc293afdd0fd48b
+        uses: docker://gsoci.azurecr.io/giantswarm/claude-code-ci:0.0.0-296c1d62021fd2007196386661f2cfac1b6c9deb
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
