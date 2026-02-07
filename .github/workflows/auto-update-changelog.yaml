@@ -24,15 +24,6 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLAUDE_OUTPUT_FORMAT: stream-json
-          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
-          PR_AUTHOR_NAME: ${{ github.event.pull_request.user.name }}
-          PR_BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
-          PR_BRANCH: ${{ github.head_ref }}
-          PR_CHANGED_FILES: ${{ join(github.event.pull_request.changed_files, ', ') }}
-          PR_DESCRIPTION: ${{ github.event.pull_request.body }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          REPOSITORY: ${{ github.repository }}
           CLAUDE_PROMPT: |
             You are executed in a Github action runner, in the context of a pull request.
             You have the gh CLI available.
@@ -54,16 +45,16 @@ jobs:
             ---------------------------------
             Pull request details:
 
-            - **Title:** $PR_TITLE
-            - **Author:** $PR_AUTHOR ($PR_AUTHOR_NAME)
-            - **Branch:** $PR_BRANCH
-            - **Base branch:** $PR_BASE_BRANCH
-            - **PR number:** $PR_NUMBER
-            - **Repository:** $REPOSITORY
+            - **Title:** ${{ toJSON(github.event.pull_request.title) }}
+            - **Author:** ${{ toJSON(github.event.pull_request.user.login) }} (${{ toJSON(github.event.pull_request.user.name) }})
+            - **Branch:** ${{ toJSON(github.head_ref) }}
+            - **Base branch:** ${{ toJSON(github.event.pull_request.base.ref) }}
+            - **PR number:** ${{ toJSON(github.event.pull_request.number) }}
+            - **Repository:** ${{ toJSON(github.repository) }}
 
             **Changed files:**
 
-            $PR_CHANGED_FILES
+            ${{ toJSON(github.event.pull_request.changed_files) }}
 
             ---------------------------------
         with:
