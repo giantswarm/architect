@@ -33,12 +33,8 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           REPOSITORY: ${{ github.repository }}
-        with:
-          args: |
-            --allowedTools "Edit(/github/workspace/CHANGELOG.md)" \
-            --allowedTools "Bash(git *)" \
-            --allowedTools "Read(/github/workspace/**)" \
-            "You are executed in a Github action runner, in the context of a pull request.
+          CLAUDE_PROMPT: |
+            You are executed in a Github action runner, in the context of a pull request.
             You have the gh CLI available.
 
             Your task: If a CHANGELOG.md file exists in the repository root, check if the current pull
@@ -69,4 +65,11 @@ jobs:
 
             $PR_CHANGED_FILES
 
-            ---------------------------------"
+            ---------------------------------
+        with:
+          args: >-
+            --allowedTools "Edit(/github/workspace/CHANGELOG.md)"
+            --allowedTools "Bash(git *)"
+            --allowedTools "Bash(gh *)"
+            --allowedTools "Read(/github/workspace/**)"
+            "$CLAUDE_PROMPT"
