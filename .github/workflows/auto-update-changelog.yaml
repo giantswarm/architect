@@ -36,7 +36,6 @@ jobs:
         with:
           args: |
             "You are executed in a Github action runner, in the context of a pull request.
-            Environment variables give you information about the repository etc.
             You have the gh CLI available.
 
             Your task: If a CHANGELOG.md file exists in the repository root, check if the current pull
