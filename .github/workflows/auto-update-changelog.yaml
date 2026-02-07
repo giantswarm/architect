@@ -18,6 +18,11 @@ jobs:
           fetch-depth: 0 # We need the full history to compare changes
           persist-credentials: true # For the next step
 
+      - name: Set up git identity
+        run: |
+          git config --local user.email "dev@giantswarm.io"
+          git config --local user.name "taylorbot"
+
       - name: Update changelog
         uses: docker://gsoci.azurecr.io/giantswarm/claude-code-ci:0.0.0-5ba02644959b339eaca81a6d0dc293afdd0fd48b
         env:
@@ -26,7 +31,7 @@ jobs:
           CLAUDE_OUTPUT_FORMAT: stream-json
           CLAUDE_PROMPT: |
             You are executed in a Github action runner, in the context of a pull request.
-            You have the `gh` CLI available.
+            You have the `gh` and `git` CLI available.
 
             Your task: If a CHANGELOG.md file exists in the repository root, check if the current pull
             request updates it.
@@ -38,7 +43,7 @@ jobs:
             Normally, dependency updates fall under the '### Changed' category. In some cases,
             if they are security-related, they might fall under the '### Fixed' category.
 
-            Use the pull request title and description for hints. Use `git diff` to find out details about file changes.
+            Use the pull request details below, including the list of changed files.
 
             Do nothing else. Do not recommend next actions. Finish the given task in one step.
 
