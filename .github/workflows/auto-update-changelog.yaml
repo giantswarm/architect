@@ -23,8 +23,18 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLAUDE_OUTPUT_FORMAT: text
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_AUTHOR_NAME: ${{ github.event.pull_request.user.name }}
+          PR_BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+          PR_BRANCH: ${{ github.head_ref }}
+          PR_CHANGED_FILES: ${{ join(github.event.pull_request.changed_files, ', ') }}
+          PR_DESCRIPTION: ${{ github.event.pull_request.body }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          REPOSITORY: ${{ github.repository }}
         with:
-          args: >
+          args: |
             "You are executed in a Github action runner, in the context of a pull request.
             Environment variables give you information about the repository etc.
             You have the gh CLI available.
@@ -46,19 +56,15 @@ jobs:
             ---------------------------------
             Pull request details:
 
-            - **Title:** '${{ github.event.pull_request.title }}'
-            - **Author:** '${{ github.event.pull_request.user.login }}' (${{ github.event.pull_request.user.name }})
-            - **Branch:** '${{ github.head_ref }}'
-            - **Base branch:** ${{ github.event.pull_request.base.ref }}
-            - **Repository:** ${{ github.repository }}
-            - **PR number:** ${{ github.event.pull_request.number }}
-
-            **Description:**
-
-            ${{ github.event.pull_request.body }}
+            - **Title:** '$PR_TITLE'
+            - **Author:** '$PR_AUTHOR_NAME' (@$PR_AUTHOR)
+            - **Branch:** '$PR_BRANCH'
+            - **Base branch:** $PR_BASE_BRANCH
+            - **PR number:** $PR_NUMBER
+            - **Repository:** $REPOSITORY
 
             **Changed files:**
 
-            ${{ join(github.event.pull_request.changed_files, ', ') }}
+            $PR_CHANGED_FILES
 
             ---------------------------------"
