@@ -35,6 +35,9 @@ jobs:
           REPOSITORY: ${{ github.repository }}
         with:
           args: |
+            --allowedTools "Edit(/github/workspace/CHANGELOG.md)" \
+            --allowedTools "Bash(git *)" \
+            --allowedTools "Read(/github/workspace/**)" \
             "You are executed in a Github action runner, in the context of a pull request.
             You have the gh CLI available.
 
