@@ -39,11 +39,12 @@ jobs:
 
       - name: Update changelog
         if: steps.check-changelog.outputs.skip != 'true'
-        uses: docker://gsoci.azurecr.io/giantswarm/claude-code-ci:0.0.0-016fd2ce0ce2c4ff8600cfa89fcfad303b3a30ab
+        uses: docker://gsoci.azurecr.io/giantswarm/claude-code-ci:0.0.0-b92e67f8ede6f87a09f16b142c001b971ffad42f
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLAUDE_TOOLS: "Read,Edit,Bash"
+          CLAUDE_ALLOWED_TOOLS: "Bash(gh *),Bash(git *),Edit(/github/workspace/CHANGELOG.md),Read(/github/workspace/**)"
           CLAUDE_PROMPT: |
             You are executed in a Github action runner, in the context of a pull request.
             You have the `gh` and `git` CLI available.
@@ -78,9 +79,3 @@ jobs:
             ${{ toJSON(steps.check-changelog.outputs.changed_files) }}
 
             ---------------------------------
-        with:
-          args: >-
-            --allowedTools "Bash(gh *)"
-            --allowedTools "Bash(git *)"
-            --allowedTools "Edit(/github/workspace/CHANGELOG.md)"
-            --allowedTools "Read(/github/workspace/**)"
