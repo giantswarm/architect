@@ -56,6 +56,9 @@ jobs:
             about the changes in this branch compared to the default branch. Push a simple commit
             to the PR's branch. Do not rebase.
 
+            Note: prepend `origin/` to the base branch name when checking for changes compared
+            to the base branch.
+
             Normally, dependency updates fall under the '### Changed' category. In some cases,
             if they are security-related, they might fall under the '### Fixed' category.
 
