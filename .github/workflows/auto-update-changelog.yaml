@@ -45,6 +45,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLAUDE_TOOLS: "Read,Edit,Bash"
           CLAUDE_ALLOWED_TOOLS: "Bash(gh *),Bash(git *),Bash(test *),Bash(cat *),Bash(echo *),Edit,Read(/github/workspace/**)"
+          CLAUDE_MAX_TURNS: 15
           CLAUDE_PROMPT: |
             You are executed in a Github action runner, in the context of a pull request.
             You have the `gh` and `git` CLI available.
@@ -57,7 +58,7 @@ jobs:
             to the PR's branch. Do not rebase.
 
             Note: prepend `origin/` to the base branch name when checking for changes compared
-            to the base branch.
+            to the base branch. Run git commands one at a time, not chained with &&.
 
             Normally, dependency updates fall under the '### Changed' category. In some cases,
             if they are security-related, they might fall under the '### Fixed' category.
