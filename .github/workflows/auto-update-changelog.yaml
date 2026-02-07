@@ -80,4 +80,7 @@ jobs:
             ---------------------------------
         with:
           args: >-
-            --allowedTools "Edit(/github/workspace/CHANGELOG.md), Bash(git *), Bash(gh *), Read(/github/workspace/**)"
+            --allowedTools "Bash(gh *)"
+            --allowedTools "Bash(git *)"
+            --allowedTools "Edit(/github/workspace/CHANGELOG.md)"
+            --allowedTools "Read(/github/workspace/**)"
