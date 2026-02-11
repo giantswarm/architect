@@ -1,13 +1,13 @@
 FROM gsoci.azurecr.io/giantswarm/helm-chart-testing:v3.14.0 AS ct
 
-FROM gsoci.azurecr.io/giantswarm/app-build-suite:1.4.2 AS abs
+FROM gsoci.azurecr.io/giantswarm/app-build-suite:1.6.0 AS abs
 
-FROM gsoci.azurecr.io/giantswarm/golang:1.25.5-alpine3.23 AS golang
+FROM gsoci.azurecr.io/giantswarm/golang:1.25.7-alpine3.23 AS golang
 
-FROM gsoci.azurecr.io/giantswarm/conftest:v0.65.0 AS conftest
+FROM gsoci.azurecr.io/giantswarm/conftest:v0.66.0 AS conftest
 
 # Build Image
-FROM gsoci.azurecr.io/giantswarm/alpine:3.23.0
+FROM gsoci.azurecr.io/giantswarm/alpine:3.23.3
 
 # Copy go from golang image.
 COPY --from=golang /usr/local/go /usr/local/go
@@ -25,13 +25,13 @@ ENV PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 ARG TARGETARCH
 
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v3.19.2
+ARG HELM_VERSION=v3.20.0
 
 # renovate: datasource=github-releases depName=kubernetes-sigs/kubebuilder
 ARG KUBEBUILDER_VERSION=3.15.1
 
 # renovate: datasource=github-releases depName=sonatype-nexus-community/nancy
-ARG NANCY_VERSION=v1.0.52
+ARG NANCY_VERSION=v1.2.0
 
 # The `kubeconform` tool is used only when Helm Chart is build and published
 # with the `architect` executor, which for majority of the project is not the
@@ -45,7 +45,7 @@ ARG KUBECONFORM_VERSION=v0.7.0
 ARG CT_YAMALE_VER=6.1.0
 
 # renovate: datasource=pypi depName=yamllint
-ARG CT_YAMLLINT_VER=1.37.1
+ARG CT_YAMLLINT_VER=1.38.0
 
 RUN apk update && apk add --no-cache --no-scripts \
   bash \
