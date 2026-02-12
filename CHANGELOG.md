@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Change default container registry to `gsoci.azurecr.io`
+- Update app-build-suite to v1.6.0
+- Update golang to v1.26.0
+- Update conftest to v0.66.0
+- Update Helm to v3.20.0
+- Update kubebuilder to v3.15.1
+- Update nancy to v1.2.0
+- Update yamllint to v1.38.0
 
 ## [7.3.0] - 2025-10-30
 
