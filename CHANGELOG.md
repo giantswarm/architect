@@ -7,9 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.4.0] - 2026-02-12
+
 ### Changed
 
 - Change default container registry to `gsoci.azurecr.io`
+- Update app-build-suite to v1.7.0
+- Update golang to v1.26.0
+- Update conftest to v0.66.0
+- Update Helm to v3.20.0
+- Update kubebuilder to v3.15.1
+- Update nancy to v1.2.0
+- Update yamllint to v1.38.0
 
 ## [7.3.0] - 2025-10-30
 
@@ -608,7 +617,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v7.3.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v7.4.0...HEAD
+[7.4.0]: https://github.com/giantswarm/architect/compare/v7.3.0...v7.4.0
 [7.3.0]: https://github.com/giantswarm/architect/compare/v7.2.1...v7.3.0
 [7.2.1]: https://github.com/giantswarm/architect/compare/v7.2.0...v7.2.1
 [7.2.0]: https://github.com/giantswarm/architect/compare/v7.1.0...v7.2.0
