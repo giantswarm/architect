@@ -1,1 +1,1 @@
-CVE-2025-4673 until=2025-07-13 # golang.org/x/net@v0.41.0
+CVE-2026-1229 until=2026-03-28 # github.com/cloudflare/circl@v1.6.1
