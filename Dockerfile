@@ -4,7 +4,7 @@ FROM gsoci.azurecr.io/giantswarm/app-build-suite:1.7.0 AS abs
 
 FROM gsoci.azurecr.io/giantswarm/golang:1.26.1-alpine3.23 AS golang
 
-FROM gsoci.azurecr.io/giantswarm/conftest:v0.67.0 AS conftest
+FROM gsoci.azurecr.io/giantswarm/conftest:v0.67.1 AS conftest
 
 # Build Image
 FROM gsoci.azurecr.io/giantswarm/alpine:3.23.3
