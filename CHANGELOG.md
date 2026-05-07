@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Drop redundant `apk update` from the Alpine package install — `apk add --no-cache` already fetches a fresh index.
 - Move xtrace into the `SHELL` directive (`bash -xc`) so subsequent `RUN` commands are actually traced; the previous `RUN set -o xtrace` only set the option for a one-shot shell that exited immediately.
 - Replace `chmod 600 ~/.ssh/*` with an explicit list of `known_hosts` and `config` so the step doesn't break if `~/.ssh/` ever ends up empty.
+- Cross-compile `kubeconform` in a `--platform=$BUILDPLATFORM` builder stage instead of `RUN go install` in the target-arch final image. Avoids running the Go toolchain under QEMU when buildx targets a non-host architecture, materially speeding up the arm64 build leg.
 
 ## [7.4.0] - 2026-02-12
 
