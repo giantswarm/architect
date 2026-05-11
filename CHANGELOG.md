@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Install `cosign` (sigstore) in the image. Used by `architect-orb` for keyless image/chart/binary signing, so the orb no longer has to download cosign per-run.
+- Install `hadolint` in the image — Dockerfile linter. Enables a `hadolint` command in `architect-orb` without per-run downloads.
+
 ### Changed
 
 - Drop redundant `apk update` from the Alpine package install — `apk add --no-cache` already fetches a fresh index.
