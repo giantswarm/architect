@@ -6,26 +6,6 @@ FROM gsoci.azurecr.io/giantswarm/golang:1.26.3-alpine3.23 AS golang
 
 FROM gsoci.azurecr.io/giantswarm/conftest:v0.68.2 AS conftest
 
-# Cross-compile kubeconform on the build host instead of emulating the target
-# arch under QEMU when buildx targets a non-host platform.
-FROM --platform=$BUILDPLATFORM gsoci.azurecr.io/giantswarm/golang:1.26.2-alpine3.23 AS kubeconform-builder
-ARG TARGETOS
-ARG TARGETARCH
-# renovate: datasource=github-releases depName=yannh/kubeconform
-ARG KUBECONFORM_VERSION=v0.7.0
-ENV GOPATH=/go
-RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
-    go install github.com/yannh/kubeconform/cmd/kubeconform@${KUBECONFORM_VERSION}
-# `go install` puts the binary at /go/bin/<name> when GOOS/GOARCH match the
-# host, and at /go/bin/${GOOS}_${GOARCH}/<name> when cross-compiling.
-# Normalize so the final stage has a single known source path.
-RUN mkdir -p /out && \
-    if [ -f "/go/bin/kubeconform" ]; then \
-      cp /go/bin/kubeconform /out/kubeconform; \
-    else \
-      cp "/go/bin/${TARGETOS}_${TARGETARCH}/kubeconform" /out/kubeconform; \
-    fi
-
 # Build Image
 FROM gsoci.azurecr.io/giantswarm/alpine:3.23.4
 
@@ -52,6 +32,12 @@ ARG KUBEBUILDER_VERSION=4.14.0
 
 # renovate: datasource=github-releases depName=sonatype-nexus-community/nancy
 ARG NANCY_VERSION=v1.2.0
+
+# The `kubeconform` tool is used only when Helm Chart is build and published
+# with the `architect` executor, which for majority of the project is not the
+# case anymore, for they are build and published with the ABS.
+# renovate: datasource=github-releases depName=yannh/kubeconform
+ARG KUBECONFORM_VERSION=v0.7.0
 
 # The `yamale` tool does not seem to be used anymore, it is still here just in case
 # some CI magic somewhere still relies on it.
@@ -88,10 +74,9 @@ RUN curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kube
 RUN curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-linux-${TARGETARCH} && \
   chmod +x /usr/bin/nancy
 
-# Install kubeconform (pre-built on the host arch in the kubeconform-builder stage above).
-# Used only when Helm charts are built and published with the `architect` executor,
-# which most projects no longer do (they use ABS instead).
-COPY --from=kubeconform-builder /out/kubeconform /go/bin/kubeconform
+# Install kubeconform from the upstream pre-built release tarball.
+RUN curl -sSL "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-${TARGETARCH}.tar.gz" | \
+  tar -C /usr/bin -xzf - kubeconform
 
 # Install gh-token that can generate temporary tokens to authenticate towards Github and use it to access the API
 RUN wget --no-verbose https://github.com/Link-/gh-token/releases/download/v2.0.6/linux-${TARGETARCH} -O /usr/bin/gh-token && chmod 700 /usr/bin/gh-token
