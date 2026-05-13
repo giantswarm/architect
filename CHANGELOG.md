@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.5.0] - 2026-05-13
+
 ### Added
 
 - Install `cosign` (sigstore) in the image. Used by `architect-orb` for keyless image/chart/binary signing, so the orb no longer has to download cosign per-run.
@@ -630,7 +632,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v7.4.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v7.5.0...HEAD
+[7.5.0]: https://github.com/giantswarm/architect/compare/v7.4.0...v7.5.0
 [7.4.0]: https://github.com/giantswarm/architect/compare/v7.3.0...v7.4.0
 [7.3.0]: https://github.com/giantswarm/architect/compare/v7.2.1...v7.3.0
 [7.2.1]: https://github.com/giantswarm/architect/compare/v7.2.0...v7.2.1
