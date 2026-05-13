@@ -39,6 +39,9 @@ ARG COSIGN_VERSION=v3.0.3
 # renovate: datasource=github-releases depName=hadolint/hadolint
 ARG HADOLINT_VERSION=v2.14.0
 
+# renovate: datasource=github-releases depName=Link-/gh-token
+ARG GH_TOKEN_VERSION=v2.0.6
+
 # The `kubeconform` tool is used only when Helm Chart is build and published
 # with the `architect` executor, which for majority of the project is not the
 # case anymore, for they are build and published with the ABS.
@@ -99,7 +102,7 @@ RUN curl -sSL "https://github.com/yannh/kubeconform/releases/download/${KUBECONF
   tar -C /usr/bin -xzf - kubeconform
 
 # Install gh-token that can generate temporary tokens to authenticate towards Github and use it to access the API
-RUN wget --no-verbose https://github.com/Link-/gh-token/releases/download/v2.0.6/linux-${TARGETARCH} -O /usr/bin/gh-token && chmod 700 /usr/bin/gh-token
+RUN wget --no-verbose https://github.com/Link-/gh-token/releases/download/${GH_TOKEN_VERSION}/linux-${TARGETARCH} -O /usr/bin/gh-token && chmod 700 /usr/bin/gh-token
 
 # Setup ssh config for github.com
 RUN mkdir ~/.ssh && \
