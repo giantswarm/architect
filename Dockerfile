@@ -47,7 +47,7 @@ ARG CT_YAMALE_VER=6.1.0
 # renovate: datasource=pypi depName=yamllint
 ARG CT_YAMLLINT_VER=1.38.0
 
-RUN apk update && apk add --no-cache --no-scripts \
+RUN apk add --no-cache --no-scripts \
   bash \
   ca-certificates \
   curl \
@@ -61,10 +61,7 @@ RUN apk update && apk add --no-cache --no-scripts \
   wget \
   yq
 
-SHELL ["/bin/bash", "-c"]
-
-# Print command
-RUN set -o xtrace
+SHELL ["/bin/bash", "-xc"]
 
 # Install Helm
 RUN curl -sSL https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | \
@@ -88,7 +85,7 @@ RUN mkdir ~/.ssh && \
   chmod 700 ~/.ssh && \
   ssh-keyscan github.com >> ~/.ssh/known_hosts &&\
   printf "Host github.com\n IdentitiesOnly yes\n IdentityFile ~/.ssh/id_rsa\n" >> ~/.ssh/config && \
-  chmod 600 ~/.ssh/*
+  chmod 600 ~/.ssh/known_hosts ~/.ssh/config
 
 # Allow installing python modules in the global context.
 # See https://peps.python.org/pep-0668/
