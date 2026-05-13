@@ -40,7 +40,7 @@ ARG COSIGN_VERSION=v3.0.3
 ARG HADOLINT_VERSION=v2.14.0
 
 # renovate: datasource=github-releases depName=Link-/gh-token
-ARG GH_TOKEN_VERSION=v2.0.6
+ARG GH_TOKEN_VERSION=v2.0.10
 
 # The `kubeconform` tool is used only when Helm Chart is build and published
 # with the `architect` executor, which for majority of the project is not the
