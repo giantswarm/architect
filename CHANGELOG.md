@@ -7,8 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Install `cosign` (sigstore) in the image. Used by `architect-orb` for keyless image/chart/binary signing, so the orb no longer has to download cosign per-run.
+- Install `hadolint` in the image — Dockerfile linter. Enables a `hadolint` command in `architect-orb` without per-run downloads.
+
 ### Changed
 
+- Extract `gh-token` version into a renovate-tracked `GH_TOKEN_VERSION` ARG, matching every other binary in the image.
 - Drop redundant `apk update` from the Alpine package install — `apk add --no-cache` already fetches a fresh index.
 - Move xtrace into the `SHELL` directive (`bash -xc`) so subsequent `RUN` commands are actually traced; the previous `RUN set -o xtrace` only set the option for a one-shot shell that exited immediately.
 - Replace `chmod 600 ~/.ssh/*` with an explicit list of `known_hosts` and `config` so the step doesn't break if `~/.ssh/` ever ends up empty.
