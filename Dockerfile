@@ -74,8 +74,9 @@ RUN curl -sSfL -o /usr/local/kubebuilder https://github.com/kubernetes-sigs/kube
 RUN curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nancy/releases/download/${NANCY_VERSION}/nancy-${NANCY_VERSION}-linux-${TARGETARCH} && \
   chmod +x /usr/bin/nancy
 
-# Install kubeconform
-RUN go install github.com/yannh/kubeconform/cmd/kubeconform@${KUBECONFORM_VERSION}
+# Install kubeconform from the upstream pre-built release tarball.
+RUN curl -sSL "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-${TARGETARCH}.tar.gz" | \
+  tar -C /usr/bin -xzf - kubeconform
 
 # Install gh-token that can generate temporary tokens to authenticate towards Github and use it to access the API
 RUN wget --no-verbose https://github.com/Link-/gh-token/releases/download/v2.0.6/linux-${TARGETARCH} -O /usr/bin/gh-token && chmod 700 /usr/bin/gh-token
