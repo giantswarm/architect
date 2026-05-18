@@ -25,7 +25,7 @@ ENV PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 ARG TARGETARCH
 
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v3.20.2
+ARG HELM_VERSION=v3.21.0
 
 # renovate: datasource=github-releases depName=kubernetes-sigs/kubebuilder
 ARG KUBEBUILDER_VERSION=4.14.0
