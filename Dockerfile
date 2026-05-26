@@ -42,6 +42,9 @@ ARG HADOLINT_VERSION=v2.14.0
 # renovate: datasource=github-releases depName=Link-/gh-token
 ARG GH_TOKEN_VERSION=v2.0.10
 
+# renovate: datasource=github-releases depName=giantswarm/gitsemver
+ARG GITSEMVER_VERSION=v1.0.1
+
 # The `kubeconform` tool is used only when Helm Chart is build and published
 # with the `architect` executor, which for majority of the project is not the
 # case anymore, for they are build and published with the ABS.
@@ -103,6 +106,10 @@ RUN curl -sSL "https://github.com/yannh/kubeconform/releases/download/${KUBECONF
 
 # Install gh-token that can generate temporary tokens to authenticate towards Github and use it to access the API
 RUN wget --no-verbose https://github.com/Link-/gh-token/releases/download/${GH_TOKEN_VERSION}/linux-${TARGETARCH} -O /usr/bin/gh-token && chmod 700 /usr/bin/gh-token
+
+# Install gitsemver CLI for use in CI scripts running inside the container.
+RUN curl -sSL "https://github.com/giantswarm/gitsemver/releases/download/${GITSEMVER_VERSION}/gitsemver-${GITSEMVER_VERSION}-linux-${TARGETARCH}.tar.gz" | \
+    tar -C /usr/bin -xzf - gitsemver && gitsemver version
 
 # Setup ssh config for github.com
 RUN mkdir ~/.ssh && \
