@@ -109,7 +109,7 @@ RUN wget --no-verbose https://github.com/Link-/gh-token/releases/download/${GH_T
 
 # Install gitsemver CLI for use in CI scripts running inside the container.
 RUN curl -sSL "https://github.com/giantswarm/gitsemver/releases/download/${GITSEMVER_VERSION}/gitsemver-${GITSEMVER_VERSION}-linux-${TARGETARCH}.tar.gz" | \
-    tar -C /usr/bin -xzf - gitsemver && gitsemver version
+  tar -C /usr/bin --strip-components 1 -xzf - gitsemver-${GITSEMVER_VERSION}-linux-${TARGETARCH}/gitsemver
 
 # Setup ssh config for github.com
 RUN mkdir ~/.ssh && \
