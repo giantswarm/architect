@@ -60,4 +60,7 @@ require (
 
 replace golang.org/x/net => golang.org/x/net v0.54.0
 
-replace github.com/go-git/go-git/v5 v5.16.5 => github.com/go-git/go-git/v5 v5.18.0
+replace (
+	github.com/go-git/go-git/v5 v5.16.5 => github.com/go-git/go-git/v5 v5.18.0
+	github.com/go-git/go-git/v5 v5.19.0 => github.com/go-git/go-git/v5 v5.19.1
+)
