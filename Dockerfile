@@ -43,7 +43,7 @@ ARG HADOLINT_VERSION=v2.14.0
 ARG GH_TOKEN_VERSION=v2.0.10
 
 # renovate: datasource=github-releases depName=giantswarm/gitsemver
-ARG GITSEMVER_VERSION=v1.1.1
+ARG GITSEMVER_VERSION=v1.1.2
 
 # The `kubeconform` tool is used only when Helm Chart is build and published
 # with the `architect` executor, which for majority of the project is not the
@@ -109,7 +109,7 @@ RUN wget --no-verbose https://github.com/Link-/gh-token/releases/download/${GH_T
 
 # Install gitsemver CLI for use in CI scripts running inside the container.
 RUN curl -sSL "https://github.com/giantswarm/gitsemver/releases/download/${GITSEMVER_VERSION}/gitsemver-${GITSEMVER_VERSION}-linux-${TARGETARCH}.tar.gz" | \
-  tar -C /usr/bin --strip-components 1 -xzf - gitsemver-${GITSEMVER_VERSION}-linux-${TARGETARCH}/gitsemver
+    tar -C /usr/bin --strip-components 1 -xzf - gitsemver-${GITSEMVER_VERSION}-linux-${TARGETARCH}/gitsemver
 
 # Setup ssh config for github.com
 RUN mkdir ~/.ssh && \
