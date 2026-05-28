@@ -2,10 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Added
+
+- Install `gitsemver` in the docker image
 
 ## [7.5.1] - 2026-05-13
 
@@ -17,16 +21,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Install `cosign` (sigstore) in the image. Used by `architect-orb` for keyless image/chart/binary signing, so the orb no longer has to download cosign per-run.
-- Install `hadolint` in the image — Dockerfile linter. Enables a `hadolint` command in `architect-orb` without per-run downloads.
+- Install `cosign` (sigstore) in the image. Used by `architect-orb` for keyless image/chart/binary signing, so
+  the orb no longer has to download cosign per-run.
+- Install `hadolint` in the image — Dockerfile linter. Enables a `hadolint` command in `architect-orb` without
+  per-run downloads.
 
 ### Changed
 
-- Extract `gh-token` version into a renovate-tracked `GH_TOKEN_VERSION` ARG, matching every other binary in the image.
-- Drop redundant `apk update` from the Alpine package install — `apk add --no-cache` already fetches a fresh index.
-- Move xtrace into the `SHELL` directive (`bash -xc`) so subsequent `RUN` commands are actually traced; the previous `RUN set -o xtrace` only set the option for a one-shot shell that exited immediately.
-- Replace `chmod 600 ~/.ssh/*` with an explicit list of `known_hosts` and `config` so the step doesn't break if `~/.ssh/` ever ends up empty.
-- Install `kubeconform` from its upstream pre-built release tarball instead of compiling from source with `go install`. Upstream ships `kubeconform-linux-amd64.tar.gz` / `kubeconform-linux-arm64.tar.gz` already. Eliminates the Go toolchain run during the image build (no QEMU emulation under buildx cross-arch, no source dependency tree to resolve).
+- Extract `gh-token` version into a renovate-tracked `GH_TOKEN_VERSION` ARG, matching every other binary in
+  the image.
+- Drop redundant `apk update` from the Alpine package install — `apk add --no-cache` already fetches a fresh
+  index.
+- Move xtrace into the `SHELL` directive (`bash -xc`) so subsequent `RUN` commands are actually traced; the
+  previous `RUN set -o xtrace` only set the option for a one-shot shell that exited immediately.
+- Replace `chmod 600 ~/.ssh/*` with an explicit list of `known_hosts` and `config` so the step doesn't break
+  if `~/.ssh/` ever ends up empty.
+- Install `kubeconform` from its upstream pre-built release tarball instead of compiling from source with
+  `go install`. Upstream ships `kubeconform-linux-amd64.tar.gz` / `kubeconform-linux-arm64.tar.gz` already.
+  Eliminates the Go toolchain run during the image build (no QEMU emulation under buildx cross-arch, no source
+  dependency tree to resolve).
 
 ## [7.4.0] - 2026-02-12
 
@@ -100,13 +113,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.20.1] - 2025-04-28
 
-- Downgrade golangci-lint v1.64.8 to v1.64.7, to be able to handle v2 configuration files with v1 keys in them.
+- Downgrade golangci-lint v1.64.8 to v1.64.7, to be able to handle v2 configuration files with v1 keys in
+  them.
 
 ## [6.20.0] - 2025-04-16
 
 - Add `generators` flag to `create kustomization` command, defaults to `true` for backward compatibility.
-  - When set to `false`, the YAML files in the target directory are assumed to be normal resources
-    and will update `.resources` with the list in the `kustomization.yaml`.
+  - When set to `false`, the YAML files in the target directory are assumed to be normal resources and will
+    update `.resources` with the list in the `kustomization.yaml`.
 
 ## [6.19.1] - 2025-03-14
 
@@ -152,7 +166,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bump `github.com/giantswarm/gitrepo` to `v0.3.0` to add git tag prefix support. See: https://github.com/giantswarm/gitrepo/releases/tag/v0.3.0.
+- Bump `github.com/giantswarm/gitrepo` to `v0.3.0` to add git tag prefix support. See:
+  https://github.com/giantswarm/gitrepo/releases/tag/v0.3.0.
 
 ## [6.15.1] - 2024-07-26
 
@@ -199,7 +214,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Support dots in version suffix when generating PR Releases [#797](https://github.com/giantswarm/architect/pull/797)
+- Support dots in version suffix when generating PR Releases
+  [#797](https://github.com/giantswarm/architect/pull/797)
 
 ## [6.10.0] - 2023-02-21
 
@@ -248,6 +264,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [6.3.0] - 2022-03-04
 
 ### Changed
+
 - Update `go` version to `v1.17.8`.
 
 ### Removed
@@ -278,7 +295,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.0.0] - 2022-02-07
 
-- Add `architect create fluxgenerator` and `architect create kustomization` for App collections managed by Flux.
+- Add `architect create fluxgenerator` and `architect create kustomization` for App collections managed by
+  Flux.
 
 ## [5.3.0] - 2021-09-29
 
@@ -339,7 +357,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `selfHeal: true` and `allowEmpty: true` to the generated Application CR sync policy in `architect create argoapp` (See [argoapp@v0.1.2](https://github.com/giantswarm/argoapp/blob/main/CHANGELOG.md#012---2021-05-20).
+- Add `selfHeal: true` and `allowEmpty: true` to the generated Application CR sync policy in
+  `architect create argoapp` (See
+  [argoapp@v0.1.2](https://github.com/giantswarm/argoapp/blob/main/CHANGELOG.md#012---2021-05-20).
 
 ### Fixed
 
@@ -349,7 +369,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix `architect create argoapp` generated Application CR project (renamed from "draughtsman2" to "collections") by updating to `gaintswarm/argoapp@v0.1.1`.
+- Fix `architect create argoapp` generated Application CR project (renamed from "draughtsman2" to
+  "collections") by updating to `gaintswarm/argoapp@v0.1.1`.
 
 ## [3.5.1] - 2021-05-13
 
@@ -387,8 +408,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added kubebuilder to the image to be able to run integration tests based on
-  controller-runtime `envtest`.
+- Added kubebuilder to the image to be able to run integration tests based on controller-runtime `envtest`.
 
 ## [3.4.0] - 2021-03-17
 
@@ -487,20 +507,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Move `deploy` to `legacy deploy` and strip down the functionality to only
-  creating GitHub deployment events.
+- Move `deploy` to `legacy deploy` and strip down the functionality to only creating GitHub deployment events.
 - Update `go` version to `v1.15.2`.
 
 ### Removed
 
-- Remove updating module line in go.mod file (if it exists) when major version
-  is bigger than 1 in `prepare-release` command added in 2.1.0. It was buggy.
-  Expectation is to have a validation instead.
+- Remove updating module line in go.mod file (if it exists) when major version is bigger than 1 in
+  `prepare-release` command added in 2.1.0. It was buggy. Expectation is to have a validation instead.
 - Remove legacy commands:
-    - build
-    - publish
-    - release
-    - unpublish
+  - build
+  - publish
+  - release
+  - unpublish
 
 ## [2.1.6] - 2020-08-18
 
@@ -550,13 +568,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `camel` installation to `deploy` command.
-- Update module line in go.mod file (if it exists) when major version is bigger
-  than 1 in `prepare-release` command.
+- Update module line in go.mod file (if it exists) when major version is bigger than 1 in `prepare-release`
+  command.
 
 ### Fixed
 
-- Support "Unreleased" link update for first release on non-master branches in
-  `prepare-release` command.
+- Support "Unreleased" link update for first release on non-master branches in `prepare-release` command.
 
 ## [2.0.0] - 2020-07-03
 
@@ -574,19 +591,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
--  Update giantswarm/app to 0.2.2 and use 0.0.0 as version for app CRs.
+- Update giantswarm/app to 0.2.2 and use 0.0.0 as version for app CRs.
 
 ## [1.1.2] 2020-06-03
 
 ### Changed
 
--  Revert giantswarm/app to 0.2.1 and use 1.0.0 as version for app CRs.
+- Revert giantswarm/app to 0.2.1 and use 1.0.0 as version for app CRs.
 
 ## [1.1.1] 2020-06-02
 
 ### Changed
 
--  Update giantswarm/app to 0.2.2 and use 0.0.0 as version for app CRs.
+- Update giantswarm/app to 0.2.2 and use 0.0.0 as version for app CRs.
 
 ## [1.1.0] 2020-05-28
 
@@ -722,5 +739,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.1.2]: https://github.com/giantswarm/architect/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/giantswarm/architect/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/giantswarm/architect/compare/v1.0.0...v1.1.0
-
 [1.0.0]: https://github.com/giantswarm/architect/releases/tag/v1.0.0
