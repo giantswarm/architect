@@ -9,11 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [8.0.0] - 2026-06-01
 
-## [7.5.3] - 2026-05-28
-
 ### Changed
 
-- feat!: switch from `gitrepo` to `gitsemver` library for version tag creation
+- switch from `gitrepo` to `gitsemver` library for version tag creation
+
+## [7.5.3] - 2026-05-28
 
 ### Changed
 
