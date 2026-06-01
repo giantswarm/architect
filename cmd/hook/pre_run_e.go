@@ -5,7 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/giantswarm/gitrepo/pkg/gitrepo"
+	"github.com/giantswarm/gitsemver/pkg/gitsemver"
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/cobra"
 )
@@ -15,19 +15,19 @@ func PreRunE(cmd *cobra.Command, args []string) error {
 
 	var err error
 
-	var repo *gitrepo.Repo
+	var repo *gitsemver.Repo
 	{
 		cwd := cmd.Flag("working-directory").Value.String()
-		dir, err := gitrepo.TopLevel(ctx, cwd)
+		dir, err := gitsemver.TopLevel(ctx, cwd)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
-		c := gitrepo.Config{
+		c := gitsemver.Config{
 			Dir: dir,
 		}
 
-		repo, err = gitrepo.New(c)
+		repo, err = gitsemver.New(c)
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -39,7 +39,7 @@ func PreRunE(cmd *cobra.Command, args []string) error {
 	}
 
 	defaultTag, err := repo.HeadTag(ctx)
-	if errors.Is(err, &gitrepo.ReferenceNotFoundError{}) {
+	if errors.Is(err, &gitsemver.ReferenceNotFoundError{}) {
 		defaultTag = ""
 	} else if err != nil {
 		return microerror.Mask(err)
