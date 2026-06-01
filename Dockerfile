@@ -48,6 +48,9 @@ ARG GITSEMVER_VERSION=v1.1.2
 # renovate: datasource=github-releases depName=anchore/syft
 ARG SYFT_VERSION=v1.44.0
 
+# renovate: datasource=github-releases depName=oras-project/oras
+ARG ORAS_VERSION=v1.3.2
+
 # The `kubeconform` tool is used only when Helm Chart is build and published
 # with the `architect` executor, which for majority of the project is not the
 # case anymore, for they are build and published with the ABS.
@@ -119,6 +122,11 @@ RUN curl -sSL "https://github.com/giantswarm/gitsemver/releases/download/${GITSE
 # the `v`-prefixed tag.
 RUN curl -sSL "https://github.com/anchore/syft/releases/download/${SYFT_VERSION}/syft_${SYFT_VERSION#v}_linux_${TARGETARCH}.tar.gz" | \
     tar -C /usr/bin -xzf - syft
+
+# Install oras (OCI registry client). Like syft, the asset filename uses the
+# version without the leading `v` while the download path uses the tag.
+RUN curl -sSL "https://github.com/oras-project/oras/releases/download/${ORAS_VERSION}/oras_${ORAS_VERSION#v}_linux_${TARGETARCH}.tar.gz" | \
+    tar -C /usr/bin -xzf - oras
 
 # Setup ssh config for github.com
 RUN mkdir ~/.ssh && \
