@@ -45,6 +45,9 @@ ARG GH_TOKEN_VERSION=v2.0.10
 # renovate: datasource=github-releases depName=giantswarm/gitsemver
 ARG GITSEMVER_VERSION=v1.1.2
 
+# renovate: datasource=github-releases depName=anchore/syft
+ARG SYFT_VERSION=v1.44.0
+
 # The `kubeconform` tool is used only when Helm Chart is build and published
 # with the `architect` executor, which for majority of the project is not the
 # case anymore, for they are build and published with the ABS.
@@ -110,6 +113,12 @@ RUN wget --no-verbose https://github.com/Link-/gh-token/releases/download/${GH_T
 # Install gitsemver CLI for use in CI scripts running inside the container.
 RUN curl -sSL "https://github.com/giantswarm/gitsemver/releases/download/${GITSEMVER_VERSION}/gitsemver-${GITSEMVER_VERSION}-linux-${TARGETARCH}.tar.gz" | \
     tar -C /usr/bin --strip-components 1 -xzf - gitsemver-${GITSEMVER_VERSION}-linux-${TARGETARCH}/gitsemver
+
+# Install syft (SBOM generator). Upstream release tarballs use the version
+# without the leading `v` in the asset filename, while the download path uses
+# the `v`-prefixed tag.
+RUN curl -sSL "https://github.com/anchore/syft/releases/download/${SYFT_VERSION}/syft_${SYFT_VERSION#v}_linux_${TARGETARCH}.tar.gz" | \
+    tar -C /usr/bin -xzf - syft
 
 # Setup ssh config for github.com
 RUN mkdir ~/.ssh && \
