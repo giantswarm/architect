@@ -1,12 +1,11 @@
 package template
 
 import (
-	"context"
 	"path"
 	"strconv"
 	"testing"
 
-	"github.com/giantswarm/gitsemver/pkg/gitsemver"
+	"github.com/giantswarm/gitsemver/v2/pkg/gitsemver"
 	"github.com/giantswarm/microerror"
 
 	"github.com/giantswarm/architect/v2/pkg/project"
@@ -17,8 +16,7 @@ import (
 func TestGetProjectVersion(t *testing.T) {
 	t.Parallel()
 
-	ctx := context.Background()
-	architectGitTopLevelDir, err := gitsemver.TopLevel(ctx, ".")
+	architectGitTopLevelDir, err := gitsemver.TopLevel(".")
 	if err != nil {
 		t.Fatalf("err = %#q, want %#v", microerror.JSON(err), nil)
 	}

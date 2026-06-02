@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Install `syft` in the docker image
 - Install `oras` in the docker image
 
+### Changed
+
+- Bump `gitsemver` to 2.0.0
+
 ## [8.0.0] - 2026-06-01
 
 ### Changed
