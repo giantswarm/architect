@@ -10,12 +10,12 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/giantswarm/gitrepo/pkg/gitrepo"
+	"github.com/giantswarm/gitsemver/pkg/gitsemver"
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
-	"github.com/giantswarm/architect/helmtemplate"
+	"github.com/giantswarm/architect/v2/helmtemplate"
 )
 
 func runTemplateError(cmd *cobra.Command, args []string) (err error) {
@@ -46,7 +46,7 @@ func runTemplateError(cmd *cobra.Command, args []string) (err error) {
 	var appVersion string
 	skipAppVersionCheck := false
 	{
-		dir, err := gitrepo.TopLevel(ctx, ".")
+		dir, err := gitsemver.TopLevel(ctx, ".")
 		if err != nil {
 			return microerror.Mask(err)
 		}

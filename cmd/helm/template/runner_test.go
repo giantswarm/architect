@@ -6,10 +6,10 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/giantswarm/gitrepo/pkg/gitrepo"
+	"github.com/giantswarm/gitsemver/pkg/gitsemver"
 	"github.com/giantswarm/microerror"
 
-	"github.com/giantswarm/architect/pkg/project"
+	"github.com/giantswarm/architect/v2/pkg/project"
 )
 
 // TestGetProjectVersions tests getProjectversion method which retrieves
@@ -18,7 +18,7 @@ func TestGetProjectVersion(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
-	architectGitTopLevelDir, err := gitrepo.TopLevel(ctx, ".")
+	architectGitTopLevelDir, err := gitsemver.TopLevel(ctx, ".")
 	if err != nil {
 		t.Fatalf("err = %#q, want %#v", microerror.JSON(err), nil)
 	}
