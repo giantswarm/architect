@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [8.1.0] - 2026-06-02
+
 ### Added
 
 - Install `syft` in the docker image
@@ -674,7 +676,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v8.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v8.1.0...HEAD
+[8.1.0]: https://github.com/giantswarm/architect/compare/v8.0.0...v8.1.0
 [8.0.0]: https://github.com/giantswarm/architect/compare/v7.5.3...v8.0.0
 [7.5.3]: https://github.com/giantswarm/architect/compare/v7.5.2...v7.5.3
 [7.5.2]: https://github.com/giantswarm/architect/compare/v7.5.1...v7.5.2
