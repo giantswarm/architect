@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/giantswarm/gitsemver/pkg/gitsemver"
+	"github.com/giantswarm/gitsemver/v2/pkg/gitsemver"
 	"github.com/giantswarm/microerror"
 
 	"github.com/giantswarm/architect/v2/pkg/project"

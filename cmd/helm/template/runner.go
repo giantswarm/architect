@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/giantswarm/gitsemver/pkg/gitsemver"
+	"github.com/giantswarm/gitsemver/v2/pkg/gitsemver"
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
