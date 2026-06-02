@@ -5,7 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/giantswarm/gitsemver/pkg/gitsemver"
+	"github.com/giantswarm/gitsemver/v2/pkg/gitsemver"
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/cobra"
 )
@@ -18,7 +18,7 @@ func PreRunE(cmd *cobra.Command, args []string) error {
 	var repo *gitsemver.Repo
 	{
 		cwd := cmd.Flag("working-directory").Value.String()
-		dir, err := gitsemver.TopLevel(ctx, cwd)
+		dir, err := gitsemver.TopLevel(cwd)
 		if err != nil {
 			return microerror.Mask(err)
 		}
