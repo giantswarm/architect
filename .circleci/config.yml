@@ -1,23 +1,20 @@
 version: 2.1
 orbs:
-  architect: giantswarm/architect@8.0.2
+  architect: giantswarm/architect@9.1.0
 
 workflows:
   go-build:
     jobs:
     - architect/go-build:
+        context: architect
         binary: architect
-        matrix:
-          parameters:
-            architecture:
-              - linux/amd64
-              - linux/arm64
+        architectures: "linux/amd64,linux/arm64,darwin/amd64,darwin/arm64,windows/amd64,windows/arm64"
         # Needed to trigger job also on git tag.
         filters:
           tags:
             only: /^v.*/
 
-    - architect/push-to-registries-multiarch:
+    - architect/push-to-registries:
         context: architect
         name: push-to-registries
         requires:
@@ -33,3 +30,15 @@ workflows:
             ignore:
               - main
               - master
+
+    - architect/upload-release-assets:
+        context: architect
+        name: upload-release-assets
+        binary: architect
+        requires:
+          - architect/go-build
+        filters:
+          tags:
+            only: /^v.*/
+          branches:
+            ignore: /.*/
