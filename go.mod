@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/giantswarm/app/v8 v8.1.1
-	github.com/giantswarm/gitsemver/v2 v2.0.0
+	github.com/giantswarm/gitsemver/v2 v2.0.1
 	github.com/giantswarm/microerror v0.4.1
 	github.com/google/go-cmp v0.7.0
 	github.com/pkg/errors v0.9.1
