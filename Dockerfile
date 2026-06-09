@@ -6,6 +6,9 @@ FROM gsoci.azurecr.io/giantswarm/golang:1.26.4-alpine3.23 AS golang
 
 FROM gsoci.azurecr.io/giantswarm/conftest:v0.68.2 AS conftest
 
+# uv is used to install app-build-suite (abs) onto a managed Python 3.13.
+FROM ghcr.io/astral-sh/uv:0.11.19 AS uv
+
 # Build Image
 FROM gsoci.azurecr.io/giantswarm/alpine:3.23.4
 
@@ -65,14 +68,22 @@ ARG CT_YAMALE_VER=6.1.0
 # renovate: datasource=pypi depName=yamllint
 ARG CT_YAMLLINT_VER=1.38.0
 
+# kube-linter is a runtime dependency of app-build-suite (abs); abs invokes it
+# to lint Helm charts during `push-to-app-catalog`.
+# renovate: datasource=github-releases depName=stackrox/kube-linter
+ARG KUBE_LINTER_VERSION=v0.8.3
+
 RUN apk add --no-cache --no-scripts \
     bash \
     ca-certificates \
+    cairo \
     curl \
     docker \
+    font-dejavu \
     git \
     github-cli \
     jq \
+    pango \
     py-pip \
     openssh-client \
     make \
@@ -140,6 +151,30 @@ RUN mkdir ~/.ssh && \
 RUN rm -f /usr/lib/python3.11/EXTERNALLY-MANAGED
 
 RUN pip install --break-system-packages --root-user-action=ignore yamllint==${CT_YAMLLINT_VER} yamale==${CT_YAMALE_VER}
+
+# Install kube-linter (runtime dependency of app-build-suite). Upstream ships a
+# bare `kube-linter` binary inside an arch-specific tarball.
+RUN case "${TARGETARCH}" in \
+    amd64) kube_linter_asset=kube-linter-linux.tar.gz ;; \
+    arm64) kube_linter_asset=kube-linter-linux_arm64.tar.gz ;; \
+    *) echo "Unsupported TARGETARCH=${TARGETARCH} for kube-linter"; exit 1 ;; \
+    esac && \
+    curl -sSL "https://github.com/stackrox/kube-linter/releases/download/${KUBE_LINTER_VERSION}/${kube_linter_asset}" | \
+    tar -C /usr/bin -xzf - kube-linter && \
+    chmod +x /usr/bin/kube-linter
+
+# Install app-build-suite (abs) via uv. abs requires Python >= 3.13, which is
+# newer than the Alpine system Python (3.11), so install it onto a uv-managed
+# 3.13 interpreter rather than the system one. uv links the `abs` entry point
+# into UV_TOOL_BIN_DIR (/usr/local/bin). The managed interpreter and tool venv
+# live under /opt/uv so they persist in the final image. abs is installed from
+# PyPI at the latest stable release.
+COPY --from=uv /uv /usr/local/bin/uv
+ENV UV_PYTHON_INSTALL_DIR=/opt/uv/python \
+    UV_TOOL_DIR=/opt/uv/tools \
+    UV_TOOL_BIN_DIR=/usr/local/bin
+RUN uv tool install --python 3.13 app-build-suite && \
+    abs --version
 
 ADD ./architect-linux-${TARGETARCH} /usr/bin/architect
 ENTRYPOINT ["/usr/bin/architect"]

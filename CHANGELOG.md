@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+- Install `app-build-suite` (abs) in the image via `uv` (on a managed Python 3.13) together with its `kube-linter` runtime dependency and the `cairo`/`pango` libraries it needs for chart icon (SVG) validation. This lets the `architect` executor build and publish Helm charts directly, so the `architect-orb` no longer needs the separate `app-build-suite:*-circleci` image or its dedicated executor.
+
 ### Changed
 
 - Release binaries now include darwin/amd64, darwin/arm64, windows/amd64, and windows/arm64 alongside the existing linux targets. Windows binaries are named `architect-windows-<arch>.exe`.
