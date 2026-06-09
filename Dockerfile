@@ -55,7 +55,7 @@ ARG ORAS_VERSION=v1.3.2
 # with the `architect` executor, which for majority of the project is not the
 # case anymore, for they are build and published with the ABS.
 # renovate: datasource=github-releases depName=yannh/kubeconform
-ARG KUBECONFORM_VERSION=v0.7.0
+ARG KUBECONFORM_VERSION=v0.8.0
 
 # The `yamale` tool does not seem to be used anymore, it is still here just in case
 # some CI magic somewhere still relies on it.
