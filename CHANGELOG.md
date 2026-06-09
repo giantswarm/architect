@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [8.2.0] - 2026-06-09
+
 ### Changed
 
 - Release binaries now include darwin/amd64, darwin/arm64, windows/amd64, and windows/arm64 alongside the existing linux targets. Windows binaries are named `architect-windows-<arch>.exe`.
@@ -684,7 +686,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v8.1.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v8.2.0...HEAD
+[8.2.0]: https://github.com/giantswarm/architect/compare/v8.1.0...v8.2.0
 [8.1.0]: https://github.com/giantswarm/architect/compare/v8.0.0...v8.1.0
 [8.0.0]: https://github.com/giantswarm/architect/compare/v7.5.3...v8.0.0
 [7.5.3]: https://github.com/giantswarm/architect/compare/v7.5.2...v7.5.3
