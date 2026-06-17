@@ -9,6 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [8.2.1] - 2026-06-17
 
+### Changed
+
+- Update `nancy` to v2.1.0.
+- Bump Go and build dependencies.
+
 ## [8.2.0] - 2026-06-09
 
 ### Changed
