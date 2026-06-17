@@ -7,6 +7,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [8.2.1] - 2026-06-17
+
+### Changed
+
+- Update `nancy` to v2.1.0.
+- Bump Go and build dependencies.
+
 ## [8.2.0] - 2026-06-09
 
 ### Changed
@@ -686,7 +693,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v8.2.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v8.2.1...HEAD
+[8.2.1]: https://github.com/giantswarm/architect/compare/v8.2.0...v8.2.1
 [8.2.0]: https://github.com/giantswarm/architect/compare/v8.1.0...v8.2.0
 [8.1.0]: https://github.com/giantswarm/architect/compare/v8.0.0...v8.1.0
 [8.0.0]: https://github.com/giantswarm/architect/compare/v7.5.3...v8.0.0
