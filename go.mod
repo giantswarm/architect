@@ -63,3 +63,5 @@ replace (
 	github.com/go-git/go-git/v5 v5.16.5 => github.com/go-git/go-git/v5 v5.18.0
 	github.com/go-git/go-git/v5 v5.19.0 => github.com/go-git/go-git/v5 v5.19.1
 )
+
+replace github.com/yuin/goldmark v1.4.13 => github.com/yuin/goldmark v1.8.2

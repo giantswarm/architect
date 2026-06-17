@@ -1,4 +1,3 @@
-CVE-2026-1229 until=2026-05-30 # github.com/cloudflare/circl@v1.6.1
 CVE-2026-25680 until=2026-06-27 # golang.org/x/net@v0.54.0
 CVE-2026-25681 until=2026-06-27 # golang.org/x/net@v0.54.0
 CVE-2026-27136 until=2026-06-27 # golang.org/x/net@v0.54.0
@@ -16,3 +15,4 @@ CVE-2026-39829 until=2026-06-27 # golang.org/x/crypto@v0.51.0
 CVE-2026-39831 until=2026-06-27 # golang.org/x/crypto@v0.51.0
 CVE-2026-46595 until=2026-06-27 # golang.org/x/crypto@v0.51.0
 CVE-2026-46597 until=2026-06-27 # golang.org/x/crypto@v0.51.0
+CVE-2026-35469 until=2026-07-15 # github.com/moby/spdystream@v0.5.0
