@@ -46,7 +46,7 @@ ARG GH_TOKEN_VERSION=v2.0.10
 ARG GITSEMVER_VERSION=v2.0.1
 
 # renovate: datasource=github-releases depName=anchore/syft
-ARG SYFT_VERSION=v1.45.1
+ARG SYFT_VERSION=v1.46.0
 
 # renovate: datasource=github-releases depName=oras-project/oras
 ARG ORAS_VERSION=v1.3.2
