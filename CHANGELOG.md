@@ -7,6 +7,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+- `prepare-release` now aggregates release-candidate changelogs on promotion: when `--version` is a stable release that already has matching `## [X.Y.Z-rc.N]` sections in `CHANGELOG.md`, their content (plus the moved `Unreleased` delta) is merged into the new stable section, ordered by Keep a Changelog category, with a note under `### Changed`. This is a no-op for release-candidate/dev targets and for stable releases without matching RC entries, and is idempotent.
+
+### Changed
+
+- `prepare-release` now fails (rather than silently dropping content) if the aggregated stable section would contain a non-Keep-a-Changelog `### H3` heading.
+
 ## [8.2.0] - 2026-06-09
 
 ### Changed
