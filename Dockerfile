@@ -1,13 +1,13 @@
 FROM gsoci.azurecr.io/giantswarm/helm-chart-testing:v3.14.0 AS ct
 
-FROM gsoci.azurecr.io/giantswarm/app-build-suite:2.1.2 AS abs
+FROM gsoci.azurecr.io/giantswarm/app-build-suite:2.1.3 AS abs
 
 FROM gsoci.azurecr.io/giantswarm/golang:1.26.4-alpine3.23 AS golang
 
 FROM gsoci.azurecr.io/giantswarm/conftest:v0.68.2 AS conftest
 
 # Build Image
-FROM gsoci.azurecr.io/giantswarm/alpine:3.23.4
+FROM gsoci.azurecr.io/giantswarm/alpine:3.24.1
 
 # Copy go from golang image.
 COPY --from=golang /usr/local/go /usr/local/go
@@ -25,16 +25,16 @@ ENV PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
 ARG TARGETARCH
 
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v3.21.0
+ARG HELM_VERSION=v3.21.1
 
 # renovate: datasource=github-releases depName=kubernetes-sigs/kubebuilder
-ARG KUBEBUILDER_VERSION=4.14.0
+ARG KUBEBUILDER_VERSION=4.15.0
 
 # renovate: datasource=github-releases depName=sonatype-nexus-community/nancy
-ARG NANCY_VERSION=v2.0.0
+ARG NANCY_VERSION=v2.1.0
 
 # renovate: datasource=github-releases depName=sigstore/cosign
-ARG COSIGN_VERSION=v3.0.6
+ARG COSIGN_VERSION=v3.1.1
 
 # renovate: datasource=github-releases depName=hadolint/hadolint
 ARG HADOLINT_VERSION=v2.14.0
