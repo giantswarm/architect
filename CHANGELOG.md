@@ -13,7 +13,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 
-- `prepare-release` now fails (rather than silently dropping content) if the aggregated stable section would contain a non-Keep-a-Changelog `### H3` heading.
+- `prepare-release` now fails (rather than silently dropping content) if the aggregated stable section would contain a non-Keep-a-Changelog `### H3` heading, or content before its first heading.
+
 ## [8.2.1] - 2026-06-17
 
 ### Changed

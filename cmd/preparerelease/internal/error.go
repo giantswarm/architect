@@ -43,3 +43,12 @@ var missingStableSectionError = &microerror.Error{
 func IsMissingStableSection(err error) bool {
 	return microerror.Cause(err) == missingStableSectionError
 }
+
+var orphanContentError = &microerror.Error{
+	Kind: "orphanContentError",
+}
+
+// IsOrphanContent asserts orphanContentError.
+func IsOrphanContent(err error) bool {
+	return microerror.Cause(err) == orphanContentError
+}

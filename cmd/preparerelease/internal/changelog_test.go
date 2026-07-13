@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -56,10 +57,10 @@ All notable changes to this project will be documented in this file.
 [1.1.0]: https://github.com/giantswarm/x/releases/tag/v1.1.0
 `
 
-func Test_modifier_aggregateReleaseCandidateChangelogs_happyMultiRC(t *testing.T) {
+func Test_modifier_ensureReleaseCandidateChangelogsAggregated_happyMultiRC(t *testing.T) {
 	m := Modifier{newVersion: "1.2.3"}
 
-	got, err := m.aggregateReleaseCandidateChangelogs([]byte(happyMultiRCInput))
+	got, err := m.ensureReleaseCandidateChangelogsAggregated([]byte(happyMultiRCInput))
 	if err != nil {
 		t.Fatalf("unexpected error: %s", err)
 	}
@@ -111,7 +112,7 @@ func Test_modifier_aggregateReleaseCandidateChangelogs_happyMultiRC(t *testing.T
 	}
 }
 
-func Test_modifier_aggregateReleaseCandidateChangelogs_emptyDeltaSingleRC(t *testing.T) {
+func Test_modifier_ensureReleaseCandidateChangelogsAggregated_emptyDeltaSingleRC(t *testing.T) {
 	input := `# Changelog
 
 ## [Unreleased]
@@ -170,7 +171,7 @@ func Test_modifier_aggregateReleaseCandidateChangelogs_emptyDeltaSingleRC(t *tes
 `
 
 	m := Modifier{newVersion: "1.2.3"}
-	got, err := m.aggregateReleaseCandidateChangelogs([]byte(input))
+	got, err := m.ensureReleaseCandidateChangelogsAggregated([]byte(input))
 	if err != nil {
 		t.Fatalf("unexpected error: %s", err)
 	}
@@ -179,15 +180,15 @@ func Test_modifier_aggregateReleaseCandidateChangelogs_emptyDeltaSingleRC(t *tes
 	}
 }
 
-func Test_modifier_aggregateReleaseCandidateChangelogs_idempotent(t *testing.T) {
+func Test_modifier_ensureReleaseCandidateChangelogsAggregated_idempotent(t *testing.T) {
 	m := Modifier{newVersion: "1.2.3"}
 
-	first, err := m.aggregateReleaseCandidateChangelogs([]byte(happyMultiRCInput))
+	first, err := m.ensureReleaseCandidateChangelogsAggregated([]byte(happyMultiRCInput))
 	if err != nil {
 		t.Fatalf("unexpected error on first run: %s", err)
 	}
 
-	second, err := m.aggregateReleaseCandidateChangelogs(first)
+	second, err := m.ensureReleaseCandidateChangelogsAggregated(first)
 	if err != nil {
 		t.Fatalf("unexpected error on second run: %s", err)
 	}
@@ -197,19 +198,19 @@ func Test_modifier_aggregateReleaseCandidateChangelogs_idempotent(t *testing.T) 
 	}
 }
 
-func Test_modifier_aggregateReleaseCandidateChangelogs_noOp(t *testing.T) {
+func Test_modifier_ensureReleaseCandidateChangelogsAggregated_noOp(t *testing.T) {
 	testCases := []struct {
 		name       string
 		newVersion string
 		input      string
 	}{
 		{
-			name:       "RC target",
+			name:       "case 0: RC target",
 			newVersion: "1.2.3-rc.2",
 			input:      happyMultiRCInput,
 		},
 		{
-			name:       "stable target with no matching RC sections",
+			name:       "case 1: stable target with no matching RC sections",
 			newVersion: "2.0.0",
 			input: `# Changelog
 
@@ -227,10 +228,12 @@ func Test_modifier_aggregateReleaseCandidateChangelogs_noOp(t *testing.T) {
 		},
 	}
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
+	for i, tc := range testCases {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			t.Log(tc.name)
+
 			m := Modifier{newVersion: tc.newVersion}
-			got, err := m.aggregateReleaseCandidateChangelogs([]byte(tc.input))
+			got, err := m.ensureReleaseCandidateChangelogsAggregated([]byte(tc.input))
 			if err != nil {
 				t.Fatalf("unexpected error: %s", err)
 			}
@@ -241,16 +244,16 @@ func Test_modifier_aggregateReleaseCandidateChangelogs_noOp(t *testing.T) {
 	}
 }
 
-func Test_modifier_aggregateReleaseCandidateChangelogs_errors(t *testing.T) {
+func Test_modifier_ensureReleaseCandidateChangelogsAggregated_errors(t *testing.T) {
 	testCases := []struct {
 		name       string
 		newVersion string
 		input      string
-		matches    func(error) bool
 		wantInMsg  string
+		matches    func(error) bool
 	}{
 		{
-			name:       "non-canonical heading in the (ungated) stable delta",
+			name:       "case 0: non-canonical heading in the (ungated) stable delta",
 			newVersion: "1.2.3",
 			input: `# Changelog
 
@@ -276,11 +279,11 @@ func Test_modifier_aggregateReleaseCandidateChangelogs_errors(t *testing.T) {
 [1.2.3]: https://github.com/giantswarm/x/compare/v1.1.0...v1.2.3
 [1.2.3-rc.1]: https://github.com/giantswarm/x/releases/tag/v1.2.3-rc.1
 `,
-			matches:   IsNonCanonicalHeading,
 			wantInMsg: "### Testing",
+			matches:   IsNonCanonicalHeading,
 		},
 		{
-			name:       "missing stable header while RC sections exist",
+			name:       "case 1: missing stable header while RC sections exist",
 			newVersion: "1.2.3",
 			input: `# Changelog
 
@@ -295,15 +298,45 @@ func Test_modifier_aggregateReleaseCandidateChangelogs_errors(t *testing.T) {
 [Unreleased]: https://github.com/giantswarm/x/compare/v1.2.3-rc.1...HEAD
 [1.2.3-rc.1]: https://github.com/giantswarm/x/releases/tag/v1.2.3-rc.1
 `,
-			matches:   IsMissingStableSection,
 			wantInMsg: "## [1.2.3]",
+			matches:   IsMissingStableSection,
+		},
+		{
+			name:       "case 2: content before the first heading in the (ungated) stable delta",
+			newVersion: "1.2.3",
+			input: `# Changelog
+
+## [Unreleased]
+
+## [1.2.3] - 2026-07-09
+
+- Orphan bullet with no category heading above it
+
+### Added
+
+- Real feature
+
+## [1.2.3-rc.1] - 2026-07-06
+
+### Added
+
+- Feature A
+
+[Unreleased]: https://github.com/giantswarm/x/compare/v1.2.3...HEAD
+[1.2.3]: https://github.com/giantswarm/x/compare/v1.1.0...v1.2.3
+[1.2.3-rc.1]: https://github.com/giantswarm/x/releases/tag/v1.2.3-rc.1
+`,
+			wantInMsg: "Orphan bullet with no category heading above it",
+			matches:   IsOrphanContent,
 		},
 	}
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
+	for i, tc := range testCases {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			t.Log(tc.name)
+
 			m := Modifier{newVersion: tc.newVersion}
-			_, err := m.aggregateReleaseCandidateChangelogs([]byte(tc.input))
+			_, err := m.ensureReleaseCandidateChangelogsAggregated([]byte(tc.input))
 			if err == nil {
 				t.Fatalf("expected an error, got nil")
 			}

@@ -43,14 +43,16 @@ var (
 	rcVersionRegex     = regexp.MustCompile(`^(.+)-rc\.([0-9]+)$`)
 )
 
-// AggregateReleaseCandidateChangelogs merges the changelog sections of a stable
-// release's release candidates into the stable section, when the new version is
-// a stable promotion of an existing RC series. It is a no-op otherwise.
+// EnsureReleaseCandidateChangelogsAggregated merges the changelog sections of a
+// stable release's release candidates into the stable section, when the new
+// version is a stable promotion of an existing RC series. It is a no-op
+// otherwise and idempotent: re-running it leaves an already-aggregated section
+// unchanged.
 //
 // It must run after AddReleaseToChangelogMd, which creates the "## [<version>]"
 // section this method aggregates into.
-func (m *Modifier) AggregateReleaseCandidateChangelogs() error {
-	err := modifyFile(filepath.Join(m.workingDir, FileChangelogMd), m.aggregateReleaseCandidateChangelogs)
+func (m *Modifier) EnsureReleaseCandidateChangelogsAggregated() error {
+	err := modifyFile(filepath.Join(m.workingDir, FileChangelogMd), m.ensureReleaseCandidateChangelogsAggregated)
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -58,7 +60,7 @@ func (m *Modifier) AggregateReleaseCandidateChangelogs() error {
 	return nil
 }
 
-func (m *Modifier) aggregateReleaseCandidateChangelogs(content []byte) ([]byte, error) {
+func (m *Modifier) ensureReleaseCandidateChangelogsAggregated(content []byte) ([]byte, error) {
 	// Only a stable target can be a promotion of an RC series. RC and dev builds
 	// carry their own changelog and are never aggregated.
 	if !gitsemver.IsValidStable(m.newVersion) {
@@ -97,13 +99,12 @@ func (m *Modifier) aggregateReleaseCandidateChangelogs(content []byte) ([]byte, 
 
 	// RC sections already passed the changelog validator (six canonical
 	// categories only), but the stable body originates from an "Unreleased"
-	// delta that is not gated by that validation. The category merge below only
-	// emits canonical categories, so refuse to silently drop content: fail if a
-	// non-canonical H3 appears in any source.
-	if heading, bad := firstNonCanonicalHeading(sources); bad {
-		return nil, microerror.Maskf(nonCanonicalHeadingError,
-			"changelog for %#q contains non-Keep-a-Changelog heading %#q; allowed: Added, Changed, Deprecated, Removed, Fixed, Security",
-			m.newVersion, "### "+heading)
+	// delta that is not gated by that validation. mergeCategorized only emits
+	// canonical categories and buckets bullets under the preceding "### "
+	// heading, so refuse to silently drop content: fail if any source carries a
+	// non-canonical H3 or content before its first heading.
+	if err := validateAggregationSources(m.newVersion, sources); err != nil {
+		return nil, microerror.Mask(err)
 	}
 
 	merged := mergeCategorized(sources, aggregationNote(rcs))
@@ -261,17 +262,33 @@ func isCanonicalCategory(name string) bool {
 	return false
 }
 
-// firstNonCanonicalHeading returns the first "### " heading across sources whose
-// name is not a canonical Keep a Changelog category.
-func firstNonCanonicalHeading(sources [][]string) (string, bool) {
+// validateAggregationSources rejects source bodies that mergeCategorized would
+// merge lossily. It mirrors mergeCategorized's line walk - a single running
+// "current category" carried across all sources - and fails on the two shapes
+// that walk cannot represent without dropping content: a non-canonical "### "
+// heading, or content that appears before the first heading (which has no
+// category to be merged under and would be silently discarded).
+func validateAggregationSources(version string, sources [][]string) error {
+	seenHeading := false
 	for _, src := range sources {
 		for _, line := range src {
-			if name, ok := categoryOf(line); ok && !isCanonicalCategory(name) {
-				return name, true
+			if name, ok := categoryOf(line); ok {
+				seenHeading = true
+				if !isCanonicalCategory(name) {
+					return microerror.Maskf(nonCanonicalHeadingError,
+						"changelog for %#q contains non-Keep-a-Changelog heading %#q; allowed: Added, Changed, Deprecated, Removed, Fixed, Security",
+						version, "### "+name)
+				}
+				continue
+			}
+			if !seenHeading && strings.TrimSpace(line) != "" {
+				return microerror.Maskf(orphanContentError,
+					"changelog for %#q contains content before the first Keep a Changelog heading: %#q; move it under a category (Added, Changed, Deprecated, Removed, Fixed, Security)",
+					version, strings.TrimSpace(line))
 			}
 		}
 	}
-	return "", false
+	return nil
 }
 
 // containsAggregationNote reports whether body already carries the aggregation
@@ -298,8 +315,10 @@ func aggregationNote(rcs []changelogSection) string {
 
 // mergeCategorized buckets bullets from all sources by category (preserving
 // insertion order within each category), prepends note as the first "Changed"
-// bullet, and emits the categories in canonical order. Blank lines and any text
-// before the first category heading are dropped.
+// bullet, and emits the categories in canonical order. Blank lines are dropped;
+// content before the first category heading is rejected upstream by
+// validateAggregationSources, so the current == "" branch never fires for
+// validated input.
 func mergeCategorized(sources [][]string, note string) string {
 	content := make(map[changelogCategory][]string)
 

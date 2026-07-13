@@ -53,7 +53,7 @@ func runPrepareRelease(cmd *cobra.Command, args []string) error {
 		// When promoting a release candidate to stable, merge the RC changelog
 		// sections into the new stable section. No-op for RC/dev targets and for
 		// stable releases without matching RC entries.
-		err = m.AggregateReleaseCandidateChangelogs()
+		err = m.EnsureReleaseCandidateChangelogsAggregated()
 		if err != nil {
 			return microerror.Mask(err)
 		}
