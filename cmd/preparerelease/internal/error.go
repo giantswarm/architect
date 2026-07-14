@@ -25,3 +25,30 @@ var fileNotFoundError = &microerror.Error{
 func IsFileNotFound(err error) bool {
 	return microerror.Cause(err) == fileNotFoundError
 }
+
+var nonCanonicalHeadingError = &microerror.Error{
+	Kind: "nonCanonicalHeadingError",
+}
+
+// IsNonCanonicalHeading asserts nonCanonicalHeadingError.
+func IsNonCanonicalHeading(err error) bool {
+	return microerror.Cause(err) == nonCanonicalHeadingError
+}
+
+var missingStableSectionError = &microerror.Error{
+	Kind: "missingStableSectionError",
+}
+
+// IsMissingStableSection asserts missingStableSectionError.
+func IsMissingStableSection(err error) bool {
+	return microerror.Cause(err) == missingStableSectionError
+}
+
+var orphanContentError = &microerror.Error{
+	Kind: "orphanContentError",
+}
+
+// IsOrphanContent asserts orphanContentError.
+func IsOrphanContent(err error) bool {
+	return microerror.Cause(err) == orphanContentError
+}
