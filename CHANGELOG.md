@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [8.3.0] - 2026-07-14
+
 ### Added
 
 - `prepare-release` now aggregates release-candidate changelogs on promotion: when `--version` is a stable release that already has matching `## [X.Y.Z-rc.N]` sections in `CHANGELOG.md`, their content (plus the moved `Unreleased` delta) is merged into the new stable section, ordered by Keep a Changelog category, with a note under `### Changed`. This is a no-op for release-candidate/dev targets and for stable releases without matching RC entries, and is idempotent.
@@ -701,7 +703,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v8.2.1...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v8.3.0...HEAD
+[8.3.0]: https://github.com/giantswarm/architect/compare/v8.2.1...v8.3.0
 [8.2.1]: https://github.com/giantswarm/architect/compare/v8.2.0...v8.2.1
 [8.2.0]: https://github.com/giantswarm/architect/compare/v8.1.0...v8.2.0
 [8.1.0]: https://github.com/giantswarm/architect/compare/v8.0.0...v8.1.0
