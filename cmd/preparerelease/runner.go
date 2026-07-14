@@ -49,6 +49,15 @@ func runPrepareRelease(cmd *cobra.Command, args []string) error {
 			return microerror.Mask(err)
 		}
 		cmd.Printf("File %#q updated.\n", internal.FileChangelogMd)
+
+		// When promoting a release candidate to stable, merge the RC changelog
+		// sections into the new stable section. No-op for RC/dev targets and for
+		// stable releases without matching RC entries.
+		err = m.EnsureReleaseCandidateChangelogsAggregated()
+		if err != nil {
+			return microerror.Mask(err)
+		}
+		cmd.Printf("File %#q checked for release-candidate aggregation.\n", internal.FileChangelogMd)
 	}
 
 	err = m.UpdateVersionInProjectGo()
