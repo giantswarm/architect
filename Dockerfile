@@ -4,8 +4,6 @@ FROM gsoci.azurecr.io/giantswarm/app-build-suite:2.1.3 AS abs
 
 FROM gsoci.azurecr.io/giantswarm/golang:1.26.5-alpine3.23 AS golang
 
-FROM gsoci.azurecr.io/giantswarm/conftest:v0.68.2 AS conftest
-
 # Build Image
 FROM gsoci.azurecr.io/giantswarm/alpine:3.24.1
 
@@ -16,8 +14,6 @@ COPY --from=golang /usr/local/go /usr/local/go
 COPY --from=ct /usr/local/bin/ct /usr/local/bin/ct
 COPY --from=abs /abs/resources/ct_schemas/gs_metadata_chart_schema.yaml /etc/ct/chart_schema.yaml
 COPY --from=ct /etc/ct/lintconf.yaml /etc/ct/lintconf.yaml
-
-COPY --from=conftest /usr/local/bin/conftest /usr/local/bin/conftest
 
 ENV GOPATH=/go
 ENV PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
