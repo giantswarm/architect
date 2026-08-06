@@ -7,6 +7,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Removed
+
+- `conftest` binary. The only consumer was the `helm-conftest` step in architect-orb's
+  `push-to-app-catalog` job, removed in architect-orb v6.3.2. The third-party
+  [deprek8ion](https://github.com/swade1987/deprek8ion) policies it ran have been unmaintained since 2021
+  and only covered Kubernetes API deprecations up to 1.22; app-build-suite runs kube-linter over the same
+  manifests. See [roadmap#4066](https://github.com/giantswarm/roadmap/issues/4066).
+
 ## [8.3.0] - 2026-07-14
 
 ### Added
