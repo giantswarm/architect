@@ -33,7 +33,7 @@ ARG NANCY_VERSION=v2.1.0
 ARG COSIGN_VERSION=v3.1.3
 
 # renovate: datasource=github-releases depName=hadolint/hadolint
-ARG HADOLINT_VERSION=v2.14.0
+ARG HADOLINT_VERSION=v2.15.1
 
 # renovate: datasource=github-releases depName=Link-/gh-token
 ARG GH_TOKEN_VERSION=v2.0.10
