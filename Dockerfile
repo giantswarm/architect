@@ -61,6 +61,9 @@ ARG CT_YAMALE_VER=6.1.0
 # renovate: datasource=pypi depName=yamllint
 ARG CT_YAMLLINT_VER=1.38.0
 
+# renovate: datasource=github-releases depName=golangci/golangci-lint
+ARG GOLANGCI_LINT_VERSION=v2.13.0
+
 RUN apk add --no-cache --no-scripts \
     bash \
     ca-certificates \
@@ -91,6 +94,10 @@ RUN curl -sSL -o /usr/bin/nancy https://github.com/sonatype-nexus-community/nanc
 # Install cosign (used by architect-orb for keyless image/chart/binary signing).
 RUN curl -sSL -o /usr/bin/cosign https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-${TARGETARCH} && \
     chmod +x /usr/bin/cosign
+
+# Install golanci-lint (for running go-sec)
+RUN curl -sSfL https://golangci-lint.run/install.sh | \
+    sh -s -- -b $GOPATH/bin ${GOLANGCI_LINT_VERSION}
 
 # Install hadolint (Dockerfile linter). Upstream asset names use Linux-x86_64 /
 # Linux-arm64 instead of linux-amd64 / linux-arm64, so translate.
