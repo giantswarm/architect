@@ -2,7 +2,7 @@ FROM gsoci.azurecr.io/giantswarm/helm-chart-testing:v3.14.0 AS ct
 
 FROM gsoci.azurecr.io/giantswarm/app-build-suite:2.1.3 AS abs
 
-FROM gsoci.azurecr.io/giantswarm/golang:1.26.6-alpine3.23 AS golang
+FROM gsoci.azurecr.io/giantswarm/golang:1.27.1-alpine3.23 AS golang
 
 # Build Image
 FROM gsoci.azurecr.io/giantswarm/alpine:3.24.1
