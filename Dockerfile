@@ -24,7 +24,7 @@ ARG TARGETARCH
 ARG HELM_VERSION=v3.21.4
 
 # renovate: datasource=github-releases depName=kubernetes-sigs/kubebuilder
-ARG KUBEBUILDER_VERSION=4.15.0
+ARG KUBEBUILDER_VERSION=4.16.0
 
 # renovate: datasource=github-releases depName=sonatype-nexus-community/nancy
 ARG NANCY_VERSION=v2.1.0
