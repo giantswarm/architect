@@ -20,6 +20,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   (`Config.MaxVersionLength`, `GS_MAX_VERSION_LENGTH`) are not referenced.
 - The `go` directive moves from 1.25.0 to 1.26.0, because gitsemver v3 declares it. CI and the image already
   build with Go 1.26.
+- The `pre-commit` CI gate now installs golangci-lint 2.13.2 on Go 1.27, which is what the central
+  `giantswarm/github` template pins. golangci-lint 2.9.0 is built with go1.26 and refuses a module that
+  targets go1.27, so the gate would have failed on every pull request as soon as the toolchain directive
+  moved. `opsctl` hit exactly that in
+  [opsctl#2684](https://github.com/giantswarm/opsctl/pull/2684).
 
 ## [8.4.0] - 2026-08-20
 
