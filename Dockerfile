@@ -39,7 +39,7 @@ ARG HADOLINT_VERSION=v2.15.1
 ARG GH_TOKEN_VERSION=v2.0.10
 
 # renovate: datasource=github-releases depName=giantswarm/gitsemver
-ARG GITSEMVER_VERSION=v3.0.0
+ARG GITSEMVER_VERSION=v3.0.1
 
 # renovate: datasource=github-releases depName=anchore/syft
 ARG SYFT_VERSION=v1.46.0
