@@ -5,7 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/giantswarm/gitsemver/v2/pkg/gitsemver"
+	"github.com/giantswarm/gitsemver/v3/pkg/gitsemver"
 	"github.com/giantswarm/microerror"
 	"github.com/spf13/cobra"
 )
