@@ -1,0 +1,10 @@
+version: "2"
+
+linters:
+  settings:
+    goconst:
+      # A table test repeats a fixture across its cases on purpose: the input
+      # and the expectation have to sit next to each other as literals for a
+      # reader to check the case at all. goconst stays enforced on production
+      # code, where a repeated literal is a missing constant.
+      ignore-tests: true
