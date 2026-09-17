@@ -39,7 +39,7 @@ ARG HADOLINT_VERSION=v2.15.1
 ARG GH_TOKEN_VERSION=v2.0.10
 
 # renovate: datasource=github-releases depName=giantswarm/gitsemver
-ARG GITSEMVER_VERSION=v2.0.1
+ARG GITSEMVER_VERSION=v3.0.0
 
 # renovate: datasource=github-releases depName=anchore/syft
 ARG SYFT_VERSION=v1.46.0
@@ -117,8 +117,8 @@ RUN curl -sSL "https://github.com/yannh/kubeconform/releases/download/${KUBECONF
 RUN wget --no-verbose https://github.com/Link-/gh-token/releases/download/${GH_TOKEN_VERSION}/linux-${TARGETARCH} -O /usr/bin/gh-token && chmod 700 /usr/bin/gh-token
 
 # Install gitsemver CLI for use in CI scripts running inside the container.
-RUN curl -sSL "https://github.com/giantswarm/gitsemver/releases/download/${GITSEMVER_VERSION}/gitsemver-${GITSEMVER_VERSION}-linux-${TARGETARCH}.tar.gz" | \
-    tar -C /usr/bin --strip-components 1 -xzf - gitsemver-${GITSEMVER_VERSION}-linux-${TARGETARCH}/gitsemver
+RUN curl -sSL -o /usr/bin/gitsemver "https://github.com/giantswarm/gitsemver/releases/download/${GITSEMVER_VERSION}/gitsemver-linux-${TARGETARCH}" && \
+    chmod 755 /usr/bin/gitsemver
 
 # Install syft (SBOM generator). Upstream release tarballs use the version
 # without the leading `v` in the asset filename, while the download path uses
