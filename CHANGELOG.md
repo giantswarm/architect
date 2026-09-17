@@ -9,11 +9,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 
-- Bumped the `gitsemver` CLI in the image from v2.0.1 to v3.0.0. v3 generates the new dev version schema
+- Bumped the `gitsemver` CLI in the image from v2.0.1 to v3.0.1. v3 generates the new dev version schema
   `X.Y.Z-r<branch-hash>t<timestamp>h<sha>`, which never produces an invalid Kubernetes label value.
 - The gitsemver install step downloads the raw `gitsemver-linux-<arch>` binary instead of a `.tar.gz`
   archive. gitsemver stopped publishing those archives in
-  [gitsemver#260](https://github.com/giantswarm/gitsemver/pull/260), so the old URL 404s on v3.0.0.
+  [gitsemver#260](https://github.com/giantswarm/gitsemver/pull/260), so the old URL 404s on v3.
+- Bumped the `gitsemver` Go library from v2.0.1 to v3.0.1. The import path moves to
+  `github.com/giantswarm/gitsemver/v3`. Only `TopLevel`, `Config`, `New`, `IsValidStable` and
+  `ReferenceNotFoundError` are used here, and none of them changed. The v3 removals
+  (`Config.MaxVersionLength`, `GS_MAX_VERSION_LENGTH`) are not referenced.
+- The `go` directive moves from 1.25.0 to 1.26.0, because gitsemver v3 declares it. CI and the image already
+  build with Go 1.26.
 
 ## [8.4.0] - 2026-08-20
 
