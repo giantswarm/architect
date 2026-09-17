@@ -9,7 +9,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/giantswarm/gitsemver/v2/pkg/gitsemver"
+	"github.com/giantswarm/gitsemver/v3/pkg/gitsemver"
 	"github.com/giantswarm/microerror"
 )
 
