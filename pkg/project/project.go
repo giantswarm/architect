@@ -3,7 +3,7 @@ package project
 var (
 	buildTimestamp string
 	gitSHA         string
-	version        = "8.4.0"
+	version        = "8.5.0"
 )
 
 func BuildTimestamp() string {
