@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [8.5.0] - 2026-09-23
+
 ### Changed
 
 - Bumped the `gitsemver` CLI in the image from v2.0.1 to v3.0.1. v3 generates the new dev version schema
@@ -737,7 +739,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v8.4.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v8.5.0...HEAD
+[8.5.0]: https://github.com/giantswarm/architect/compare/v8.4.0...v8.5.0
 [8.4.0]: https://github.com/giantswarm/architect/compare/v8.3.0...v8.4.0
 [8.3.0]: https://github.com/giantswarm/architect/compare/v8.2.1...v8.3.0
 [8.2.1]: https://github.com/giantswarm/architect/compare/v8.2.0...v8.2.1
