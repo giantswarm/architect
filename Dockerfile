@@ -62,7 +62,7 @@ ARG CT_YAMALE_VER=6.1.0
 ARG CT_YAMLLINT_VER=1.38.0
 
 # renovate: datasource=github-releases depName=golangci/golangci-lint
-ARG GOLANGCI_LINT_VERSION=v2.13.2
+ARG GOLANGCI_LINT_VERSION=v2.14.0
 
 RUN apk add --no-cache --no-scripts \
     bash \
