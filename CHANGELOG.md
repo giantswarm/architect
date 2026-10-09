@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Security
+
+- Bumped `golang.org/x/crypto` from v0.55.0 to v0.57.0 (CVE-2026-56854, CVE-2026-56855, CVE-2026-78662) and
+  dropped their expired `.nancy-ignore` entries.
+
 ## [8.5.0] - 2026-09-23
 
 ### Changed
