@@ -57,7 +57,7 @@ require (
 	sigs.k8s.io/structured-merge-diff/v6 v6.3.2-0.20260122202528-d9cc6641c482 // indirect
 )
 
-replace golang.org/x/net => golang.org/x/net v0.57.0
+replace golang.org/x/net => golang.org/x/net v0.60.0
 
 replace (
 	github.com/go-git/go-git/v5 v5.16.5 => github.com/go-git/go-git/v5 v5.18.0
