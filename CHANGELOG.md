@@ -7,6 +7,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [8.6.0] - 2026-10-09
+
+### Changed
+
+- Bumped the Go base image from 1.26.6 to 1.27.2.
+- Bumped golangci-lint in the image from v2.13.2 to v2.14.0, which reads Go 1.27.2's export data version 5.
+
 ### Security
 
 - Bumped `golang.org/x/crypto` from v0.55.0 to v0.57.0 (CVE-2026-56854, CVE-2026-56855, CVE-2026-78662) and
@@ -745,7 +752,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v8.5.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v8.6.0...HEAD
+[8.6.0]: https://github.com/giantswarm/architect/compare/v8.5.0...v8.6.0
 [8.5.0]: https://github.com/giantswarm/architect/compare/v8.4.0...v8.5.0
 [8.4.0]: https://github.com/giantswarm/architect/compare/v8.3.0...v8.4.0
 [8.3.0]: https://github.com/giantswarm/architect/compare/v8.2.1...v8.3.0
