@@ -1,4 +1,4 @@
-FROM gsoci.azurecr.io/giantswarm/helm-chart-testing:v3.14.0 AS ct
+FROM gsoci.azurecr.io/giantswarm/helm-chart-testing:v3.15.0 AS ct
 
 FROM gsoci.azurecr.io/giantswarm/app-build-suite:2.5.1 AS abs
 
