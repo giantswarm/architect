@@ -3,14 +3,14 @@ package template
 import (
 	"go/parser"
 	"go/token"
+	"os"
 	"path"
+	"regexp"
 	"strconv"
 	"testing"
 
 	"github.com/giantswarm/gitsemver/v3/pkg/gitsemver"
 	"github.com/giantswarm/microerror"
-
-	"github.com/giantswarm/architect/v2/pkg/project"
 )
 
 // TestGetProjectVersions tests getProjectversion method which retrieves
@@ -23,6 +23,17 @@ func TestGetProjectVersion(t *testing.T) {
 		t.Fatalf("err = %#q, want %#v", microerror.JSON(err), nil)
 	}
 
+	// project.Version() is overridden by the -X ldflags of a release build, so
+	// the expected value is read from the source the function under test reads.
+	source, err := os.ReadFile(path.Join(architectGitTopLevelDir, "pkg/project/project.go"))
+	if err != nil {
+		t.Fatalf("err = %#q, want %#v", microerror.JSON(err), nil)
+	}
+	match := regexp.MustCompile(`(?m)^\s*version\s*=\s*"([^"]*)"`).FindSubmatch(source)
+	if match == nil {
+		t.Fatalf("no version literal in pkg/project/project.go")
+	}
+
 	testCases := []struct {
 		name            string
 		inputDir        string
@@ -32,7 +43,7 @@ func TestGetProjectVersion(t *testing.T) {
 		{
 			name:            "case 0",
 			inputDir:        architectGitTopLevelDir,
-			expectedVersion: project.Version(),
+			expectedVersion: string(match[1]),
 		},
 		{
 			name:            "case 1",
