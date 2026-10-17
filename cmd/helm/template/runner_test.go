@@ -1,6 +1,8 @@
 package template
 
 import (
+	"go/parser"
+	"go/token"
 	"path"
 	"strconv"
 	"testing"
@@ -60,6 +62,63 @@ func TestGetProjectVersion(t *testing.T) {
 				if version != tc.expectedVersion {
 					t.Errorf("got %#q, expected %#q\n", version, tc.expectedVersion)
 				}
+			}
+		})
+	}
+}
+
+// TestParseString covers the declarations of version a project.go can carry;
+// only a string literal yields a value, every other form an empty string.
+func TestParseString(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		name     string
+		source   string
+		expected string
+	}{
+		{
+			name:     "string literal",
+			source:   `var version = "1.2.3"`,
+			expected: "1.2.3",
+		},
+		{
+			name:     "string literal in a var block with several names",
+			source:   "var (\n\tname, version = \"app\", \"1.2.3\"\n)",
+			expected: "1.2.3",
+		},
+		{
+			name:     "selector expression",
+			source:   "import \"example.com/buildinfo\"\nvar version = buildinfo.DevVersion",
+			expected: "",
+		},
+		{
+			name:     "declaration without a value",
+			source:   `var version string`,
+			expected: "",
+		},
+		{
+			name:     "no version variable",
+			source:   `var name = "app"`,
+			expected: "",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			node, err := parser.ParseFile(token.NewFileSet(), "", "package project\n"+tc.source+"\n", 0)
+			if err != nil {
+				t.Fatalf("parse: %v", err)
+			}
+
+			version, err := parseString(node, "version")
+			if err != nil {
+				t.Fatalf("error == %#v, want nil", err)
+			}
+			if version != tc.expected {
+				t.Errorf("got %#q, expected %#q", version, tc.expected)
 			}
 		})
 	}
