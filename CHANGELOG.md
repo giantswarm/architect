@@ -7,6 +7,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Fixed
+
+- `architect helm template` and `architect project version` work in a linked git worktree, where `.git` is a file:
+  bumped `github.com/giantswarm/gitsemver/v3` from v3.0.1 to v3.0.2-rc.9, which follows a `.git` file to its git
+  directory.
+- `architect helm template` no longer panics when `pkg/project/project.go` sets `version` to anything but a string
+  literal (`version = buildinfo.DevVersion`, `var version string`); it falls back to the version found in git.
+
 ## [8.6.0] - 2026-10-09
 
 ### Changed

@@ -121,19 +121,25 @@ func getProjectVersion(repoDir string) (string, error) {
 }
 
 // parseString returns the value of the variable varName found in r AbstractSyntaxTree.
+// It returns an empty string when varName is not initialised with a string
+// literal (`var version string`, `version = buildinfo.DevVersion`), so the
+// caller falls back to the version found in git.
 func parseString(r ast.Node, varName string) (value string, err error) {
 	ast.Inspect(r, func(n ast.Node) bool {
 		d, ok := n.(*ast.ValueSpec)
-		if ok {
-			for _, id := range d.Names {
-				if id.Name == varName {
-					v := id.Obj.Decl.(*ast.ValueSpec).Values[0].(*ast.BasicLit)
-					if v.Kind == token.STRING {
-						value, err = strconv.Unquote(v.Value)
-						return false
-					}
+		if !ok {
+			return true
+		}
+		for i, id := range d.Names {
+			if id.Name != varName {
+				continue
+			}
+			if i < len(d.Values) {
+				if v, ok := d.Values[i].(*ast.BasicLit); ok && v.Kind == token.STRING {
+					value, err = strconv.Unquote(v.Value)
 				}
 			}
+			return false
 		}
 		return true
 	})
