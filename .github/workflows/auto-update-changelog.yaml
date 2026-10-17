@@ -1,0 +1,14 @@
+name: Auto-update changelog
+
+on:
+  pull_request:
+    #branches:
+    #  - "renovate/**"
+
+jobs:
+  update_changelog:
+    name: Update changelog
+    uses: giantswarm/github-workflows/.github/workflows/auto-update-changelog.yaml@add-changlog-updater
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      TAYLORBOT_GITHUB_ACTION: ${{ secrets.TAYLORBOT_GITHUB_ACTION }}
