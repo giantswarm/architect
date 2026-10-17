@@ -5,6 +5,7 @@ import (
 	"go/token"
 	"os"
 	"path"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"testing"
@@ -25,7 +26,7 @@ func TestGetProjectVersion(t *testing.T) {
 
 	// project.Version() is overridden by the -X ldflags of a release build, so
 	// the expected value is read from the source the function under test reads.
-	source, err := os.ReadFile(path.Join(architectGitTopLevelDir, "pkg/project/project.go"))
+	source, err := os.ReadFile(filepath.Clean(path.Join(architectGitTopLevelDir, "pkg/project/project.go")))
 	if err != nil {
 		t.Fatalf("err = %#q, want %#v", microerror.JSON(err), nil)
 	}
