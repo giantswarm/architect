@@ -7,6 +7,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [8.6.1-rc.1] - 2026-10-17
+
 ### Fixed
 
 - `architect helm template` and `architect project version` work in a linked git worktree, where `.git` is a file:
@@ -760,7 +762,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Add changelog.
 - Add SemVer versioning.
 
-[Unreleased]: https://github.com/giantswarm/architect/compare/v8.6.0...HEAD
+[Unreleased]: https://github.com/giantswarm/architect/compare/v8.6.1-rc.1...HEAD
+[8.6.1-rc.1]: https://github.com/giantswarm/architect/compare/v8.6.0...v8.6.1-rc.1
 [8.6.0]: https://github.com/giantswarm/architect/compare/v8.5.0...v8.6.0
 [8.5.0]: https://github.com/giantswarm/architect/compare/v8.4.0...v8.5.0
 [8.4.0]: https://github.com/giantswarm/architect/compare/v8.3.0...v8.4.0
