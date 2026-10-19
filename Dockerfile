@@ -45,7 +45,7 @@ ARG GITSEMVER_VERSION=v3.0.3
 ARG SYFT_VERSION=v1.46.0
 
 # renovate: datasource=github-releases depName=oras-project/oras
-ARG ORAS_VERSION=v1.3.4
+ARG ORAS_VERSION=v1.3.5
 
 # The `kubeconform` tool is used only when Helm Chart is build and published
 # with the `architect` executor, which for majority of the project is not the
