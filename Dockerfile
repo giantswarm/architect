@@ -27,7 +27,7 @@ ARG HELM_VERSION=v3.22.1
 ARG KUBEBUILDER_VERSION=4.16.0
 
 # renovate: datasource=github-releases depName=sonatype-nexus-community/nancy
-ARG NANCY_VERSION=v2.1.0
+ARG NANCY_VERSION=v2.1.1
 
 # renovate: datasource=github-releases depName=sigstore/cosign
 ARG COSIGN_VERSION=v3.1.4
