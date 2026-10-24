@@ -28,8 +28,8 @@ github.com/giantswarm/apiextensions-application v0.6.2 h1:XL86OrpprWl5Wp38EUvUXt
 github.com/giantswarm/apiextensions-application v0.6.2/go.mod h1:8ylqSmDSzFblCppRQTFo8v9s/F6MX6RTusVVoDDfWso=
 github.com/giantswarm/app/v8 v8.1.1 h1:kS9Ma++OBVyODEzYiGA6JcYNOCxuAxu17VpYneIzyIA=
 github.com/giantswarm/app/v8 v8.1.1/go.mod h1:TUwvutQSqcs43FUsoSHlcIS87aqhYyJ2uunbf5Hbb1E=
-github.com/giantswarm/gitsemver/v3 v3.0.7 h1:72asaDvp5W16UA6a9QT8dRsRwfUXl6VGrCBeZMGTn4M=
-github.com/giantswarm/gitsemver/v3 v3.0.7/go.mod h1:pmLg9xt/DP4JzZQAgfEZ03YPFbm1Qa4BIMqdAbUCEaw=
+github.com/giantswarm/gitsemver/v3 v3.0.8 h1:eNYNQdP6GePp3qFKNyrAQXYD66U8uqJx93kw2NzPFTE=
+github.com/giantswarm/gitsemver/v3 v3.0.8/go.mod h1:pmLg9xt/DP4JzZQAgfEZ03YPFbm1Qa4BIMqdAbUCEaw=
 github.com/giantswarm/k8smetadata v0.25.0 h1:6mKmmm4xHPuBvxDMAkIhU5oj6KJkJSaR2s5esIsnHs4=
 github.com/giantswarm/k8smetadata v0.25.0/go.mod h1:QiQAyaZnwco1U0lENLF0Kp4bSN4dIPwIlHWEvUo3ES8=
 github.com/giantswarm/microerror v0.4.1 h1:WMiD7HQASoUA9lZzPlPK+erCEOJ0uT4cyo18VfCXHD0=
