@@ -1,6 +1,9 @@
 version: "2"
 
 linters:
+  enable:
+    - gosec
+    - goconst
   settings:
     goconst:
       # A table test repeats a fixture across its cases on purpose: the input
