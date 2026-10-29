@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/giantswarm/app/v8 v8.1.1
-	github.com/giantswarm/gitsemver/v3 v3.0.9
+	github.com/giantswarm/gitsemver/v3 v3.0.11
 	github.com/giantswarm/microerror v0.4.1
 	github.com/google/go-cmp v0.7.0
 	github.com/pkg/errors v0.9.1
@@ -42,7 +42,7 @@ require (
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
 	golang.org/x/crypto v0.58.0 // indirect
-	golang.org/x/net v0.60.0 // indirect
+	golang.org/x/net v0.62.0 // indirect
 	golang.org/x/sys v0.49.0 // indirect
 	golang.org/x/text v0.43.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
