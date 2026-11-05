@@ -5,7 +5,7 @@ FROM gsoci.azurecr.io/giantswarm/app-build-suite:2.5.3 AS abs
 FROM gsoci.azurecr.io/giantswarm/golang:1.27.3-alpine3.23 AS golang
 
 # Build Image
-FROM gsoci.azurecr.io/giantswarm/alpine:3.24.3
+FROM gsoci.azurecr.io/giantswarm/alpine:3.24.4
 
 # Copy go from golang image.
 COPY --from=golang /usr/local/go /usr/local/go
