@@ -30,7 +30,7 @@ ARG KUBEBUILDER_VERSION=4.16.0
 ARG NANCY_VERSION=v2.1.1
 
 # renovate: datasource=github-releases depName=sigstore/cosign
-ARG COSIGN_VERSION=v3.1.5
+ARG COSIGN_VERSION=v3.1.6
 
 # renovate: datasource=github-releases depName=hadolint/hadolint
 ARG HADOLINT_VERSION=v2.15.1
